@@ -37,6 +37,7 @@ const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
 const Test = React.lazy(() => import('./views/Test/Test'));
 const Excels = React.lazy(() => import('./views/Excels/Excels.js'));
+const ScheduleParameters = React.lazy(() => import('./views/ScheduleParameters/ScheduleParameters.js'));
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -80,10 +81,11 @@ const routes = [
   { path: '/notifications/modals', name: 'Modals', component: Modals },
   { path: '/widgets', name: 'Widgets', component: Widgets },
   { path: '/charts', name: 'Charts', component: Charts },
-  { path: '/users', exact: true,  name: 'Users', component: Users },
+  { path: '/users', exact: true, name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
-  { path: '/test', exact: true,  name: 'Tests', component: Test },
-  { path: '/excels', exact: true,  name: 'Excels', component: Excels },
+  { path: '/test', exact: true, name: 'Tests', component: Test },
+  { path: '/importfiles', exact: true, name: 'Import Files', component: Excels },
+  { path: '/scheduleparameters', exact: true, name: 'Schedule Parameters', component: ScheduleParameters },
 ];
 
 export default routes;

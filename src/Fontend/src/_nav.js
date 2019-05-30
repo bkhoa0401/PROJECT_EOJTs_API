@@ -2,7 +2,13 @@ export default {
   items: [
     {
       name: 'Import Files',
-      url: '/excels',
+      url: '/importfiles',
+      icon: 'icon-speedometer',
+
+    },
+    {
+      name: 'Schedule Parameters',
+      url: '/scheduleparameters',
       icon: 'icon-speedometer',
     },
     // {

@@ -18,6 +18,7 @@ import {
   Tooltips,
   Test,
   Excels,
+  ScheduleParameters
 } from './Base';
 
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
@@ -69,5 +70,6 @@ export {
   Paginations,
   Test,
   Excels,
+  ScheduleParameters,
 };
 

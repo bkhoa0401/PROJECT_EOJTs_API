@@ -5,7 +5,8 @@ import { isNullOrUndefined } from './common-service';
 const login = async function (email, password) {
     logout();
     // Get a token from api server using the fetch api
-    const API = 'http://localhost:9999/toy_store/token';
+    // const API = 'http://localhost:9999/toy_store/token';
+    const API = 'http://localhost:8000/web/login';
     const response = await fetch(API, {
         headers: {
             'content-type': 'application/json'
@@ -13,12 +14,12 @@ const login = async function (email, password) {
         method: 'post',
         body: JSON.stringify({ email: email, password: password })
     });
-    if (response.ok) {
+    if (response != null) {
         try {
             const data = await response.json();
             console.log('data   ', data);
-            localStorage.setItem('id_token', data.token);
-            processPermission(data.role.permissions);
+            // localStorage.setItem('id_token', data.token);
+            // processPermission(data.role.permissions);
         }
         catch (exception) {
             console.log('Something wrong !!!' + exception);

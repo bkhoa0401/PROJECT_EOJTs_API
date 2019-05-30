@@ -42,7 +42,8 @@
     "react-toastify": "^5.1.1",
     "reactstrap": "^7.1.0",
     "read-excel-file": "^4.0.1",
-    "simple-line-icons": "^2.4.1"
+    "simple-line-icons": "^2.4.1",
+    "simple-react-validator": "^1.0.7"
   },
   "devDependencies": {
     "react-scripts": "^3.0.1"

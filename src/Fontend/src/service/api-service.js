@@ -1,7 +1,6 @@
 // import Auth from './auth-service';
 import { isNullOrUndefined } from './common-service';
 
-// const API = 'http://localhost:9999/toy_store/api';
 const API = 'http://localhost:8000';
 
 const Get = async function (api, query = '') {

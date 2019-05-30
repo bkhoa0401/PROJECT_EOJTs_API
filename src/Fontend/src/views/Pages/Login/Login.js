@@ -71,15 +71,15 @@ class Login extends Component {
                         <Col xs="6">
                           <Button onClick={this.handleSubmit} color="primary" className="px-4">Login</Button>
                         </Col>
-                        <Col xs="6" className="text-right">
+                        {/* <Col xs="6" className="text-right">
                           <Button color="link" className="px-0">Forgot password?</Button>
-                        </Col>
+                        </Col> */}
                       </Row>
                     </Form>
                     <ToastContainer />
                   </CardBody>
                 </Card>
-                <Card className="text-white bg-primary py-5 d-md-down-none" style={{ width: '44%' }}>
+                {/* <Card className="text-white bg-primary py-5 d-md-down-none" style={{ width: '44%' }}>
                   <CardBody className="text-center">
                     <div>
                       <h2>Sign up</h2>
@@ -90,7 +90,7 @@ class Login extends Component {
                       </Link>
                     </div>
                   </CardBody>
-                </Card>
+                </Card> */}
               </CardGroup>
             </Col>
           </Row>
