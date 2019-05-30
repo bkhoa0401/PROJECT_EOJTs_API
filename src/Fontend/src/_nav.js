@@ -6,7 +6,7 @@ export default {
       icon: 'icon-speedometer',
     },
     // {
-    //   name: 'test',s
+    //   name: 'test',
     //   url: '/test',
     //   icon: 'icon-speedometer',
     // },
