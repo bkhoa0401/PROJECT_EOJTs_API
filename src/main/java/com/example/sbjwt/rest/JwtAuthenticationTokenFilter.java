@@ -36,7 +36,7 @@ public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthentication
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        try {
+//        try {
             String authToken = httpRequest.getHeader(TOKEN_HEADER);
 //            String authToken = null;
 //            if (!httpRequest.getRequestURI().contains("login")) {
@@ -77,11 +77,11 @@ public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthentication
 //                httpServletResponse.setStatus(401);
 //                return;
 //            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            httpServletResponse.setStatus(401);
-            return;
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            httpServletResponse.setStatus(401);
+//            return;
+//        }
 
         chain.doFilter(request, response);
     }

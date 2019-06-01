@@ -76,10 +76,14 @@ public class JwtService {
         return expiration;
     }
 
-    public String getEmailFromToken(String token)throws ParseException{
+    public String getEmailFromToken(String token) {
         String email = null;
-        JWTClaimsSet claims = getClaimsFromToken(token);
-        email = claims.getStringClaim(EMAIL);
+        try {
+            JWTClaimsSet claims = getClaimsFromToken(token);
+            email = claims.getStringClaim(EMAIL);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return email;
     }
 
@@ -99,13 +103,7 @@ public class JwtService {
         if (token == null || token.trim().length() == 0) {
             return false;
         }
-        String email = null;
-        try {
-            email = getEmailFromToken(token);
-        } catch (ParseException ex) {
-            Logger.getLogger(JwtService.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        }
+        String email = getEmailFromToken(token);
 
         if (email == null || email.isEmpty()) {
             return false;

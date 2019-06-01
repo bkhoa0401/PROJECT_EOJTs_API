@@ -51,7 +51,6 @@ class Excels extends Component {
                 console.log("LIST STUDENTS", listStudents);
 
                 const result = await ApiServices.Post('/account', listStudents);
-                console.log(result);
                 if (result != null) {
                     // do something
                     Toastify.actionSuccess("Create Successfully!");
