@@ -85,7 +85,7 @@ class ScheduleParameters extends Component {
             console.log("ScheduleParameters", ScheduleParameters);
 
             const result = await ApiServices.Post('/scheduleparameters/', ScheduleParameters);
-            if (result.ok) {
+            if (result != null) {
                 Toastify.actionSuccess('Tạo các tham số thành công');
             } else {
                 Toastify.actionFail('Tạo các tham số thất bại');

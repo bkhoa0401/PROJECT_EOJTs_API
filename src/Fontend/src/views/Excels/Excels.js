@@ -50,9 +50,9 @@ class Excels extends Component {
 
                 console.log("LIST STUDENTS", listStudents);
 
-                const result = await ApiServices.Post('/', listStudents);
+                const result = await ApiServices.Post('/account', listStudents);
                 console.log(result);
-                if (result) {
+                if (result != null) {
                     // do something
                     Toastify.actionSuccess("Create Successfully!");
                 } else {
@@ -272,7 +272,7 @@ class Excels extends Component {
                         <Card>
                             <CardHeader>
                                 <strong>Import List Students</strong>
-                                <a target="_blank" style={{ marginLeft: "680px" }} href="https://docs.google.com/spreadsheets/d/1IhCjD28uZRiPl5fhJk2RomAej9JkqKLqm3wZok6rgoM/edit?usp=sharing" download>Download template list students</a>
+                                <a style={{ marginLeft: "680px" }} href="https://docs.google.com/spreadsheets/d/1IhCjD28uZRiPl5fhJk2RomAej9JkqKLqm3wZok6rgoM/export?format=xlsx" download>Download template list students</a>
                             </CardHeader>
                             <CardBody>
                                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -345,7 +345,7 @@ class Excels extends Component {
                         <Card>
                             <CardHeader>
                                 <strong>Import List Bussiness</strong>
-                                <a target="_blank" style={{ marginLeft: "680px" }} href="https://docs.google.com/spreadsheets/d/1qZMlxWND3qVvLzO1muLyeFP0xwJbIE-6xVKgObIbGTE/edit?usp=sharing" download>Download template list businesses</a>
+                                <a style={{ marginLeft: "680px" }} href="https://docs.google.com/spreadsheets/d/1qZMlxWND3qVvLzO1muLyeFP0xwJbIE-6xVKgObIbGTE/export?format=xlsx" download>Download template list businesses</a>
                             </CardHeader>
                             <CardBody>
                                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">

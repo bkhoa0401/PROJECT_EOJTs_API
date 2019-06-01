@@ -14,6 +14,7 @@ import java.util.Set;
 
 @Repository
 public class AccountService {
+
     @Autowired
     AccountRepository accountRepository;
 
@@ -54,14 +55,22 @@ public class AccountService {
         return sb.toString();
     }
 
-    public Account findAccountStudentByEmailAndPassword(String email, String password,String role) {
+    public Account findAccountStudentByEmailAndPassword(String email, String password, String role) {
         //Account account = accountRepository.findAccountByEmailAndPassword(email, password);
-        Account account = accountRepository.findAccountStudentCustom(email, password,role);
+        Account account = accountRepository.findAccountStudentCustom(email, password, role);
         if (account != null) {
             return account;
         }
         return null;
     }
 
+    public Account findAccountByEmail(String email) {
+        //Account account = accountRepository.findAccountByEmailAndPassword(email, password);
+        Account account = accountRepository.findAccountByEmail(email);
+        if (account != null) {
+            return account;
+        }
+        return null;
+    }
 
 }

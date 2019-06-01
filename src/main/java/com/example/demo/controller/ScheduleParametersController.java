@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/scheduleparameters")
+@RequestMapping("/api/scheduleparameters")
 public class ScheduleParametersController {
 
     @Autowired

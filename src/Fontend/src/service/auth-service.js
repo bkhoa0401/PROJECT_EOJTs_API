@@ -6,7 +6,7 @@ const login = async function (email, password) {
     logout();
     // Get a token from api server using the fetch api
     // const API = 'http://localhost:9999/toy_store/token';
-    const API = 'http://localhost:8000/web/login';
+    const API = 'http://localhost:8000/api/account/login';
     const response = await fetch(API, {
         headers: {
             'content-type': 'application/json'
@@ -14,43 +14,21 @@ const login = async function (email, password) {
         method: 'post',
         body: JSON.stringify({ email: email, password: password })
     });
-    if (response != null) {
+    console.log(response);
+    if (response.ok) {
         try {
             const data = await response.json();
             console.log('data   ', data);
-            // localStorage.setItem('id_token', data.token);
-            // processPermission(data.role.permissions);
+            localStorage.setItem('id_token', data.token);
         }
         catch (exception) {
-            console.log('Something wrong !!!' + exception);
+            console.log('Something wrong!!! ' + exception);
         }
         return true;
     }
     else {
         return false;
     }
-};
-
-const processPermission = function (permissions) {
-    const role = [];
-    permissions.forEach(element => {
-        const obj = {};
-        obj.subject = element.roleFeature;
-        obj.action = [
-            element.canCreate ? 'create' : null,
-            element.canRead ? 'read' : null,
-            element.canUpdate ? 'update' : null,
-            element.canDelete ? 'delete' : null,
-        ]
-        role.push(obj);
-    });
-
-    // ability.update(role);
-    localStorage.setItem('role', JSON.stringify(role));
-}
-
-const getRole = function () {
-    return JSON.parse(localStorage.getItem('role'));
 };
 
 const getToken = function () {
@@ -60,7 +38,7 @@ const getToken = function () {
 const logout = function () {
     //Clear user token and profile data from localStorage
     localStorage.removeItem('id_token');
-    localStorage.removeItem('role');
+    // localStorage.removeItem('role');
 };
 
 const isLoggedIn = function () {
@@ -88,7 +66,6 @@ const AuthService = {
     isLoggedIn,
     isTokenExpired,
     logout,
-    getRole,
     getToken
 };
 

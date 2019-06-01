@@ -1,27 +1,32 @@
 package com.example.demo.entity;
 
 public class Login {
-    private String email;
-    private String password;
 
-    public Login(String email, String password) {
-        this.email = email;
-        this.password = password;
+    private String token;
+    private Account account;
+
+    public Login() {
     }
 
-    public String getEmail() {
-        return email;
+    public Login(String token, Account account) {
+
+        this.token = token;
+        this.account = account;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getToken() {
+        return token;
     }
 
-    public String getPassword() {
-        return password;
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

@@ -1,11 +1,21 @@
 package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.core.annotation.Order;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.ArrayList;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(value = {"roles", "authorities"})
 
 @Entity
 @Table(name = "Account")
@@ -37,14 +47,17 @@ public class Account {
     @Column(name = "state")
     private String state;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
             name = "AccountRole",
-            joinColumns = { @JoinColumn(name = "accountId") },
-            inverseJoinColumns = { @JoinColumn(name = "roleId") }
+            joinColumns = {
+                @JoinColumn(name = "accountId")},
+            inverseJoinColumns = {
+                @JoinColumn(name = "roleId")}
     )
     @JsonIgnore
-     Set<Role> roles=new HashSet<>();
+    Set<Role> roles = new HashSet<>();
 
     public int getId() {
         return id;
@@ -118,7 +131,16 @@ public class Account {
         this.roles = roles;
     }
 
-
     public Account() {
+    }
+
+    public List<GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getDescription()));
+        }
+        
+        System.out.println("BBBB" + authorities);
+        return authorities;
     }
 }
