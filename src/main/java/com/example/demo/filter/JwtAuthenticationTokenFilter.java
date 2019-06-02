@@ -1,4 +1,4 @@
-package com.example.sbjwt.rest;
+package com.example.demo.filter;
 
 import com.example.demo.entity.Account;
 import com.example.demo.service.AccountService;
@@ -9,7 +9,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

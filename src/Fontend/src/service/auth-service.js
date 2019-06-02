@@ -6,7 +6,7 @@ const login = async function (email, password) {
     logout();
     // Get a token from api server using the fetch api
     // const API = 'http://localhost:9999/toy_store/token';
-    const API = 'http://localhost:8000/api/account/login';
+    const API = 'http://localhost:8000/api/account/token';
     const response = await fetch(API, {
         headers: {
             'content-type': 'application/json'

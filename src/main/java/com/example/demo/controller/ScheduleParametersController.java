@@ -27,7 +27,7 @@ public class ScheduleParametersController {
     @Autowired
     ScheduleParametersService scheduleParametersService;
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Void> addListStudent(@RequestBody ScheduleParameters scheduleParameters) throws Exception {
 
         try {

@@ -10,9 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.example.sbjwt.rest.CustomAccessDeniedHandler;
-import com.example.sbjwt.rest.JwtAuthenticationTokenFilter;
-import com.example.sbjwt.rest.RestAuthenticationEntryPoint;
+import com.example.demo.filter.CustomAccessDeniedHandler;
+import com.example.demo.filter.JwtAuthenticationTokenFilter;
+import com.example.demo.filter.RestAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -44,7 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().ignoringAntMatchers("/api/**");
 
-        http.authorizeRequests().antMatchers("/api/account/login**").permitAll();
+        http.authorizeRequests().antMatchers("/api/account/token**").permitAll();
 
 //        http.cors().and().authorizeRequests().antMatchers("/api/**").permitAll();
 
