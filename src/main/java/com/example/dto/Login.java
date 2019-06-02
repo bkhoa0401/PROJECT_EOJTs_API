@@ -1,4 +1,6 @@
-package com.example.demo.entity;
+package com.example.dto;
+
+import com.example.demo.entity.Account;
 
 public class Login {
 

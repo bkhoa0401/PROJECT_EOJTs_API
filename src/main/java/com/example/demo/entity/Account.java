@@ -5,12 +5,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.ArrayList;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -45,19 +47,50 @@ public class Account {
     private String semester;
 
     @Column(name = "state")
-    private String state;
+    private int state;
 
     @ManyToMany(cascade = {CascadeType.ALL})
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
             name = "AccountRole",
             joinColumns = {
-                @JoinColumn(name = "accountId")},
+                    @JoinColumn(name = "accountId")},
             inverseJoinColumns = {
-                @JoinColumn(name = "roleId")}
+                    @JoinColumn(name = "roleId")}
     )
     @JsonIgnore
     Set<Role> roles = new HashSet<>();
+
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "account")
+    private Business business;
+
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "account")
+    private Resume resume;
+
+    @OneToOne(fetch = FetchType.LAZY,
+             cascade = CascadeType.ALL,
+             mappedBy = "account")
+    private WishList wishList;
+
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(
+            name = "AccountSkill",
+            joinColumns = {
+                    @JoinColumn(name = "accountId")},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "skillId")}
+    )
+    @JsonIgnore
+    Set<Skills> skills = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private Set<Invitation> invitations;
 
     public int getId() {
         return id;
@@ -115,11 +148,11 @@ public class Account {
         this.semester = semester;
     }
 
-    public String getState() {
+    public int getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(int state) {
         this.state = state;
     }
 
@@ -134,12 +167,44 @@ public class Account {
     public Account() {
     }
 
+    public Business getBusiness() {
+        return business;
+    }
+
+    public void setBusiness(Business business) {
+        this.business = business;
+    }
+
+    public Resume getResume() {
+        return resume;
+    }
+
+    public void setResume(Resume resume) {
+        this.resume = resume;
+    }
+
+    public WishList getWishList() {
+        return wishList;
+    }
+
+    public void setWishList(WishList wishList) {
+        this.wishList = wishList;
+    }
+
+    public Set<Skills> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(Set<Skills> skills) {
+        this.skills = skills;
+    }
+
     public List<GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         for (Role role : roles) {
             authorities.add(new SimpleGrantedAuthority(role.getDescription()));
         }
-        
+
         System.out.println("BBBB" + authorities);
         return authorities;
     }

@@ -1,13 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Account;
-import com.example.demo.entity.Login;
+import com.example.dto.Login;
 import com.example.demo.service.AccountService;
 import com.example.demo.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
