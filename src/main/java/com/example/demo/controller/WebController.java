@@ -1,13 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Account;
-import com.example.demo.entity.Login;
+import com.example.demo.dto.LoginDTO;
 import com.example.demo.service.AccountService;
 import com.example.demo.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -34,25 +33,25 @@ public class WebController {
     }
 
 //    @PostMapping("/android/login")
-//    public Account getAccountAndroidByEmailAndPassword(@RequestBody Login login) {
+//    public Account getAccountAndroidByEmailAndPassword(@RequestBody LoginDTO login) {
 //        return accountService.findAccountStudentByEmailAndPassword(login.getEmail(), login.getPassword(), "student");
 //    }
 //
 //    @PostMapping("/web/login")
-//    public Account getAccountWebByEmailAndPassword(@RequestBody Login login) {
+//    public Account getAccountWebByEmailAndPassword(@RequestBody LoginDTO login) {
 //        Account account = accountService.findAccountStudentByEmailAndPassword(login.getEmail(), login.getPassword(), "admin");
 //        if (account == null) {
 //            return accountService.findAccountStudentByEmailAndPassword(login.getEmail(), login.getPassword(), "hr");
 //        }
 //        return account;
 //    }
-    @PostMapping("/login")
-    public ResponseEntity<Login> checkLogin(HttpServletRequest request, @RequestBody Account account, HttpServletResponse response) {
+    @PostMapping("/token")
+    public ResponseEntity<LoginDTO> checkLogin(HttpServletRequest request, @RequestBody Account account, HttpServletResponse response) {
         String result = "";
         HttpStatus httpStatus = null;
         boolean check;
         Account accountFound = new Account();
-        Login login = new Login();
+        LoginDTO login = new LoginDTO();
         try {
             check = false;
             if (accountService.findAccountStudentByEmailAndPassword(account.getEmail(), account.getPassword(), "ROLE_STUDENT") != null) {
@@ -89,6 +88,6 @@ public class WebController {
             login.setToken(result);
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return new ResponseEntity<Login>(login, HttpStatus.OK);
+        return new ResponseEntity<LoginDTO>(login, HttpStatus.OK);
     }
 }

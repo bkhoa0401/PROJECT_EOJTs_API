@@ -1,14 +1,16 @@
-package com.example.demo.entity;
+package com.example.demo.dto;
 
-public class Login {
+import com.example.demo.entity.Account;
+
+public class LoginDTO {
 
     private String token;
     private Account account;
 
-    public Login() {
+    public LoginDTO() {
     }
 
-    public Login(String token, Account account) {
+    public LoginDTO(String token, Account account) {
 
         this.token = token;
         this.account = account;

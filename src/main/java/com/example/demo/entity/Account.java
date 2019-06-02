@@ -45,7 +45,7 @@ public class Account {
     private String semester;
 
     @Column(name = "state")
-    private String state;
+    private int state;
 
     @ManyToMany(cascade = {CascadeType.ALL})
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -115,11 +115,11 @@ public class Account {
         this.semester = semester;
     }
 
-    public String getState() {
+    public int getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(int state) {
         this.state = state;
     }
 
@@ -139,7 +139,7 @@ public class Account {
         for (Role role : roles) {
             authorities.add(new SimpleGrantedAuthority(role.getDescription()));
         }
-        
+
         System.out.println("BBBB" + authorities);
         return authorities;
     }
