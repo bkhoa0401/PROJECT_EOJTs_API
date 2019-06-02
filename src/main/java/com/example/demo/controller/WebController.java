@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/account")
 public class WebController {
@@ -22,7 +23,6 @@ public class WebController {
     @Autowired
     private JwtService jwtService;
 
-    @CrossOrigin
     @PostMapping
     public String addListStudent(@RequestBody List<Account> account) throws Exception {
         accountService.addListStudent(account);
@@ -45,7 +45,6 @@ public class WebController {
 //        }
 //        return account;
 //    }
-    @CrossOrigin
     @PostMapping("/login")
     public ResponseEntity<Login> checkLogin(HttpServletRequest request, @RequestBody Account account, HttpServletResponse response) {
         String result = "";
