@@ -40,8 +40,6 @@ public class Account {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "specialized")
-    private String specialized;
 
     @Column(name = "semester")
     private String semester;
@@ -88,9 +86,13 @@ public class Account {
     @JsonIgnore
     Set<Skills> skills = new HashSet<>();
 
-
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private Set<Invitation> invitations;
+
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            mappedBy = "account")
+    private Specialized specialized;
 
     public int getId() {
         return id;
@@ -132,13 +134,6 @@ public class Account {
         this.email = email;
     }
 
-    public String getSpecialized() {
-        return specialized;
-    }
-
-    public void setSpecialized(String specialized) {
-        this.specialized = specialized;
-    }
 
     public String getSemester() {
         return semester;

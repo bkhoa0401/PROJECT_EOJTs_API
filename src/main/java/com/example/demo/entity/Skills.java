@@ -32,6 +32,10 @@ public class Skills {
     @JsonIgnore
     private Set<HiringRequest> hiringRequests =new HashSet<>();
 
+    @ManyToMany(mappedBy = "skills")
+    @JsonIgnore
+    private Set<Specialized> specializeds =new HashSet<>();
+
     public int getId() {
         return id;
     }
@@ -70,5 +74,13 @@ public class Skills {
 
     public void setHiringRequests(Set<HiringRequest> hiringRequests) {
         this.hiringRequests = hiringRequests;
+    }
+
+    public Set<Specialized> getSpecializeds() {
+        return specializeds;
+    }
+
+    public void setSpecializeds(Set<Specialized> specializeds) {
+        this.specializeds = specializeds;
     }
 }
