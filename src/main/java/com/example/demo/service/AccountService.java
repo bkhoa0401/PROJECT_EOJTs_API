@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Account;
-import com.example.demo.entity.Role;
 import com.example.demo.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.mail.internet.MimeMessage;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public class AccountService {
@@ -21,8 +19,8 @@ public class AccountService {
     @Autowired
     private JavaMailSender sender;
 
-    public boolean addListStudent(List<Account> accountList) {
-        accountRepository.saveAll(accountList);
+    public boolean addAccount(Account account) {
+        accountRepository.save(account);
         return true;
     }
 
@@ -55,9 +53,9 @@ public class AccountService {
         return sb.toString();
     }
 
-    public Account findAccountStudentByEmailAndPassword(String email, String password, String role) {
+    public Account findAccountStudentByEmailAndPassword(String email, String password) {
         //Account account = accountRepository.findAccountByEmailAndPassword(email, password);
-        Account account = accountRepository.findAccountStudentCustom(email, password, role);
+        Account account = accountRepository.findAccountStudentCustom(email, password);
         if (account != null) {
             return account;
         }

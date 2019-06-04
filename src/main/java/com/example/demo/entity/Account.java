@@ -5,14 +5,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import java.util.ArrayList;
-
+import java.util.*;
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -47,17 +41,16 @@ public class Account {
     @Column(name = "state")
     private int state;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
-            name = "AccountRole",
+            name = "account_role",
             joinColumns = {
-                    @JoinColumn(name = "accountId")},
+                    @JoinColumn(name = "account_id")},
             inverseJoinColumns = {
-                    @JoinColumn(name = "roleId")}
+                    @JoinColumn(name = "role_id")}
     )
-    @JsonIgnore
-    Set<Role> roles = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 
     @OneToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
@@ -84,7 +77,7 @@ public class Account {
                     @JoinColumn(name = "skillId")}
     )
     @JsonIgnore
-    Set<Skills> skills = new HashSet<>();
+    private Set<Skills> skills = new HashSet<>();
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private Set<Invitation> invitations;
@@ -133,7 +126,6 @@ public class Account {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
     public String getSemester() {
         return semester;
@@ -194,13 +186,28 @@ public class Account {
         this.skills = skills;
     }
 
+    public Set<Invitation> getInvitations() {
+        return invitations;
+    }
+
+    public void setInvitations(Set<Invitation> invitations) {
+        this.invitations = invitations;
+    }
+
+    public Specialized getSpecialized() {
+        return specialized;
+    }
+
+    public void setSpecialized(Specialized specialized) {
+        this.specialized = specialized;
+    }
+
     public List<GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         for (Role role : roles) {
             authorities.add(new SimpleGrantedAuthority(role.getDescription()));
         }
-
-        System.out.println("BBBB" + authorities);
+        System.out.println("authorities" + authorities);
         return authorities;
     }
 }

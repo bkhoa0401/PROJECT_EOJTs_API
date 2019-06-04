@@ -28,19 +28,25 @@ class Excels extends Component {
         const { rows_Students, rows_Businesses } = this.state;
         const listStudents = [];
         const listBusinesses = [];
+        const roles = [
+            {
+                id: 2
+            }
+        ];
 
         if (rows_Students.length != 0) {
             if (buttonName === 'Students') {
+
                 rows_Students && rows_Students.map((student, index) => {
 
                     if (index > 0) {
                         var student = {
                             studentCode: student[1],
                             password: 'default',
-                            role: 2,
+                            roles: roles,
                             name: student[2],
                             email: student[3],
-                            specialized: student[4],
+                            // specialized: student[4],
                             semester: student[5],
                             state: student[6],
                         };

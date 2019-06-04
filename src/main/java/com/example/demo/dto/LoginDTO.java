@@ -2,7 +2,9 @@ package com.example.demo.dto;
 
 import com.example.demo.entity.Account;
 
-public class LoginDTO {
+import java.io.Serializable;
+
+public class LoginDTO implements Serializable {
 
     private String token;
     private Account account;

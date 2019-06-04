@@ -1,8 +1,6 @@
 package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.core.annotation.Order;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,8 +18,10 @@ public class Role {
 
     @ManyToMany(mappedBy = "roles")
     @JsonIgnore
-    private Set<Account> account =new HashSet<>();
+    private Set<Account> account = new HashSet<>();
 
+    public Role() {
+    }
 
     public int getId() {
         return id;
@@ -46,4 +46,5 @@ public class Role {
     public void setAccount(Set<Account> account) {
         this.account = account;
     }
+
 }
