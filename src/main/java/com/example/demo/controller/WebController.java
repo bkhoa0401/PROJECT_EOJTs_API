@@ -26,6 +26,7 @@ public class WebController {
     @PostMapping
     public String addListStudent(@RequestBody List<Account> account) throws Exception {
         accountService.addListStudent(account);
+
 //        for (int i = 0; i < account.size(); i++) {
 //            accountService.sendEmail(account.get(i).getName(), account.get(i).getEmail());
 //        }

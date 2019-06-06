@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -17,7 +18,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(value = {"roles", "authorities"})
+//@JsonIgnoreProperties(value = {"roles", "authorities"})
 
 @Entity
 @Table(name = "Account")
@@ -47,17 +48,12 @@ public class Account {
     @Column(name = "state")
     private int state;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinTable(
-            name = "AccountRole",
-            joinColumns = {
-                    @JoinColumn(name = "accountId")},
-            inverseJoinColumns = {
-                    @JoinColumn(name = "roleId")}
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "AccountRole",
+            joinColumns = @JoinColumn(name = "accountId"),
+            inverseJoinColumns = @JoinColumn(name = "roleId")
     )
-    @JsonIgnore
-    Set<Role> roles = new HashSet<>();
+    List<Role> roles;
 
     @OneToOne(fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
@@ -70,8 +66,8 @@ public class Account {
     private Resume resume;
 
     @OneToOne(fetch = FetchType.LAZY,
-             cascade = CascadeType.ALL,
-             mappedBy = "account")
+            cascade = CascadeType.ALL,
+            mappedBy = "account")
     private WishList wishList;
 
     @ManyToMany(cascade = {CascadeType.ALL})
@@ -151,11 +147,21 @@ public class Account {
         this.state = state;
     }
 
-    public Set<Role> getRoles() {
+    public Account(String studentCode, String name, String password, String email, String semester, int state, List<Role> roles) {
+        this.studentCode = studentCode;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.semester = semester;
+        this.state = state;
+        this.roles = roles;
+    }
+
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 

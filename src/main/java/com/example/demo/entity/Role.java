@@ -5,6 +5,7 @@ import org.springframework.core.annotation.Order;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -19,8 +20,8 @@ public class Role {
     private String description;
 
     @ManyToMany(mappedBy = "roles")
-    @JsonIgnore
-    private Set<Account> account =new HashSet<>();
+    //@JsonIgnore
+    private List<Account> account;
 
 
     public int getId() {
@@ -39,11 +40,11 @@ public class Role {
         this.description = description;
     }
 
-    public Set<Account> getAccount() {
+    public List<Account> getAccount() {
         return account;
     }
 
-    public void setAccount(Set<Account> account) {
+    public void setAccount(List<Account> account) {
         this.account = account;
     }
 }

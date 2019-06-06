@@ -8,7 +8,7 @@ public class AccountRole {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Column(name = "id",columnDefinition = "0")
     private int id;
 
     @Column(name = "accountId")
