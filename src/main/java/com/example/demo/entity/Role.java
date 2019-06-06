@@ -1,14 +1,13 @@
 package com.example.demo.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.*;
-import java.util.HashSet;
+import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "Role")
-public class Role {
+public class Role implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -18,13 +17,8 @@ public class Role {
     private String description;
 
     @ManyToMany(mappedBy = "roles")
-<<<<<<< HEAD
-    //@JsonIgnore
+    @JsonBackReference
     private List<Account> account;
-=======
-    @JsonIgnore
-    private Set<Account> account = new HashSet<>();
->>>>>>> c712af5cc55d159843fd20da01ca978fa332a094
 
     public Role() {
     }
@@ -52,5 +46,4 @@ public class Role {
     public void setAccount(List<Account> account) {
         this.account = account;
     }
-
 }

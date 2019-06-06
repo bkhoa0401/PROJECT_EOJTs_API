@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/account")
-public class WebController {
+public class AccountController {
 
     @Autowired
     private AccountService accountService;
@@ -25,39 +25,15 @@ public class WebController {
     private JwtService jwtService;
 
     @PostMapping
-<<<<<<< HEAD
-    public String addListStudent(@RequestBody List<Account> account) throws Exception {
-        accountService.addListStudent(account);
+    public ResponseEntity<Void> addListStudent(@RequestBody List<Account> listAccounts) throws Exception {
+
+        try {
+            accountService.addListStudent(listAccounts);
 
 //        for (int i = 0; i < account.size(); i++) {
 //            accountService.sendEmail(account.get(i).getName(), account.get(i).getEmail());
 //        }
-        return "success";
-=======
-    public ResponseEntity<Void> addListStudent(@RequestBody List<AccountDTO> accountDTO) throws Exception {
 
-        try {
-            for (int i = 0; i < accountDTO.size(); i++) {
-                Account account = new Account();
-                account.setStudentCode(accountDTO.get(i).getStudentCode());
-                account.setName(accountDTO.get(i).getName());
-                account.setPassword(accountDTO.get(i).getPassword());
-                account.setEmail(accountDTO.get(i).getEmail());
-                account.setSemester(accountDTO.get(i).getSemester());
-                account.setState(accountDTO.get(i).getState());
-                account.setRoles(accountDTO.get(i).getRoles());
-//                account.setBusiness(accountDTO.get(i).getBusiness());
-//                account.setResume(accountDTO.get(i).getResume());
-//                account.setWishList(accountDTO.get(i).getWishList());
-//                account.setSkills(accountDTO.get(i).getSkills());
-//                account.setInvitations(accountDTO.get(i).getInvitations());
-//                account.setSpecialized(accountDTO.get(i).getSpecialized());
-                accountService.addAccount(account);
-            }
-
-//            for (int i = 0; i < account.size(); i++) {
-//                accountService.sendEmail(account.get(i).getName(), account.get(i).getEmail());
-//            }
         } catch (PersistenceException ex) {
             ex.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -66,7 +42,6 @@ public class WebController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
->>>>>>> c712af5cc55d159843fd20da01ca978fa332a094
     }
 
     @PostMapping("/token")
@@ -92,5 +67,14 @@ public class WebController {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return new ResponseEntity<LoginDTO>(login, httpStatus);
+    }
+
+    @GetMapping
+    public ResponseEntity<Account> getOneAccount() {
+
+        Account account = new Account();
+        account = accountService.getListStudent();
+
+        return new ResponseEntity<Account>(account, HttpStatus.OK);
     }
 }

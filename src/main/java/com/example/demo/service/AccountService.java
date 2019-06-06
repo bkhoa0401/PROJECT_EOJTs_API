@@ -19,9 +19,13 @@ public class AccountService {
     @Autowired
     private JavaMailSender sender;
 
-    public boolean addAccount(Account account) {
-        accountRepository.save(account);
+    public boolean addListStudent(List<Account> account) {
+        accountRepository.saveAll(account);
         return true;
+    }
+
+    public Account getListStudent() {
+        return accountRepository.getOne(1);
     }
 
     public void sendEmail(String name, String mail) throws Exception {
