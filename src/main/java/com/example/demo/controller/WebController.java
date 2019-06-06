@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/account")
 public class WebController {
@@ -72,23 +71,16 @@ public class WebController {
             if (accountService.findAccountStudentByEmailAndPassword(account.getEmail(), account.getPassword()) != null) {
                 accountFound = accountService.findAccountStudentByEmailAndPassword(account.getEmail(), account.getPassword());
                 result = jwtService.generateTokenLogin(accountFound.getEmail());
-                check = true;
-            }
 
-            if (check) {
                 login.setAccount(accountFound);
                 login.setToken(result);
                 httpStatus = HttpStatus.OK;
             } else {
-                result = "Invalid Email or Password!";
-                login.setToken(result);
                 httpStatus = HttpStatus.BAD_REQUEST;
             }
         } catch (Exception ex) {
-            result = "Server Error";
-            login.setToken(result);
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return new ResponseEntity<LoginDTO>(login, HttpStatus.OK);
+        return new ResponseEntity<LoginDTO>(login, httpStatus);
     }
 }

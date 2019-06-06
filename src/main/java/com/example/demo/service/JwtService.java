@@ -20,29 +20,19 @@ import java.util.logging.Logger;
 public class JwtService {
 
     public static final String EMAIL = "email";
-//    public static final String ROLE = "role";
     public static final String SECRET_KEY = "CAPSTONE_EOJTS_FPTUNIVERSITY_CAPSTONE_EOJTS_FPTUNIVERSITY_CAPSTONE_EOJTS_FPTUNIVERSITY";
     public static final int EXPIRE_TIME = 86400000;
 
     public String generateTokenLogin(String email) {
         String token = null;
         try {
-            // Create HMAC signer
             JWSSigner signer = new MACSigner(generateShareSecret());
-
             JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
             builder.claim(EMAIL, email);
-//            builder.claim(ROLE, role);
             builder.expirationTime(generateExpirationDate());
-
             JWTClaimsSet claimsSet = builder.build();
             SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claimsSet);
-
-            // Apply the HMAC protection
             signedJWT.sign(signer);
-
-            // Serialize to compact form, produces something like
-            // eyJhbGciOiJIUzI1NiJ9.SGVsbG8sIHdvcmxkIQ.onO9Ihudz3WkiauDO2Uhyuz0Y18UASXlSc1eS0NkWyA
             token = signedJWT.serialize();
 
         } catch (Exception e) {
@@ -88,7 +78,6 @@ public class JwtService {
     }
 
     private byte[] generateShareSecret() {
-        // Generate 256-bit (32-byte) shared secret
         byte[] sharedSecret = new byte[32];
         sharedSecret = SECRET_KEY.getBytes();
         return sharedSecret;
@@ -113,5 +102,4 @@ public class JwtService {
         }
         return true;
     }
-
 }

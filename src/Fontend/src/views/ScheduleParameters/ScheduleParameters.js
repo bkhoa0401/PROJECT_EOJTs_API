@@ -38,6 +38,14 @@ class ScheduleParameters extends Component {
         }
     }
 
+    // async componentDidMount() {
+    //     const parameters = await ApiService.Get("/");
+
+    //     this.setState({
+            
+    //     });    
+    // }
+
     handleInput = async (event) => {
         const { name, value } = event.target;
         await this.setState({
@@ -93,7 +101,6 @@ class ScheduleParameters extends Component {
 
         } else {
             this.validator.showMessages();
-            // rerender to show messages for the first time
             this.forceUpdate();
         }
     }

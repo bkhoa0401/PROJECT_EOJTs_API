@@ -28,7 +28,7 @@ class Excels extends Component {
         const { rows_Students, rows_Businesses } = this.state;
         const listStudents = [];
         const listBusinesses = [];
-        const roles = [
+        const role_student = [
             {
                 id: 2
             }
@@ -43,7 +43,7 @@ class Excels extends Component {
                         var student = {
                             studentCode: student[1],
                             password: 'default',
-                            roles: roles,
+                            roles: role_student,
                             name: student[2],
                             email: student[3],
                             // specialized: student[4],
@@ -316,12 +316,12 @@ class Excels extends Component {
                                                                 return (
                                                                     <tr key={index}>
                                                                         <td>{student[0]}</td>
-                                                                        <td id={"s-" + index + "-1"} contentEditable="true" onKeyUp={this.rowStudentEdited}>{student[1]}</td>
-                                                                        <td id={"s-" + index + "-2"} contentEditable="true" onKeyUp={this.rowStudentEdited}>{student[2]}</td>
-                                                                        <td id={"s-" + index + "-3"} contentEditable="true" onKeyUp={this.rowStudentEdited}>{student[3]}</td>
-                                                                        <td id={"s-" + index + "-4"} contentEditable="true" onKeyUp={this.rowStudentEdited}>{student[4]}</td>
-                                                                        <td id={"s-" + index + "-5"} contentEditable="true" onKeyUp={this.rowStudentEdited}>{student[5]}</td>
-                                                                        <td id={"s-" + index + "-6"} contentEditable="true" onKeyUp={this.rowStudentEdited}>{student[6]}</td>
+                                                                        <td id={"s-" + index + "-1"} onKeyUp={this.rowStudentEdited}>{student[1]}</td>
+                                                                        <td id={"s-" + index + "-2"} onKeyUp={this.rowStudentEdited}>{student[2]}</td>
+                                                                        <td id={"s-" + index + "-3"} onKeyUp={this.rowStudentEdited}>{student[3]}</td>
+                                                                        <td id={"s-" + index + "-4"} onKeyUp={this.rowStudentEdited}>{student[4]}</td>
+                                                                        <td id={"s-" + index + "-5"} onKeyUp={this.rowStudentEdited}>{student[5]}</td>
+                                                                        <td id={"s-" + index + "-6"} onKeyUp={this.rowStudentEdited}>{student[6]}</td>
                                                                     </tr>
                                                                 )
                                                             }
@@ -398,21 +398,21 @@ class Excels extends Component {
                                                                     return (
                                                                         <tr key={index}>
                                                                             <td>{business[0]}</td>
-                                                                            <td id={"b-" + index + "-1"} contentEditable="true" onKeyUp={this.rowBusinessEdited}>{business[1]}</td>
-                                                                            <td id={"b-" + index + "-2"} contentEditable="true" onKeyUp={this.rowBusinessEdited}>{business[2]}</td>
-                                                                            <td id={"b-" + index + "-3"} contentEditable="true" onKeyUp={this.rowBusinessEdited}>{business[3]}</td>
-                                                                            <td id={"b-" + index + "-4"} contentEditable="true" onKeyUp={this.rowBusinessEdited}>{business[4]}</td>
-                                                                            <td id={"b-" + index + "-5"} contentEditable="true" onKeyUp={this.rowBusinessEdited}>{business[5]}</td>
-                                                                            <td id={"b-" + index + "-6"} contentEditable="true" onKeyUp={this.rowBusinessEdited}>{business[6]}</td>
-                                                                            <td id={"b-" + index + "-7"} contentEditable="true" onKeyUp={this.rowBusinessEdited}>{business[7]}</td>
-                                                                            <td id={"b-" + index + "-8"} contentEditable="true" onKeyUp={this.rowBusinessEdited}>{business[8]}</td>
-                                                                            <td id={"b-" + index + "-9"} contentEditable="true" onKeyUp={this.rowBusinessEdited}>{business[9]}</td>
-                                                                            <td id={"b-" + index + "-10"} contentEditable="true" onKeyUp={this.rowBusinessEdited}>{business[10]}</td>
-                                                                            <td id={"b-" + index + "-11"} contentEditable="true" onKeyUp={this.rowBusinessEdited}>{business[11]}</td>
-                                                                            <td id={"b-" + index + "-12"} contentEditable="true" onKeyUp={this.rowBusinessEdited}>{business[12]}</td>
-                                                                            <td id={"b-" + index + "-13"} contentEditable="true" onKeyUp={this.rowBusinessEdited}>{business[13]}</td>
-                                                                            <td id={"b-" + index + "-14"} contentEditable="true" onKeyUp={this.rowBusinessEdited}>{business[14]}</td>
-                                                                            <td id={"b-" + index + "-15"} contentEditable="true" onKeyUp={this.rowBusinessEdited}>{business[15]}</td>
+                                                                            <td id={"b-" + index + "-1"} onKeyUp={this.rowBusinessEdited}>{business[1]}</td>
+                                                                            <td id={"b-" + index + "-2"} onKeyUp={this.rowBusinessEdited}>{business[2]}</td>
+                                                                            <td id={"b-" + index + "-3"} onKeyUp={this.rowBusinessEdited}>{business[3]}</td>
+                                                                            <td id={"b-" + index + "-4"} onKeyUp={this.rowBusinessEdited}>{business[4]}</td>
+                                                                            <td id={"b-" + index + "-5"} onKeyUp={this.rowBusinessEdited}>{business[5]}</td>
+                                                                            <td id={"b-" + index + "-6"} onKeyUp={this.rowBusinessEdited}>{business[6]}</td>
+                                                                            <td id={"b-" + index + "-7"} onKeyUp={this.rowBusinessEdited}>{business[7]}</td>
+                                                                            <td id={"b-" + index + "-8"} onKeyUp={this.rowBusinessEdited}>{business[8]}</td>
+                                                                            <td id={"b-" + index + "-9"} onKeyUp={this.rowBusinessEdited}>{business[9]}</td>
+                                                                            <td id={"b-" + index + "-10"} onKeyUp={this.rowBusinessEdited}>{business[10]}</td>
+                                                                            <td id={"b-" + index + "-11"} onKeyUp={this.rowBusinessEdited}>{business[11]}</td>
+                                                                            <td id={"b-" + index + "-12"} onKeyUp={this.rowBusinessEdited}>{business[12]}</td>
+                                                                            <td id={"b-" + index + "-13"} onKeyUp={this.rowBusinessEdited}>{business[13]}</td>
+                                                                            <td id={"b-" + index + "-14"} onKeyUp={this.rowBusinessEdited}>{business[14]}</td>
+                                                                            <td id={"b-" + index + "-15"} onKeyUp={this.rowBusinessEdited}>{business[15]}</td>
                                                                         </tr>
                                                                     )
                                                                 }

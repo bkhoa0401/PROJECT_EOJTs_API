@@ -23,9 +23,9 @@ class Login extends Component {
   }
 
   handleSubmit = async () => {
-    const { email, password } = this.state;
-    console.log(this.state);
+    const { email, password } = this.state;    
     const result = await AuthService.login(email, password);
+    console.log("result", result);
     if (result) {
       this.props.history.push('/excels');
     } else {

@@ -35,52 +35,38 @@ public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthentication
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-//        try {
-            String authToken = httpRequest.getHeader(TOKEN_HEADER);
-//            String authToken = null;
-//            if (!httpRequest.getRequestURI().contains("login")) {
-//                Cookie[] cookies = httpRequest.getCookies();
-//                for (Cookie cookie : cookies) {
-//                    if (cookie.getName().equals("id_token")) {
-//                        authToken = cookie.getValue();
-//                    }
-//                }
-//            }
 
-            System.out.println("Token " + httpRequest.getMethod() + " " + authToken);
 
-            if (httpRequest.getMethod().equals("OPTIONS")) {
-                httpServletResponse.setStatus(200);
-                return;
+        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT");
+        if (httpRequest.getMethod().equals("OPTIONS")) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_ACCEPTED);
+            httpServletResponse.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+        }
+        httpServletResponse.setHeader("Access-Control-Allow-Headers", "*");
+        httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+        httpServletResponse.setHeader("Access-Control-Max-Age", "180");
+
+        String authToken = httpRequest.getHeader(TOKEN_HEADER);
+
+        if (jwtService.validateTokenLogin(authToken)) {
+            String email = jwtService.getEmailFromToken(authToken);
+
+            Account account = accountService.findAccountByEmail(email);
+            if (account != null) {
+                boolean enabled = true;
+                boolean accountNonExpired = true;
+                boolean credentialsNonExpired = true;
+                boolean accountNonLocked = true;
+                UserDetails userDetail = new User(account.getEmail(), account.getPassword(), enabled, accountNonExpired,
+                        credentialsNonExpired, accountNonLocked, account.getAuthorities());
+
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetail,
+                        null, userDetail.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-
-            if (jwtService.validateTokenLogin(authToken)) {
-                String email = jwtService.getEmailFromToken(authToken);
-
-                Account account = accountService.findAccountByEmail(email);
-                if (account != null) {
-                    boolean enabled = true;
-                    boolean accountNonExpired = true;
-                    boolean credentialsNonExpired = true;
-                    boolean accountNonLocked = true;
-                    UserDetails userDetail = new User(account.getEmail(), account.getPassword(), enabled, accountNonExpired,
-                            credentialsNonExpired, accountNonLocked, account.getAuthorities());
-
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetail,
-                            null, userDetail.getAuthorities());
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-            }
-//            else {
-//                httpServletResponse.setStatus(401);
-//                return;
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            httpServletResponse.setStatus(401);
-//            return;
-//        }
+        }
 
         chain.doFilter(request, response);
     }
