@@ -1,16 +1,18 @@
-package com.example.dto;
+package com.example.demo.dto;
 
 import com.example.demo.entity.Account;
 
-public class Login {
+import java.io.Serializable;
+
+public class LoginDTO implements Serializable {
 
     private String token;
     private Account account;
 
-    public Login() {
+    public LoginDTO() {
     }
 
-    public Login(String token, Account account) {
+    public LoginDTO(String token, Account account) {
 
         this.token = token;
         this.account = account;

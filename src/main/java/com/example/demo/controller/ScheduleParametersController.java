@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/scheduleparameters")
 public class ScheduleParametersController {
@@ -27,7 +26,7 @@ public class ScheduleParametersController {
     @Autowired
     ScheduleParametersService scheduleParametersService;
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Void> addListStudent(@RequestBody ScheduleParameters scheduleParameters) throws Exception {
 
         try {

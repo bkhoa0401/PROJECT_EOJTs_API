@@ -6,7 +6,7 @@ const login = async function (email, password) {
     logout();
     // Get a token from api server using the fetch api
     // const API = 'http://localhost:9999/toy_store/token';
-    const API = 'http://localhost:8000/api/account/login';
+    const API = 'http://localhost:8000/api/account/token';
     const response = await fetch(API, {
         headers: {
             'content-type': 'application/json'
@@ -14,11 +14,10 @@ const login = async function (email, password) {
         method: 'post',
         body: JSON.stringify({ email: email, password: password })
     });
-    console.log(response);
-    if (response.ok) {
+    const data = await response.json();
+    console.log('data   ', data);
+    if (data.token !== null) {
         try {
-            const data = await response.json();
-            console.log('data   ', data);
             localStorage.setItem('id_token', data.token);
         }
         catch (exception) {
@@ -36,9 +35,7 @@ const getToken = function () {
 };
 
 const logout = function () {
-    //Clear user token and profile data from localStorage
     localStorage.removeItem('id_token');
-    // localStorage.removeItem('role');
 };
 
 const isLoggedIn = function () {
