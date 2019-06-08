@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import ApiServices from '../../service/api-service';
 import {
     Button, Card, CardBody, CardFooter,
-    CardHeader, Col, Form, FormGroup, Input, Label, Row
+    CardHeader, Col, Form, FormGroup, Input, Label, Row, Pagination
 } from 'reactstrap';
 import { ExcelRenderer } from 'react-excel-renderer';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
+import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
+import PaginationComponent from '../Paginations/pagination';
 
 class Excels extends Component {
 
@@ -20,6 +22,79 @@ class Excels extends Component {
             files_Businesses: null,
             cols_Businesses: [],
             rows_Businesses: [],
+            pageNumber: 1,
+            currentPage: 0,
+            studentsPagination: null,
+            pageNumberBus: 1,
+            currentPageBus: 0,
+            businessesPagination: null,
+        }
+    }
+
+
+    handlePageNumber = (currentPage) => {
+        const { rows_Students } = this.state;
+        if (rows_Students != null) {
+            const studentsPagination = rows_Students.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));
+            this.setState({
+                studentsPagination,
+                currentPage,
+            })
+        }
+    }
+
+    handlePagePrevious = (currentPage) => {
+        const { rows_Students } = this.state;
+        if (rows_Students != null) {
+            const studentsPagination = rows_Students.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));
+            this.setState({
+                studentsPagination,
+                currentPage,
+            })
+        }
+    }
+
+    handlePageNext = (currentPage) => {
+        const { rows_Students } = this.state;
+        if (rows_Students != null) {
+            const studentsPagination = rows_Students.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));
+            this.setState({
+                studentsPagination,
+                currentPage,
+            })
+        }
+    }
+
+    handlePageNumberBus = (currentPageBus) => {
+        const { rows_Businesses } = this.state;
+        if (rows_Businesses != null) {
+            const businessesPagination = rows_Businesses.slice(getPaginationCurrentPageNumber(currentPageBus), getPaginationNextPageNumber(currentPageBus));
+            this.setState({
+                businessesPagination,
+                currentPageBus,
+            })
+        }
+    }
+
+    handlePagePreviousBus = (currentPageBus) => {
+        const { rows_Businesses } = this.state;
+        if (rows_Businesses != null) {
+            const businessesPagination = rows_Businesses.slice(getPaginationCurrentPageNumber(currentPageBus), getPaginationNextPageNumber(currentPageBus));
+            this.setState({
+                businessesPagination,
+                currentPageBus,
+            })
+        }
+    }
+
+    handlePageNextBus = (currentPageBus) => {
+        const { rows_Businesses } = this.state;
+        if (rows_Businesses != null) {
+            const businessesPagination = rows_Businesses.slice(getPaginationCurrentPageNumber(currentPageBus), getPaginationNextPageNumber(currentPageBus));
+            this.setState({
+                businessesPagination,
+                currentPageBus,
+            })
         }
     }
 
@@ -38,20 +113,17 @@ class Excels extends Component {
             if (buttonName === 'Students') {
 
                 rows_Students && rows_Students.map((student, index) => {
-
-                    if (index > 0) {
-                        var student = {
-                            studentCode: student[1],
-                            password: 'default',
-                            roles: role_student,
-                            name: student[2],
-                            email: student[3],
-                            // specialized: student[4],
-                            semester: student[5],
-                            state: student[6],
-                        };
-                        listStudents.push(student);
-                    }
+                    var student = {
+                        studentCode: student[1],
+                        password: 'default',
+                        roles: role_student,
+                        name: student[2],
+                        email: student[3],
+                        // specialized: student[4],
+                        semester: student[5],
+                        state: student[6],
+                    };
+                    listStudents.push(student);
                 })
 
                 console.log("LIST STUDENTS", listStudents);
@@ -71,26 +143,38 @@ class Excels extends Component {
         if (rows_Businesses.length != 0) {
             if (buttonName === 'Businesses') {
                 rows_Businesses && rows_Businesses.map((business, index) => {
-                    if (index > 0) {
-                        var business = {
-                            name: business[1],
-                            englishName: business[2],
-                            address: business[3],
-                            website: business[4],
-                            intershipAddress: business[5],
-                            se: business[6],
-                            is: business[7],
-                            gd: business[8],
-                            ba: business[9],
-                            ib: business[10],
-                            japanese: business[11],
-                            english: business[12],
-                            description: business[13],
-                            process: business[14],
-                            contact: business[15],
-                        };
-                        listBusinesses.push(business);
-                    }
+                    let data = business[6];
+                    let skillsAndNumber = [];
+                    let skills_number = [];
+                    const result = [];
+
+                    skillsAndNumber = data.split("+");
+                    skillsAndNumber && skillsAndNumber.map((element, index) => {
+                        if (index > 0) {
+                            skills_number = element.split(":");
+                            const obj = {
+                                skillName: skills_number[0].trim(),
+                                number: skills_number[1].trim()
+                            }
+                            result.push(obj);
+                        }
+                    })
+
+                    console.log("result", result);
+
+                    var business = {
+                        name: business[1],
+                        englishName: business[2],
+                        address: business[3],
+                        website: business[4],
+                        intershipAddress: business[5],
+                        skills_number: result,
+                        process: business[7],
+                        contact: business[8],
+                        businessOverview: business[9],
+                        interest: business[10]
+                    };
+                    listBusinesses.push(business);
                 })
 
                 console.log("LIST BUSINESSES", listBusinesses);
@@ -165,10 +249,16 @@ class Excels extends Component {
                         document.getElementById("file_excel_students").value = "";
                         Toastify.actionWarning("Invalid file structure!");
                     } else {
+                        const { currentPage } = this.state;
+                        const pageNumber = getPaginationPageNumber(resp.rows.length - 1);
+                        resp.rows.splice(0, 1);
+                        const studentsPagination = resp.rows.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));
                         this.setState({
                             files_Students: fileObj,
                             cols_Students: resp.cols,
                             rows_Students: resp.rows,
+                            pageNumber,
+                            studentsPagination,
                         });
                     }
                 }
@@ -187,9 +277,8 @@ class Excels extends Component {
         }
 
         let flag = true;
-        var titles = ["STT", "Doanh Nghiệp", "Tên Tiếng Anh", "Địa chỉ Công ty", "Website", "Địa chỉ nơi SV sẽ thực tập", "KTPM",
-            "ATTT", "Thiết kế đồ hoạ", "Quản trị kinh doanh", "Kinh doanh quốc tế", "Ngôn ngữ Nhật", "Ngôn ngữ Anh", "Mô tả công việc",
-            "Quy trình tuyển", "Liên hệ"];
+        var titles = ["STT", "Doanh Nghiệp", "Tên Tiếng Anh", "Địa chỉ Công ty", "Website", "Địa chỉ nơi SV sẽ thực tập", "Vị trí - Số lượng",
+            "Quy trình tuyển", "Liên hệ", "Giới thiệu công ty", "Chính sách ưu đãi"];
 
         if (fileType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 
@@ -200,7 +289,7 @@ class Excels extends Component {
                 else {
                     let titlesExcel = resp.rows[0];
 
-                    if (titlesExcel.length != 16) {
+                    if (titlesExcel.length != 11) {
                         flag = false;
                     } else {
                         for (let i = 0; i < titles.length; i++) {
@@ -216,10 +305,16 @@ class Excels extends Component {
                         document.getElementById("file_excel_businesses").value = "";
                         Toastify.actionWarning("Invalid file structure!");
                     } else {
+                        const { currentPageBus } = this.state;
+                        const pageNumberBus = getPaginationPageNumber(resp.rows.length - 1);
+                        resp.rows.splice(0, 1);
+                        const businessesPagination = resp.rows.slice(getPaginationCurrentPageNumber(currentPageBus), getPaginationNextPageNumber(currentPageBus));
                         this.setState({
                             files_Businesses: fileObj,
                             cols_Businesses: resp.cols,
                             rows_Businesses: resp.rows,
+                            pageNumberBus,
+                            businessesPagination,
                         });
                     }
                 }
@@ -256,18 +351,10 @@ class Excels extends Component {
 
     }
 
-    // download = () => {
-    //     var element = document.createElement('form_students');
-    //     element.style.display = 'none';
-    //     element.setAttribute('href', 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,' + encodeURIComponent(this.state.files_Students));
-    //     element.setAttribute('download', "Form_Student");
-    //     document.body.appendChild(element);
-    //     element.click();
-    //     document.body.removeChild(element);
-    // }
-
     render() {
         const { files_Students, rows_Students, files_Businesses, rows_Businesses } = this.state;
+        const { studentsPagination, pageNumber, currentPage } = this.state;
+        const { businessesPagination, pageNumberBus, currentPageBus } = this.state;
 
         return (
 
@@ -296,35 +383,29 @@ class Excels extends Component {
                                         {files_Students && (
 
                                             <table class="table table-bordered table-hover" style={{ textAlign: "center" }}>
+                                                <thead>
+                                                    <th>No</th>
+                                                    <th>MSSV</th>
+                                                    <th>Họ Tên</th>
+                                                    <th>Email</th>
+                                                    <th>Specialized</th>
+                                                    <th>Semester</th>
+                                                    <th>State</th>
+                                                </thead>
                                                 <tbody>
                                                     {
-                                                        rows_Students && rows_Students.map((student, index) => {
-                                                            if (index == 0) {
-                                                                return (
-                                                                    <tr key={index}>
-                                                                        <th>{student[0]}</th>
-                                                                        <th>{student[1]}</th>
-                                                                        <th>{student[2]}</th>
-                                                                        <th>{student[3]}</th>
-                                                                        <th>{student[4]}</th>
-                                                                        <th>{student[5]}</th>
-                                                                        <th>{student[6]}</th>
-                                                                    </tr>
-                                                                )
-                                                            }
-                                                            if (index > 0) {
-                                                                return (
-                                                                    <tr key={index}>
-                                                                        <td>{student[0]}</td>
-                                                                        <td id={"s-" + index + "-1"} onKeyUp={this.rowStudentEdited}>{student[1]}</td>
-                                                                        <td id={"s-" + index + "-2"} onKeyUp={this.rowStudentEdited}>{student[2]}</td>
-                                                                        <td id={"s-" + index + "-3"} onKeyUp={this.rowStudentEdited}>{student[3]}</td>
-                                                                        <td id={"s-" + index + "-4"} onKeyUp={this.rowStudentEdited}>{student[4]}</td>
-                                                                        <td id={"s-" + index + "-5"} onKeyUp={this.rowStudentEdited}>{student[5]}</td>
-                                                                        <td id={"s-" + index + "-6"} onKeyUp={this.rowStudentEdited}>{student[6]}</td>
-                                                                    </tr>
-                                                                )
-                                                            }
+                                                        studentsPagination && studentsPagination.map((student, index) => {
+                                                            return (
+                                                                <tr key={index}>
+                                                                    <td>{student[0]}</td>
+                                                                    <td id={"s-" + index + "-1"} onKeyUp={this.rowStudentEdited}>{student[1]}</td>
+                                                                    <td id={"s-" + index + "-2"} onKeyUp={this.rowStudentEdited}>{student[2]}</td>
+                                                                    <td id={"s-" + index + "-3"} onKeyUp={this.rowStudentEdited}>{student[3]}</td>
+                                                                    <td id={"s-" + index + "-4"} onKeyUp={this.rowStudentEdited}>{student[4]}</td>
+                                                                    <td id={"s-" + index + "-5"} onKeyUp={this.rowStudentEdited}>{student[5]}</td>
+                                                                    <td id={"s-" + index + "-6"} onKeyUp={this.rowStudentEdited}>{student[6]}</td>
+                                                                </tr>
+                                                            )
                                                         })
                                                     }
                                                 </tbody>
@@ -333,6 +414,9 @@ class Excels extends Component {
                                     </FormGroup>
                                 </Form>
                                 <ToastContainer />
+                                <Pagination>
+                                    <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                </Pagination>
                             </CardBody>
                             <CardFooter className="p-4">
                                 <Row>
@@ -369,62 +453,48 @@ class Excels extends Component {
                                         {files_Businesses && (
                                             <div style={{ overflowX: "auto" }}>
                                                 <table class="table table-bordered table-hover" style={{ textAlign: "center" }}>
+                                                    <thead>
+                                                        <th style={{whiteSpace: "nowrap"}}>STT</th>
+                                                        <th style={{whiteSpace: "nowrap"}}>Doanh nghiệp</th>
+                                                        <th style={{whiteSpace: "nowrap"}}>Tên tiếng Anh</th>
+                                                        <th style={{whiteSpace: "nowrap"}}>Địa chỉ công ty</th>
+                                                        <th style={{whiteSpace: "nowrap"}}>Website</th>
+                                                        <th style={{whiteSpace: "nowrap"}}>Địa chỉ SV sẽ thực tập</th>
+                                                        <th style={{whiteSpace: "nowrap"}}>Vị trí - Số lượng</th>
+                                                        <th style={{whiteSpace: "nowrap"}}>Quy trình tuyển</th>
+                                                        <th style={{whiteSpace: "nowrap"}}>Liên hệ</th>
+                                                        <th style={{whiteSpace: "nowrap"}}>Giới thiệu công ty</th>
+                                                        <th style={{whiteSpace: "nowrap"}}  >Chính sách ưu đãi</th>
+                                                    </thead>
                                                     <tbody>
                                                         {
-                                                            rows_Businesses && rows_Businesses.map((business, index) => {
-                                                                if (index == 0) {
-                                                                    return (
-                                                                        <tr key={index}>
-                                                                            <th>{business[0]}</th>
-                                                                            <th>{business[1]}</th>
-                                                                            <th>{business[2]}</th>
-                                                                            <th>{business[3]}</th>
-                                                                            <th>{business[4]}</th>
-                                                                            <th>{business[5]}</th>
-                                                                            <th>{business[6]}</th>
-                                                                            <th>{business[7]}</th>
-                                                                            <th>{business[8]}</th>
-                                                                            <th>{business[9]}</th>
-                                                                            <th>{business[10]}</th>
-                                                                            <th>{business[11]}</th>
-                                                                            <th>{business[12]}</th>
-                                                                            <th>{business[13]}</th>
-                                                                            <th>{business[14]}</th>
-                                                                            <th>{business[15]}</th>
-                                                                        </tr>
-                                                                    )
-                                                                }
-                                                                if (index > 0) {
-                                                                    return (
-                                                                        <tr key={index}>
-                                                                            <td>{business[0]}</td>
-                                                                            <td id={"b-" + index + "-1"} onKeyUp={this.rowBusinessEdited}>{business[1]}</td>
-                                                                            <td id={"b-" + index + "-2"} onKeyUp={this.rowBusinessEdited}>{business[2]}</td>
-                                                                            <td id={"b-" + index + "-3"} onKeyUp={this.rowBusinessEdited}>{business[3]}</td>
-                                                                            <td id={"b-" + index + "-4"} onKeyUp={this.rowBusinessEdited}>{business[4]}</td>
-                                                                            <td id={"b-" + index + "-5"} onKeyUp={this.rowBusinessEdited}>{business[5]}</td>
-                                                                            <td id={"b-" + index + "-6"} onKeyUp={this.rowBusinessEdited}>{business[6]}</td>
-                                                                            <td id={"b-" + index + "-7"} onKeyUp={this.rowBusinessEdited}>{business[7]}</td>
-                                                                            <td id={"b-" + index + "-8"} onKeyUp={this.rowBusinessEdited}>{business[8]}</td>
-                                                                            <td id={"b-" + index + "-9"} onKeyUp={this.rowBusinessEdited}>{business[9]}</td>
-                                                                            <td id={"b-" + index + "-10"} onKeyUp={this.rowBusinessEdited}>{business[10]}</td>
-                                                                            <td id={"b-" + index + "-11"} onKeyUp={this.rowBusinessEdited}>{business[11]}</td>
-                                                                            <td id={"b-" + index + "-12"} onKeyUp={this.rowBusinessEdited}>{business[12]}</td>
-                                                                            <td id={"b-" + index + "-13"} onKeyUp={this.rowBusinessEdited}>{business[13]}</td>
-                                                                            <td id={"b-" + index + "-14"} onKeyUp={this.rowBusinessEdited}>{business[14]}</td>
-                                                                            <td id={"b-" + index + "-15"} onKeyUp={this.rowBusinessEdited}>{business[15]}</td>
-                                                                        </tr>
-                                                                    )
-                                                                }
+                                                            businessesPagination && businessesPagination.map((business, index) => {
+                                                                return (
+                                                                    <tr key={index}>
+                                                                        <td style={{whiteSpace: "nowrap"}}>{business[0]}</td>
+                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-1"} onKeyUp={this.rowBusinessEdited}>{business[1]}</td>
+                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-2"} onKeyUp={this.rowBusinessEdited}>{business[2]}</td>
+                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-3"} onKeyUp={this.rowBusinessEdited}>{business[3]}</td>
+                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-4"} onKeyUp={this.rowBusinessEdited}>{business[4]}</td>
+                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-5"} onKeyUp={this.rowBusinessEdited}>{business[5]}</td>
+                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-6"} onKeyUp={this.rowBusinessEdited}>{business[6]}</td>
+                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-7"} onKeyUp={this.rowBusinessEdited}>{business[7]}</td>
+                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-8"} onKeyUp={this.rowBusinessEdited}>{business[8]}</td>
+                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-9"} onKeyUp={this.rowBusinessEdited}>{business[9]}</td>
+                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-10"} onKeyUp={this.rowBusinessEdited}>{business[10]}</td>
+                                                                    </tr>
+                                                                )
                                                             })
                                                         }
                                                     </tbody>
                                                 </table>
                                             </div>
-
                                         )}
                                     </FormGroup>
                                 </Form>
+                                <Pagination>
+                                    <PaginationComponent pageNumber={pageNumberBus} handlePageNumber={this.handlePageNumberBus} handlePageNext={this.handlePageNextBus} handlePagePrevious={this.handlePagePreviousBus} currentPage={currentPageBus} />
+                                </Pagination>
                             </CardBody>
                             <CardFooter className="p-4">
                                 <Row>
@@ -440,6 +510,5 @@ class Excels extends Component {
         );
     }
 }
-
 
 export default Excels;
