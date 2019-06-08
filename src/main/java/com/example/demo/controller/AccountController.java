@@ -7,6 +7,8 @@ import com.example.demo.service.AccountService;
 import com.example.demo.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
@@ -70,11 +72,11 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<Account> getOneAccount() {
+    public ResponseEntity<List<Account>> getOneAccount() {
 
-        Account account = new Account();
-        account = accountService.getListStudent();
+        List<Account> accountList = new ArrayList<>();
+        accountList = accountService.getListAccount();
 
-        return new ResponseEntity<Account>(account, HttpStatus.OK);
+        return new ResponseEntity<List<Account>>(accountList, HttpStatus.OK);
     }
 }

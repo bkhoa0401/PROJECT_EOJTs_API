@@ -24,8 +24,8 @@ public class AccountService {
         return true;
     }
 
-    public Account getListStudent() {
-        return accountRepository.getOne(1);
+    public List<Account> getListAccount() {
+        return accountRepository.findAllAccount();
     }
 
     public void sendEmail(String name, String mail) throws Exception {

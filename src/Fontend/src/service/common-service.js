@@ -2,7 +2,7 @@ const isNullOrUndefined = (obj) => {
     return obj == null || obj === undefined || obj.Lenth < 1;
 }
 
-const ROW_PER_PAGE = 3;
+const ROW_PER_PAGE = 5;
 
 
 const getPaginationPageNumber = (total) => {
