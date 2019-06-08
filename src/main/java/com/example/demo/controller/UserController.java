@@ -9,11 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-<<<<<<< HEAD:src/main/java/com/example/demo/controller/UserController.java
-=======
-import java.util.ArrayList;
-import java.util.List;
->>>>>>> 8b919de974a84443bfc0181c2db4201b7c5aba23:src/main/java/com/example/demo/controller/AccountController.java
 import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,8 +28,6 @@ public class UserController {
     public ResponseEntity<Void> addListUser(@RequestBody List<Users> listUsers) throws Exception {
 
         try {
-
-
 //        for (int i = 0; i < account.size(); i++) {
 //            accountService.sendEmail(account.get(i).getName(), account.get(i).getEmail());
 //        }
@@ -73,16 +66,4 @@ public class UserController {
         }
         return new ResponseEntity<LoginDTO>(login, httpStatus);
     }
-
-<<<<<<< HEAD:src/main/java/com/example/demo/controller/UserController.java
-=======
-    @GetMapping
-    public ResponseEntity<List<Account>> getOneAccount() {
-
-        List<Account> accountList = new ArrayList<>();
-        accountList = accountService.getListAccount();
-
-        return new ResponseEntity<List<Account>>(accountList, HttpStatus.OK);
-    }
->>>>>>> 8b919de974a84443bfc0181c2db4201b7c5aba23:src/main/java/com/example/demo/controller/AccountController.java
 }
