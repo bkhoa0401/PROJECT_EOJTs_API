@@ -1,32 +1,22 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Account;
-import com.example.demo.repository.AccountRepository;
+import com.example.demo.entity.Users;
+import com.example.demo.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Repository;
 
 import javax.mail.internet.MimeMessage;
-import java.util.List;
 
 @Repository
-public class AccountService {
-
+public class UsersService {
     @Autowired
-    AccountRepository accountRepository;
+    UsersRepository usersRepository;
 
     @Autowired
     private JavaMailSender sender;
 
-    public boolean addListStudent(List<Account> account) {
-        accountRepository.saveAll(account);
-        return true;
-    }
-
-    public Account getListStudent() {
-        return accountRepository.getOne(1);
-    }
 
     public void sendEmail(String name, String mail) throws Exception {
         MimeMessage message = sender.createMimeMessage();
@@ -57,22 +47,19 @@ public class AccountService {
         return sb.toString();
     }
 
-    public Account findAccountStudentByEmailAndPassword(String email, String password) {
-        //Account account = accountRepository.findAccountByEmailAndPassword(email, password);
-        Account account = accountRepository.findAccountStudentCustom(email, password);
-        if (account != null) {
-            return account;
+    public Users findUserByEmail(String email) {
+        Users users = usersRepository.findUserByEmail(email);
+        if (users != null) {
+            return users;
         }
         return null;
     }
 
-    public Account findAccountByEmail(String email) {
-        //Account account = accountRepository.findAccountByEmailAndPassword(email, password);
-        Account account = accountRepository.findAccountByEmail(email);
-        if (account != null) {
-            return account;
+    public Users findUserByEmailAndPassWord(String email,String password) {
+        Users users = usersRepository.findUserByEmailAndPassword(email,password);
+        if (users != null) {
+            return users;
         }
         return null;
     }
-
 }

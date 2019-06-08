@@ -1,34 +1,34 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.AccountDTO;
-import com.example.demo.entity.Account;
 import com.example.demo.dto.LoginDTO;
-import com.example.demo.service.AccountService;
+import com.example.demo.entity.Users;
 import com.example.demo.service.JwtService;
+import com.example.demo.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+
 import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/account")
-public class AccountController {
+public class UserController {
 
     @Autowired
-    private AccountService accountService;
+    private UsersService usersService;
 
     @Autowired
     private JwtService jwtService;
 
     @PostMapping
-    public ResponseEntity<Void> addListStudent(@RequestBody List<Account> listAccounts) throws Exception {
+    public ResponseEntity<Void> addListUser(@RequestBody List<Users> listUsers) throws Exception {
 
         try {
-            accountService.addListStudent(listAccounts);
+
 
 //        for (int i = 0; i < account.size(); i++) {
 //            accountService.sendEmail(account.get(i).getName(), account.get(i).getEmail());
@@ -45,19 +45,19 @@ public class AccountController {
     }
 
     @PostMapping("/token")
-    public ResponseEntity<LoginDTO> checkLogin(HttpServletRequest request, @RequestBody Account account, HttpServletResponse response) {
+    public ResponseEntity<LoginDTO> checkLogin(HttpServletRequest request, @RequestBody Users users, HttpServletResponse response) {
         String result = "";
         HttpStatus httpStatus = null;
         boolean check;
-        Account accountFound = new Account();
+        Users usersFound = new Users();
         LoginDTO login = new LoginDTO();
         try {
             check = false;
-            if (accountService.findAccountStudentByEmailAndPassword(account.getEmail(), account.getPassword()) != null) {
-                accountFound = accountService.findAccountStudentByEmailAndPassword(account.getEmail(), account.getPassword());
-                result = jwtService.generateTokenLogin(accountFound.getEmail());
+            if (usersService.findUserByEmailAndPassWord(users.getEmail(), users.getPassword()) != null) {
+                usersFound = usersService.findUserByEmailAndPassWord(users.getEmail(), users.getPassword());
+                result = jwtService.generateTokenLogin(usersFound.getEmail());
 
-                login.setAccount(accountFound);
+                login.setUser(usersFound);
                 login.setToken(result);
                 httpStatus = HttpStatus.OK;
             } else {
@@ -69,12 +69,4 @@ public class AccountController {
         return new ResponseEntity<LoginDTO>(login, httpStatus);
     }
 
-    @GetMapping
-    public ResponseEntity<Account> getOneAccount() {
-
-        Account account = new Account();
-        account = accountService.getListStudent();
-
-        return new ResponseEntity<Account>(account, HttpStatus.OK);
-    }
 }

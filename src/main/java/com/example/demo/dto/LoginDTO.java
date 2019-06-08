@@ -1,21 +1,21 @@
 package com.example.demo.dto;
 
-import com.example.demo.entity.Account;
+import com.example.demo.entity.Users;
 
 import java.io.Serializable;
 
 public class LoginDTO implements Serializable {
 
     private String token;
-    private Account account;
+    private Users users;
 
     public LoginDTO() {
     }
 
-    public LoginDTO(String token, Account account) {
+    public LoginDTO(String token, Users users) {
 
         this.token = token;
-        this.account = account;
+        this.users = users;
     }
 
     public String getToken() {
@@ -26,11 +26,11 @@ public class LoginDTO implements Serializable {
         this.token = token;
     }
 
-    public Account getAccount() {
-        return account;
+    public Users getUsers() {
+        return users;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setUser(Users users) {
+        this.users = users;
     }
 }

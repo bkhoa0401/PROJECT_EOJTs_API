@@ -1,7 +1,6 @@
 package com.example.demo.filter;
 
-import com.example.demo.entity.Account;
-import com.example.demo.service.AccountService;
+import com.example.demo.entity.Users;
 import com.example.demo.service.JwtService;
 import java.io.IOException;
 
@@ -12,10 +11,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.example.demo.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -28,7 +27,7 @@ public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthentication
     private JwtService jwtService;
 
     @Autowired
-    private AccountService accountService;
+    private UsersService usersService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -52,14 +51,15 @@ public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthentication
         if (jwtService.validateTokenLogin(authToken)) {
             String email = jwtService.getEmailFromToken(authToken);
 
-            Account account = accountService.findAccountByEmail(email);
-            if (account != null) {
+//            Account account = accountService.findAccountByEmail(email);
+            Users users= usersService.findUserByEmail(email);
+            if (users != null) {
                 boolean enabled = true;
                 boolean accountNonExpired = true;
                 boolean credentialsNonExpired = true;
                 boolean accountNonLocked = true;
-                UserDetails userDetail = new User(account.getEmail(), account.getPassword(), enabled, accountNonExpired,
-                        credentialsNonExpired, accountNonLocked, account.getAuthorities());
+                UserDetails userDetail = new org.springframework.security.core.userdetails.User(users.getEmail(), users.getPassword(), enabled, accountNonExpired,
+                        credentialsNonExpired, accountNonLocked, users.getAuthorities());
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetail,
                         null, userDetail.getAuthorities());
