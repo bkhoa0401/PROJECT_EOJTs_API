@@ -17,17 +17,6 @@ public class UsersService {
     @Autowired
     private JavaMailSender sender;
 
-<<<<<<< HEAD:src/main/java/com/example/demo/service/UsersService.java
-=======
-    public boolean addListStudent(List<Account> account) {
-        accountRepository.saveAll(account);
-        return true;
-    }
-
-    public List<Account> getListAccount() {
-        return accountRepository.findAllAccount();
-    }
->>>>>>> 8b919de974a84443bfc0181c2db4201b7c5aba23:src/main/java/com/example/demo/service/AccountService.java
 
     public void sendEmail(String name, String mail) throws Exception {
         MimeMessage message = sender.createMimeMessage();
