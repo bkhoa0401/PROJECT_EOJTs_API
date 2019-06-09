@@ -13,8 +13,6 @@ import java.util.List;
 public class Business {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Column(name = "email")
     private String email;
 
@@ -39,15 +37,15 @@ public class Business {
     @Column(name = "logo")
     private String logo;
 
-    @OneToMany(mappedBy = "business")
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Ojt_Enrollment> ojt_enrollments;
 
-    @OneToMany(mappedBy = "business")
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Event> events;
 
-    @OneToMany(mappedBy = "business")
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Invitation> invitations;
 

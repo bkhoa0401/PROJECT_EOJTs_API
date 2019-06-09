@@ -1,13 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.LoginDTO;
+import com.example.demo.entity.Business;
 import com.example.demo.entity.Specialized;
 import com.example.demo.entity.Student;
 import com.example.demo.entity.Users;
-import com.example.demo.service.JwtService;
-import com.example.demo.service.SpecializedService;
-import com.example.demo.service.StudentService;
-import com.example.demo.service.UsersService;
+import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +31,9 @@ public class WebController {
 
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    private BusinessService businessService;
 
     @PostMapping("")
     public ResponseEntity<Void> addListUser(@RequestBody List<Users> listUsers) throws Exception {
@@ -87,7 +88,14 @@ public class WebController {
 
     //get student by email
     @GetMapping("student/{email}")
-    public ResponseEntity<Student> getStudentByEmail(@PathVariable  String email) {
+    public ResponseEntity<Student> getStudentByEmail(@PathVariable String email) {
         return new ResponseEntity<Student>(studentService.getStudentByEmail(email), HttpStatus.OK);
+    }
+
+    @PostMapping("/business/import")
+    public ResponseEntity<Void> importFileBusiness(@RequestBody List<Business> listBusiness) {
+        System.out.println(listBusiness.get(0).getOjt_enrollments().get(0).getBusiness().getEmail());
+        businessService.importFileBusiness(listBusiness);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

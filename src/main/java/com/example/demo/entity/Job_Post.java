@@ -13,14 +13,13 @@ import java.util.List;
 public class Job_Post {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private int id;
 
-    @Column(name = "title",columnDefinition = "NVARCHAR(150)")
+    @Column(name = "title", columnDefinition = "NVARCHAR(150)")
     private String title;
 
-    @Column(name = "description",columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "description", columnDefinition = "NVARCHAR(MAX)")
     private String description;
 
     @Column(name = "time_post")
@@ -29,30 +28,37 @@ public class Job_Post {
     @Column(name = "views")
     private int views;
 
-    @Column(name = "contact",columnDefinition = "NVARCHAR(500)")
+    @Column(name = "contact", columnDefinition = "NVARCHAR(500)")
     private String contact;
 
-    @Column(name = "interview_process",columnDefinition = "NVARCHAR(500)")
+    @Column(name = "interview_process", columnDefinition = "NVARCHAR(500)")
     private String interview_process;
 
-    @Column(name = "interest",columnDefinition = "NVARCHAR(500)")
+    @Column(name = "interest", columnDefinition = "NVARCHAR(500)")
     private String interest;
 
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinColumn(name = "ojt_enrollment")
+    @JoinColumn(name = "ojt_enrollment_id")
     private Ojt_Enrollment ojt_enrollment;
 
-    @ManyToMany
+//    @ManyToMany
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    @JoinTable(
+//            name = "job_post_skill",
+//            joinColumns = {
+//                    @JoinColumn(name = "job_post_id")},
+//            inverseJoinColumns = {
+//                    @JoinColumn(name = "skill_id")}
+//    )
+
+
+    // private List<Skill> skills;
+
+    @OneToMany(mappedBy = "job_post", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinTable(
-            name = "job_post_skill",
-            joinColumns = {
-                    @JoinColumn(name = "job_post_id")},
-            inverseJoinColumns = {
-                    @JoinColumn(name = "skill_id")}
-    )
-    private List<Skill> skills;
+    private List<Job_Post_Skill> job_post_skills;
+
 
     public Job_Post() {
     }
@@ -127,5 +133,13 @@ public class Job_Post {
 
     public void setOjt_enrollment(Ojt_Enrollment ojt_enrollment) {
         this.ojt_enrollment = ojt_enrollment;
+    }
+
+    public List<Job_Post_Skill> getJob_post_skills() {
+        return job_post_skills;
+    }
+
+    public void setJob_post_skills(List<Job_Post_Skill> job_post_skills) {
+        this.job_post_skills = job_post_skills;
     }
 }

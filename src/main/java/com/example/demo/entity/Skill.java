@@ -12,7 +12,6 @@ import java.util.List;
 public class Skill {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
 
@@ -28,9 +27,21 @@ public class Skill {
     @JsonBackReference
     private List<Student> students;
 
-    @ManyToMany(mappedBy = "skills")
-    @JsonBackReference
-    private List<Job_Post> job_posts;
+//    @ManyToMany(mappedBy = "skills")
+//    @JsonBackReference
+//    private List<Job_Post> job_posts;
+
+    @OneToMany(mappedBy = "skill")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Job_Post_Skill> job_post_skills;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -56,11 +67,11 @@ public class Skill {
         this.students = students;
     }
 
-    public List<Job_Post> getJob_posts() {
-        return job_posts;
-    }
-
-    public void setJob_posts(List<Job_Post> job_posts) {
-        this.job_posts = job_posts;
-    }
+//    public List<Job_Post> getJob_posts() {
+//        return job_posts;
+//    }
+//
+//    public void setJob_posts(List<Job_Post> job_posts) {
+//        this.job_posts = job_posts;
+//    }
 }

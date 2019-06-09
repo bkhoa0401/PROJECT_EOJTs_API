@@ -13,7 +13,6 @@ import java.util.List;
 public class Ojt_Enrollment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private int id;
 
@@ -28,15 +27,15 @@ public class Ojt_Enrollment {
     @JoinColumn(name = "business_email")
     private Business business;
 
-    @OneToMany(mappedBy = "ojt_enrollment")
+    @OneToMany(mappedBy = "ojt_enrollment", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Job_Post> job_posts;
 
-    @OneToMany(mappedBy = "ojt_enrollment")
+    @OneToMany(mappedBy = "ojt_enrollment", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Task> tasks;
 
-    @OneToMany(mappedBy = "ojt_enrollment")
+    @OneToMany(mappedBy = "ojt_enrollment", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Evaluation> evaluations;
 
@@ -104,4 +103,6 @@ public class Ojt_Enrollment {
     public void setSemester(Semester semester) {
         this.semester = semester;
     }
+
+
 }

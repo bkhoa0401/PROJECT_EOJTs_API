@@ -25,8 +25,6 @@ public class Users {
 
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Column(name = "email")
     private String email;
 
