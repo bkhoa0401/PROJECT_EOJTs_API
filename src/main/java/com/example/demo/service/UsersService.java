@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Repository;
 
 import javax.mail.internet.MimeMessage;
+import java.util.List;
 
 @Repository
 public class UsersService {
@@ -61,5 +62,14 @@ public class UsersService {
             return users;
         }
         return null;
+    }
+
+    public boolean saveListUser(List<Users> usersList) {
+        usersRepository.saveAll(usersList);
+        return true;
+    }
+
+    public List<Users> getAllUsers() {
+        return usersRepository.findAll();
     }
 }

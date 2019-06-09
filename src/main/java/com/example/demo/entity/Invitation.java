@@ -33,7 +33,7 @@ public class Invitation {
     private Business  business;
 
     @ManyToMany(mappedBy = "invitations")
-    @JsonBackReference
+//    @JsonBackReference
     private List<Student> students;
 
     @ManyToOne

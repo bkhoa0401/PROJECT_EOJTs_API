@@ -25,11 +25,11 @@ public class Skill {
     private Specialized specialized;
 
     @ManyToMany(mappedBy = "skills")
-    @JsonBackReference
+//    @JsonBackReference
     private List<Student> students;
 
     @ManyToMany(mappedBy = "skills")
-    @JsonBackReference
+//    @JsonBackReference
     private List<Job_Post> job_posts;
 
     public String getName() {

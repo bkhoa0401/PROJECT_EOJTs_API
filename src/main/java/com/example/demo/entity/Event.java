@@ -38,7 +38,7 @@ public class Event {
     private Business  business;
 
     @ManyToMany(mappedBy = "events")
-    @JsonBackReference
+//    @JsonBackReference
     private List<Student> students;
 
     public String getTitle() {

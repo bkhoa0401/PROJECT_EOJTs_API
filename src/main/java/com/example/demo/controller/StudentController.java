@@ -1,0 +1,74 @@
+package com.example.demo.controller;
+
+import com.example.demo.entity.Role;
+import com.example.demo.entity.Student;
+import com.example.demo.entity.Users;
+import com.example.demo.service.StudentService;
+import com.example.demo.service.UsersService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import javax.persistence.PersistenceException;
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/student")
+public class StudentController {
+
+    @Autowired
+    StudentService studentService;
+
+    @Autowired
+    UsersService usersService;
+
+    @PostMapping
+    public ResponseEntity<Void> addListStudent(@RequestBody List<Student> studentList) throws Exception {
+
+        List<Role> roleList = new ArrayList<>();
+        Role role = new Role();
+        role.setId(2);
+        roleList.add(role);
+        List<Users> usersList = new ArrayList<>();
+
+        for (int i = 0; i < studentList.size(); i++) {
+            Users users = new Users();
+            users.setEmail(studentList.get(i).getEmail());
+            users.setPassword("default");
+            users.setRoles(roleList);
+
+            usersList.add(users);
+        }
+
+        try {
+            studentService.saveListStudent(studentList);
+            usersService.saveListUser(usersList);
+
+//            for (int i = 0; i < studentList.size(); i++) {
+//                usersService.sendEmail(studentList.get(i).getName(), studentList.get(i).getEmail());
+//            }
+
+        } catch (PersistenceException ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Student>> getAllStudents() throws Exception {
+        List<Student> studentList = new ArrayList<>();
+        try {
+            studentList = studentService.getAllStudents();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(studentList, HttpStatus.OK);
+    }
+}

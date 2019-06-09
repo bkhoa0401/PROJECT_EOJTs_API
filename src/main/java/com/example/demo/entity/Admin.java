@@ -10,9 +10,8 @@ import java.util.List;
 @Entity
 @Table(name = "admin")
 public class Admin {
+
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Column(name = "email")
     private String email;
 

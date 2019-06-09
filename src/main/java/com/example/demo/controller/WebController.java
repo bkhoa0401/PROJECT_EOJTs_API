@@ -34,26 +34,6 @@ public class WebController {
     @Autowired
     private StudentService studentService;
 
-    @PostMapping("")
-    public ResponseEntity<Void> addListUser(@RequestBody List<Users> listUsers) throws Exception {
-
-        try {
-
-
-//        for (int i = 0; i < account.size(); i++) {
-//            accountService.sendEmail(account.get(i).getName(), account.get(i).getEmail());
-//        }
-
-        } catch (PersistenceException ex) {
-            ex.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
     @PostMapping("/token")
     public ResponseEntity<LoginDTO> checkLogin(HttpServletRequest request, @RequestBody Users users, HttpServletResponse response) {
         String result = "";
