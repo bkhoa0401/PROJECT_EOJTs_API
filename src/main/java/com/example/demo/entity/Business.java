@@ -18,9 +18,6 @@ public class Business {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "password")
-    private String password;
-
     @Column(name = "business_name")
     private String business_name;
 
@@ -46,6 +43,14 @@ public class Business {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Ojt_Enrollment> ojt_enrollments;
 
+    @OneToMany(mappedBy = "business")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Event> events;
+
+    @OneToMany(mappedBy = "business")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Invitation> invitations;
+
     public Business() {
     }
 
@@ -55,14 +60,6 @@ public class Business {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getBusiness_name() {

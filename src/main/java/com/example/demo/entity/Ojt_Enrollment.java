@@ -17,11 +17,6 @@ public class Ojt_Enrollment {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @Column(name = "semester_id")
-    private int semester_id;
-
-    @Column(name = "job_post_id")
-    private int job_post_id;
 
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -37,6 +32,20 @@ public class Ojt_Enrollment {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Job_Post> job_posts;
 
+    @OneToMany(mappedBy = "ojt_enrollment")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Task> tasks;
+
+    @OneToMany(mappedBy = "ojt_enrollment")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Evaluation> evaluations;
+
+
+    @ManyToOne
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "semester_id")
+    private Semester semester;
+
     public Ojt_Enrollment() {
     }
 
@@ -46,22 +55,6 @@ public class Ojt_Enrollment {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getSemester_id() {
-        return semester_id;
-    }
-
-    public void setSemester_id(int semester_id) {
-        this.semester_id = semester_id;
-    }
-
-    public int getJob_post_id() {
-        return job_post_id;
-    }
-
-    public void setJob_post_id(int job_post_id) {
-        this.job_post_id = job_post_id;
     }
 
     public Student getStudent() {
@@ -86,5 +79,29 @@ public class Ojt_Enrollment {
 
     public void setJob_posts(List<Job_Post> job_posts) {
         this.job_posts = job_posts;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public List<Evaluation> getEvaluations() {
+        return evaluations;
+    }
+
+    public void setEvaluations(List<Evaluation> evaluations) {
+        this.evaluations = evaluations;
+    }
+
+    public Semester getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Semester semester) {
+        this.semester = semester;
     }
 }

@@ -22,8 +22,6 @@ public class Student {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "password")
-    private String password;
 
     @Column(name = "specialized")
     private String specialized;
@@ -73,6 +71,27 @@ public class Student {
     )
     private List<Skill> skills;
 
+    @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(
+            name = "student_event",
+            joinColumns = {
+                    @JoinColumn(name = "student_email")},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "event_id")}
+    )
+    private List<Event> events;
+
+    @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(
+            name = "student_invitation",
+            joinColumns = {
+                    @JoinColumn(name = "student_email")},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "invitation_id")}
+    )
+    private List<Invitation> invitations;
 
     public Student() {
     }
@@ -91,14 +110,6 @@ public class Student {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getSpecialized() {

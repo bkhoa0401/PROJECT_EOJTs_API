@@ -17,10 +17,10 @@ public class Job_Post {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @Column(name = "title")
+    @Column(name = "title",columnDefinition = "NVARCHAR(150)")
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description",columnDefinition = "NVARCHAR(MAX)")
     private String description;
 
     @Column(name = "time_post")
@@ -29,13 +29,13 @@ public class Job_Post {
     @Column(name = "views")
     private int views;
 
-    @Column(name = "contact")
+    @Column(name = "contact",columnDefinition = "NVARCHAR(500)")
     private String contact;
 
-    @Column(name = "interview_process")
+    @Column(name = "interview_process",columnDefinition = "NVARCHAR(500)")
     private String interview_process;
 
-    @Column(name = "interest")
+    @Column(name = "interest",columnDefinition = "NVARCHAR(500)")
     private String interest;
 
     @ManyToOne

@@ -13,6 +13,7 @@ public class Skill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private int id;
 
     @Column(name = "name")
@@ -37,5 +38,29 @@ public class Skill {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Specialized getSpecialized() {
+        return specialized;
+    }
+
+    public void setSpecialized(Specialized specialized) {
+        this.specialized = specialized;
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
+    public List<Job_Post> getJob_posts() {
+        return job_posts;
+    }
+
+    public void setJob_posts(List<Job_Post> job_posts) {
+        this.job_posts = job_posts;
     }
 }
