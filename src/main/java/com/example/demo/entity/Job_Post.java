@@ -6,10 +6,11 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "job_post")
-public class Job_Post implements Serializable {
+public class Job_Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,6 +43,16 @@ public class Job_Post implements Serializable {
     @JoinColumn(name = "ojt_enrollment")
     private Ojt_Enrollment ojt_enrollment;
 
+    @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(
+            name = "job_post_skill",
+            joinColumns = {
+                    @JoinColumn(name = "job_post_id")},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "skill_id")}
+    )
+    private List<Skill> skills;
 
     public Job_Post() {
     }

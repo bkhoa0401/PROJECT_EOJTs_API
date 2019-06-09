@@ -1,8 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.LoginDTO;
+import com.example.demo.entity.Specialized;
+import com.example.demo.entity.Student;
 import com.example.demo.entity.Users;
 import com.example.demo.service.JwtService;
+import com.example.demo.service.SpecializedService;
+import com.example.demo.service.StudentService;
 import com.example.demo.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/account")
-public class UserController {
+public class WebController {
 
     @Autowired
     private UsersService usersService;
@@ -24,7 +28,13 @@ public class UserController {
     @Autowired
     private JwtService jwtService;
 
-    @PostMapping
+    @Autowired
+    private SpecializedService specializedService;
+
+    @Autowired
+    private StudentService studentService;
+
+    @PostMapping("")
     public ResponseEntity<Void> addListUser(@RequestBody List<Users> listUsers) throws Exception {
 
         try {
@@ -69,5 +79,15 @@ public class UserController {
         return new ResponseEntity<LoginDTO>(login, httpStatus);
     }
 
+    //get list skill by specialzed
+    @GetMapping("/specialized")
+    public ResponseEntity<List<Specialized>> getSpecializedList() {
+        return new ResponseEntity<List<Specialized>>(specializedService.getAllSpecialized(), HttpStatus.OK);
+    }
 
+    //get student by email
+    @GetMapping("student/{email}")
+    public ResponseEntity<Student> getStudentByEmail(@PathVariable  String email) {
+        return new ResponseEntity<Student>(studentService.getStudentByEmail(email), HttpStatus.OK);
+    }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "business")
-public class Business implements Serializable {
+public class Business {
 
     @Id
     @GeneratedValue(generator = "uuid")

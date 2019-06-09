@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "Student")
-public class Student implements Serializable {
+public class Student {
 
 
     @Id
@@ -61,6 +61,17 @@ public class Student implements Serializable {
     @OneToMany(mappedBy = "student")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Ojt_Enrollment> ojt_enrollments;
+
+    @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(
+            name = "student_skill",
+            joinColumns = {
+                    @JoinColumn(name = "student_email")},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "skill_id")}
+    )
+    private List<Skill> skills;
 
 
     public Student() {
@@ -184,5 +195,13 @@ public class Student implements Serializable {
 
     public void setOjt_enrollments(List<Ojt_Enrollment> ojt_enrollments) {
         this.ojt_enrollments = ojt_enrollments;
+    }
+
+    public List<Skill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<Skill> skills) {
+        this.skills = skills;
     }
 }
