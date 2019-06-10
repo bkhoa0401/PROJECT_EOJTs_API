@@ -1,14 +1,7 @@
 package com.example.demo.controller;
 
-<<<<<<< HEAD
-import com.example.demo.entity.Role;
-import com.example.demo.entity.Specialized;
-import com.example.demo.entity.Student;
-import com.example.demo.entity.Users;
-=======
 import com.example.demo.entity.*;
 import com.example.demo.service.Ojt_EnrollmentService;
->>>>>>> master
 import com.example.demo.service.SpecializedService;
 import com.example.demo.service.StudentService;
 import com.example.demo.service.UsersService;
@@ -31,12 +24,9 @@ public class StudentController {
     UsersService usersService;
 
     @Autowired
-<<<<<<< HEAD
-=======
     Ojt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
->>>>>>> master
     private SpecializedService specializedService;
 
     @PostMapping
@@ -101,14 +91,9 @@ public class StudentController {
         return new ResponseEntity<List<Specialized>>(specializedService.getAllSpecialized(), HttpStatus.OK);
     }
 
-    //get student by email
-<<<<<<< HEAD
-    @GetMapping("/{email}")
-    public ResponseEntity<Student> getStudentByEmail(@PathVariable String email) {
-=======
+
     @GetMapping("student/{email}")
     public ResponseEntity<Student> getStudentByEmail(@PathVariable  String email) {
->>>>>>> master
         return new ResponseEntity<Student>(studentService.getStudentByEmail(email), HttpStatus.OK);
     }
 }

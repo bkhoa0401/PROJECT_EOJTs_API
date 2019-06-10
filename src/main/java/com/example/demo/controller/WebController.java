@@ -72,9 +72,4 @@ public class WebController {
         }
         return new ResponseEntity<LoginDTO>(login, httpStatus);
     }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> master
 }

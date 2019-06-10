@@ -19,8 +19,9 @@ public class BusinessController {
     private BusinessService businessService;
 
 
-    @PostMapping("/import")
+    @PostMapping
     public ResponseEntity<Void> importFileBusiness(@RequestBody List<Business> listBusiness) {
+
         businessService.importFileBusiness(listBusiness);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

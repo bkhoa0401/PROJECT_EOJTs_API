@@ -188,7 +188,7 @@ class Excels extends Component {
                                         description: business[11],
                                         interest: business[13],
                                         interview_process: business[9],
-                                        time_post: '2019 - 09 - 06',
+                                        time_post: '2019-09-06',
                                         views: 1,
                                         ojt_enrollment: {
                                             id: business[0],
@@ -208,13 +208,13 @@ class Excels extends Component {
 
                 console.log("LIST BUSINESSES", listBusinesses);
 
-                // const result = await ApiServices.Post('/User/testFontend', listBusinesses);
-                // if (result) {
-                //     Toastify.actionSuccess("Create Success!");
+                const result = await ApiServices.Post('/business', listBusinesses);
+                if (result) {
+                    Toastify.actionSuccess("Create Success!");
 
-                // } else {
-                //     Toastify.actionFail("Create Fail!");
-                // }
+                } else {
+                    Toastify.actionFail("Create Fail!");
+                }
             }
         } else if (buttonName === 'Businesses') {
             Toastify.actionFail("No file choosen!");
