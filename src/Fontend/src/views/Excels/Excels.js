@@ -123,7 +123,7 @@ class Excels extends Component {
                 console.log("LIST STUDENTS", listStudents);
 
                 const resultStudents = await ApiServices.Post('/student', listStudents);
-                if (resultStudents.status == 201) {                
+                if (resultStudents.status == 201) {
                     Toastify.actionSuccess("Create Successfully!");
                 } else {
                     Toastify.actionFail("Create Fail!");
@@ -136,7 +136,7 @@ class Excels extends Component {
         if (rows_Businesses.length != 0) {
             if (buttonName === 'Businesses') {
                 rows_Businesses && rows_Businesses.map((business, index) => {
-                    let data = business[6];
+                    let data = business[8];
                     let skillsAndNumber = [];
                     let skills_number = [];
                     const result = [];
@@ -146,27 +146,63 @@ class Excels extends Component {
                         if (index > 0) {
                             skills_number = element.split(":");
                             const obj = {
-                                skillName: skills_number[0].trim(),
+                                // skill: skills_number[0].trim(),
+                                
+
+                                job_post: {
+                                    id: business[0]
+                                },
+                                skill: {
+                                    id: 1,
+                                },
                                 number: skills_number[1].trim()
+
                             }
                             result.push(obj);
                         }
                     })
 
-                    console.log("result", result);
+                    // const ojt_enrollments = [];
+
+                    // ojt_enrollments.push(obj_ojtEnrollment);
+                    // console.log("ojt_enrollments", ojt_enrollments);
 
                     var business = {
-                        name: business[1],
+                        email: business[3],
+                        business_address: business[5],
+                        business_overview: business[12],
                         business_eng_name: business[2],
-                        business_address: business[3],
-                        business_website: business[4],
-                        intershipAddress: business[5],
-                        skills_number: result,
-                        process: business[7],
-                        contact: business[8],
-                        business_overview: business[9],
-                        interest: business[10]
+                        business_name: business[1],
+                        business_website: business[6],
+                        business_phone: business[4],
+                        ojt_enrollments: [
+                            {
+                                id: business[0],
+                                business: {
+                                    email: business[3]
+                                },
+                                job_posts: [
+                                    {
+                                        id: business[0],
+                                        contact: business[10],
+                                        description: business[11],
+                                        interest: business[13],
+                                        interview_process: business[9],
+                                        time_post: '2019 - 09 - 06',
+                                        views: 1,
+                                        ojt_enrollment: {
+                                            id: business[0],
+                                        },
+                                        job_post_skills: result
+                                    }
+                                ]
+                            }
+                        ],
+
+                        // intershipAddress: business[7],
+                        // skills_number: result,
                     };
+
                     listBusinesses.push(business);
                 })
 
@@ -270,8 +306,8 @@ class Excels extends Component {
         }
 
         let flag = true;
-        var titles = ["STT", "Doanh Nghiệp", "Tên Tiếng Anh", "Địa chỉ Công ty", "Website", "Địa chỉ nơi SV sẽ thực tập", "Vị trí - Số lượng",
-            "Quy trình tuyển", "Liên hệ", "Giới thiệu công ty", "Chính sách ưu đãi"];
+        var titles = ["STT", "Doanh Nghiệp", "Tên Tiếng Anh", "Email", "SĐT", "Địa chỉ Công ty", "Website", "Địa chỉ nơi SV sẽ thực tập", "Vị trí - Số lượng",
+            "Quy trình tuyển", "Liên hệ", "Mô tả", "Giới thiệu công ty", "Chính sách ưu đãi"];
 
         if (fileType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 
@@ -282,7 +318,7 @@ class Excels extends Component {
                 else {
                     let titlesExcel = resp.rows[0];
 
-                    if (titlesExcel.length != 11) {
+                    if (titlesExcel.length != 14) {
                         flag = false;
                     } else {
                         for (let i = 0; i < titles.length; i++) {
@@ -452,12 +488,15 @@ class Excels extends Component {
                                                         <th style={{ whiteSpace: "nowrap" }}>STT</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Doanh nghiệp</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Tên tiếng Anh</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Email</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>SĐT</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Địa chỉ công ty</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Website</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Địa chỉ SV sẽ thực tập</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Vị trí - Số lượng</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Quy trình tuyển</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Liên hệ</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Mô tả</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Giới thiệu công ty</th>
                                                         <th style={{ whiteSpace: "nowrap" }}  >Chính sách ưu đãi</th>
                                                     </thead>
@@ -477,6 +516,9 @@ class Excels extends Component {
                                                                         <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-8"} onKeyUp={this.rowBusinessEdited}>{business[8]}</td>
                                                                         <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-9"} onKeyUp={this.rowBusinessEdited}>{business[9]}</td>
                                                                         <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-10"} onKeyUp={this.rowBusinessEdited}>{business[10]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-11"} onKeyUp={this.rowBusinessEdited}>{business[11]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-12"} onKeyUp={this.rowBusinessEdited}>{business[12]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-13"} onKeyUp={this.rowBusinessEdited}>{business[13]}</td>
                                                                     </tr>
                                                                 )
                                                             })

@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Role;
-import com.example.demo.entity.Student;
-import com.example.demo.entity.Users;
+import com.example.demo.entity.*;
+import com.example.demo.service.Ojt_EnrollmentService;
+import com.example.demo.service.SpecializedService;
 import com.example.demo.service.StudentService;
 import com.example.demo.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,12 @@ public class StudentController {
     @Autowired
     UsersService usersService;
 
+    @Autowired
+    Ojt_EnrollmentService ojt_enrollmentService;
+
+    @Autowired
+    private SpecializedService specializedService;
+
     @PostMapping
     public ResponseEntity<Void> addListStudent(@RequestBody List<Student> studentList) throws Exception {
 
@@ -31,6 +37,7 @@ public class StudentController {
         role.setId(2);
         roleList.add(role);
         List<Users> usersList = new ArrayList<>();
+        List<Ojt_Enrollment> ojtEnrollmentList = new ArrayList<>();
 
         for (int i = 0; i < studentList.size(); i++) {
             Users users = new Users();
@@ -39,11 +46,17 @@ public class StudentController {
             users.setRoles(roleList);
 
             usersList.add(users);
+
+            Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
+            ojt_enrollment.setStudent(studentList.get(i));
+
+            ojtEnrollmentList.add(ojt_enrollment);
         }
 
         try {
             studentService.saveListStudent(studentList);
             usersService.saveListUser(usersList);
+            ojt_enrollmentService.saveListOjtEnrollment(ojtEnrollmentList);
 
 //            for (int i = 0; i < studentList.size(); i++) {
 //                usersService.sendEmail(studentList.get(i).getName(), studentList.get(i).getEmail());
@@ -70,5 +83,17 @@ public class StudentController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(studentList, HttpStatus.OK);
+    }
+
+    //get list skill by specialzed
+    @GetMapping("/specialized")
+    public ResponseEntity<List<Specialized>> getSpecializedList() {
+        return new ResponseEntity<List<Specialized>>(specializedService.getAllSpecialized(), HttpStatus.OK);
+    }
+
+    //get student by email
+    @GetMapping("student/{email}")
+    public ResponseEntity<Student> getStudentByEmail(@PathVariable  String email) {
+        return new ResponseEntity<Student>(studentService.getStudentByEmail(email), HttpStatus.OK);
     }
 }

@@ -58,16 +58,4 @@ public class WebController {
         }
         return new ResponseEntity<LoginDTO>(login, httpStatus);
     }
-
-    //get list skill by specialzed
-    @GetMapping("/specialized")
-    public ResponseEntity<List<Specialized>> getSpecializedList() {
-        return new ResponseEntity<List<Specialized>>(specializedService.getAllSpecialized(), HttpStatus.OK);
-    }
-
-    //get student by email
-    @GetMapping("student/{email}")
-    public ResponseEntity<Student> getStudentByEmail(@PathVariable  String email) {
-        return new ResponseEntity<Student>(studentService.getStudentByEmail(email), HttpStatus.OK);
-    }
 }

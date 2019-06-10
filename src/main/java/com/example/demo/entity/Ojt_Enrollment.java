@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -20,6 +22,8 @@ public class Ojt_Enrollment {
 
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
+//    @JsonBackReference
+    @JsonIgnore
     @JoinColumn(name = "student_email")
     private Student student;
 

@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,7 +20,8 @@ public class Role {
     private String description;
 
     @ManyToMany(mappedBy = "roles")
-    @JsonBackReference
+//    @JsonBackReference
+    @JsonIgnore
     private List<Users> users;
 
     public Role() {
