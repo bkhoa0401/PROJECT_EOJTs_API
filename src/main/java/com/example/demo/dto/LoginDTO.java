@@ -13,7 +13,6 @@ public class LoginDTO implements Serializable {
     }
 
     public LoginDTO(String token, Users users) {
-
         this.token = token;
         this.users = users;
     }

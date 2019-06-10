@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
+import java.util.List;
 
 @Service
 public class UsersService {
@@ -62,5 +63,14 @@ public class UsersService {
             return users;
         }
         return null;
+    }
+
+    public boolean saveListUser(List<Users> usersList) {
+        usersRepository.saveAll(usersList);
+        return true;
+    }
+
+    public List<Users> getAllUsers() {
+        return usersRepository.findAll();
     }
 }

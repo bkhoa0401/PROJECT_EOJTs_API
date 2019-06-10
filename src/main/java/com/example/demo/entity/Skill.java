@@ -24,7 +24,7 @@ public class Skill {
     private Specialized specialized;
 
     @ManyToMany(mappedBy = "skills")
-    @JsonBackReference
+//    @JsonBackReference
     private List<Student> students;
 
 //    @ManyToMany(mappedBy = "skills")
@@ -42,6 +42,9 @@ public class Skill {
     public void setId(int id) {
         this.id = id;
     }
+    @ManyToMany(mappedBy = "skills")
+//    @JsonBackReference
+    private List<Job_Post> job_posts;
 
     public String getName() {
         return name;

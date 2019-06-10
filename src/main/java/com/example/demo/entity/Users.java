@@ -23,9 +23,9 @@ import java.util.List;
 
 public class Users {
 
-
     @Id
     @Column(name = "email")
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "password")

@@ -103,34 +103,27 @@ class Excels extends Component {
         const { rows_Students, rows_Businesses } = this.state;
         const listStudents = [];
         const listBusinesses = [];
-        const role_student = [
-            {
-                id: 2
-            }
-        ];
 
         if (rows_Students.length != 0) {
             if (buttonName === 'Students') {
 
                 rows_Students && rows_Students.map((student, index) => {
                     var student = {
-                        studentCode: student[1],
-                        password: 'default',
-                        roles: role_student,
+                        code: student[1],
                         name: student[2],
-                        email: student[3],
-                        // specialized: student[4],
-                        semester: student[5],
-                        state: student[6],
+                        phone: student[3],
+                        email: student[4],
+                        address: student[5],
+                        specialized: student[6],
+                        semester: student[7],
                     };
                     listStudents.push(student);
                 })
 
                 console.log("LIST STUDENTS", listStudents);
 
-                const result = await ApiServices.Post('/account', listStudents);
-                if (result != null) {
-                    // do something
+                const resultStudents = await ApiServices.Post('/student', listStudents);
+                if (resultStudents.status == 201) {                
                     Toastify.actionSuccess("Create Successfully!");
                 } else {
                     Toastify.actionFail("Create Fail!");
@@ -164,14 +157,14 @@ class Excels extends Component {
 
                     var business = {
                         name: business[1],
-                        englishName: business[2],
-                        address: business[3],
-                        website: business[4],
+                        business_eng_name: business[2],
+                        business_address: business[3],
+                        business_website: business[4],
                         intershipAddress: business[5],
                         skills_number: result,
                         process: business[7],
                         contact: business[8],
-                        businessOverview: business[9],
+                        business_overview: business[9],
                         interest: business[10]
                     };
                     listBusinesses.push(business);
@@ -222,7 +215,7 @@ class Excels extends Component {
         }
 
         let flag = true;
-        var titles = ["No", "MSSV", "Họ Tên", "Email", "Specialized", "Semester", "State"];
+        var titles = ["STT", "MSSV", "Họ Tên", "SĐT", "Email", "Địa chỉ", "Ngành học", "Kì"];
 
         if (fileType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 
@@ -233,7 +226,7 @@ class Excels extends Component {
                 else {
                     let titlesExcel = resp.rows[0];
 
-                    if (titlesExcel.length != 7) {
+                    if (titlesExcel.length != 8) {
                         flag = false;
                     } else {
                         for (let i = 0; i < titles.length; i++) {
@@ -384,13 +377,14 @@ class Excels extends Component {
 
                                             <table class="table table-bordered table-hover" style={{ textAlign: "center" }}>
                                                 <thead>
-                                                    <th>No</th>
+                                                    <th>STT</th>
                                                     <th>MSSV</th>
                                                     <th>Họ Tên</th>
+                                                    <th>SĐT</th>
                                                     <th>Email</th>
-                                                    <th>Specialized</th>
-                                                    <th>Semester</th>
-                                                    <th>State</th>
+                                                    <th>Địa chỉ</th>
+                                                    <th>Ngành học</th>
+                                                    <th>Kì</th>
                                                 </thead>
                                                 <tbody>
                                                     {
@@ -404,6 +398,7 @@ class Excels extends Component {
                                                                     <td id={"s-" + index + "-4"} onKeyUp={this.rowStudentEdited}>{student[4]}</td>
                                                                     <td id={"s-" + index + "-5"} onKeyUp={this.rowStudentEdited}>{student[5]}</td>
                                                                     <td id={"s-" + index + "-6"} onKeyUp={this.rowStudentEdited}>{student[6]}</td>
+                                                                    <td id={"s-" + index + "-7"} onKeyUp={this.rowStudentEdited}>{student[7]}</td>
                                                                 </tr>
                                                             )
                                                         })
@@ -454,34 +449,34 @@ class Excels extends Component {
                                             <div style={{ overflowX: "auto" }}>
                                                 <table class="table table-bordered table-hover" style={{ textAlign: "center" }}>
                                                     <thead>
-                                                        <th style={{whiteSpace: "nowrap"}}>STT</th>
-                                                        <th style={{whiteSpace: "nowrap"}}>Doanh nghiệp</th>
-                                                        <th style={{whiteSpace: "nowrap"}}>Tên tiếng Anh</th>
-                                                        <th style={{whiteSpace: "nowrap"}}>Địa chỉ công ty</th>
-                                                        <th style={{whiteSpace: "nowrap"}}>Website</th>
-                                                        <th style={{whiteSpace: "nowrap"}}>Địa chỉ SV sẽ thực tập</th>
-                                                        <th style={{whiteSpace: "nowrap"}}>Vị trí - Số lượng</th>
-                                                        <th style={{whiteSpace: "nowrap"}}>Quy trình tuyển</th>
-                                                        <th style={{whiteSpace: "nowrap"}}>Liên hệ</th>
-                                                        <th style={{whiteSpace: "nowrap"}}>Giới thiệu công ty</th>
-                                                        <th style={{whiteSpace: "nowrap"}}  >Chính sách ưu đãi</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>STT</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Doanh nghiệp</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Tên tiếng Anh</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Địa chỉ công ty</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Website</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Địa chỉ SV sẽ thực tập</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Vị trí - Số lượng</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Quy trình tuyển</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Liên hệ</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Giới thiệu công ty</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}  >Chính sách ưu đãi</th>
                                                     </thead>
                                                     <tbody>
                                                         {
                                                             businessesPagination && businessesPagination.map((business, index) => {
                                                                 return (
                                                                     <tr key={index}>
-                                                                        <td style={{whiteSpace: "nowrap"}}>{business[0]}</td>
-                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-1"} onKeyUp={this.rowBusinessEdited}>{business[1]}</td>
-                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-2"} onKeyUp={this.rowBusinessEdited}>{business[2]}</td>
-                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-3"} onKeyUp={this.rowBusinessEdited}>{business[3]}</td>
-                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-4"} onKeyUp={this.rowBusinessEdited}>{business[4]}</td>
-                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-5"} onKeyUp={this.rowBusinessEdited}>{business[5]}</td>
-                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-6"} onKeyUp={this.rowBusinessEdited}>{business[6]}</td>
-                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-7"} onKeyUp={this.rowBusinessEdited}>{business[7]}</td>
-                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-8"} onKeyUp={this.rowBusinessEdited}>{business[8]}</td>
-                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-9"} onKeyUp={this.rowBusinessEdited}>{business[9]}</td>
-                                                                        <td style={{whiteSpace: "nowrap"}} id={"b-" + index + "-10"} onKeyUp={this.rowBusinessEdited}>{business[10]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }}>{business[0]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-1"} onKeyUp={this.rowBusinessEdited}>{business[1]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-2"} onKeyUp={this.rowBusinessEdited}>{business[2]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-3"} onKeyUp={this.rowBusinessEdited}>{business[3]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-4"} onKeyUp={this.rowBusinessEdited}>{business[4]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-5"} onKeyUp={this.rowBusinessEdited}>{business[5]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-6"} onKeyUp={this.rowBusinessEdited}>{business[6]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-7"} onKeyUp={this.rowBusinessEdited}>{business[7]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-8"} onKeyUp={this.rowBusinessEdited}>{business[8]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-9"} onKeyUp={this.rowBusinessEdited}>{business[9]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-10"} onKeyUp={this.rowBusinessEdited}>{business[10]}</td>
                                                                     </tr>
                                                                 )
                                                             })

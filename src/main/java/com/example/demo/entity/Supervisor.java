@@ -10,6 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "supervisor")
 public class Supervisor {
+
     @Id
     @Column(name = "email")
     private String email;
