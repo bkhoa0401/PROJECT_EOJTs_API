@@ -153,7 +153,7 @@ class Excels extends Component {
                                     id: business[0]
                                 },
                                 skill: {
-                                    id: 1,
+                                    id: index + 1,
                                 },
                                 number: skills_number[1].trim()
 
@@ -209,7 +209,7 @@ class Excels extends Component {
                 console.log("LIST BUSINESSES", listBusinesses);
 
                 const result = await ApiServices.Post('/business', listBusinesses);
-                if (result) {
+                if (result.status == 201) {
                     Toastify.actionSuccess("Create Success!");
 
                 } else {
