@@ -1,9 +1,14 @@
 package com.example.demo.controller;
 
+<<<<<<< HEAD
 import com.example.demo.entity.Role;
 import com.example.demo.entity.Specialized;
 import com.example.demo.entity.Student;
 import com.example.demo.entity.Users;
+=======
+import com.example.demo.entity.*;
+import com.example.demo.service.Ojt_EnrollmentService;
+>>>>>>> master
 import com.example.demo.service.SpecializedService;
 import com.example.demo.service.StudentService;
 import com.example.demo.service.UsersService;
@@ -26,6 +31,12 @@ public class StudentController {
     UsersService usersService;
 
     @Autowired
+<<<<<<< HEAD
+=======
+    Ojt_EnrollmentService ojt_enrollmentService;
+
+    @Autowired
+>>>>>>> master
     private SpecializedService specializedService;
 
     @PostMapping
@@ -36,6 +47,7 @@ public class StudentController {
         role.setId(2);
         roleList.add(role);
         List<Users> usersList = new ArrayList<>();
+        List<Ojt_Enrollment> ojtEnrollmentList = new ArrayList<>();
 
         for (int i = 0; i < studentList.size(); i++) {
             Users users = new Users();
@@ -44,11 +56,17 @@ public class StudentController {
             users.setRoles(roleList);
 
             usersList.add(users);
+
+            Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
+            ojt_enrollment.setStudent(studentList.get(i));
+
+            ojtEnrollmentList.add(ojt_enrollment);
         }
 
         try {
             studentService.saveListStudent(studentList);
             usersService.saveListUser(usersList);
+            ojt_enrollmentService.saveListOjtEnrollment(ojtEnrollmentList);
 
 //            for (int i = 0; i < studentList.size(); i++) {
 //                usersService.sendEmail(studentList.get(i).getName(), studentList.get(i).getEmail());
@@ -84,8 +102,13 @@ public class StudentController {
     }
 
     //get student by email
+<<<<<<< HEAD
     @GetMapping("/{email}")
     public ResponseEntity<Student> getStudentByEmail(@PathVariable String email) {
+=======
+    @GetMapping("student/{email}")
+    public ResponseEntity<Student> getStudentByEmail(@PathVariable  String email) {
+>>>>>>> master
         return new ResponseEntity<Student>(studentService.getStudentByEmail(email), HttpStatus.OK);
     }
 }
