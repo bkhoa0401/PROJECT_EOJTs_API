@@ -6,10 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
 
-@Repository
+@Service
 public class UsersService {
     @Autowired
     UsersRepository usersRepository;

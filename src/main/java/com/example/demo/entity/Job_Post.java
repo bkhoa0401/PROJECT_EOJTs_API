@@ -16,8 +16,8 @@ public class Job_Post {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @Column(name = "title", columnDefinition = "NVARCHAR(150)")
-    private String title;
+//    @Column(name = "title", columnDefinition = "NVARCHAR(150)")
+//    private String title;
 
     @Column(name = "description", columnDefinition = "NVARCHAR(MAX)")
     private String description;
@@ -71,13 +71,13 @@ public class Job_Post {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
+//    public String getTitle() {
+//        return title;
+//    }
+//
+//    public void setTitle(String title) {
+//        this.title = title;
+//    }
 
     public String getDescription() {
         return description;

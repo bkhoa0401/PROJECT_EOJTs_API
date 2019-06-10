@@ -32,8 +32,7 @@ public class WebController {
     @Autowired
     private StudentService studentService;
 
-    @Autowired
-    private BusinessService businessService;
+
 
     @PostMapping("")
     public ResponseEntity<Void> addListUser(@RequestBody List<Users> listUsers) throws Exception {
@@ -90,12 +89,5 @@ public class WebController {
     @GetMapping("student/{email}")
     public ResponseEntity<Student> getStudentByEmail(@PathVariable String email) {
         return new ResponseEntity<Student>(studentService.getStudentByEmail(email), HttpStatus.OK);
-    }
-
-    @PostMapping("/business/import")
-    public ResponseEntity<Void> importFileBusiness(@RequestBody List<Business> listBusiness) {
-        System.out.println(listBusiness.get(0).getOjt_enrollments().get(0).getBusiness().getEmail());
-        businessService.importFileBusiness(listBusiness);
-        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
