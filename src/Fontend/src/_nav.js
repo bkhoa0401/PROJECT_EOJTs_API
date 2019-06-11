@@ -1,25 +1,32 @@
 export default {
   items: [
     {
-      name: 'Company Profile',
+      name: 'Công ty',
       url: '/company',
       icon: 'icon-star',
     },
     {
-      name: 'Import Files',
+      name: 'Nhập tập tin',
       url: '/importfiles',
       icon: 'icon-star',
 
     },
     {
-      name: 'Schedule Parameters',
+      name: 'Thông số lịch trình',
       url: '/scheduleparameters',
       icon: 'icon-star',
     },
     {
-      name: 'Change Password',
-      url: '/changepassword',
-      icon: 'icon-star',
+      name: 'Tài khoản',
+      url: '/account',
+      icon: 'icon-puzzle',
+      children: [
+        {
+          name: 'Đổi mật khẩu',
+          url: '/account/changepassword',
+          icon: 'icon-star',
+        },
+      ],
     },
     // {
     //   name: 'test',
@@ -264,11 +271,11 @@ export default {
     //       url: '/login',
     //       icon: 'icon-star',
     //     },
-        // {
-        //   name: 'Forgot Password',
-        //   url: '/forgotpassword',
-        //   icon: 'icon-star',
-        // },
+    // {
+    //   name: 'Forgot Password',
+    //   url: '/forgotpassword',
+    //   icon: 'icon-star',
+    // },
     //     {
     //       name: 'Error 404',
     //       url: '/404',

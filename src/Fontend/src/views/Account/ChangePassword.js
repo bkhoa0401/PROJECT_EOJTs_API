@@ -34,7 +34,7 @@ class ChangePassword extends Component {
                                                     <i className="icon-lock"></i>
                                                 </InputGroupText>
                                             </InputGroupAddon>
-                                            <Input type="password" placeholder="Password" autoComplete="new-password" />
+                                            <Input type="password" placeholder="Mật khẩu mới" autoComplete="new-password" />
                                         </InputGroup>
                                         <InputGroup className="mb-4">
                                             <InputGroupAddon addonType="prepend">
@@ -42,17 +42,17 @@ class ChangePassword extends Component {
                                                     <i className="icon-lock"></i>
                                                 </InputGroupText>
                                             </InputGroupAddon>
-                                            <Input type="password" placeholder="Repeat password" autoComplete="new-password" />
+                                            <Input type="password" placeholder="Nhập lại mật khẩu mới" autoComplete="new-password" />
                                         </InputGroup>
                                     </Form>
                                 </CardBody>
                                 <CardFooter className="p-4">
                                     <Row>
                                         <Col xs="12" sm="6">
-                                            <Button color="success" block>Đặt lại mật khẩu</Button>
+                                            <Button color="primary" block>Đặt lại mật khẩu</Button>
                                         </Col>
                                         <Col xs="12" sm="6">
-                                            <Button type="reset" color="primary" block><span>Reset</span></Button>
+                                            <Button type="reset" color="danger" block><span>Reset</span></Button>
                                         </Col>
                                     </Row>
                                 </CardFooter>

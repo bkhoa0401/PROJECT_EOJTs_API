@@ -15,7 +15,7 @@ import {
 } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
+import Toastify from '../Toastify/Toastify';
 import SimpleReactValidator from 'simple-react-validator';
 
 
@@ -97,24 +97,10 @@ class Company extends Component {
                     <Col xs="12" sm="12">
                         <Card>
                             <CardHeader>
-                                <h4>Thông tin công ty</h4>
-                                <Col xs="3" sm="3">
-                                    <Button style={{ marginLeft: "800px" }} block color="primary" onClick={() => this.handleDirect("/company/update")}>Chỉnh sửa</Button>
-                                </Col>
+                                <h4>Chỉnh sửa thông tin</h4>
                             </CardHeader>
                             <CardBody>
                                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Logo</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value="Đây là 1 file" onChange={this.handleInput} type="text" id="timeStartOJT" name="timeStartOJT" />
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('timeStartOJT', this.state.timeStartOJT, 'required')}
-                                            </span>
-                                        </Col>
-                                    </FormGroup>
                                     <FormGroup row>
                                         <Col md="2">
                                             <h6>Tên doanh nghiệp</h6>
@@ -195,10 +181,21 @@ class Company extends Component {
                                     </FormGroup>
                                     <FormGroup row>
                                         <Col md="2">
+                                            <h6>Logo</h6>
+                                        </Col>
+                                        <Col xs="12" md="10">
+                                            <Input value={this.state.timeStartOJT} onChange={this.handleInput} type="file" id="timeStartOJT" name="timeStartOJT" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('timeStartOJT', this.state.timeStartOJT, 'required')}
+                                            </span>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="2">
                                             <h6>Image</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Input value="Đây là 1 gallery" onChange={this.handleInput} type="text" id="timeStartOJT" name="timeStartOJT" />
+                                            <Input value={this.state.timeStartOJT} onChange={this.handleInput} type="file" id="timeStartOJT" name="timeStartOJT" />
                                             <span className="form-error is-visible text-danger">
                                                 {this.validator.message('timeStartOJT', this.state.timeStartOJT, 'required')}
                                             </span>
@@ -206,6 +203,19 @@ class Company extends Component {
                                     </FormGroup>
                                 </Form>
                             </CardBody>
+                            <CardFooter className="p-4">
+                                <Row>
+                                    <Col xs="3" sm="3">
+                                        <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Xác nhận</Button>
+                                    </Col>
+                                    <Col xs="3" sm="3">
+                                        <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
+                                    </Col>
+                                    <Col xs="3" sm="3">
+                                        <Button color="success" block onClick={() => this.handleDirect("/company")} type="reset">Trở về</Button>
+                                    </Col>
+                                </Row>
+                            </CardFooter>
                         </Card>
                     </Col>
                 </Row>

@@ -39,7 +39,8 @@ const Test = React.lazy(() => import('./views/Test/Test'));
 const Excels = React.lazy(() => import('./views/Excels/Excels.js'));
 const ScheduleParameters = React.lazy(() => import('./views/ScheduleParameters/ScheduleParameters.js'));
 const Company = React.lazy(() => import('./views/Company/Company.js'));
-const ChangePassword = React.lazy(() => import('./views/ChangePassword/ChangePassword.js'));
+const Company_Update = React.lazy(() => import('./views/Company/Company_Update.js'));
+const ChangePassword = React.lazy(() => import('./views/Account/ChangePassword.js'));
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -86,10 +87,11 @@ const routes = [
   { path: '/users', exact: true, name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
   { path: '/test', exact: true, name: 'Tests', component: Test },
-  { path: '/importfiles', exact: true, name: 'Import Files', component: Excels },
-  { path: '/scheduleparameters', exact: true, name: 'Schedule Parameters', component: ScheduleParameters },
-  { path: '/company', exact: true, name: 'Company', component: Company },
-  { path: '/changepassword', exact: true, name: 'Change Password', component: ChangePassword },
+  { path: '/importfiles', exact: true, name: 'Nhập tập tin', component: Excels },
+  { path: '/scheduleparameters', exact: true, name: 'Thông số lịch trình', component: ScheduleParameters },
+  { path: '/company', exact: true, name: 'Công ty', component: Company },
+  { path: '/company/update', exact: true, name: 'Chỉnh sửa', component: Company_Update },
+  { path: '/account/changepassword', exact: true, name: 'Đổi mật khẩu', component: ChangePassword },
 ];
 
 export default routes;

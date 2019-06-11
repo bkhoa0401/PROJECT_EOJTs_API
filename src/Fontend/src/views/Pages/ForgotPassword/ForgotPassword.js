@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Button, Card, CardBody, CardFooter, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 
-class Register extends Component {
+class FotgotPassword extends Component {
 
-  handleBack = async() => {
+  handleBack = async () => {
     this.props.history.push('/login');
-}
+  }
 
   render() {
     return (
@@ -48,7 +48,6 @@ class Register extends Component {
                       </InputGroupAddon>
                       <Input type="password" placeholder="Repeat password" autoComplete="new-password" />
                     </InputGroup> */}
-                    
                   </Form>
                 </CardBody>
                 <CardFooter className="p-4">
@@ -70,4 +69,4 @@ class Register extends Component {
   }
 }
 
-export default Register;
+export default FotgotPassword;

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/ojt_enrollment)")
+@RequestMapping("/api/ojt_enrollment")
 public class Ojt_EnrollmentController {
 
     @Autowired

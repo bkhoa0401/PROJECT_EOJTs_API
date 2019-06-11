@@ -54,8 +54,8 @@ class Login extends Component {
                 <Card className="p-4">
                   <CardBody>
                     <Form>
-                      <h1>Login</h1>
-                      <p className="text-muted">Sign In to your account</p>
+                      <h1>Đăng nhập</h1>
+                      <p className="text-muted">Tài khoản của bạn</p>
                       <InputGroup className="mb-3">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
@@ -70,14 +70,14 @@ class Login extends Component {
                             <i className="icon-lock"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input onChange={this.handleInput} value={password} type="password" placeholder="Password" autoComplete="current-password" name='password' />
+                        <Input onChange={this.handleInput} value={password} type="password" placeholder="Mật khẩu" autoComplete="current-password" name='password' />
                       </InputGroup>
                       <Row>
                         <Col xs="6">
-                          <Button onClick={this.handleSubmit} color="primary" className="px-4">Login</Button>
+                          <Button onClick={this.handleSubmit} color="primary" className="px-4">Đăng nhập</Button>
                         </Col>
                         <Col xs="6" className="text-right">
-                          <Button color="link" className="px-0" onClick={this.handForgotPassword}>Forgot password?</Button>
+                          <Button color="link" className="px-0" onClick={this.handForgotPassword}>Quên mật khẩu?</Button>
                         </Col>
                       </Row>
                     </Form>
@@ -87,7 +87,7 @@ class Login extends Component {
                 <Card className="text-white bg-primary py-5 d-md-down-none" style={{ width: '44%' }}>
                   <CardBody className="text-center">
                     <div>
-                      <h2>Chào mừng bạn!</h2>
+                      <h2>Hệ thống quản lí OJT</h2>
                     </div>
                   </CardBody>
                 </Card>
