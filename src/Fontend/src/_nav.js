@@ -1,15 +1,25 @@
 export default {
   items: [
     {
+      name: 'Company Profile',
+      url: '/company',
+      icon: 'icon-star',
+    },
+    {
       name: 'Import Files',
       url: '/importfiles',
-      icon: 'icon-speedometer',
+      icon: 'icon-star',
 
     },
     {
       name: 'Schedule Parameters',
       url: '/scheduleparameters',
-      icon: 'icon-speedometer',
+      icon: 'icon-star',
+    },
+    {
+      name: 'Change Password',
+      url: '/changepassword',
+      icon: 'icon-star',
     },
     // {
     //   name: 'test',
@@ -254,11 +264,11 @@ export default {
     //       url: '/login',
     //       icon: 'icon-star',
     //     },
-    //     {
-    //       name: 'Register',
-    //       url: '/register',
-    //       icon: 'icon-star',
-    //     },
+        // {
+        //   name: 'Forgot Password',
+        //   url: '/forgotpassword',
+        //   icon: 'icon-star',
+        // },
     //     {
     //       name: 'Error 404',
     //       url: '/404',

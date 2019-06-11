@@ -38,6 +38,8 @@ const User = React.lazy(() => import('./views/Users/User'));
 const Test = React.lazy(() => import('./views/Test/Test'));
 const Excels = React.lazy(() => import('./views/Excels/Excels.js'));
 const ScheduleParameters = React.lazy(() => import('./views/ScheduleParameters/ScheduleParameters.js'));
+const Company = React.lazy(() => import('./views/Company/Company.js'));
+const ChangePassword = React.lazy(() => import('./views/ChangePassword/ChangePassword.js'));
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -86,6 +88,8 @@ const routes = [
   { path: '/test', exact: true, name: 'Tests', component: Test },
   { path: '/importfiles', exact: true, name: 'Import Files', component: Excels },
   { path: '/scheduleparameters', exact: true, name: 'Schedule Parameters', component: ScheduleParameters },
+  { path: '/company', exact: true, name: 'Company', component: Company },
+  { path: '/changepassword', exact: true, name: 'Change Password', component: ChangePassword },
 ];
 
 export default routes;
