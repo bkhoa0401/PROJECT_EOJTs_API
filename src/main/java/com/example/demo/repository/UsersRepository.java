@@ -12,7 +12,7 @@ public interface UsersRepository extends JpaRepository<Users,String> {
 
     Users findUserByEmailAndPassword(String email, String password);
 
-    @Query(value = "SELECT a \n"
+    @Query(value =   "SELECT a \n"
             + "       FROM Users a\n"
             + "       WHERE a.email=?1 and a.password=?2\n")
     Users findUserCustom(String email, String password);

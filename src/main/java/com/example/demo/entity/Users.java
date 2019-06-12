@@ -41,6 +41,13 @@ public class Users {
 //    @JsonManagedReference
     private List<Role> roles;
 
+    public Users() {
+    }
+
+    public Users(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
     public String getEmail() {
         return email;

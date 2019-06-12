@@ -20,11 +20,9 @@ public class UsersService {
     private JavaMailSender sender;
 
 
-    public void sendEmail(String name, String mail) throws Exception {
+    public void sendEmail(String name, String mail, String password) throws Exception {
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-
-        String password = getAlphaNumericString(7);
 
         helper.setTo(mail);
         helper.setText("Hi " + name + ",\n" + "welcome you to my system.\n Your password are : " + password + "\nThanks and Regards");
@@ -33,13 +31,13 @@ public class UsersService {
         sender.send(message);
     }
 
-    private String getAlphaNumericString(int size) {
+    public String getAlphaNumericString() {
         String AlphaNumericString = "0123456789"
                 + "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 + "abcdefghijklmnopqrstuvxyz";
-        StringBuilder sb = new StringBuilder(size);
+        StringBuilder sb = new StringBuilder(7);
 
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < 7; i++) {
             int index
                     = (int) (AlphaNumericString.length()
                     * Math.random());
@@ -57,8 +55,8 @@ public class UsersService {
         return null;
     }
 
-    public Users findUserByEmailAndPassWord(String email,String password) {
-        Users users = usersRepository.findUserByEmailAndPassword(email,password);
+    public Users findUserByEmailAndPassWord(String email, String password) {
+        Users users = usersRepository.findUserByEmailAndPassword(email, password);
         if (users != null) {
             return users;
         }
@@ -67,6 +65,11 @@ public class UsersService {
 
     public boolean saveListUser(List<Users> usersList) {
         usersRepository.saveAll(usersList);
+        return true;
+    }
+
+    public boolean saveUser(Users users) {
+        usersRepository.save(users);
         return true;
     }
 

@@ -123,4 +123,15 @@ public class Business {
     public void setOjt_enrollments(List<Ojt_Enrollment> ojt_enrollments) {
         this.ojt_enrollments = ojt_enrollments;
     }
+
+    public Business(String email, String business_name, String business_eng_name, String business_phone, String business_address, String business_overview, String business_website, String logo) {
+        this.email = email;
+        this.business_name = business_name;
+        this.business_eng_name = business_eng_name;
+        this.business_phone = business_phone;
+        this.business_address = business_address;
+        this.business_overview = business_overview;
+        this.business_website = business_website;
+        this.logo = logo;
+    }
 }

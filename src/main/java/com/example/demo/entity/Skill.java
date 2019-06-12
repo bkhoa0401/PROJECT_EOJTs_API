@@ -1,26 +1,33 @@
 package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.TermVector;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "skill")
+@Indexed
 public class Skill {
 
     @Id
     @Column(name = "id")
     private int id;
 
-    @Column(name = "name")
+    @Column(name = "name",columnDefinition = "NVARCHAR(100)")
+    @Field(termVector = TermVector.YES)
     private String name;
 
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "specialized_id")
+    @JsonIgnore
     private Specialized specialized;
 
     @ManyToMany(mappedBy = "skills")
@@ -77,4 +84,9 @@ public class Skill {
 //    public void setJob_posts(List<Job_Post> job_posts) {
 //        this.job_posts = job_posts;
 //    }
+
+    public Skill(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

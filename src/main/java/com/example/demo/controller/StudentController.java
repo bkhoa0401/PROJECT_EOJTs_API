@@ -1,10 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.*;
-import com.example.demo.service.Ojt_EnrollmentService;
-import com.example.demo.service.SpecializedService;
-import com.example.demo.service.StudentService;
-import com.example.demo.service.UsersService;
+import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -95,5 +92,14 @@ public class StudentController {
     @GetMapping("student/{email}")
     public ResponseEntity<Student> getStudentByEmail(@PathVariable  String email) {
         return new ResponseEntity<Student>(studentService.getStudentByEmail(email), HttpStatus.OK);
+    }
+
+    @Autowired
+    SkillService skillService;
+
+    @GetMapping("/skill")
+    public ResponseEntity<Integer> getIdSkillByName(@RequestParam(value = "nameSkill") String nameSkill){
+        System.out.println(nameSkill);
+        return  new ResponseEntity<Integer>(skillService.fullTextSearch(nameSkill), HttpStatus.OK);
     }
 }

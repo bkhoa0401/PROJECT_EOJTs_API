@@ -13,6 +13,7 @@ import java.util.List;
 public class Job_Post {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private int id;
 
@@ -37,7 +38,7 @@ public class Job_Post {
     @Column(name = "interest", columnDefinition = "NVARCHAR(500)")
     private String interest;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "ojt_enrollment_id")
     private Ojt_Enrollment ojt_enrollment;
@@ -61,6 +62,26 @@ public class Job_Post {
 
 
     public Job_Post() {
+    }
+
+    public Job_Post(int id, String description, Date time_post, int views, String contact, String interview_process, String interest, Ojt_Enrollment ojt_enrollment) {
+        this.id = id;
+        this.description = description;
+        this.time_post = time_post;
+        this.views = views;
+        this.contact = contact;
+        this.interview_process = interview_process;
+        this.interest = interest;
+        this.ojt_enrollment = ojt_enrollment;
+    }
+
+    public Job_Post(String description, Date time_post, int views, String contact, String interview_process, String interest) {
+        this.description = description;
+        this.time_post = time_post;
+        this.views = views;
+        this.contact = contact;
+        this.interview_process = interview_process;
+        this.interest = interest;
     }
 
     public int getId() {

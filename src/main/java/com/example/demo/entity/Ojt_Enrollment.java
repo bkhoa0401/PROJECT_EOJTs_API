@@ -15,6 +15,7 @@ import java.util.List;
 public class Ojt_Enrollment {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private int id;
 
@@ -26,7 +27,7 @@ public class Ojt_Enrollment {
     @JoinColumn(name = "student_email")
     private Student student;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "business_email")
     private Business business;

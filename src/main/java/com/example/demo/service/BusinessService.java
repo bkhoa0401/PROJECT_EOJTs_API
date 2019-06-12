@@ -13,9 +13,7 @@ public class BusinessService {
     @Autowired
     BusinessRepository businessRepository;
 
-    public void importFileBusiness(List<Business> businessList) {
-        if (businessList != null) {
-            businessRepository.saveAll(businessList);
-        }
+    public void saveBusiness(Business business){
+        businessRepository.save(business);
     }
 }
