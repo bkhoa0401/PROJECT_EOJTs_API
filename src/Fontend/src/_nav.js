@@ -28,6 +28,16 @@ export default {
         },
       ],
     },
+    {
+      name: 'Quản lí lời mời',
+      url: '/invitation',
+      icon: 'icon-star',
+    },
+    {
+      name: 'DSSV đăng kí thực tập',
+      url: '/ojt_registration',
+      icon: 'icon-star',
+    },
     // {
     //   name: 'test',
     //   url: '/test',

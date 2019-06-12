@@ -20,7 +20,12 @@ import {
   Excels,
   ScheduleParameters,
   Company,
-  ChangePassword
+  ChangePassword,
+  Invitation,
+  Invitation_Detail,
+  Invitation_Create,
+  Ojt_Registration,
+  CV
 } from './Base';
 
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
@@ -75,5 +80,10 @@ export {
   ScheduleParameters,
   Company,
   ChangePassword,
+  Invitation,
+  Invitation_Detail,
+  Invitation_Create,
+  Ojt_Registration,
+  CV
 };
 

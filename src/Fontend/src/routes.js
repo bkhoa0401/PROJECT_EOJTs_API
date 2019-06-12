@@ -41,6 +41,11 @@ const ScheduleParameters = React.lazy(() => import('./views/ScheduleParameters/S
 const Company = React.lazy(() => import('./views/Company/Company.js'));
 const Company_Update = React.lazy(() => import('./views/Company/Company_Update.js'));
 const ChangePassword = React.lazy(() => import('./views/Account/ChangePassword.js'));
+const Invitation = React.lazy(() => import('./views/Invitation/Invitation.js'));
+const Invitation_Detail = React.lazy(() => import('./views/Invitation/Invitation_Detail.js'));
+const Invitation_Create = React.lazy(() => import('./views/Invitation/Invitation_Create.js'));
+const Ojt_Registration = React.lazy(() => import('./views/Ojt_Registration/Ojt_Registration.js'));
+const CV = React.lazy(() => import('./views/Ojt_Registration/CV.js'));
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -92,6 +97,11 @@ const routes = [
   { path: '/company', exact: true, name: 'Công ty', component: Company },
   { path: '/company/update', exact: true, name: 'Chỉnh sửa', component: Company_Update },
   { path: '/account/changepassword', exact: true, name: 'Đổi mật khẩu', component: ChangePassword },
+  { path: '/invitation', exact: true, name: 'Lời mời', component: Invitation },
+  { path: '/invitation/detail', exact: true, name: 'Chi tiết lời mời', component: Invitation_Detail },
+  { path: '/invitation/new', exact: true, name: 'Gửi lời mời cho sinh viên', component: Invitation_Create },
+  { path: '/ojt_registration', exact: true, name: 'DSSV đăng kí thực tập', component: Ojt_Registration },
+  { path: '/ojt_registration/cv', exact: true, name: 'Chi tiết CV', component: CV },
 ];
 
 export default routes;
