@@ -4,6 +4,7 @@ import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGr
 import AuthService from '../../../service/auth-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../Toastify/Toastify';
+import { async } from 'q';
 
 class Login extends Component {
 
@@ -27,10 +28,14 @@ class Login extends Component {
     const result = await AuthService.login(email, password);
     console.log("result", result);
     if (result) {
-      this.props.history.push('/excels');
+      this.props.history.push('/company');
     } else {
       Toastify.actionFail("Incorrect Email Or Password!");
     }
+  }
+
+  handForgotPassword = async() => {
+      this.props.history.push('/forgotpassword');
   }
 
   // componentWillMount() {
@@ -49,8 +54,8 @@ class Login extends Component {
                 <Card className="p-4">
                   <CardBody>
                     <Form>
-                      <h1>Login</h1>
-                      <p className="text-muted">Sign In to your account</p>
+                      <h1>Đăng nhập</h1>
+                      <p className="text-muted">Tài khoản của bạn</p>
                       <InputGroup className="mb-3">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
@@ -65,32 +70,27 @@ class Login extends Component {
                             <i className="icon-lock"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input onChange={this.handleInput} value={password} type="password" placeholder="Password" autoComplete="current-password" name='password' />
+                        <Input onChange={this.handleInput} value={password} type="password" placeholder="Mật khẩu" autoComplete="current-password" name='password' />
                       </InputGroup>
                       <Row>
                         <Col xs="6">
-                          <Button onClick={this.handleSubmit} color="primary" className="px-4">Login</Button>
+                          <Button onClick={this.handleSubmit} color="primary" className="px-4">Đăng nhập</Button>
                         </Col>
-                        {/* <Col xs="6" className="text-right">
-                          <Button color="link" className="px-0">Forgot password?</Button>
-                        </Col> */}
+                        <Col xs="6" className="text-right">
+                          <Button color="link" className="px-0" onClick={this.handForgotPassword}>Quên mật khẩu?</Button>
+                        </Col>
                       </Row>
                     </Form>
                     <ToastContainer />
                   </CardBody>
                 </Card>
-                {/* <Card className="text-white bg-primary py-5 d-md-down-none" style={{ width: '44%' }}>
+                <Card className="text-white bg-primary py-5 d-md-down-none" style={{ width: '44%' }}>
                   <CardBody className="text-center">
                     <div>
-                      <h2>Sign up</h2>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua.</p>
-                      <Link to="/register">
-                        <Button color="primary" className="mt-3" active tabIndex={-1}>Register Now!</Button>
-                      </Link>
+                      <h2>Hệ thống quản lí OJT</h2>
                     </div>
                   </CardBody>
-                </Card> */}
+                </Card>
               </CardGroup>
             </Col>
           </Row>

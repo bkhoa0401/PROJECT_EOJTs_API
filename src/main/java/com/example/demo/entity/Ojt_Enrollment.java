@@ -1,18 +1,15 @@
 package com.example.demo.entity;
 
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "ojt_enrollment")
-public class Ojt_Enrollment {
+public class Ojt_Enrollment implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,6 +31,7 @@ public class Ojt_Enrollment {
 
     @OneToMany(mappedBy = "ojt_enrollment", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
     private List<Job_Post> job_posts;
 
     @OneToMany(mappedBy = "ojt_enrollment", cascade = CascadeType.ALL)

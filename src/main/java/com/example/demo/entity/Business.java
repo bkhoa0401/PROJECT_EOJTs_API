@@ -1,16 +1,15 @@
 package com.example.demo.entity;
 
-import org.hibernate.annotations.GenericGenerator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "business")
-public class Business {
+public class Business implements Serializable{
 
     @Id
     @Column(name = "email")
@@ -39,6 +38,7 @@ public class Business {
 
     @OneToMany(mappedBy = "business", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
     private List<Ojt_Enrollment> ojt_enrollments;
 
     @OneToMany(mappedBy = "business", cascade = CascadeType.ALL)
