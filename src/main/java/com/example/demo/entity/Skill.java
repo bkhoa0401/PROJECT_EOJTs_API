@@ -85,10 +85,6 @@ public class Skill {
 //        this.job_posts = job_posts;
 //    }
 
-
-    public Skill() {
-    }
-
     public Skill(int id, String name) {
         this.id = id;
         this.name = name;

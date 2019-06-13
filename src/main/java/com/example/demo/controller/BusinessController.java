@@ -38,7 +38,7 @@ public class BusinessController {
 
     @PostMapping("")
     public ResponseEntity<Void> saveBusiness(@RequestBody List<BusinessDTO> listBusinessDTO) throws Exception {
-        for (int i = 0; i < listBusinessDTO.size(); i++){
+        for (int i = 0; i < listBusinessDTO.size(); i++) {
             for (int j = 0; j < listBusinessDTO.get(i).getSkillDTOList().size(); j++) {
                 String skill_name = "";
                 int skill_id = 0;
@@ -50,7 +50,7 @@ public class BusinessController {
                 listBusinessDTO.get(i).getSkillDTOList().get(j).setSkill(skill);
             }
         }
-        for (int i=0;i<listBusinessDTO.size();i++){
+        for (int i = 0; i < listBusinessDTO.size(); i++) {
             businessImportFileService.insertBusiness(listBusinessDTO.get(i));
         }
         return new ResponseEntity<>(HttpStatus.CREATED);

@@ -48,11 +48,20 @@ public class StudentController {
 
         for (int i = 0; i < studentList.size(); i++) {
             Users users = new Users();
+            Specialized specialized = new Specialized();
+            String specializedName = "";
+            int specializedID = 0;
+
             users.setEmail(studentList.get(i).getEmail());
             String password = usersService.getAlphaNumericString();
             users.setPassword(password);
             nameList.add(studentList.get(i).getName());
             users.setRoles(roleList);
+
+            specializedName = studentList.get(i).getSpecialized().getName();
+            specializedID = specializedService.getIdByName(specializedName);
+            specialized.setId(specializedID);
+            studentList.get(i).setSpecialized(specialized);
 
             usersList.add(users);
 
@@ -112,6 +121,9 @@ public class StudentController {
         List<Skill> skills = skillService.getListSkillBySpecialized(specializedId);
 
         return new ResponseEntity<List<Skill>>(skills, HttpStatus.OK);
+
+    }
+
     @GetMapping("student/{email}")
     public ResponseEntity<Student> getStudentByEmail(@PathVariable String email) {
         return new ResponseEntity<Student>(studentService.getStudentByEmail(email), HttpStatus.OK);
@@ -130,15 +142,14 @@ public class StudentController {
     }
 
     @GetMapping("/list-invitation")
-    public ResponseEntity<List<Invitation>> getListInvitation(){
-        String email=getEmailFromToken();
-        List<Invitation> invitationList=invitationService.getListInvitationByStuddentEmail(email);
+    public ResponseEntity<List<Invitation>> getListInvitation() {
+        String email = getEmailFromToken();
+        List<Invitation> invitationList = invitationService.getListInvitationByStuddentEmail(email);
         return new ResponseEntity<List<Invitation>>(invitationList, HttpStatus.OK);
     }
 
     //return id of skill
     @GetMapping("/skill")
-    public ResponseEntity<Integer> getIdSkillByName(@RequestParam(value = "nameSkill") String nameSkill) {
     @ResponseBody
     public ResponseEntity<Integer> getIdSkillByName(@RequestParam(value = "nameSkill") String nameSkill) {
         System.out.println(nameSkill);

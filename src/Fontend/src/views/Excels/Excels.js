@@ -115,7 +115,9 @@ class Excels extends Component {
                         phone: student[3],
                         email: student[4],
                         address: student[5],
-                        specialized: student[6],
+                        specialized: {
+                            name: student[6]
+                        },
                         semester: student[7],
                     };
                     listStudents.push(student);
