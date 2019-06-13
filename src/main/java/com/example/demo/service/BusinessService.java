@@ -13,7 +13,15 @@ public class BusinessService {
     @Autowired
     BusinessRepository businessRepository;
 
-    public void saveBusiness(Business business){
+    public void saveBusiness(Business business) {
         businessRepository.save(business);
+    }
+
+    public List<Business> getAllBusiness() {
+        List<Business> businessList = businessRepository.findAll();
+        if (businessList != null) {
+            return businessList;
+        }
+        return null;
     }
 }

@@ -31,7 +31,6 @@ public class Ojt_Enrollment implements Serializable{
 
     @OneToMany(mappedBy = "ojt_enrollment", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonIgnore
     private List<Job_Post> job_posts;
 
     @OneToMany(mappedBy = "ojt_enrollment", cascade = CascadeType.ALL)

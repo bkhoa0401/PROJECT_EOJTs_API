@@ -120,6 +120,22 @@ public class Business implements Serializable{
         return ojt_enrollments;
     }
 
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
+    }
+
+    public List<Invitation> getInvitations() {
+        return invitations;
+    }
+
+    public void setInvitations(List<Invitation> invitations) {
+        this.invitations = invitations;
+    }
+
     public void setOjt_enrollments(List<Ojt_Enrollment> ojt_enrollments) {
         this.ojt_enrollments = ojt_enrollments;
     }

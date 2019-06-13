@@ -34,6 +34,7 @@ public class Invitation {
     //@JsonIgnore
   //  @JsonBackReference
     @JoinColumn(name = "business_email")
+    @JsonIgnore
     private Business business;
 
     @ManyToMany(mappedBy = "invitations")
