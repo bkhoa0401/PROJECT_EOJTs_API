@@ -93,4 +93,7 @@ public class Skill {
         this.id = id;
         this.name = name;
     }
+
+    public Skill() {
+    }
 }
