@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
+import { async } from 'q';
 
 class Excels extends Component {
 
@@ -114,7 +115,9 @@ class Excels extends Component {
                         phone: student[3],
                         email: student[4],
                         address: student[5],
-                        specialized: student[6],
+                        specialized: {
+                            name: student[6]
+                        },
                         semester: student[7],
                     };
                     listStudents.push(student);
@@ -142,30 +145,24 @@ class Excels extends Component {
                     const result = [];
 
                     skillsAndNumber = data.split("+");
-                    skillsAndNumber && skillsAndNumber.map((element, index) => {
+                    skillsAndNumber && skillsAndNumber.map(async(element, index) => {
                         if (index > 0) {
                             skills_number = element.split(":");
+                            var name = skills_number[0].trim();
+                            var number = skills_number[1].trim();
+                            console.log(name + ' - ' + number);
+                            // const id = await ApiServices.Get(`/student/skill?nameSkill=${name}`);
+                            // console.log(id);
                             const obj = {
-                                // skill: skills_number[0].trim(),
-                                
-
-                                job_post: {
-                                    id: business[0]
-                                },
                                 skill: {
-                                    id: index + 1,
+                                    id: 0,
                                 },
-                                number: skills_number[1].trim()
-
+                                name: name,
+                                number: number
                             }
                             result.push(obj);
                         }
                     })
-
-                    // const ojt_enrollments = [];
-
-                    // ojt_enrollments.push(obj_ojtEnrollment);
-                    // console.log("ojt_enrollments", ojt_enrollments);
 
                     var business = {
                         email: business[3],
@@ -175,32 +172,14 @@ class Excels extends Component {
                         business_name: business[1],
                         business_website: business[6],
                         business_phone: business[4],
-                        ojt_enrollments: [
-                            {
-                                id: business[0],
-                                business: {
-                                    email: business[3]
-                                },
-                                job_posts: [
-                                    {
-                                        id: business[0],
-                                        contact: business[10],
-                                        description: business[11],
-                                        interest: business[13],
-                                        interview_process: business[9],
-                                        time_post: '2019-09-06',
-                                        views: 1,
-                                        ojt_enrollment: {
-                                            id: business[0],
-                                        },
-                                        job_post_skills: result
-                                    }
-                                ]
-                            }
-                        ],
-
-                        // intershipAddress: business[7],
-                        // skills_number: result,
+                        "logo": business[14],
+                        contact: business[10],
+                        description: business[11],
+                        interest: business[13],
+                        interview_process: business[9],
+                        time_post: '2019-09-06',
+                        views: 1,
+                        skillDTOList: result
                     };
 
                     listBusinesses.push(business);
@@ -307,7 +286,7 @@ class Excels extends Component {
 
         let flag = true;
         var titles = ["STT", "Doanh Nghiệp", "Tên Tiếng Anh", "Email", "SĐT", "Địa chỉ Công ty", "Website", "Địa chỉ nơi SV sẽ thực tập", "Vị trí - Số lượng",
-            "Quy trình tuyển", "Liên hệ", "Mô tả", "Giới thiệu công ty", "Chính sách ưu đãi"];
+            "Quy trình tuyển", "Liên hệ", "Mô tả", "Giới thiệu công ty", "Chính sách ưu đãi", "Logo"];
 
         if (fileType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 
@@ -318,7 +297,7 @@ class Excels extends Component {
                 else {
                     let titlesExcel = resp.rows[0];
 
-                    if (titlesExcel.length != 14) {
+                    if (titlesExcel.length != 15) {
                         flag = false;
                     } else {
                         for (let i = 0; i < titles.length; i++) {
@@ -498,7 +477,8 @@ class Excels extends Component {
                                                         <th style={{ whiteSpace: "nowrap" }}>Liên hệ</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Mô tả</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Giới thiệu công ty</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}  >Chính sách ưu đãi</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Chính sách ưu đãi</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Logo</th>
                                                     </thead>
                                                     <tbody>
                                                         {
@@ -519,6 +499,7 @@ class Excels extends Component {
                                                                         <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-11"} onKeyUp={this.rowBusinessEdited}>{business[11]}</td>
                                                                         <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-12"} onKeyUp={this.rowBusinessEdited}>{business[12]}</td>
                                                                         <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-13"} onKeyUp={this.rowBusinessEdited}>{business[13]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-14"} onKeyUp={this.rowBusinessEdited}>{business[14]}</td>
                                                                     </tr>
                                                                 )
                                                             })

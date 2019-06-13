@@ -4,10 +4,12 @@ import com.example.demo.entity.Skill;
 
 public class SkillDTO {
    private Skill skill;
+   private String name;
    private int number;
 
-    public SkillDTO(Skill skill, int number) {
+    public SkillDTO(Skill skill, String name,  int number) {
         this.skill = skill;
+        this.name = name;
         this.number = number;
     }
 
@@ -28,6 +30,14 @@ public class SkillDTO {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
 
