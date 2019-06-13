@@ -7,13 +7,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "Student")
-public class Student implements Serializable{
+public class Student implements Serializable {
 
     @Id
     @Column(name = "email", nullable = false, unique = true)
@@ -22,6 +23,8 @@ public class Student implements Serializable{
     @Column(name = "name")
     private String name;
 
+    @Column(name = "gpa")
+    private float gpa;
 
     @Column(name = "phone")
     private String phone;
@@ -89,7 +92,7 @@ public class Student implements Serializable{
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "specialized_id")
-    private Specialized  specialized;
+    private Specialized specialized;
 
     public Student() {
     }
@@ -206,5 +209,21 @@ public class Student implements Serializable{
 
     public void setInvitations(List<Invitation> invitations) {
         this.invitations = invitations;
+    }
+
+    public float getGpa() {
+        return gpa;
+    }
+
+    public void setGpa(float gpa) {
+        this.gpa = gpa;
+    }
+
+    public Specialized getSpecialized() {
+        return specialized;
+    }
+
+    public void setSpecialized(Specialized specialized) {
+        this.specialized = specialized;
     }
 }

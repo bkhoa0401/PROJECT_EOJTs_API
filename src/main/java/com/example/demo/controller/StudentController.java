@@ -5,7 +5,10 @@ import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,12 @@ public class StudentController {
 
     @Autowired
     private SpecializedService specializedService;
+
+    @Autowired
+    SkillService skillService;
+
+    @Autowired
+    InvitationService invitationService;
 
     @PostMapping
     public ResponseEntity<Void> addListStudent(@RequestBody List<Student> studentList) throws Exception {
@@ -69,7 +78,7 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/getAllStudent")
     public ResponseEntity<List<Student>> getAllStudents() throws Exception {
         List<Student> studentList = new ArrayList<>();
         try {
@@ -88,18 +97,53 @@ public class StudentController {
         return new ResponseEntity<List<Specialized>>(specializedService.getAllSpecialized(), HttpStatus.OK);
     }
 
+    // get list skill by specialized of student
+    @GetMapping("/list-skill")
+    public ResponseEntity<List<Skill>> getListSkillOfStudentBySpecialized() {
+        String email = getEmailFromToken();
 
-    @GetMapping("student/{email}")
-    public ResponseEntity<Student> getStudentByEmail(@PathVariable  String email) {
-        return new ResponseEntity<Student>(studentService.getStudentByEmail(email), HttpStatus.OK);
+        int specializedId = studentService.getSpecializedIdByEmail(email);
+
+        List<Skill> skills = skillService.getListSkillBySpecialized(specializedId);
+
+        return new ResponseEntity<List<Skill>>(skills, HttpStatus.OK);
     }
 
-    @Autowired
-    SkillService skillService;
 
+    @PostMapping("/update-infor")
+    public ResponseEntity<String> updateInforOfStudent(@RequestParam String objective, @RequestParam float gpa,
+                                                       @RequestBody List<Skill> skillList) {
+        String email = getEmailFromToken();
+        boolean updateInfor = studentService.updateInforStudent(email, objective, gpa, skillList);
+        if (updateInfor == false) {
+            return new ResponseEntity<String>("fail", HttpStatus.EXPECTATION_FAILED);
+        }
+        return new ResponseEntity<String>("success", HttpStatus.OK);
+    }
+
+    @GetMapping("/list-invitation")
+    public ResponseEntity<List<Invitation>> getListInvitation(){
+        String email=getEmailFromToken();
+        List<Invitation> invitationList=invitationService.getListInvitationByStuddentEmail(email);
+        return new ResponseEntity<List<Invitation>>(invitationList, HttpStatus.OK);
+    }
+
+    //return id of skill
     @GetMapping("/skill")
-    public ResponseEntity<Integer> getIdSkillByName(@RequestParam(value = "nameSkill") String nameSkill){
-        System.out.println(nameSkill);
-        return  new ResponseEntity<Integer>(skillService.fullTextSearch(nameSkill), HttpStatus.OK);
+    public ResponseEntity<Integer> getIdSkillByName(@RequestParam(value = "nameSkill") String nameSkill) {
+        return new ResponseEntity<Integer>(skillService.fullTextSearch(nameSkill), HttpStatus.OK);
     }
+
+    //get email from token
+    private String getEmailFromToken() {
+        String email = "";
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            email = ((UserDetails) principal).getUsername();
+        } else {
+            email = principal.toString();
+        }
+        return email;
+    }
+
 }

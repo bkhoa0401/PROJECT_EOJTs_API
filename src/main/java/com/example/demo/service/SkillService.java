@@ -46,4 +46,8 @@ public class SkillService {
 
         return skill.getId();
     }
+
+    public List<Skill> getListSkillBySpecialized(int specializedId){
+        return skillRepository.findBySpecializedId(specializedId);
+    }
 }

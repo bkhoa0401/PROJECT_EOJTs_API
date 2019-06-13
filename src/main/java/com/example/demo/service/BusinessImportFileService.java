@@ -23,7 +23,7 @@ public class BusinessImportFileService {
     Job_Post_SkillService job_post_skillService;
 
     @Transactional
-    public void insertBusiness(BusinessDTO businessDTO) throws Exception{
+    public void insertBusiness(BusinessDTO businessDTO) throws Exception {
         Business business = new Business(businessDTO.getEmail(), businessDTO.getBusiness_name()
                 , businessDTO.getBusiness_eng_name(), businessDTO.getBusiness_phone()
                 , businessDTO.getBusiness_address(), businessDTO.getBusiness_overview(), businessDTO.getBusiness_website(), businessDTO.getLogo());
@@ -51,14 +51,14 @@ public class BusinessImportFileService {
         }
 
         //insert account to table user
-       // String name=businessDTO.getBusiness_name();
+        String name = businessDTO.getBusiness_name();
         String email = businessDTO.getEmail();
-        String password=usersService.getAlphaNumericString();
-        // usersService.sendEmail(name,email,password);
-        Users users=new Users(email,password);
+        String password = usersService.getAlphaNumericString();
+        usersService.sendEmail(name, email, password);
+        Users users = new Users(email, password);
 
-        List<Role> roleList=new ArrayList<>();
-        Role roleOfBusiness=new Role();
+        List<Role> roleList = new ArrayList<>();
+        Role roleOfBusiness = new Role();
         roleOfBusiness.setId(3);
         roleList.add(roleOfBusiness);
 
