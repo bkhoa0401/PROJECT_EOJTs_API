@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +36,14 @@ public class StudentController {
         roleList.add(role);
         List<Users> usersList = new ArrayList<>();
         List<Ojt_Enrollment> ojtEnrollmentList = new ArrayList<>();
+        List<String> nameList = new ArrayList<>();
 
         for (int i = 0; i < studentList.size(); i++) {
             Users users = new Users();
             users.setEmail(studentList.get(i).getEmail());
-            users.setPassword("default");
+            String password = usersService.getAlphaNumericString();
+            users.setPassword(password);
+            nameList.add(studentList.get(i).getName());
             users.setRoles(roleList);
 
             usersList.add(users);
@@ -55,9 +59,11 @@ public class StudentController {
             usersService.saveListUser(usersList);
             ojt_enrollmentService.saveListOjtEnrollment(ojtEnrollmentList);
 
-//            for (int i = 0; i < studentList.size(); i++) {
-//                usersService.sendEmail(studentList.get(i).getName(), studentList.get(i).getEmail());
-//            }
+            if (usersService.saveListUser(usersList)) {
+                for (int i = 0; i < usersList.size(); i++) {
+                    usersService.sendEmail(nameList.get(i), usersList.get(i).getEmail(), usersList.get(i).getPassword());
+                }
+            }
 
         } catch (PersistenceException ex) {
             ex.printStackTrace();
@@ -90,7 +96,7 @@ public class StudentController {
 
 
     @GetMapping("student/{email}")
-    public ResponseEntity<Student> getStudentByEmail(@PathVariable  String email) {
+    public ResponseEntity<Student> getStudentByEmail(@PathVariable String email) {
         return new ResponseEntity<Student>(studentService.getStudentByEmail(email), HttpStatus.OK);
     }
 
@@ -98,8 +104,9 @@ public class StudentController {
     SkillService skillService;
 
     @GetMapping("/skill")
-    public ResponseEntity<Integer> getIdSkillByName(@RequestParam(value = "nameSkill") String nameSkill){
+    @ResponseBody
+    public ResponseEntity<Integer> getIdSkillByName(@RequestParam(value = "nameSkill") String nameSkill) {
         System.out.println(nameSkill);
-        return  new ResponseEntity<Integer>(skillService.fullTextSearch(nameSkill), HttpStatus.OK);
+        return new ResponseEntity<Integer>(skillService.fullTextSearch(nameSkill), HttpStatus.OK);
     }
 }
