@@ -51,10 +51,10 @@ public class BusinessImportFileService {
         }
 
         //insert account to table user
-//        String name = businessDTO.getBusiness_name();
+       // String name = businessDTO.getBusiness_name();
         String email = businessDTO.getEmail();
         String password = usersService.getAlphaNumericString();
-//        usersService.sendEmail(name, email, password);
+      //  usersService.sendEmail(name, email, password);
         Users users = new Users(email, password);
 
         List<Role> roleList = new ArrayList<>();

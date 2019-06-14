@@ -4,6 +4,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import javax.xml.crypto.Data;
 import java.util.List;
 
 @Entity
@@ -57,4 +58,5 @@ public class Specialized {
     public void setStudents(List<Student> students) {
         this.students = students;
     }
+   
 }
