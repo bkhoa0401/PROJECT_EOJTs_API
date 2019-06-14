@@ -76,7 +76,7 @@ class Invitation extends Component {
                                 <i className="fa fa-align-justify"></i> Danh sách các lời mời đã gửi hiện tại
                             </CardHeader>
                             <CardBody>
-                                <Button color="primary" onClick={() => this.handleDirect('/invitation/new')}>Gửi lời mời mới cho sinh viên</Button>
+                                <Button color="primary" onClick={() => this.handleDirect('/invitation/new')}>Gửi lời mời cho sinh viên</Button>
                                 <br />
                                 <br />
                                 <br />

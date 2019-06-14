@@ -127,13 +127,13 @@ class Excels extends Component {
 
                 const resultStudents = await ApiServices.Post('/student', listStudents);
                 if (resultStudents.status == 201) {
-                    Toastify.actionSuccess("Create Successfully!");
+                    Toastify.actionSuccess("Thêm tệp thành công!");
                 } else {
-                    Toastify.actionFail("Create Fail!");
+                    Toastify.actionFail("Thêm tệp thất bại!");
                 }
             }
         } else if (buttonName === 'Students') {
-            Toastify.actionFail("No file choosen!");
+            Toastify.actionFail("Không tệp nào được chọn!");
         }
 
         if (rows_Businesses.length != 0) {
@@ -371,8 +371,8 @@ class Excels extends Component {
                     <Col xs="12" sm="12">
                         <Card>
                             <CardHeader>
-                                <strong>Import List Students</strong>
-                                <a style={{ marginLeft: "680px" }} href="https://docs.google.com/spreadsheets/d/1IhCjD28uZRiPl5fhJk2RomAej9JkqKLqm3wZok6rgoM/export?format=xlsx" download>Download template list students</a>
+                                <strong>Thêm danh sách sinh viên</strong>
+                                <a style={{ marginLeft: "650px" }} href="https://docs.google.com/spreadsheets/d/1IhCjD28uZRiPl5fhJk2RomAej9JkqKLqm3wZok6rgoM/export?format=xlsx" download>Tải bản mẫu danh sách sinh viên</a>
                             </CardHeader>
                             <CardBody>
                                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -382,7 +382,7 @@ class Excels extends Component {
                                                 <input type="file" multiple id="file_excel_students" name="fileName" onChange={this.fileStudentHandler.bind(this)}></input>
                                                 {files_Students && (
                                                     <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                                                        <button onClick={this.removeFileStudents}>Remove File</button>
+                                                        <button onClick={this.removeFileStudents}>Xóa file</button>
                                                         <br />
                                                     </div>
                                                 )}
@@ -431,7 +431,7 @@ class Excels extends Component {
                             <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button id="submitStudents" onClick={() => this.handleSubmit('Students')} type="submit" color="primary" block>Submit</Button>
+                                        <Button id="submitStudents" onClick={() => this.handleSubmit('Students')} type="submit" color="primary" block>Xác nhận</Button>
                                     </Col>
                                 </Row>
                             </CardFooter>
@@ -443,8 +443,8 @@ class Excels extends Component {
                     <Col xs="12" sm="12">
                         <Card>
                             <CardHeader>
-                                <strong>Import List Bussiness</strong>
-                                <a style={{ marginLeft: "680px" }} href="https://docs.google.com/spreadsheets/d/1qZMlxWND3qVvLzO1muLyeFP0xwJbIE-6xVKgObIbGTE/export?format=xlsx" download>Download template list businesses</a>
+                                <strong>Thêm danh sách doanh nghiệp</strong>
+                                <a style={{ marginLeft: "590px" }} href="https://docs.google.com/spreadsheets/d/1qZMlxWND3qVvLzO1muLyeFP0xwJbIE-6xVKgObIbGTE/export?format=xlsx" download>Tải bản mẫu danh sách doanh nghiệp</a>
                             </CardHeader>
                             <CardBody>
                                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -454,7 +454,7 @@ class Excels extends Component {
                                                 <input type="file" multiple id="file_excel_businesses" name="fileName" onChange={this.fileBusinessHandler.bind(this)}></input>
                                                 {files_Businesses && (
                                                     <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                                                        <button onClick={this.removeFileBusinesses}>Remove File</button>
+                                                        <button onClick={this.removeFileBusinesses}>Xóa file</button>
                                                     </div>
                                                 )}
                                             </form>
@@ -517,7 +517,7 @@ class Excels extends Component {
                             <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button id="submitBusinesses" onClick={() => this.handleSubmit('Businesses')} type="submit" color="primary" block>Submit</Button>
+                                        <Button id="submitBusinesses" onClick={() => this.handleSubmit('Businesses')} type="submit" color="primary" block>Xác nhận</Button>
                                     </Col>
                                 </Row>
                             </CardFooter>
