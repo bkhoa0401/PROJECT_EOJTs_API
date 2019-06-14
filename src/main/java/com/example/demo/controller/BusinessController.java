@@ -33,6 +33,9 @@ public class BusinessController {
     @Autowired
     InvitationService invitationService;
 
+    @Autowired
+    Job_PostService job_postService;
+
     @PostMapping("")
     public ResponseEntity<Void> saveBusiness(@RequestBody List<BusinessDTO> listBusinessDTO) throws Exception {
         for (int i = 0; i < listBusinessDTO.size(); i++) {
@@ -95,6 +98,19 @@ public class BusinessController {
         List<Invitation> invitationList = invitationService.getListBusinessByStuddentEmail(email);
         if (invitationList != null) {
             return new ResponseEntity<List<Invitation>>(invitationList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    //get job post details by id
+    @GetMapping("/getJobPost")
+    @ResponseBody
+    public ResponseEntity<Job_Post> getListInvitation(@RequestParam int id) {
+
+        Job_Post job_post =job_postService.findJob_PostById(id);
+        if (job_post != null) {
+            return new ResponseEntity<Job_Post>(job_post, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }

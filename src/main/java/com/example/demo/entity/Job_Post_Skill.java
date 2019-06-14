@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -16,6 +17,7 @@ public class Job_Post_Skill {
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
     @JoinColumn(name = "job_post_id")
     private Job_Post job_post;
 
