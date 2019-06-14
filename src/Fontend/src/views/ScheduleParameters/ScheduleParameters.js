@@ -67,10 +67,10 @@ class ScheduleParameters extends Component {
 
         if (this.validator.allValid()) {
             const ScheduleParameters = {
-                timeRegisterAspirations, 
-                timeCompleteInterview, 
-                timeCompanySelection, 
-                timeProcessRemainCase, 
+                timeRegisterAspirations,
+                timeCompleteInterview,
+                timeCompanySelection,
+                timeProcessRemainCase,
                 timeStartOJT
             }
 

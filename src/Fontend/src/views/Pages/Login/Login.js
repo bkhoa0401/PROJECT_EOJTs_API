@@ -86,7 +86,7 @@ class Login extends Component {
                 </Card>
                 <Card className="text-white bg-primary py-5 d-md-down-none" style={{ width: '44%' }}>
                   <CardBody className="text-center">
-                    <div>
+                    <div style={{ marginTop: "65px" }}>
                       <h2>Hệ thống quản lí OJT</h2>
                     </div>
                   </CardBody>
