@@ -108,11 +108,17 @@ public class StudentController {
     //get list skill by specialzed
     @GetMapping("/specialized")
     public ResponseEntity<List<Specialized>> getSpecializedList() {
-        return new ResponseEntity<List<Specialized>>(specializedService.getAllSpecialized(), HttpStatus.OK);
+        List<Specialized> specializedList = specializedService.getAllSpecialized();
+        if (specializedList != null) {
+            return new ResponseEntity<List<Specialized>>(specializedList, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 
     // get list skill by specialized of student
     @GetMapping("/list-skill")
+    @ResponseBody
     public ResponseEntity<List<Skill>> getListSkillOfStudentBySpecialized() {
         String email = getEmailFromToken();
 
@@ -120,17 +126,24 @@ public class StudentController {
 
         List<Skill> skills = skillService.getListSkillBySpecialized(specializedId);
 
-        return new ResponseEntity<List<Skill>>(skills, HttpStatus.OK);
+        if (skills != null) {
+            return new ResponseEntity<List<Skill>>(skills, HttpStatus.OK);
+
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
 
     }
 
     @GetMapping("student/{email}")
+    @ResponseBody
     public ResponseEntity<Student> getStudentByEmail(@PathVariable String email) {
         return new ResponseEntity<Student>(studentService.getStudentByEmail(email), HttpStatus.OK);
     }
 
 
-    @PostMapping("/update-infor")
+    //update objective
+    @PostMapping("/update-resume")
     public ResponseEntity<String> updateInforOfStudent(@RequestParam String objective, @RequestParam float gpa,
                                                        @RequestBody List<Skill> skillList) {
         String email = getEmailFromToken();
@@ -145,7 +158,11 @@ public class StudentController {
     public ResponseEntity<List<Invitation>> getListInvitation() {
         String email = getEmailFromToken();
         List<Invitation> invitationList = invitationService.getListInvitationByStuddentEmail(email);
-        return new ResponseEntity<List<Invitation>>(invitationList, HttpStatus.OK);
+        if (invitationList != null) {
+            return new ResponseEntity<List<Invitation>>(invitationList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 
     //return id of skill

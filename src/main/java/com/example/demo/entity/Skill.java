@@ -20,7 +20,7 @@ public class Skill {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "name",columnDefinition = "NVARCHAR(100)")
+    @Column(name = "name", columnDefinition = "NVARCHAR(100)")
     @Field(termVector = TermVector.YES)
     private String name;
 
@@ -31,7 +31,7 @@ public class Skill {
     private Specialized specialized;
 
     @ManyToMany(mappedBy = "skills")
-//    @JsonBackReference
+    @JsonIgnore
     private List<Student> students;
 
 //    @ManyToMany(mappedBy = "skills")

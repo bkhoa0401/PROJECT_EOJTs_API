@@ -2,17 +2,13 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.BusinessDTO;
 import com.example.demo.dto.Business_JobPostDTO;
-import com.example.demo.entity.Business;
-import com.example.demo.entity.Job_Post;
-import com.example.demo.entity.Ojt_Enrollment;
-import com.example.demo.entity.Skill;
-import com.example.demo.service.BusinessImportFileService;
-import com.example.demo.service.BusinessService;
-import com.example.demo.service.Ojt_EnrollmentService;
-import com.example.demo.service.SkillService;
+import com.example.demo.entity.*;
+import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
@@ -33,6 +29,9 @@ public class BusinessController {
 
     @Autowired
     SkillService skillService;
+
+    @Autowired
+    InvitationService invitationService;
 
     @PostMapping("")
     public ResponseEntity<Void> saveBusiness(@RequestBody List<BusinessDTO> listBusinessDTO) throws Exception {
@@ -55,9 +54,63 @@ public class BusinessController {
     }
 
     @GetMapping("/getAllBusiness")
-    public ResponseEntity<List<Business>> getAllBusiness(){
-        List<Business> businessList=businessService.getAllBusiness();
-        return new ResponseEntity<List<Business>>(businessList,HttpStatus.CREATED);
+    @ResponseBody
+    public ResponseEntity<List<Business>> getAllBusiness() {
+        List<Business> businessList = businessService.getAllBusiness();
+        if (businessList != null) {
+            return new ResponseEntity<List<Business>>(businessList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/getBusiness")
+    @ResponseBody
+    public ResponseEntity<Business> getBusinessByEmail() {
+        String email = getEmailFromToken();
+        Business business = businessService.getBusinessByEmail(email);
+        if (business != null) {
+            return new ResponseEntity<Business>(business, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    //update business
+    @PutMapping("/updateBusiness")
+    public ResponseEntity<Void> updateBusinessByEmail(@RequestBody Business business) {
+        String email = getEmailFromToken();
+        boolean update = businessService.updateBusiness(email, business);
+        if (update == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    //list invitaion of busines
+    @GetMapping("/listInvitation")
+    @ResponseBody
+    public ResponseEntity<List<Invitation>> getListInvitation() {
+        String email = getEmailFromToken();
+        List<Invitation> invitationList = invitationService.getListBusinessByStuddentEmail(email);
+        if (invitationList != null) {
+            return new ResponseEntity<List<Invitation>>(invitationList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    //get email from token
+    private String getEmailFromToken() {
+        String email = "";
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            email = ((UserDetails) principal).getUsername();
+        } else {
+            email = principal.toString();
+        }
+        return email;
     }
 
     //loi

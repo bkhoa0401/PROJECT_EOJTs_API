@@ -24,4 +24,24 @@ public class BusinessService {
         }
         return null;
     }
+
+    public Business getBusinessByEmail(String email) {
+        Business business = businessRepository.findBusinessByEmail(email);
+        if (business != null) {
+            return business;
+        }
+        return null;
+    }
+
+    public boolean updateBusiness(String email, Business business) {
+        Business businessFindByEmail = businessRepository.findBusinessByEmail(email);
+        if (businessFindByEmail != null) {
+            if (email.equals(business.getEmail())) {
+                businessRepository.save(business);
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

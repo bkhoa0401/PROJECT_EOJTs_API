@@ -30,7 +30,4 @@ public class Ojt_EnrollmentService {
         return ojt_enrollment.getId();
     }
 
-    public void saveOjt_Enrollment(Ojt_Enrollment ojt_enrollment){
-        ojtEnrollmentRepository.save(ojt_enrollment);
-    }
 }

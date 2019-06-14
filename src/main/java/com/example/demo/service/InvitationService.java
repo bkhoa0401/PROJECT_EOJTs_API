@@ -15,4 +15,9 @@ public class InvitationService {
     public List<Invitation> getListInvitationByStuddentEmail(String email){
         return invitationRepository.findInvitationByStudentsEmail(email);
     }
+
+    public List<Invitation> getListBusinessByStuddentEmail(String email){
+        return invitationRepository.findInvitationByBusinessEmail(email);
+    }
+
 }

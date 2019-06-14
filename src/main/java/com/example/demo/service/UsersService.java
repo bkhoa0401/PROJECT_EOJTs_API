@@ -76,4 +76,14 @@ public class UsersService {
     public List<Users> getAllUsers() {
         return usersRepository.findAll();
     }
+
+    public boolean updatePasswordOfUserByEmail(String email,String password){
+        Users users=findUserByEmail(email);
+        if(users!=null){
+            users.setPassword(password);
+            usersRepository.save(users);
+            return true;
+        }
+        return false;
+    }
 }
