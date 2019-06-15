@@ -38,7 +38,7 @@ public class Invitation {
     private Business business;
 
     @ManyToMany(mappedBy = "invitations")
-//    @JsonIgnore
+    @JsonIgnore
     //@JsonBackReference
     private List<Student> students;
 

@@ -13,19 +13,23 @@ class Invitation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            students: null,
+            business_name: '',
         }
     }
 
 
-    //   async componentDidMount() {
-    //     const products = await ApiService.Get('/product');
-    //     if (products != null) {
-    //       this.setState({
-
-    //       });
-    //     }
-    //   }
+    async componentDidMount() {
+        const students = await ApiServices.Get('/student/getListStudentByInvitationId');
+        const business = await ApiServices.Get('/business/getBusiness');
+        if (students != null) {
+            this.setState({
+                students,
+                business_name: business.business_name
+            });
+        }
+        console.log("STATE", this.state);
+    }
 
     handleDirect = (uri) => {
         this.props.history.push(uri);
@@ -67,6 +71,7 @@ class Invitation extends Component {
 
 
     render() {
+        const { students, business_name } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -84,7 +89,7 @@ class Invitation extends Component {
                                     <form className="form-inline">
                                         <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
                                     </form>
-                                    
+
                                 </nav>
                                 <Table responsive striped>
                                     <thead>
@@ -93,21 +98,51 @@ class Invitation extends Component {
                                             <th style={{ textAlign: "center" }}>MSSV</th>
                                             <th style={{ textAlign: "center" }}>Họ và Tên</th>
                                             <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                            <th style={{ textAlign: "center" }}>Kết quả</th>
-                                            <th style={{ textAlign: "center" }}>Hành động</th>
+                                            <th style={{ textAlign: "center" }}>GPA</th>
+                                            <th style={{ textAlign: "center" }}>Trạng thái lời mời</th>
+                                            <th style={{ textAlign: "center" }}>Nguyện vọng của sinh viên</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td style={{ textAlign: "center" }}></td>
-                                            <td style={{ textAlign: "center" }}></td>
-                                            <td style={{ textAlign: "center" }}></td>
-                                            <td style={{ textAlign: "center" }}></td>
-                                            <td style={{ textAlign: "center" }}></td>
-                                            <td style={{ textAlign: "center" }}>
-                                                <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect("/invitation/detail")}>Chi tiết</Button>
-                                            </td>
-                                        </tr>
+                                        {
+                                            students && students.map((student, index) => {
+
+                                                const invitations = student.invitations;
+                                                console.log("invitations", invitations[0].state);
+                                                let tmp;
+                                                if (invitations[0].state != 'false') {
+                                                    if (student.option1 == business_name) {
+                                                        tmp = 1;
+                                                    }
+                                                    if (student.option2 == business_name) {
+                                                        tmp = 2;
+                                                    }
+                                                }
+
+
+                                                return (
+                                                    <tr key={index}>
+                                                        <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                                                        <td style={{ textAlign: "center" }}>
+                                                            {
+                                                                invitations[0].state.toString() == 'true' ? (
+                                                                    <Badge color="success">Accepted</Badge>
+                                                                ) : (
+                                                                        <Badge color="danger">Pending</Badge>
+                                                                    )
+                                                            }
+                                                        </td>
+                                                        <td style={{ textAlign: "center" }}>
+                                                            {tmp}
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
                                     </tbody>
                                 </Table>
                                 <ToastContainer />
