@@ -157,6 +157,7 @@ public class StudentController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
+    //student lay danh sach loi moi cua no
     @GetMapping("/list-invitation")
     @ResponseBody
     public ResponseEntity<List<Invitation>> getListInvitation() {
@@ -212,49 +213,66 @@ public class StudentController {
         return new ResponseEntity<String>("fail", HttpStatus.EXPECTATION_FAILED);
     }
 
-    //get list student of business invitation
-    @GetMapping("/getListStudentByInvitationId")
-    @ResponseBody
-    public ResponseEntity<List<Student>> getListStudentOfBusiness(){
-        String email=getEmailFromToken();
-        List<Invitation> invitationList=invitationService.getListInvitationByBusinessEmail(email);
+    private List<Student> studentListIsInvited = new ArrayList<>();
 
-        List<Student> studentList=new ArrayList<>();
-        for(int i=0;i<invitationList.size();i++){
-            Student student=studentService.findStudentByInvitationsId(invitationList.get(i).getId());
+    //get list student of business invitation
+    //get nhung hs ma cty da gui loi moi
+    //da fix
+    @GetMapping("/getListStudentIsInvited")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getListStudentOfBusiness() {
+        String email = getEmailFromToken();
+        List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);
+
+        List<Student> studentList = new ArrayList<>();
+        for (int i = 0; i < invitationList.size(); i++) {
+            Student student = studentService.getStudentIsInvited(invitationList.get(i).getStudent().getEmail());
             studentList.add(student);
         }
-        if(studentList!=null){
+        if (studentList != null) {
+            studentListIsInvited = studentList;
             return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-    //get details of invitation by business email and student email
-    @GetMapping("/getDetailsInvitation")
+    //danh sach nhung dua set cong ty vao nguyen vong
+    @GetMapping("/getListStudentByOption")
     @ResponseBody
-    public ResponseEntity<Invitation> getDetailsInvitationByBusinessEmailAndStudentEmail(@RequestParam String studentEmail){
-        String emailBusiness=getEmailFromToken();
+    public ResponseEntity<List<Student>> getListStudentByOptionNameBusiness() {
+        String email = getEmailFromToken();
 
-        Invitation invitation=invitationService.getInvitationByBusinessEmailAndStudentEmail(emailBusiness,studentEmail);
-        if(invitation!=null){
-            return new ResponseEntity<Invitation>(invitation, HttpStatus.OK);
+        Business business = businessService.getBusinessByEmail(email);
+
+        List<Student> studentList = studentService.findStudentByBusinessNameOption(business.getBusiness_name(), business.getBusiness_name());
+        if (studentList != null) {
+            return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-    @GetMapping("/getListStudentByOption")
+    // lay list student chua duoc moi boi cong ty
+    @GetMapping("/getListStudentNotYetInvited")
     @ResponseBody
-    public ResponseEntity<List<Student>> getListStudentByOptionNameBusiness(){
-        String email=getEmailFromToken();
+    public ResponseEntity<List<Student>> getListStudentNotYetInvited() {
+        getListStudentOfBusiness();
 
-        Business business=businessService.getBusinessByEmail(email);
+        List<Student> listStudentIsInvited = studentListIsInvited;
+        System.out.println(listStudentIsInvited.size());
 
-        List<Student> studentList=studentService.findStudentByBusinessNameOption(business.getBusiness_name(),business.getBusiness_name());
-        if(studentList!=null){
-            return new ResponseEntity<List<Student>>(studentList,HttpStatus.OK);
+        List<Student> listAllStudent = studentService.getAllStudents();
+
+        for (int i = 0; i < listStudentIsInvited.size(); i++) {
+            String emailStudentIsInvited = listStudentIsInvited.get(i).getEmail();
+            for (int j = 0; j < listAllStudent.size(); j++) {
+                String emailStudent = listAllStudent.get(j).getEmail();
+                if (emailStudent.equals(emailStudentIsInvited)) {
+                    listAllStudent.remove(listAllStudent.get(j));
+                    break;
+                }
+            }
         }
-        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        return new ResponseEntity<List<Student>>(listAllStudent, HttpStatus.OK);
     }
 
     //get email from token

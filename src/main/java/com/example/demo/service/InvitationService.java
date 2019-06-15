@@ -13,7 +13,7 @@ public class InvitationService {
     InvitationRepository invitationRepository;
 
     public List<Invitation> getListInvitationByStudentEmail(String email){
-        return invitationRepository.findInvitationByStudentsEmail(email);
+        return invitationRepository.findInvitationByStudentEmail(email);
     }
 
     public List<Invitation> getListInvitationByBusinessEmail(String email){
@@ -24,7 +24,7 @@ public class InvitationService {
         return invitationRepository.findInvitationById(id);
     }
 
-    public Invitation getInvitationByBusinessEmailAndStudentEmail(String businessEmail,String studentEmail){
-        return invitationRepository.findInvitationByBusinessEmailAndStudentsEmail(businessEmail,studentEmail);
+    public void createInvitation(Invitation invitation){
+        invitationRepository.save(invitation);
     }
 }

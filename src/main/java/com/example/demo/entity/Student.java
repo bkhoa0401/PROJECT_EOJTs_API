@@ -17,7 +17,7 @@ public class Student implements Serializable {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "name")
+    @Column(name = "name",columnDefinition = "NVARCHAR(150)")
     private String name;
 
     @Column(name = "gpa")
@@ -26,16 +26,16 @@ public class Student implements Serializable {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "address")
+    @Column(name = "address",columnDefinition = "NVARCHAR(150)")
     private String address;
 
-    @Column(name = "objective")
+    @Column(name = "objective",columnDefinition = "NVARCHAR(550)")
     private String objective;
 
-    @Column(name = "option1")
+    @Column(name = "option1",columnDefinition = "NVARCHAR(150)")
     private String option1;
 
-    @Column(name = "option2")
+    @Column(name = "option2",columnDefinition = "NVARCHAR(150)")
     private String option2;
 
     @Column(name = "isAcceptedOption1")
@@ -75,16 +75,9 @@ public class Student implements Serializable {
     )
     private List<Event> events;
 
-    @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "student")
     @JsonIgnore
-    @JoinTable(
-            name = "student_invitation",
-            joinColumns = {
-                    @JoinColumn(name = "student_email")},
-            inverseJoinColumns = {
-                    @JoinColumn(name = "invitation_id")}
-    )
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Invitation> invitations;
 
 

@@ -70,8 +70,8 @@ public class StudentService {
         return false;
     }
 
-    public Student findStudentByInvitationsId(int id) {
-        Student student = studentRepository.findStudentByInvitationsId(id);
+    public Student getStudentIsInvited(String email) {
+        Student student = studentRepository.findByEmail(email);
         if (student != null) {
             return student;
         }

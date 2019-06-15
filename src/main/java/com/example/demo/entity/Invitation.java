@@ -17,10 +17,10 @@ public class Invitation {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "title")
+    @Column(name = "title",columnDefinition = "NVARCHAR(150)")
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description",columnDefinition = "NVARCHAR(150)")
     private String description;
 
     @Column(name = "state")
@@ -31,16 +31,18 @@ public class Invitation {
 
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
-    //@JsonIgnore
-  //  @JsonBackReference
     @JoinColumn(name = "business_email")
-    @JsonIgnore
     private Business business;
 
-    @ManyToMany(mappedBy = "invitations")
-//    @JsonIgnore
-    //@JsonBackReference
-    private List<Student> students;
+    @ManyToOne
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "student_email")
+    private Student student;
+
+    @ManyToOne
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "semester_id")
+    private Semester semester;
 
     public int getId() {
         return id;
@@ -90,12 +92,12 @@ public class Invitation {
         this.business = business;
     }
 
-    public List<Student> getStudents() {
-        return students;
+    public Student getStudent() {
+        return student;
     }
 
-    public void setStudents(List<Student> students) {
-        this.students = students;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     public Semester getSemester() {
@@ -106,9 +108,6 @@ public class Invitation {
         this.semester = semester;
     }
 
-    @ManyToOne
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinColumn(name = "semester_id")
-    private Semester semester;
+
 
 }

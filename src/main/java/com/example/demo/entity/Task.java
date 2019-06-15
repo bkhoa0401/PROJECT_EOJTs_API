@@ -14,7 +14,7 @@ public class Task {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "title")
+    @Column(name = "title",columnDefinition = "NVARCHAR(150)")
     private String title;
 
     @Column(name = "level_task")

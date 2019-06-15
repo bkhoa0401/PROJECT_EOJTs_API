@@ -15,13 +15,13 @@ public class Supervisor {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "name")
+    @Column(name = "name",columnDefinition = "NVARCHAR(150)")
     private String name;
 
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "address")
+    @Column(name = "address",columnDefinition = "NVARCHAR(150)")
     private String address;
 
     @OneToMany(mappedBy = "supervisor")
