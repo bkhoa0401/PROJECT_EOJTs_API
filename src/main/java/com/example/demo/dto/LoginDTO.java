@@ -9,7 +9,7 @@ public class LoginDTO implements Serializable {
 
     private String token;
     private Users users;
-    private Student student;
+    private StudentDTO student;
 
     public LoginDTO() {
     }
@@ -19,7 +19,7 @@ public class LoginDTO implements Serializable {
         this.users = users;
     }
 
-    public LoginDTO(String token, Users users, Student student) {
+    public LoginDTO(String token, Users users, StudentDTO student) {
         this.token = token;
         this.users = users;
         this.student = student;
@@ -45,11 +45,11 @@ public class LoginDTO implements Serializable {
         this.users = users;
     }
 
-    public Student getStudent() {
+    public StudentDTO getStudent() {
         return student;
     }
 
-    public void setStudent(Student student) {
+    public void setStudent(StudentDTO student) {
         this.student = student;
     }
 }

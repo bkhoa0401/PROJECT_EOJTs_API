@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -24,6 +25,7 @@ public class Specialized {
     private List<Skill> skills;
 
     @OneToMany(mappedBy = "specialized")
+    @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Student> students;
 
@@ -58,5 +60,5 @@ public class Specialized {
     public void setStudents(List<Student> students) {
         this.students = students;
     }
-   
+
 }

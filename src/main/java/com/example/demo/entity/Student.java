@@ -47,6 +47,9 @@ public class Student implements Serializable {
     @Column(name = "code")
     private String code;
 
+    @Column(name = "avatarLink")
+    private String avatarLink;
+
 
     @OneToMany(mappedBy = "student")
     @JsonIgnore
@@ -88,7 +91,7 @@ public class Student implements Serializable {
 
 
     @ManyToOne
-    @JsonIgnore
+    @JsonBackReference
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "specialized_id")
     private Specialized specialized;
@@ -224,5 +227,13 @@ public class Student implements Serializable {
 
     public void setSpecialized(Specialized specialized) {
         this.specialized = specialized;
+    }
+
+    public String getAvatarLink() {
+        return avatarLink;
+    }
+
+    public void setAvatarLink(String avatarLink) {
+        this.avatarLink = avatarLink;
     }
 }
