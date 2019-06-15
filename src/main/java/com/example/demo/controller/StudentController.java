@@ -208,9 +208,9 @@ public class StudentController {
         String email = getEmailFromToken();
         boolean update = studentService.updateOption2Student(email, option2);
         if (update == true) {
-            return new ResponseEntity<String>("success", HttpStatus.OK);
+            return new ResponseEntity<>("success", HttpStatus.OK);
         }
-        return new ResponseEntity<String>("fail", HttpStatus.EXPECTATION_FAILED);
+        return new ResponseEntity<>("fail", HttpStatus.EXPECTATION_FAILED);
     }
 
     private List<Student> studentListIsInvited = new ArrayList<>();

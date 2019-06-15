@@ -29,6 +29,7 @@ public class Specialized {
     private List<Skill> skills;
 
     @OneToMany(mappedBy = "specialized")
+    @JsonManagedReference
     @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Student> students;
@@ -64,5 +65,5 @@ public class Specialized {
     public void setStudents(List<Student> students) {
         this.students = students;
     }
-   
+
 }

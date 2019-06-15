@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.LoginDTO;
+import com.example.demo.dto.StudentDTO;
 import com.example.demo.entity.Student;
 import com.example.demo.entity.Users;
 import com.example.demo.service.JwtService;
@@ -46,7 +47,9 @@ public class WebController {
                     String name=usersFound.getRoles().get(i).getDescription();
                     if(name.equals("ROLE_STUDENT")){
                         Student student=studentService.getStudentByEmail(users.getEmail());
-                        login.setStudent(student);
+                        StudentDTO studentDTO = new StudentDTO();
+                        studentDTO.convertFromStudentEntity(student);
+                        login.setStudent(studentDTO);
                     }
                 }
 
