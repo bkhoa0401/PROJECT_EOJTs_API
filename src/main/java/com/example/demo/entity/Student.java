@@ -77,7 +77,7 @@ public class Student implements Serializable {
 
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonIgnore
+//    @JsonIgnore
     @JoinTable(
             name = "student_invitation",
             joinColumns = {
