@@ -35,6 +35,9 @@ public class StudentController {
     @Autowired
     InvitationService invitationService;
 
+    @Autowired
+    BusinessService businessService;
+
     @PostMapping
     public ResponseEntity<Void> addListStudent(@RequestBody List<Student> studentList) throws Exception {
 
@@ -76,11 +79,11 @@ public class StudentController {
             usersService.saveListUser(usersList);
             ojt_enrollmentService.saveListOjtEnrollment(ojtEnrollmentList);
 
-            if (usersService.saveListUser(usersList)) {
-                for (int i = 0; i < usersList.size(); i++) {
-                    usersService.sendEmail(nameList.get(i), usersList.get(i).getEmail(), usersList.get(i).getPassword());
-                }
-            }
+//            if (usersService.saveListUser(usersList)) {
+//                for (int i = 0; i < usersList.size(); i++) {
+//                    usersService.sendEmail(nameList.get(i), usersList.get(i).getEmail(), usersList.get(i).getPassword());
+//                }
+//            }
 
         } catch (PersistenceException ex) {
             ex.printStackTrace();
@@ -158,7 +161,7 @@ public class StudentController {
     @ResponseBody
     public ResponseEntity<List<Invitation>> getListInvitation() {
         String email = getEmailFromToken();
-        List<Invitation> invitationList = invitationService.getListInvitationByStuddentEmail(email);
+        List<Invitation> invitationList = invitationService.getListInvitationByStudentEmail(email);
         if (invitationList != null) {
             return new ResponseEntity<List<Invitation>>(invitationList, HttpStatus.OK);
         } else {
@@ -207,6 +210,51 @@ public class StudentController {
             return new ResponseEntity<String>("success", HttpStatus.OK);
         }
         return new ResponseEntity<String>("fail", HttpStatus.EXPECTATION_FAILED);
+    }
+
+    //get list student of business invitation
+    @GetMapping("/getListStudentByInvitationId")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getListStudentOfBusiness(){
+        String email=getEmailFromToken();
+        List<Invitation> invitationList=invitationService.getListInvitationByBusinessEmail(email);
+
+        List<Student> studentList=new ArrayList<>();
+        for(int i=0;i<invitationList.size();i++){
+            Student student=studentService.findStudentByInvitationsId(invitationList.get(i).getId());
+            studentList.add(student);
+        }
+        if(studentList!=null){
+            return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    //get details of invitation by business email and student email
+    @GetMapping("/getDetailsInvitation")
+    @ResponseBody
+    public ResponseEntity<Invitation> getDetailsInvitationByBusinessEmailAndStudentEmail(@RequestParam String studentEmail){
+        String emailBusiness=getEmailFromToken();
+
+        Invitation invitation=invitationService.getInvitationByBusinessEmailAndStudentEmail(emailBusiness,studentEmail);
+        if(invitation!=null){
+            return new ResponseEntity<Invitation>(invitation, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/getListStudentByOption")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getListStudentByOptionNameBusiness(){
+        String email=getEmailFromToken();
+
+        Business business=businessService.getBusinessByEmail(email);
+
+        List<Student> studentList=studentService.findStudentByBusinessNameOption(business.getBusiness_name(),business.getBusiness_name());
+        if(studentList!=null){
+            return new ResponseEntity<List<Student>>(studentList,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
     //get email from token

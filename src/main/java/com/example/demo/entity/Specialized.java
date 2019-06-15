@@ -1,11 +1,16 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.xml.crypto.Data;
 import java.util.List;
+
+
+@JsonIgnoreProperties(ignoreUnknown = true, value = {"hibernateLazyInitializer", "handler"})
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property  = "id")
 
 @Entity
 @Table(name = "specialized")
@@ -24,6 +29,7 @@ public class Specialized {
     private List<Skill> skills;
 
     @OneToMany(mappedBy = "specialized")
+    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Student> students;
 

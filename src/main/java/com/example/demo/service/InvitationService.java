@@ -12,15 +12,19 @@ public class InvitationService {
     @Autowired
     InvitationRepository invitationRepository;
 
-    public List<Invitation> getListInvitationByStuddentEmail(String email){
+    public List<Invitation> getListInvitationByStudentEmail(String email){
         return invitationRepository.findInvitationByStudentsEmail(email);
     }
 
-    public List<Invitation> getListBusinessByStuddentEmail(String email){
+    public List<Invitation> getListInvitationByBusinessEmail(String email){
         return invitationRepository.findInvitationByBusinessEmail(email);
     }
 
     public Invitation getInvitationById(int id){
         return invitationRepository.findInvitationById(id);
+    }
+
+    public Invitation getInvitationByBusinessEmailAndStudentEmail(String businessEmail,String studentEmail){
+        return invitationRepository.findInvitationByBusinessEmailAndStudentsEmail(businessEmail,studentEmail);
     }
 }

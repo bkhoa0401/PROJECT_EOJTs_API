@@ -39,7 +39,7 @@ public class Invitation {
 
     @ManyToMany(mappedBy = "invitations")
 //    @JsonIgnore
-    @JsonBackReference
+    //@JsonBackReference
     private List<Student> students;
 
     public int getId() {
