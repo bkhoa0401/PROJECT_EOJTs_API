@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
+import { async } from 'q';
 
 class Excels extends Component {
 
@@ -114,7 +115,9 @@ class Excels extends Component {
                         phone: student[3],
                         email: student[4],
                         address: student[5],
-                        specialized: student[6],
+                        specialized: {
+                            name: student[6]
+                        },
                         semester: student[7],
                     };
                     listStudents.push(student);
@@ -124,13 +127,13 @@ class Excels extends Component {
 
                 const resultStudents = await ApiServices.Post('/student', listStudents);
                 if (resultStudents.status == 201) {
-                    Toastify.actionSuccess("Create Successfully!");
+                    Toastify.actionSuccess("Thêm tệp thành công!");
                 } else {
-                    Toastify.actionFail("Create Fail!");
+                    Toastify.actionFail("Thêm tệp thất bại!");
                 }
             }
         } else if (buttonName === 'Students') {
-            Toastify.actionFail("No file choosen!");
+            Toastify.actionFail("Không tệp nào được chọn!");
         }
 
         if (rows_Businesses.length != 0) {
@@ -142,30 +145,24 @@ class Excels extends Component {
                     const result = [];
 
                     skillsAndNumber = data.split("+");
-                    skillsAndNumber && skillsAndNumber.map((element, index) => {
+                    skillsAndNumber && skillsAndNumber.map(async(element, index) => {
                         if (index > 0) {
                             skills_number = element.split(":");
+                            var name = skills_number[0].trim();
+                            var number = skills_number[1].trim();
+                            console.log(name + ' - ' + number);
+                            // const id = await ApiServices.Get(`/student/skill?nameSkill=${name}`);
+                            // console.log(id);
                             const obj = {
-                                // skill: skills_number[0].trim(),
-                                
-
-                                job_post: {
-                                    id: business[0]
-                                },
                                 skill: {
-                                    id: index + 1,
+                                    id: 0,
                                 },
-                                number: skills_number[1].trim()
-
+                                name: name,
+                                number: number
                             }
                             result.push(obj);
                         }
                     })
-
-                    // const ojt_enrollments = [];
-
-                    // ojt_enrollments.push(obj_ojtEnrollment);
-                    // console.log("ojt_enrollments", ojt_enrollments);
 
                     var business = {
                         email: business[3],
@@ -175,32 +172,14 @@ class Excels extends Component {
                         business_name: business[1],
                         business_website: business[6],
                         business_phone: business[4],
-                        ojt_enrollments: [
-                            {
-                                id: business[0],
-                                business: {
-                                    email: business[3]
-                                },
-                                job_posts: [
-                                    {
-                                        id: business[0],
-                                        contact: business[10],
-                                        description: business[11],
-                                        interest: business[13],
-                                        interview_process: business[9],
-                                        time_post: '2019-09-06',
-                                        views: 1,
-                                        ojt_enrollment: {
-                                            id: business[0],
-                                        },
-                                        job_post_skills: result
-                                    }
-                                ]
-                            }
-                        ],
-
-                        // intershipAddress: business[7],
-                        // skills_number: result,
+                        "logo": business[14],
+                        contact: business[10],
+                        description: business[11],
+                        interest: business[13],
+                        interview_process: business[9],
+                        time_post: '2019-09-06',
+                        views: 1,
+                        skillDTOList: result
                     };
 
                     listBusinesses.push(business);
@@ -307,7 +286,7 @@ class Excels extends Component {
 
         let flag = true;
         var titles = ["STT", "Doanh Nghiệp", "Tên Tiếng Anh", "Email", "SĐT", "Địa chỉ Công ty", "Website", "Địa chỉ nơi SV sẽ thực tập", "Vị trí - Số lượng",
-            "Quy trình tuyển", "Liên hệ", "Mô tả", "Giới thiệu công ty", "Chính sách ưu đãi"];
+            "Quy trình tuyển", "Liên hệ", "Mô tả", "Giới thiệu công ty", "Chính sách ưu đãi", "Logo"];
 
         if (fileType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 
@@ -318,7 +297,7 @@ class Excels extends Component {
                 else {
                     let titlesExcel = resp.rows[0];
 
-                    if (titlesExcel.length != 14) {
+                    if (titlesExcel.length != 15) {
                         flag = false;
                     } else {
                         for (let i = 0; i < titles.length; i++) {
@@ -392,8 +371,8 @@ class Excels extends Component {
                     <Col xs="12" sm="12">
                         <Card>
                             <CardHeader>
-                                <strong>Import List Students</strong>
-                                <a style={{ marginLeft: "680px" }} href="https://docs.google.com/spreadsheets/d/1IhCjD28uZRiPl5fhJk2RomAej9JkqKLqm3wZok6rgoM/export?format=xlsx" download>Download template list students</a>
+                                <strong>Thêm danh sách sinh viên</strong>
+                                <a style={{ marginLeft: "650px" }} href="https://docs.google.com/spreadsheets/d/1IhCjD28uZRiPl5fhJk2RomAej9JkqKLqm3wZok6rgoM/export?format=xlsx" download>Tải bản mẫu danh sách sinh viên</a>
                             </CardHeader>
                             <CardBody>
                                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -403,7 +382,7 @@ class Excels extends Component {
                                                 <input type="file" multiple id="file_excel_students" name="fileName" onChange={this.fileStudentHandler.bind(this)}></input>
                                                 {files_Students && (
                                                     <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                                                        <button onClick={this.removeFileStudents}>Remove File</button>
+                                                        <button onClick={this.removeFileStudents}>Xóa file</button>
                                                         <br />
                                                     </div>
                                                 )}
@@ -452,7 +431,7 @@ class Excels extends Component {
                             <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button id="submitStudents" onClick={() => this.handleSubmit('Students')} type="submit" color="primary" block>Submit</Button>
+                                        <Button id="submitStudents" onClick={() => this.handleSubmit('Students')} type="submit" color="primary" block>Xác nhận</Button>
                                     </Col>
                                 </Row>
                             </CardFooter>
@@ -464,8 +443,8 @@ class Excels extends Component {
                     <Col xs="12" sm="12">
                         <Card>
                             <CardHeader>
-                                <strong>Import List Bussiness</strong>
-                                <a style={{ marginLeft: "680px" }} href="https://docs.google.com/spreadsheets/d/1qZMlxWND3qVvLzO1muLyeFP0xwJbIE-6xVKgObIbGTE/export?format=xlsx" download>Download template list businesses</a>
+                                <strong>Thêm danh sách doanh nghiệp</strong>
+                                <a style={{ marginLeft: "590px" }} href="https://docs.google.com/spreadsheets/d/1qZMlxWND3qVvLzO1muLyeFP0xwJbIE-6xVKgObIbGTE/export?format=xlsx" download>Tải bản mẫu danh sách doanh nghiệp</a>
                             </CardHeader>
                             <CardBody>
                                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -475,7 +454,7 @@ class Excels extends Component {
                                                 <input type="file" multiple id="file_excel_businesses" name="fileName" onChange={this.fileBusinessHandler.bind(this)}></input>
                                                 {files_Businesses && (
                                                     <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                                                        <button onClick={this.removeFileBusinesses}>Remove File</button>
+                                                        <button onClick={this.removeFileBusinesses}>Xóa file</button>
                                                     </div>
                                                 )}
                                             </form>
@@ -498,7 +477,8 @@ class Excels extends Component {
                                                         <th style={{ whiteSpace: "nowrap" }}>Liên hệ</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Mô tả</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Giới thiệu công ty</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}  >Chính sách ưu đãi</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Chính sách ưu đãi</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Logo</th>
                                                     </thead>
                                                     <tbody>
                                                         {
@@ -519,6 +499,7 @@ class Excels extends Component {
                                                                         <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-11"} onKeyUp={this.rowBusinessEdited}>{business[11]}</td>
                                                                         <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-12"} onKeyUp={this.rowBusinessEdited}>{business[12]}</td>
                                                                         <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-13"} onKeyUp={this.rowBusinessEdited}>{business[13]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-14"} onKeyUp={this.rowBusinessEdited}>{business[14]}</td>
                                                                     </tr>
                                                                 )
                                                             })
@@ -536,7 +517,7 @@ class Excels extends Component {
                             <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button id="submitBusinesses" onClick={() => this.handleSubmit('Businesses')} type="submit" color="primary" block>Submit</Button>
+                                        <Button id="submitBusinesses" onClick={() => this.handleSubmit('Businesses')} type="submit" color="primary" block>Xác nhận</Button>
                                     </Col>
                                 </Row>
                             </CardFooter>

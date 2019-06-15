@@ -10,16 +10,16 @@ import javax.persistence.*;
 public class Job_Post_Skill {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "job_post_id")
     private Job_Post job_post;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "skill_id")
     private Skill skill;

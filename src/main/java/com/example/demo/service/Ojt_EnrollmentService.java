@@ -25,4 +25,9 @@ public class Ojt_EnrollmentService {
         return ojtEnrollmentRepository.findAll();
     }
 
+    public int getOjt_EnrollmentIdByBusinessEmail(String email){
+        Ojt_Enrollment ojt_enrollment=ojtEnrollmentRepository.getOjt_EnrollmentByBusiness_Email(email);
+        return ojt_enrollment.getId();
+    }
+
 }

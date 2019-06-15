@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BusinessRepository extends JpaRepository<Business,String> {
+public interface BusinessRepository extends JpaRepository<Business, String> {
 
+    Business findBusinessByEmail(String email);
 }

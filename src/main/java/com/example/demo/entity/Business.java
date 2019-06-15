@@ -1,16 +1,15 @@
 package com.example.demo.entity;
 
-import org.hibernate.annotations.GenericGenerator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "business")
-public class Business {
+public class Business implements Serializable{
 
     @Id
     @Column(name = "email")
@@ -39,6 +38,7 @@ public class Business {
 
     @OneToMany(mappedBy = "business", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
     private List<Ojt_Enrollment> ojt_enrollments;
 
     @OneToMany(mappedBy = "business", cascade = CascadeType.ALL)
@@ -120,7 +120,34 @@ public class Business {
         return ojt_enrollments;
     }
 
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
+    }
+
+    public List<Invitation> getInvitations() {
+        return invitations;
+    }
+
+    public void setInvitations(List<Invitation> invitations) {
+        this.invitations = invitations;
+    }
+
     public void setOjt_enrollments(List<Ojt_Enrollment> ojt_enrollments) {
         this.ojt_enrollments = ojt_enrollments;
+    }
+
+    public Business(String email, String business_name, String business_eng_name, String business_phone, String business_address, String business_overview, String business_website, String logo) {
+        this.email = email;
+        this.business_name = business_name;
+        this.business_eng_name = business_eng_name;
+        this.business_phone = business_phone;
+        this.business_address = business_address;
+        this.business_overview = business_overview;
+        this.business_website = business_website;
+        this.logo = logo;
     }
 }

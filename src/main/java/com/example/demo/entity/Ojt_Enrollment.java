@@ -1,20 +1,18 @@
 package com.example.demo.entity;
 
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "ojt_enrollment")
-public class Ojt_Enrollment {
+public class Ojt_Enrollment implements Serializable{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private int id;
 
@@ -26,7 +24,7 @@ public class Ojt_Enrollment {
     @JoinColumn(name = "student_email")
     private Student student;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "business_email")
     private Business business;

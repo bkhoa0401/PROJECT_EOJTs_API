@@ -5,6 +5,8 @@ import com.example.demo.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
@@ -43,5 +45,27 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(userList, HttpStatus.OK);
+    }
+
+    //update pass word of user
+    @PutMapping("/updatePassword")
+    public ResponseEntity<Void> updatePassWordOfUsers(@RequestParam  String password){
+        String email=getEmailFromToken();
+        boolean updatePassword=userService.updatePasswordOfUserByEmail(email,password);
+        if(updatePassword==true){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+    //get email from token
+    private String getEmailFromToken() {
+        String email = "";
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            email = ((UserDetails) principal).getUsername();
+        } else {
+            email = principal.toString();
+        }
+        return email;
     }
 }

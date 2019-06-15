@@ -1,15 +1,18 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Business;
-import com.example.demo.service.BusinessService;
+import com.example.demo.dto.BusinessDTO;
+import com.example.demo.dto.Business_JobPostDTO;
+import com.example.demo.entity.*;
+import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,11 +21,110 @@ public class BusinessController {
     @Autowired
     private BusinessService businessService;
 
+    @Autowired
+    private Ojt_EnrollmentService ojt_enrollmentService;
 
-    @PostMapping
-    public ResponseEntity<Void> importFileBusiness(@RequestBody List<Business> listBusiness) {
+    @Autowired
+    private BusinessImportFileService businessImportFileService;
 
-        businessService.importFileBusiness(listBusiness);
+    @Autowired
+    SkillService skillService;
+
+    @Autowired
+    InvitationService invitationService;
+
+    @PostMapping("")
+    public ResponseEntity<Void> saveBusiness(@RequestBody List<BusinessDTO> listBusinessDTO) throws Exception {
+        for (int i = 0; i < listBusinessDTO.size(); i++) {
+            for (int j = 0; j < listBusinessDTO.get(i).getSkillDTOList().size(); j++) {
+                String skill_name = "";
+                int skill_id = 0;
+                Skill skill = new Skill();
+
+                skill_name = listBusinessDTO.get(i).getSkillDTOList().get(j).getName();
+                skill_id = skillService.fullTextSearch(skill_name);
+                skill.setId(skill_id);
+                listBusinessDTO.get(i).getSkillDTOList().get(j).setSkill(skill);
+            }
+        }
+        for (int i = 0; i < listBusinessDTO.size(); i++) {
+            businessImportFileService.insertBusiness(listBusinessDTO.get(i));
+        }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @GetMapping("/getAllBusiness")
+    @ResponseBody
+    public ResponseEntity<List<Business>> getAllBusiness() {
+        List<Business> businessList = businessService.getAllBusiness();
+        if (businessList != null) {
+            return new ResponseEntity<List<Business>>(businessList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/getBusiness")
+    @ResponseBody
+    public ResponseEntity<Business> getBusinessByEmail() {
+        String email = getEmailFromToken();
+        Business business = businessService.getBusinessByEmail(email);
+        if (business != null) {
+            return new ResponseEntity<Business>(business, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    //update business
+    @PutMapping("/updateBusiness")
+    public ResponseEntity<Void> updateBusinessByEmail(@RequestBody Business business) {
+        String email = getEmailFromToken();
+        boolean update = businessService.updateBusiness(email, business);
+        if (update == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    //list invitaion of busines
+    @GetMapping("/listInvitation")
+    @ResponseBody
+    public ResponseEntity<List<Invitation>> getListInvitation() {
+        String email = getEmailFromToken();
+        List<Invitation> invitationList = invitationService.getListBusinessByStuddentEmail(email);
+        if (invitationList != null) {
+            return new ResponseEntity<List<Invitation>>(invitationList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    //get email from token
+    private String getEmailFromToken() {
+        String email = "";
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            email = ((UserDetails) principal).getUsername();
+        } else {
+            email = principal.toString();
+        }
+        return email;
+    }
+
+    //loi
+//    @GetMapping("/getAllJobPost-Business")
+//    public ResponseEntity<List<Business_JobPostDTO>> getAllJobPostBusiness(){
+//        List<Business> businessList=businessService.getAllBusiness();
+//        List<Business_JobPostDTO> business_jobPostDTOS=new ArrayList<>();
+//        for (int i=0;i<businessList.size();i++){
+//            Business_JobPostDTO business_jobPostDTO=new Business_JobPostDTO();
+//            business_jobPostDTO.setBusiness(businessList.get(i));
+//            business_jobPostDTO.setJob_postList(businessList.get(i).getOjt_enrollments().get(0).getJob_posts());
+//
+//            business_jobPostDTOS.add(business_jobPostDTO);
+//        }
+//        return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOS,HttpStatus.CREATED);
+//    }
 }

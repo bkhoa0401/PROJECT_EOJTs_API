@@ -7,13 +7,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "Student")
-public class Student implements Serializable{
+public class Student implements Serializable {
 
     @Id
     @Column(name = "email", nullable = false, unique = true)
@@ -22,8 +23,8 @@ public class Student implements Serializable{
     @Column(name = "name")
     private String name;
 
-    @Column(name = "specialized")
-    private String specialized;
+    @Column(name = "gpa")
+    private float gpa;
 
     @Column(name = "phone")
     private String phone;
@@ -49,11 +50,6 @@ public class Student implements Serializable{
     @Column(name = "code")
     private String code;
 
-    @Column(name = "semester")
-    private int semester;
-
-    @Column(name = "token")
-    private String token;
 
     @OneToMany(mappedBy = "student")
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -92,6 +88,12 @@ public class Student implements Serializable{
     )
     private List<Invitation> invitations;
 
+
+    @ManyToOne
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "specialized_id")
+    private Specialized specialized;
+
     public Student() {
     }
 
@@ -111,13 +113,6 @@ public class Student implements Serializable{
         this.name = name;
     }
 
-    public String getSpecialized() {
-        return specialized;
-    }
-
-    public void setSpecialized(String specialized) {
-        this.specialized = specialized;
-    }
 
     public String getPhone() {
         return phone;
@@ -183,21 +178,6 @@ public class Student implements Serializable{
         this.code = code;
     }
 
-    public int getSemester() {
-        return semester;
-    }
-
-    public void setSemester(int semester) {
-        this.semester = semester;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 
     public List<Ojt_Enrollment> getOjt_enrollments() {
         return ojt_enrollments;
@@ -229,5 +209,21 @@ public class Student implements Serializable{
 
     public void setInvitations(List<Invitation> invitations) {
         this.invitations = invitations;
+    }
+
+    public float getGpa() {
+        return gpa;
+    }
+
+    public void setGpa(float gpa) {
+        this.gpa = gpa;
+    }
+
+    public Specialized getSpecialized() {
+        return specialized;
+    }
+
+    public void setSpecialized(Specialized specialized) {
+        this.specialized = specialized;
     }
 }

@@ -5,12 +5,13 @@ import com.example.demo.service.Ojt_EnrollmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/ojt_enrollment)")
+@RequestMapping("/api/enrollment")
 public class Ojt_EnrollmentController {
 
     @Autowired
@@ -28,4 +29,10 @@ public class Ojt_EnrollmentController {
         }
         return new ResponseEntity<>(ojtEnrollmentList, HttpStatus.OK);
     }
+
+    @GetMapping("/{email}")
+    public ResponseEntity<Integer> getIdOjt_Enrollment(@PathVariable String email){
+        return new ResponseEntity<Integer>(ojt_enrollmentService.getOjt_EnrollmentIdByBusinessEmail(email), HttpStatus.OK);
+    }
+
 }

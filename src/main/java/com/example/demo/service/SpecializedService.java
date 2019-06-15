@@ -20,4 +20,8 @@ public class SpecializedService {
         return list;
     }
 
+    public int getIdByName(String name) {
+        return specializedRepository.findSpecializedIdByName(name);
+    }
+
 }
