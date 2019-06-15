@@ -1,10 +1,7 @@
 package com.example.demo.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -52,6 +49,7 @@ public class Student implements Serializable {
 
 
     @OneToMany(mappedBy = "student")
+    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Ojt_Enrollment> ojt_enrollments;
 
@@ -90,6 +88,7 @@ public class Student implements Serializable {
 
 
     @ManyToOne
+    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "specialized_id")
     private Specialized specialized;

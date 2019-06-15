@@ -111,7 +111,7 @@ public class StudentController {
         List<Specialized> specializedList = specializedService.getAllSpecialized();
         if (specializedList != null) {
             return new ResponseEntity<List<Specialized>>(specializedList, HttpStatus.OK);
-        }else{
+        } else {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
@@ -155,11 +155,25 @@ public class StudentController {
     }
 
     @GetMapping("/list-invitation")
+    @ResponseBody
     public ResponseEntity<List<Invitation>> getListInvitation() {
         String email = getEmailFromToken();
         List<Invitation> invitationList = invitationService.getListInvitationByStuddentEmail(email);
         if (invitationList != null) {
             return new ResponseEntity<List<Invitation>>(invitationList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    //student get details invitation
+    @GetMapping("/getInvitation")
+    @ResponseBody
+    public ResponseEntity<Invitation> getInvitation(@RequestParam int id) {
+
+        Invitation invitation = invitationService.getInvitationById(id);
+        if (invitation != null) {
+            return new ResponseEntity<Invitation>(invitation, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -171,6 +185,28 @@ public class StudentController {
     public ResponseEntity<Integer> getIdSkillByName(@RequestParam(value = "nameSkill") String nameSkill) {
         System.out.println(nameSkill);
         return new ResponseEntity<Integer>(skillService.fullTextSearch(nameSkill), HttpStatus.OK);
+    }
+
+    //update option 1 of student
+    @PutMapping("/updateOption1")
+    public ResponseEntity<String> updateOption1OfStudent(@RequestParam String option1) {
+        String email = getEmailFromToken();
+        boolean update = studentService.updateOption1Student(email, option1);
+        if (update == true) {
+            return new ResponseEntity<String>("success", HttpStatus.OK);
+        }
+        return new ResponseEntity<String>("fail", HttpStatus.EXPECTATION_FAILED);
+    }
+
+    //update option 2 of student
+    @PutMapping("/updateOption2")
+    public ResponseEntity<String> updateOption2OfStudent(@RequestParam String option2) {
+        String email = getEmailFromToken();
+        boolean update = studentService.updateOption2Student(email, option2);
+        if (update == true) {
+            return new ResponseEntity<String>("success", HttpStatus.OK);
+        }
+        return new ResponseEntity<String>("fail", HttpStatus.EXPECTATION_FAILED);
     }
 
     //get email from token

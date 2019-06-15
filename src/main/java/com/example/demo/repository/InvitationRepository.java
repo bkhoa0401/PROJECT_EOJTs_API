@@ -12,4 +12,8 @@ public interface InvitationRepository extends JpaRepository<Invitation, Integer>
     List<Invitation> findInvitationByStudentsEmail(String email);
 
     List<Invitation> findInvitationByBusinessEmail(String email);
+
+    Invitation findInvitationById(int id);
+
+
 }

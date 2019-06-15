@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.LoginDTO;
+import com.example.demo.entity.Student;
 import com.example.demo.entity.Users;
 import com.example.demo.service.JwtService;
+import com.example.demo.service.StudentService;
 import com.example.demo.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,9 @@ public class WebController {
     @Autowired
     private JwtService jwtService;
 
+    @Autowired
+    private StudentService studentService;
+
     @PostMapping("/token")
     public ResponseEntity<LoginDTO> checkLogin(HttpServletRequest request, @RequestBody Users users, HttpServletResponse response) {
         String result = "";
@@ -36,6 +41,15 @@ public class WebController {
 
                 login.setUser(usersFound);
                 login.setToken(result);
+
+                for (int i=0;i<usersFound.getRoles().size();i++){
+                    String name=usersFound.getRoles().get(i).getDescription();
+                    if(name.equals("ROLE_STUDENT")){
+                        Student student=studentService.getStudentByEmail(users.getEmail());
+                        login.setStudent(student);
+                    }
+                }
+
                 httpStatus = HttpStatus.OK;
             } else {
                 httpStatus = HttpStatus.BAD_REQUEST;

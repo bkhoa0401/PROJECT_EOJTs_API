@@ -20,4 +20,7 @@ public class InvitationService {
         return invitationRepository.findInvitationByBusinessEmail(email);
     }
 
+    public Invitation getInvitationById(int id){
+        return invitationRepository.findInvitationById(id);
+    }
 }
