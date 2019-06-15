@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -40,6 +41,7 @@ public class Semester {
 
     @OneToMany(mappedBy = "semester")
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
     private List<Invitation> invitations;
 
     public int getId() {

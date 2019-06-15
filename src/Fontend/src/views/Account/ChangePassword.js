@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Button, Card, CardBody, CardFooter, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import decode from 'jwt-decode';
 import SimpleReactValidator from 'simple-react-validator';
+import ApiServices from '../../service/api-service';
+import { ToastContainer } from 'react-toastify';
+import Toastify from '../../views/Toastify/Toastify';
 
 class ChangePassword extends Component {
 
@@ -32,19 +35,24 @@ class ChangePassword extends Component {
         })
     }
 
+    handleReset = async () => {
+        this.setState({
+            newPassword: '',
+            confirmPassword: '',
+        })
+    }
+
     handleSubmit = async () => {
         const { newPassword } = this.state;
 
         if (this.validator.allValid()) {
 
-            console.log("newPassword", newPassword);
-
-            // const result = await ApiServices.Post('/scheduleparameters/', newPassword);
-            // if (result != null) {
-            //     Toastify.actionSuccess('Tạo các tham số thành công');
-            // } else {
-            //     Toastify.actionFail('Tạo các tham số thất bại');
-            // }
+            const result = await ApiServices.Put(`/user/updatePassword?password=${newPassword}`);
+            if (result.status == 200) {
+                Toastify.actionSuccess('Cập nhật mật khẩu thành công');
+            } else {
+                Toastify.actionFail('Cập nhật mật khẩu thất bại');
+            }
 
         } else {
             this.validator.showMessages();
@@ -83,7 +91,7 @@ class ChangePassword extends Component {
                                                     <i className="icon-lock"></i>
                                                 </InputGroupText>
                                             </InputGroupAddon>
-                                            <Input type="password" placeholder="Mật khẩu mới" autoComplete="new-password" onChange={this.handleInput} />
+                                            <Input type="password" name="newPassword" id="newPassword" placeholder="Mật khẩu mới" autoComplete="new-password" onChange={this.handleInput} />
                                         </InputGroup>
                                         <InputGroup className="mb-3">
                                             <span className="form-error is-visible text-danger">
@@ -96,7 +104,7 @@ class ChangePassword extends Component {
                                                     <i className="icon-lock"></i>
                                                 </InputGroupText>
                                             </InputGroupAddon>
-                                            <Input type="password" placeholder="Nhập lại mật khẩu mới" autoComplete="confirm-password" onChange={this.handleInput} />
+                                            <Input type="password" name="confirmPassword" id="confirmPassword" placeholder="Nhập lại mật khẩu mới" autoComplete="confirm-password" onChange={this.handleInput} />
                                         </InputGroup>
                                         <InputGroup className="mb-3">
                                             <span className="form-error is-visible text-danger">
@@ -104,6 +112,7 @@ class ChangePassword extends Component {
                                             </span>
                                         </InputGroup>
                                     </Form>
+                                    <ToastContainer />
                                 </CardBody>
                                 <CardFooter className="p-4">
                                     <Row>
@@ -111,7 +120,7 @@ class ChangePassword extends Component {
                                             <Button onClick={() => this.handleSubmit()} color="primary" block>Đặt lại mật khẩu</Button>
                                         </Col>
                                         <Col xs="12" sm="6">
-                                            <Button type="reset" color="danger" block><span>Reset</span></Button>
+                                            <Button type="reset" color="danger" onClick={() => this.handleReset()} type="reset" block><span>Reset</span></Button>
                                         </Col>
                                     </Row>
                                 </CardFooter>
