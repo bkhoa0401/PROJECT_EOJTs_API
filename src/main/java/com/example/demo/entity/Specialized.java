@@ -8,6 +8,10 @@ import javax.persistence.*;
 import javax.xml.crypto.Data;
 import java.util.List;
 
+
+@JsonIgnoreProperties(ignoreUnknown = true, value = {"hibernateLazyInitializer", "handler"})
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property  = "id")
+
 @Entity
 @Table(name = "specialized")
 public class Specialized {
@@ -26,6 +30,7 @@ public class Specialized {
 
     @OneToMany(mappedBy = "specialized")
     @JsonManagedReference
+    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Student> students;
 

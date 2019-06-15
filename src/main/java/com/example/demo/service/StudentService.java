@@ -28,14 +28,14 @@ public class StudentService {
     }
 
     public int getSpecializedIdByEmail(String email) {
-        Student student =getStudentByEmail(email);
+        Student student = getStudentByEmail(email);
         int specializedId = student.getSpecialized().getId();
 
         return specializedId;
     }
 
     public boolean updateInforStudent(String email, String ojective, float gpa, List<Skill> skillList) {
-        Student student =getStudentByEmail(email);
+        Student student = getStudentByEmail(email);
         if (student != null) {
             student.setObjective(ojective);
             student.setGpa(gpa);
@@ -57,6 +57,7 @@ public class StudentService {
         }
         return false;
     }
+
     public boolean updateOption2Student(String email, String option2) {
         Student student = getStudentByEmail(email);
         if (student != null) {
@@ -67,5 +68,21 @@ public class StudentService {
             return true;
         }
         return false;
+    }
+
+    public Student findStudentByInvitationsId(int id) {
+        Student student = studentRepository.findStudentByInvitationsId(id);
+        if (student != null) {
+            return student;
+        }
+        return null;
+    }
+
+    public List<Student> findStudentByBusinessNameOption(String option1,String option2){
+        List<Student> studentList=studentRepository.findStudentByOption1OrOption2(option1,option2);
+        if (studentList != null) {
+            return studentList;
+        }
+        return null;
     }
 }

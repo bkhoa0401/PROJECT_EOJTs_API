@@ -95,7 +95,7 @@ public class BusinessController {
     @ResponseBody
     public ResponseEntity<List<Invitation>> getListInvitation() {
         String email = getEmailFromToken();
-        List<Invitation> invitationList = invitationService.getListBusinessByStuddentEmail(email);
+        List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);
         if (invitationList != null) {
             return new ResponseEntity<List<Invitation>>(invitationList, HttpStatus.OK);
         } else {

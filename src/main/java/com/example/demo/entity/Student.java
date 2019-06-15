@@ -80,6 +80,7 @@ public class Student implements Serializable {
 
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
     @JoinTable(
             name = "student_invitation",
             joinColumns = {
