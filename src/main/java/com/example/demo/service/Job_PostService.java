@@ -15,4 +15,12 @@ public class Job_PostService {
             job_postRepository.save(job_post);
         }
     }
+
+    public Job_Post findJob_PostById(int id){
+        Job_Post job_post=job_postRepository.findJob_PostById(id);
+        if(job_post!=null){
+            return job_post;
+        }
+        return null;
+    }
 }

@@ -33,6 +33,9 @@ public class BusinessController {
     @Autowired
     InvitationService invitationService;
 
+    @Autowired
+    Job_PostService job_postService;
+
     @PostMapping("")
     public ResponseEntity<Void> saveBusiness(@RequestBody List<BusinessDTO> listBusinessDTO) throws Exception {
         for (int i = 0; i < listBusinessDTO.size(); i++) {
@@ -100,6 +103,35 @@ public class BusinessController {
         }
     }
 
+    //business get details invitation
+    @GetMapping("/getInvitation")
+    @ResponseBody
+    public ResponseEntity<Invitation> getInvitation(@RequestParam int id) {
+
+        Invitation invitation =invitationService.getInvitationById(id);
+        if (invitation != null) {
+            return new ResponseEntity<Invitation>(invitation, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    //get job post details by id
+    @GetMapping("/getJobPost")
+    @ResponseBody
+    public ResponseEntity<Job_Post> getListInvitation(@RequestParam int id) {
+
+        Job_Post job_post =job_postService.findJob_PostById(id);
+        if (job_post != null) {
+            return new ResponseEntity<Job_Post>(job_post, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+
 
     //get email from token
     private String getEmailFromToken() {
@@ -113,18 +145,18 @@ public class BusinessController {
         return email;
     }
 
-    //loi
-//    @GetMapping("/getAllJobPost-Business")
-//    public ResponseEntity<List<Business_JobPostDTO>> getAllJobPostBusiness(){
-//        List<Business> businessList=businessService.getAllBusiness();
-//        List<Business_JobPostDTO> business_jobPostDTOS=new ArrayList<>();
-//        for (int i=0;i<businessList.size();i++){
-//            Business_JobPostDTO business_jobPostDTO=new Business_JobPostDTO();
-//            business_jobPostDTO.setBusiness(businessList.get(i));
-//            business_jobPostDTO.setJob_postList(businessList.get(i).getOjt_enrollments().get(0).getJob_posts());
-//
-//            business_jobPostDTOS.add(business_jobPostDTO);
-//        }
-//        return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOS,HttpStatus.CREATED);
-//    }
+    //get all post of business
+    @GetMapping("/getAllJobPostOfBusiness")
+    public ResponseEntity<List<Business_JobPostDTO>> getAllJobPostBusiness(){
+        List<Business> businessList=businessService.getAllBusiness();
+        List<Business_JobPostDTO> business_jobPostDTOS=new ArrayList<>();
+        for (int i=0;i<businessList.size();i++){
+            Business_JobPostDTO business_jobPostDTO=new Business_JobPostDTO();
+            business_jobPostDTO.setBusiness(businessList.get(i));
+            business_jobPostDTO.setJob_postList(businessList.get(i).getOjt_enrollments().get(0).getJob_posts());
+
+            business_jobPostDTOS.add(business_jobPostDTO);
+        }
+        return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOS,HttpStatus.OK);
+    }
 }

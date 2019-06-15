@@ -41,6 +41,7 @@ public class Job_Post {
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
     @JoinColumn(name = "ojt_enrollment_id")
     private Ojt_Enrollment ojt_enrollment;
 
