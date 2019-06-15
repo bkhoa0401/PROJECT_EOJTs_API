@@ -146,7 +146,7 @@ public class StudentController {
 
 
     //update objective
-    @PostMapping("/update-resume")
+    @PutMapping("/update-resume")
     public ResponseEntity<String> updateInforOfStudent(@RequestParam String objective, @RequestParam float gpa,
                                                        @RequestBody List<Skill> skillList) {
         String email = getEmailFromToken();
