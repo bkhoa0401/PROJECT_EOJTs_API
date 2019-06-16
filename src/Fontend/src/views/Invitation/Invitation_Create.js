@@ -14,15 +14,18 @@ class Invitation_Create extends Component {
         super(props);
         this.state = {
             students: null,
+            business_name: '',
         }
     }
 
 
     async componentDidMount() {
-        const students = await ApiServices.Get('/student/getAllStudent');
+        const students = await ApiServices.Get('/student/getListStudentNotYetInvited');
+        const business = await ApiServices.Get('/business/getBusiness');
         if (students != null) {
             this.setState({
-                students
+                students,
+                business_name: business.business_name
             });
         }
     }
@@ -31,29 +34,33 @@ class Invitation_Create extends Component {
         this.props.history.push(uri);
     }
 
-    //   handleUpdateDiscontinued = async (id, discontinued) => {
-    //     const result = await ApiService.Put(`/product/discontinued/${id}/${discontinued}`, "");
-    //     const students = await ApiService.Get('/product');
-    //     if (students != null) {
-    //       const { currentPage } = this.state;
-    //       const pageNumber = getPaginationPageNumber(students.length);
-    //       const studentsPagination = students.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));
-    //       this.setState({
-    //         students,
-    //         pageNumber,
-    //         studentsPagination,
-    //       });
-    //     }
 
-    //     if (result) {
-    //       // do something
-    //       Toastify.querySuccess("Update Status Successfully!");
-    //     } else {
-    //       Toastify.queryFail("Update Status Fail!");
-    //     }
+    handleSubmit = async (index) => {
+        const { students, business_name } = this.state;
+        const studentName = students[index].name;
+        const email = students[index].email;
+        const btnId = "btnSendInvitation" + index;
 
-    //   }
+        document.getElementById(btnId).setAttribute("disabled", "disabled");
 
+
+        const invitation = {
+            description: `Xin chào ${studentName}!
+            Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
+            state: 0,
+            time_created: "2019-09-09",
+            title: `Lời mời thực tập từ công ty ${business_name}`
+        }
+
+        const result = await ApiServices.Post(`/business/createInvitation?emailStudent=${email}`, invitation);
+
+        if (result.status == 201) {
+            Toastify.actionSuccess('Gửi lời mời thành công');
+        } else {
+            Toastify.actionFail('Gửi lời mời thất bại');
+        }
+
+    }
 
     render() {
         const { students } = this.state;
@@ -101,8 +108,9 @@ class Invitation_Create extends Component {
                                                                 skills && skills.map((skill, index) => {
                                                                     return (
                                                                         <div>
-                                                                            <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
-                                                                            <br />
+                                                                            {
+                                                                                <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                            }
                                                                         </div>
                                                                     )
                                                                 })
@@ -111,7 +119,7 @@ class Invitation_Create extends Component {
                                                         <td style={{ textAlign: "center" }}>{student.gpa}</td>
                                                         <td style={{ textAlign: "center" }}><a href="">Tải</a></td>
                                                         <td style={{ textAlign: "center" }}>
-                                                            <Button type="submit" style={{ marginRight: "1.5px" }} color="primary">Gửi lời mời</Button>
+                                                            <Button onClick={() => this.handleSubmit(index)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                         </td>
                                                     </tr>
                                                 )

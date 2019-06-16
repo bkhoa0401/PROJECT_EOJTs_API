@@ -132,9 +132,9 @@ class Company extends Component {
                                             <br /><br />
                                             <Input onChange={this.handleInput} type="file" id="avatarLink" name="avatarLink" />
                                             <br /><br />
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('avatarLink', avatarLink, 'required')}
-                                            </span>
+                                                {/* <span className="form-error is-visible text-danger">
+                                                    {this.validator.message('avatarLink', avatarLink, 'required')}
+                                                </span> */}
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>

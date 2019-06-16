@@ -13,60 +13,29 @@ class Ojt_Registration extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            students: null,
+            business_name: '',
         }
     }
 
 
-    //   async componentDidMount() {
-    //     const products = await ApiService.Get('/product');
-    //     if (products != null) {
-    //       this.setState({
-
-    //       });
-    //     }
-    //   }
+    async componentDidMount() {
+        const students = await ApiServices.Get('/student/getListStudentByOption');
+        const business = await ApiServices.Get('/business/getBusiness');
+        if (students != null) {
+            this.setState({
+                students,
+                business_name: business.business_name
+            });
+        }
+    }
 
     handleDirect = (uri) => {
         this.props.history.push(uri);
     }
 
-    // handleDelete = async (deletedId) => {
-    //   const result = await ApiService.Delete(`/product/${deletedId}`, "");
-
-    //   if (result) {
-    //     // do something
-    //   } else {
-
-    //   }
-
-    // }
-
-    //   handleUpdateDiscontinued = async (id, discontinued) => {
-    //     const result = await ApiService.Put(`/product/discontinued/${id}/${discontinued}`, "");
-    //     const products = await ApiService.Get('/product');
-    //     if (products != null) {
-    //       const { currentPage } = this.state;
-    //       const pageNumber = getPaginationPageNumber(products.length);
-    //       const productsPagination = products.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));
-    //       this.setState({
-    //         products,
-    //         pageNumber,
-    //         productsPagination,
-    //       });
-    //     }
-
-    //     if (result) {
-    //       // do something
-    //       Toastify.querySuccess("Update Status Successfully!");
-    //     } else {
-    //       Toastify.queryFail("Update Status Fail!");
-    //     }
-
-    //   }
-
-
     render() {
+        const { students, business_name } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -89,27 +58,47 @@ class Ojt_Registration extends Component {
                                             <th style={{ textAlign: "center" }}>MSSV</th>
                                             <th style={{ textAlign: "center" }}>Họ và Tên</th>
                                             <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                            <th style={{ textAlign: "center" }}>GPA</th>
                                             <th style={{ textAlign: "center" }}>Bảng điểm</th>
                                             <th style={{ textAlign: "center" }}>Nguyện vọng</th>
                                             <th style={{ textAlign: "center" }}>Hành động</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td style={{ textAlign: "center" }}></td>
-                                            <td style={{ textAlign: "center" }}></td>
-                                            <td style={{ textAlign: "center" }}></td>
-                                            <td style={{ textAlign: "center" }}></td>
-                                            <td style={{ textAlign: "center" }}></td>
-                                            <td style={{ textAlign: "center" }}><a href="">Tải</a></td>
-                                            <td style={{ textAlign: "center" }}></td>
-                                            <td style={{ textAlign: "center" }}>
-                                                <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect("ojt_registration/cv")}>Xem CV</Button>
-                                                {/* <Button type="submit" style={{ marginRight: "1.5px" }} color="primary">Duyệt</Button>
-                                                <Button type="submit" style={{ marginRight: "1.5px" }} color="danger">Từ chối</Button> */}
-                                            </td>
-                                        </tr>
+                                        {
+                                            students && students.map((student, index) => {
+
+                                                const invitations = student.invitations;
+                                                const skills = student.skills;
+
+                                                let tmp = 'Pending';
+                                                if (invitations[0].state != 'false') {
+                                                    if (student.option1 == business_name) {
+                                                        tmp = 1;
+                                                    }
+                                                    if (student.option2 == business_name) {
+                                                        tmp = 2;
+                                                    }
+                                                }
+
+                                                return (
+                                                    <tr key={index}>
+                                                        <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                        <td style={{ textAlign: "center" }}><a href="">Tải</a></td>
+                                                        <td style={{ textAlign: "center" }}>
+                                                            <strong>
+                                                                {tmp}
+                                                            </strong>
+                                                        </td>
+                                                        <td style={{ textAlign: "center" }}>
+                                                            <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect(`ojt_registration/cv/${student.email}`)}>Xem CV</Button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
                                     </tbody>
                                 </Table>
                                 <ToastContainer />

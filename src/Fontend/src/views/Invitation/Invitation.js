@@ -20,7 +20,7 @@ class Invitation extends Component {
 
 
     async componentDidMount() {
-        const students = await ApiServices.Get('/student/getListStudentByInvitationId');
+        const students = await ApiServices.Get('/student/getListStudentIsInvited');
         const business = await ApiServices.Get('/business/getBusiness');
         if (students != null) {
             this.setState({
@@ -28,47 +28,11 @@ class Invitation extends Component {
                 business_name: business.business_name
             });
         }
-        console.log("STATE", this.state);
     }
 
     handleDirect = (uri) => {
         this.props.history.push(uri);
     }
-
-    // handleDelete = async (deletedId) => {
-    //   const result = await ApiService.Delete(`/product/${deletedId}`, "");
-
-    //   if (result) {
-    //     // do something
-    //   } else {
-
-    //   }
-
-    // }
-
-    //   handleUpdateDiscontinued = async (id, discontinued) => {
-    //     const result = await ApiService.Put(`/product/discontinued/${id}/${discontinued}`, "");
-    //     const products = await ApiService.Get('/product');
-    //     if (products != null) {
-    //       const { currentPage } = this.state;
-    //       const pageNumber = getPaginationPageNumber(products.length);
-    //       const productsPagination = products.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));
-    //       this.setState({
-    //         products,
-    //         pageNumber,
-    //         productsPagination,
-    //       });
-    //     }
-
-    //     if (result) {
-    //       // do something
-    //       Toastify.querySuccess("Update Status Successfully!");
-    //     } else {
-    //       Toastify.queryFail("Update Status Fail!");
-    //     }
-
-    //   }
-
 
     render() {
         const { students, business_name } = this.state;
@@ -111,7 +75,7 @@ class Invitation extends Component {
                                                 const invitations = student.invitations;
                                                 const skills = student.skills;
 
-                                                let tmp = 'none';
+                                                let tmp = 'N/A';
                                                 if (invitations[0].state != 'false') {
                                                     if (student.option1 == business_name) {
                                                         tmp = 1;
@@ -132,8 +96,9 @@ class Invitation extends Component {
                                                                 skills && skills.map((skill, index) => {
                                                                     return (
                                                                         <div>
-                                                                            <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
-                                                                            <br />
+                                                                            {
+                                                                                <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                            }
                                                                         </div>
                                                                     )
                                                                 })

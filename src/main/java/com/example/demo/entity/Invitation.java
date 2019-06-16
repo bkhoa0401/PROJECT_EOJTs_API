@@ -37,6 +37,7 @@ public class Invitation {
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "student_email")
+    @JsonIgnore
     private Student student;
 
     @ManyToOne
