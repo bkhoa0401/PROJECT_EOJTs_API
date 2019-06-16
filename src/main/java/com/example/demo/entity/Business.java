@@ -16,7 +16,7 @@ public class Business implements Serializable{
     @Column(name = "email")
     private String email;
 
-    @Column(name = "business_name")
+    @Column(name = "business_name",columnDefinition = "NVARCHAR(250)")
     private String business_name;
 
     @Column(name = "business_eng_name")
@@ -25,10 +25,10 @@ public class Business implements Serializable{
     @Column(name = "business_phone")
     private String business_phone;
 
-    @Column(name = "business_address")
+    @Column(name = "business_address",columnDefinition = "NVARCHAR(250)")
     private String business_address;
 
-    @Column(name = "business_overview")
+    @Column(name = "business_overview",columnDefinition = "NVARCHAR(MAX)")
     private String business_overview;
 
     @Column(name = "business_website")
