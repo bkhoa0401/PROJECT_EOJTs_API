@@ -13,46 +13,35 @@ class Invitation_Create extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            students: null,
         }
     }
 
 
-    //   async componentDidMount() {
-    //     const products = await ApiService.Get('/product');
-    //     if (products != null) {
-    //       this.setState({
-
-    //       });
-    //     }
-    //   }
+    async componentDidMount() {
+        const students = await ApiServices.Get('/student/getAllStudent');
+        if (students != null) {
+            this.setState({
+                students
+            });
+        }
+    }
 
     handleDirect = (uri) => {
         this.props.history.push(uri);
     }
 
-    // handleDelete = async (deletedId) => {
-    //   const result = await ApiService.Delete(`/product/${deletedId}`, "");
-
-    //   if (result) {
-    //     // do something
-    //   } else {
-
-    //   }
-
-    // }
-
     //   handleUpdateDiscontinued = async (id, discontinued) => {
     //     const result = await ApiService.Put(`/product/discontinued/${id}/${discontinued}`, "");
-    //     const products = await ApiService.Get('/product');
-    //     if (products != null) {
+    //     const students = await ApiService.Get('/product');
+    //     if (students != null) {
     //       const { currentPage } = this.state;
-    //       const pageNumber = getPaginationPageNumber(products.length);
-    //       const productsPagination = products.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));
+    //       const pageNumber = getPaginationPageNumber(students.length);
+    //       const studentsPagination = students.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));
     //       this.setState({
-    //         products,
+    //         students,
     //         pageNumber,
-    //         productsPagination,
+    //         studentsPagination,
     //       });
     //     }
 
@@ -67,6 +56,7 @@ class Invitation_Create extends Component {
 
 
     render() {
+        const { students } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -88,22 +78,45 @@ class Invitation_Create extends Component {
                                             <th style={{ textAlign: "center" }}>STT</th>
                                             <th style={{ textAlign: "center" }}>MSSV</th>
                                             <th style={{ textAlign: "center" }}>Họ và Tên</th>
+                                            <th style={{ textAlign: "center" }}>Chuyên ngành</th>
+                                            <th style={{ textAlign: "center" }}>Kỹ năng</th>
                                             <th style={{ textAlign: "center" }}>GPA</th>
                                             <th style={{ textAlign: "center" }}>Bảng điểm</th>
                                             <th style={{ textAlign: "center" }}>Hành động</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td style={{ textAlign: "center" }}></td>
-                                            <td style={{ textAlign: "center" }}></td>
-                                            <td style={{ textAlign: "center" }}></td>
-                                            <td style={{ textAlign: "center" }}></td>
-                                            <td style={{ textAlign: "center" }}><a href="">Tải</a></td>
-                                            <td style={{ textAlign: "center" }}>
-                                                <Button type="submit" style={{ marginRight: "1.5px" }} color="primary">Gửi lời mời</Button>
-                                            </td>
-                                        </tr>
+                                        {
+                                            students && students.map((student, index) => {
+                                                const skills = student.skills;
+
+                                                return (
+                                                    <tr key={index}>
+                                                        <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                        <td style={{ textAlign: "center" }}>
+                                                            {
+                                                                skills && skills.map((skill, index) => {
+                                                                    return (
+                                                                        <div>
+                                                                            <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                            <br />
+                                                                        </div>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </td>
+                                                        <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                                                        <td style={{ textAlign: "center" }}><a href="">Tải</a></td>
+                                                        <td style={{ textAlign: "center" }}>
+                                                            <Button type="submit" style={{ marginRight: "1.5px" }} color="primary">Gửi lời mời</Button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
                                     </tbody>
                                 </Table>
                                 <ToastContainer />
