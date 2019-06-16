@@ -25,7 +25,7 @@ class Company extends Component {
         super(props);
         this.validator = new SimpleReactValidator();
         this.state = {
-            logo: '',
+            avatarLink: '',
             business_name: '',
             business_eng_name: '',
             business_overview: '',
@@ -42,7 +42,7 @@ class Company extends Component {
 
         if (business != null) {
             this.setState({
-                logo: business.logo,
+                avatarLink: business.avatarLink,
                 business_name: business.business_name,
                 business_eng_name: business.business_eng_name,
                 business_overview: business.business_overview,
@@ -67,7 +67,7 @@ class Company extends Component {
 
     handleReset = async () => {
         this.setState({
-            logo: '',
+            avatarLink: '',
             business_name: '',
             business_eng_name: '',
             business_overview: '',
@@ -80,13 +80,13 @@ class Company extends Component {
 
     handleSubmit = async () => {
 
-        const { logo, business_name, business_eng_name, business_overview, email,
+        const { avatarLink, business_name, business_eng_name, business_overview, email,
             business_address, business_phone, business_website } = this.state;
 
 
         if (this.validator.allValid()) {
             var company = {
-                logo, business_name, business_eng_name, business_overview, email,
+                avatarLink, business_name, business_eng_name, business_overview, email,
                 business_address, business_phone, business_website
             }
 
@@ -107,7 +107,7 @@ class Company extends Component {
     }
 
     render() {
-        const { logo, business_name, business_eng_name, business_overview, email,
+        const { avatarLink, business_name, business_eng_name, business_overview, email,
             business_address, business_phone, business_website } = this.state;
         return (
             <div className="animated fadeIn">
@@ -128,12 +128,12 @@ class Company extends Component {
                                             <h6>Logo</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <img src="https://i-dulich.vnecdn.net/2019/03/16/1-3-1552732057_680x0.jpg" onChange={this.handleInput} type="file" id="logo" name="logo" />
+                                            <img src="https://i-dulich.vnecdn.net/2019/03/16/1-3-1552732057_680x0.jpg" onChange={this.handleInput} type="file" id="avatarLink" name="avatarLink" />
                                             <br /><br />
-                                            <Input onChange={this.handleInput} type="file" id="logo" name="logo" />
+                                            <Input onChange={this.handleInput} type="file" id="avatarLink" name="avatarLink" />
                                             <br /><br />
                                             <span className="form-error is-visible text-danger">
-                                                {this.validator.message('logo', logo, 'required')}
+                                                {this.validator.message('avatarLink', avatarLink, 'required')}
                                             </span>
                                         </Col>
                                     </FormGroup>

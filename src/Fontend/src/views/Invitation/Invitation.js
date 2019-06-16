@@ -98,6 +98,7 @@ class Invitation extends Component {
                                             <th style={{ textAlign: "center" }}>MSSV</th>
                                             <th style={{ textAlign: "center" }}>Họ và Tên</th>
                                             <th style={{ textAlign: "center" }}>Chuyên ngành</th>
+                                            <th style={{ textAlign: "center" }}>Kỹ năng</th>
                                             <th style={{ textAlign: "center" }}>GPA</th>
                                             <th style={{ textAlign: "center" }}>Trạng thái lời mời</th>
                                             <th style={{ textAlign: "center" }}>Nguyện vọng của sinh viên</th>
@@ -108,8 +109,9 @@ class Invitation extends Component {
                                             students && students.map((student, index) => {
 
                                                 const invitations = student.invitations;
-                                                console.log("invitations", invitations[0].state);
-                                                let tmp;
+                                                const skills = student.skills;
+
+                                                let tmp = 'none';
                                                 if (invitations[0].state != 'false') {
                                                     if (student.option1 == business_name) {
                                                         tmp = 1;
@@ -119,13 +121,24 @@ class Invitation extends Component {
                                                     }
                                                 }
 
-
                                                 return (
                                                     <tr key={index}>
                                                         <td style={{ textAlign: "center" }}>{index + 1}</td>
                                                         <td style={{ textAlign: "center" }}>{student.code}</td>
                                                         <td style={{ textAlign: "center" }}>{student.name}</td>
                                                         <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                        <td style={{ textAlign: "center" }}>
+                                                            {
+                                                                skills && skills.map((skill, index) => {
+                                                                    return (
+                                                                        <div>
+                                                                            <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                            <br />
+                                                                        </div>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </td>
                                                         <td style={{ textAlign: "center" }}>{student.gpa}</td>
                                                         <td style={{ textAlign: "center" }}>
                                                             {
@@ -137,7 +150,9 @@ class Invitation extends Component {
                                                             }
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>
-                                                            {tmp}
+                                                            <strong>
+                                                                {tmp}
+                                                            </strong>
                                                         </td>
                                                     </tr>
                                                 )
