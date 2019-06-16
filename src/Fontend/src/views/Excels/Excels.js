@@ -189,14 +189,14 @@ class Excels extends Component {
 
                 const result = await ApiServices.Post('/business', listBusinesses);
                 if (result.status == 201) {
-                    Toastify.actionSuccess("Create Success!");
+                    Toastify.actionSuccess("Thêm tệp thành công!");
 
                 } else {
-                    Toastify.actionFail("Create Fail!");
+                    Toastify.actionFail("Thêm tệp thất bại!");
                 }
             }
         } else if (buttonName === 'Businesses') {
-            Toastify.actionFail("No file choosen!");
+            Toastify.actionFail("Không tệp nào được chọn!");
         }
 
     }
@@ -255,7 +255,7 @@ class Excels extends Component {
 
                     if (!flag) {
                         document.getElementById("file_excel_students").value = "";
-                        Toastify.actionWarning("Invalid file structure!");
+                        Toastify.actionWarning("Cấu trúc file không hợp lệ!");
                     } else {
                         const { currentPage } = this.state;
                         const pageNumber = getPaginationPageNumber(resp.rows.length - 1);
@@ -306,12 +306,12 @@ class Excels extends Component {
                                 flag = false;
                                 break;
                             }
-                        }
+                        }   
                     }
 
                     if (!flag) {
                         document.getElementById("file_excel_businesses").value = "";
-                        Toastify.actionWarning("Invalid file structure!");
+                        Toastify.actionWarning("Cấu trúc file không hợp lệ!");
                     } else {
                         const { currentPageBus } = this.state;
                         const pageNumberBus = getPaginationPageNumber(resp.rows.length - 1);

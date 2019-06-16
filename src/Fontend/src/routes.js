@@ -101,7 +101,7 @@ const routes = [
   { path: '/invitation/detail', exact: true, name: 'Chi tiết lời mời', component: Invitation_Detail },
   { path: '/invitation/new', exact: true, name: 'Gửi lời mời cho sinh viên', component: Invitation_Create },
   { path: '/ojt_registration', exact: true, name: 'DSSV đăng kí thực tập', component: Ojt_Registration },
-  { path: '/ojt_registration/cv', exact: true, name: 'Chi tiết CV', component: CV },
+  { path: '/ojt_registration/cv/:email', exact: true, name: 'Chi tiết CV', component: CV },
 ];
 
 export default routes;

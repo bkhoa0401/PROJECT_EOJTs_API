@@ -79,13 +79,13 @@ public class Student implements Serializable {
     private List<Event> events;
 
     @OneToMany(mappedBy = "student")
-    @JsonIgnore
+//    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Invitation> invitations;
 
 
     @ManyToOne
-    @JsonBackReference
+//    @JsonBackReference
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "specialized_id")
     private Specialized specialized;

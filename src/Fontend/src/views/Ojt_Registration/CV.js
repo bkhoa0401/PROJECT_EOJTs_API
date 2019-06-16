@@ -26,60 +26,41 @@ class CV extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            name: '',
+            code: '',
+            email: '',
+            phone: '',
+            address: '',
+            specialized: '',
+            objective: '',
+            gpa: '',
+            skills: []
         }
     }
 
 
-    //   async componentDidMount() {
-    //     const products = await ApiService.Get('/product');
-    //     if (products != null) {
-    //       this.setState({
-
-    //       });
-    //     }
-    //   }
+    async componentDidMount() {
+        const email = window.location.href.split("/").pop();
+        const students = await ApiServices.Get(`/student/student/${email}`);
+        this.setState({
+            name: students.name,
+            code: students.code,
+            email: students.email,
+            phone: students.phone,
+            address: students.address,
+            specialized: students.specialized.name,
+            objective: students.objective,
+            gpa: students.gpa,
+            skills: students.skills
+        });
+    }
 
     handleDirect = (uri) => {
         this.props.history.push(uri);
     }
 
-    // handleDelete = async (deletedId) => {
-    //   const result = await ApiService.Delete(`/product/${deletedId}`, "");
-
-    //   if (result) {
-    //     // do something
-    //   } else {
-
-    //   }
-
-    // }
-
-    //   handleUpdateDiscontinued = async (id, discontinued) => {
-    //     const result = await ApiService.Put(`/product/discontinued/${id}/${discontinued}`, "");
-    //     const products = await ApiService.Get('/product');
-    //     if (products != null) {
-    //       const { currentPage } = this.state;
-    //       const pageNumber = getPaginationPageNumber(products.length);
-    //       const productsPagination = products.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));
-    //       this.setState({
-    //         products,
-    //         pageNumber,
-    //         productsPagination,
-    //       });
-    //     }
-
-    //     if (result) {
-    //       // do something
-    //       Toastify.querySuccess("Update Status Successfully!");
-    //     } else {
-    //       Toastify.queryFail("Update Status Fail!");
-    //     }
-
-    //   }
-
-
     render() {
+        const { name, code, email, phone, address, specialized, objective, gpa, skills } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -95,7 +76,7 @@ class CV extends Component {
                                             <h6>Họ và Tên</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Label id="" name="">DucNH</Label>
+                                            <Label id="" name="">{name}</Label>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -103,7 +84,7 @@ class CV extends Component {
                                             <h6>MSSV</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Label id="" name="">SE62389</Label>
+                                            <Label id="" name="">{code}</Label>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -111,7 +92,7 @@ class CV extends Component {
                                             <h6>Email</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Label id="" name="">ducnhse62389@gmail.com</Label>
+                                            <Label id="" name="">{email}</Label>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -119,7 +100,7 @@ class CV extends Component {
                                             <h6>SĐT</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Label id="" name="">0335554120</Label>
+                                            <Label id="" name="">{phone}</Label>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -127,23 +108,23 @@ class CV extends Component {
                                             <h6>Chuyên ngành</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Label id="" name="">SE</Label>
+                                            <Label id="" name="">{specialized}</Label>
                                         </Col>
                                     </FormGroup>
-                                    <FormGroup row>
+                                    {/* <FormGroup row>
                                         <Col md="2">
                                             <h6>Học kỳ</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Label id="" name="">9</Label>
+                                            <Label id="" name="">{}</Label>
                                         </Col>
-                                    </FormGroup>
+                                    </FormGroup> */}
                                     <FormGroup row>
                                         <Col md="2">
-                                            <h6>Điều kiện thực tập</h6>
+                                            <h6>Địa chỉ</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Label id="" name="">PERFECT</Label>
+                                            <Label id="" name="">{address}</Label>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -151,7 +132,7 @@ class CV extends Component {
                                             <h6>Mục tiêu</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Label id="" name="">ABC</Label>
+                                            <Label id="" name="">{objective}</Label>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -159,7 +140,7 @@ class CV extends Component {
                                             <h6>GPA</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Label id="" name="">7.0</Label>
+                                            <Label id="" name="">{gpa}</Label>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -167,7 +148,21 @@ class CV extends Component {
                                             <h6>Kỹ năng</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Label id="" name="">ReactJS, Spring Boot</Label>
+                                            {
+                                                skills && skills.map((skill, index) => {
+                                                    return (
+                                                        <div>
+                                                            {
+                                                                skill.name && skill.name ? (
+                                                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                ) : (
+                                                                        <label style={{ marginRight: "15px" }}>N/A</label>
+                                                                    )
+                                                            }
+                                                        </div>
+                                                    )
+                                                })
+                                            }
                                         </Col>
                                     </FormGroup>
                                 </Form>

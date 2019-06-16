@@ -29,7 +29,7 @@ public class Specialized {
     private List<Skill> skills;
 
     @OneToMany(mappedBy = "specialized")
-    @JsonManagedReference
+//    @JsonManagedReference
     @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Student> students;

@@ -20,7 +20,7 @@ class Invitation extends Component {
 
 
     async componentDidMount() {
-        const students = await ApiServices.Get('/student/getListStudentByInvitationId');
+        const students = await ApiServices.Get('/student/getListStudentIsInvited');
         const business = await ApiServices.Get('/business/getBusiness');
         if (students != null) {
             this.setState({
@@ -28,47 +28,11 @@ class Invitation extends Component {
                 business_name: business.business_name
             });
         }
-        console.log("STATE", this.state);
     }
 
     handleDirect = (uri) => {
         this.props.history.push(uri);
     }
-
-    // handleDelete = async (deletedId) => {
-    //   const result = await ApiService.Delete(`/product/${deletedId}`, "");
-
-    //   if (result) {
-    //     // do something
-    //   } else {
-
-    //   }
-
-    // }
-
-    //   handleUpdateDiscontinued = async (id, discontinued) => {
-    //     const result = await ApiService.Put(`/product/discontinued/${id}/${discontinued}`, "");
-    //     const products = await ApiService.Get('/product');
-    //     if (products != null) {
-    //       const { currentPage } = this.state;
-    //       const pageNumber = getPaginationPageNumber(products.length);
-    //       const productsPagination = products.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));
-    //       this.setState({
-    //         products,
-    //         pageNumber,
-    //         productsPagination,
-    //       });
-    //     }
-
-    //     if (result) {
-    //       // do something
-    //       Toastify.querySuccess("Update Status Successfully!");
-    //     } else {
-    //       Toastify.queryFail("Update Status Fail!");
-    //     }
-
-    //   }
-
 
     render() {
         const { students, business_name } = this.state;
@@ -98,6 +62,7 @@ class Invitation extends Component {
                                             <th style={{ textAlign: "center" }}>MSSV</th>
                                             <th style={{ textAlign: "center" }}>Họ và Tên</th>
                                             <th style={{ textAlign: "center" }}>Chuyên ngành</th>
+                                            <th style={{ textAlign: "center" }}>Kỹ năng</th>
                                             <th style={{ textAlign: "center" }}>GPA</th>
                                             <th style={{ textAlign: "center" }}>Trạng thái lời mời</th>
                                             <th style={{ textAlign: "center" }}>Nguyện vọng của sinh viên</th>
@@ -108,8 +73,9 @@ class Invitation extends Component {
                                             students && students.map((student, index) => {
 
                                                 const invitations = student.invitations;
-                                                console.log("invitations", invitations[0].state);
-                                                let tmp;
+                                                const skills = student.skills;
+
+                                                let tmp = 'N/A';
                                                 if (invitations[0].state != 'false') {
                                                     if (student.option1 == business_name) {
                                                         tmp = 1;
@@ -119,13 +85,25 @@ class Invitation extends Component {
                                                     }
                                                 }
 
-
                                                 return (
                                                     <tr key={index}>
                                                         <td style={{ textAlign: "center" }}>{index + 1}</td>
                                                         <td style={{ textAlign: "center" }}>{student.code}</td>
                                                         <td style={{ textAlign: "center" }}>{student.name}</td>
                                                         <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                        <td style={{ textAlign: "center" }}>
+                                                            {
+                                                                skills && skills.map((skill, index) => {
+                                                                    return (
+                                                                        <div>
+                                                                            {
+                                                                                <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                            }
+                                                                        </div>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </td>
                                                         <td style={{ textAlign: "center" }}>{student.gpa}</td>
                                                         <td style={{ textAlign: "center" }}>
                                                             {
@@ -137,7 +115,9 @@ class Invitation extends Component {
                                                             }
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>
-                                                            {tmp}
+                                                            <strong>
+                                                                {tmp}
+                                                            </strong>
                                                         </td>
                                                     </tr>
                                                 )
