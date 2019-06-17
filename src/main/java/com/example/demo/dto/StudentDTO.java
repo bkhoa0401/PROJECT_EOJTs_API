@@ -17,8 +17,9 @@ public class StudentDTO {
     private String token;
     private String avatarLink;
     private float gpa;
+    private String resumeLink;
 
-    public StudentDTO(String email, String name, String specialized, String phone, String address, String objective, String option1, String option2, boolean isAcceptedOption1, boolean isAcceptedOption2, String code, String token, String avatarLink, float gpa) {
+    public StudentDTO(String email, String name, String specialized, String phone, String address, String objective, String option1, String option2, boolean isAcceptedOption1, boolean isAcceptedOption2, String code, String token, String avatarLink, float gpa, String resumeLink) {
         this.email = email;
         this.name = name;
         this.specialized = specialized;
@@ -149,6 +150,14 @@ public class StudentDTO {
         this.gpa = gpa;
     }
 
+    public String getResumeLink() {
+        return resumeLink;
+    }
+
+    public void setResumeLink(String resumeLink) {
+        this.resumeLink = resumeLink;
+    }
+
     public void convertFromStudentEntity(Student student) {
         this.email = student.getEmail();
         this.name = student.getName();
@@ -162,5 +171,6 @@ public class StudentDTO {
         this.isAcceptedOption2 = student.isAcceptedOption2();
         this.phone = student.getPhone();
         this.avatarLink = student.getAvatarLink();
+        this.resumeLink = student.getResumeLink();
     }
 }
