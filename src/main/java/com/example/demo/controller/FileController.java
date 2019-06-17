@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.Student;
 import com.example.demo.service.FileStorageService;
 import com.example.demo.service.StudentService;
 import org.slf4j.Logger;
@@ -51,27 +52,30 @@ public class FileController {
         return new ResponseEntity<String>("success", HttpStatus.OK);
     }
 
-    @GetMapping("/downloadFile/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+    @GetMapping("/downloadFile")
+    public ResponseEntity<Resource> downloadFile(HttpServletRequest request, @RequestParam String emailStudent) {
         // Load file as Resource
-        Resource resource = fileStorageService.loadFileAsResource(fileName);
+        Student student = studentService.getStudentByEmail(emailStudent);
+        if (student != null) {
+            Resource resource = fileStorageService.loadFileAsResource(student.getResumeLink());
 
-        // Try to determine file's content type
-        String contentType = null;
-        try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-        } catch (IOException ex) {
-            logger.info("Could not determine file type.");
+            // Try to determine file's content type
+            String contentType = null;
+            try {
+                contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+            } catch (IOException ex) {
+                logger.info("Could not determine file type.");
+            }
+
+            if (contentType == null) {
+                contentType = "application/octet-stream";
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                    .body(resource);
         }
-
-        if (contentType == null) {
-            contentType = "application/octet-stream";
-        }
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
     }
 
 
