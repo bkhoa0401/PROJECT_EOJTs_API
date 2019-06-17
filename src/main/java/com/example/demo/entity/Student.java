@@ -50,6 +50,10 @@ public class Student implements Serializable {
     @Column(name = "avatarLink")
     private String avatarLink;
 
+    @Column(name = "resumeLink")
+    private String resumeLink;
+
+
 
     @OneToMany(mappedBy = "student")
     @JsonIgnore
@@ -229,5 +233,13 @@ public class Student implements Serializable {
 
     public void setAvatarLink(String avatarLink) {
         this.avatarLink = avatarLink;
+    }
+
+    public String getResumeLink() {
+        return resumeLink;
+    }
+
+    public void setResumeLink(String resumeLink) {
+        this.resumeLink = resumeLink;
     }
 }

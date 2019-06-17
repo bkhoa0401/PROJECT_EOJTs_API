@@ -78,11 +78,23 @@ public class StudentService {
         return null;
     }
 
-    public List<Student> findStudentByBusinessNameOption(String option1,String option2){
-        List<Student> studentList=studentRepository.findStudentByOption1OrOption2(option1,option2);
+    public List<Student> findStudentByBusinessNameOption(String option1, String option2) {
+        List<Student> studentList = studentRepository.findStudentByOption1OrOption2(option1, option2);
         if (studentList != null) {
             return studentList;
         }
         return null;
+    }
+
+    public boolean updateLinkFileResumeForStudent(String email, String resumeLink) {
+        Student student = getStudentByEmail(email);
+        if (student != null) {
+            if (resumeLink != null) {
+                student.setResumeLink(resumeLink);
+                studentRepository.save(student);
+                return true;
+            }
+        }
+        return false;
     }
 }
