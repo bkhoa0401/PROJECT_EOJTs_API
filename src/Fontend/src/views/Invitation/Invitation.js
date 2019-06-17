@@ -15,6 +15,7 @@ class Invitation extends Component {
         this.state = {
             students: null,
             business_name: '',
+            searchValue: '',
         }
     }
 
@@ -34,8 +35,28 @@ class Invitation extends Component {
         this.props.history.push(uri);
     }
 
+    handleInput = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value.substr(0, 20),
+        })
+    }
+
     render() {
-        const { students, business_name } = this.state;
+        const { students, business_name, searchValue } = this.state;
+        let filteredListStudents;
+
+        if (students != null) {
+            filteredListStudents = students.filter(
+                (student) => {
+                    if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+                        return student;
+                    }
+                }
+            );
+        }
+
+
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -51,7 +72,7 @@ class Invitation extends Component {
                                 <br />
                                 <nav className="navbar navbar-light bg-light justify-content-between">
                                     <form className="form-inline">
-                                        <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                        <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
                                     </form>
 
                                 </nav>
@@ -70,7 +91,7 @@ class Invitation extends Component {
                                     </thead>
                                     <tbody>
                                         {
-                                            students && students.map((student, index) => {
+                                            filteredListStudents && filteredListStudents.map((student, index) => {
 
                                                 const invitations = student.invitations;
                                                 const skills = student.skills;

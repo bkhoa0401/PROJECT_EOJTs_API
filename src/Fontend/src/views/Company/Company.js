@@ -38,7 +38,6 @@ class Company extends Component {
 
     async componentDidMount() {
         const business = await ApiServices.Get("/business/getBusiness");
-        console.log("business", business);
 
         if (business != null) {
             this.setState({
