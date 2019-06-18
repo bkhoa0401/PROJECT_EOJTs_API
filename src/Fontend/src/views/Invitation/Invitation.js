@@ -3,11 +3,15 @@ import { Badge, Card, CardBody, CardHeader, Col, Pagination, Row, Table } from '
 import { Button } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
+import orderBy from "lodash/orderBy";
 import Toastify from '../../views/Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
 
-
+const invertDirection = {
+    asc: 'desc',
+    desc: 'asc'
+};
 class Invitation extends Component {
 
     constructor(props) {
@@ -16,6 +20,8 @@ class Invitation extends Component {
             students: null,
             business_name: '',
             searchValue: '',
+            columnToSort: '',
+            sortDirection: 'desc'
         }
     }
 
@@ -42,9 +48,18 @@ class Invitation extends Component {
         })
     }
 
+
+    // handleSort = (columnName) => {
+    //     this.setState({
+    //         columnToSort: columnName,
+    //         sortDirection: state.columnToSort === columnName ? invertDirection[state.sortDirection] : "asc"
+    //     })
+    //     console.log(this.state);
+    // }
+
     render() {
-        const { students, business_name, searchValue } = this.state;
-        let filteredListStudents;
+        const { students, business_name, searchValue, columnToSort, sortDirection } = this.state;
+        let filteredListStudents = orderBy(students, columnToSort, sortDirection);
 
         if (students != null) {
             filteredListStudents = students.filter(
@@ -83,6 +98,7 @@ class Invitation extends Component {
                                             <th style={{ textAlign: "center" }}>MSSV</th>
                                             <th style={{ textAlign: "center" }}>Họ và Tên</th>
                                             <th style={{ textAlign: "center" }}>Chuyên ngành</th>
+                                            {/* <th style={{ textAlign: "center" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
                                             <th style={{ textAlign: "center" }}>Kỹ năng</th>
                                             <th style={{ textAlign: "center" }}>GPA</th>
                                             <th style={{ textAlign: "center" }}>Trạng thái lời mời</th>

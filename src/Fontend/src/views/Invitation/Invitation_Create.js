@@ -40,7 +40,6 @@ class Invitation_Create extends Component {
         await this.setState({
             [name]: value.substr(0, 20),
         })
-        console.log("searchValue", this.state.searchValue);
     }
 
 

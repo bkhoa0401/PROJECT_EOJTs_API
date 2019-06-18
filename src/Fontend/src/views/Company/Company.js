@@ -17,7 +17,26 @@ import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
 import SimpleReactValidator from 'simple-react-validator';
+import firebase from 'firebase/app';
+import 'firebase/storage';
+import { async } from 'q';
 
+
+// Your web app's Firebase configuration
+var firebaseConfig = {
+    apiKey: "AIzaSyBZRXJdcBsa3i0QXfFKsvNxWhn_1mKjmmc",
+    authDomain: "eojts-ddc9e.firebaseapp.com",
+    databaseURL: "https://eojts-ddc9e.firebaseio.com",
+    projectId: "eojts-ddc9e",
+    storageBucket: "gs://eojts-ddc9e.appspot.com",
+    messagingSenderId: "365126484633",
+    appId: "1:365126484633:web:623e362d3746d457"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+
+const storage = firebase.storage();
 
 class Company extends Component {
 
@@ -25,7 +44,8 @@ class Company extends Component {
         super(props);
         this.validator = new SimpleReactValidator();
         this.state = {
-            avatarLink: '',
+            image: null,
+            logo: '',
             business_name: '',
             business_eng_name: '',
             business_overview: '',
@@ -41,7 +61,7 @@ class Company extends Component {
 
         if (business != null) {
             this.setState({
-                avatarLink: business.avatarLink,
+                logo: business.logo,
                 business_name: business.business_name,
                 business_eng_name: business.business_eng_name,
                 business_overview: business.business_overview,
@@ -60,13 +80,24 @@ class Company extends Component {
         })
     }
 
+    handleChange = (event) => {
+        if (event.target.files[0]) {
+            const image = event.target.files[0];
+            var output = document.getElementById('img_logo');
+            output.src = URL.createObjectURL(image);
+            this.setState({
+                image: image
+            })
+        }
+    }
+
     handleDirect = (uri) => {
         this.props.history.push(uri);
     }
 
     handleReset = async () => {
         this.setState({
-            avatarLink: '',
+            logo: '',
             business_name: '',
             business_eng_name: '',
             business_overview: '',
@@ -77,22 +108,45 @@ class Company extends Component {
         })
     }
 
-    handleSubmit = async () => {
+    uploadImageToFireBase = async () => {
+        let { image } = this.state;
 
-        const { avatarLink, business_name, business_eng_name, business_overview, email,
+        const uploadTask = await storage.ref(`images/${image.name}`).put(image);
+        await storage.ref('images').child(image.name).getDownloadURL().then(url => {
+            this.setState({
+                logo: url
+            })
+        })
+        // uploadTask.on('state_changed',
+        //     (snapshot) => {
+        //         // progress function
+        //     },
+        //     (error) => {
+        //         console.log(error);
+        //     },
+        //     () => {
+        //         //complete function
+        //         storage.ref('images').child(image.name).getDownloadURL().then(url => {
+        //             this.setState({
+        //                 logo: url
+        //             })
+        //             console.log("logo", this.state.logo);
+        //         })
+        //     })
+    }
+
+    saveBusiness = async () => {
+        let { logo, business_name, business_eng_name, business_overview, email,
             business_address, business_phone, business_website } = this.state;
-
 
         if (this.validator.allValid()) {
             var company = {
-                avatarLink, business_name, business_eng_name, business_overview, email,
+                logo, business_name, business_eng_name, business_overview, email,
                 business_address, business_phone, business_website
             }
 
-            console.log(company);
-
             const result = await ApiServices.Put('/business/updateBusiness', company);
-            console.log("STATUS", result.status);
+
             if (result.status == 200) {
                 Toastify.actionSuccess('Cập nhật thông tin thành công');
             } else {
@@ -105,8 +159,13 @@ class Company extends Component {
         }
     }
 
+    handleSubmit = async () => {
+        await this.uploadImageToFireBase();
+        await this.saveBusiness();
+    }
+
     render() {
-        const { avatarLink, business_name, business_eng_name, business_overview, email,
+        const { logo, business_name, business_eng_name, business_overview, email,
             business_address, business_phone, business_website } = this.state;
         return (
             <div className="animated fadeIn">
@@ -127,12 +186,12 @@ class Company extends Component {
                                             <h6>Logo</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <img src="https://i-dulich.vnecdn.net/2019/03/16/1-3-1552732057_680x0.jpg" onChange={this.handleInput} type="file" id="avatarLink" name="avatarLink" />
+                                            <img src={logo} style={{ width: "750px", height: "400px" }} onChange={this.handleInput} type="file" id="img_logo" name="logo" />
                                             <br /><br />
-                                            <Input onChange={this.handleInput} type="file" id="avatarLink" name="avatarLink" />
+                                            <input onChange={this.handleChange} type="file" />
                                             <br /><br />
-                                                {/* <span className="form-error is-visible text-danger">
-                                                    {this.validator.message('avatarLink', avatarLink, 'required')}
+                                            {/* <span className="form-error is-visible text-danger">
+                                                    {this.validator.message('logo', logo, 'required')}
                                                 </span> */}
                                         </Col>
                                     </FormGroup>
