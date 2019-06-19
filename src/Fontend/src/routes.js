@@ -46,6 +46,8 @@ const Invitation_Detail = React.lazy(() => import('./views/Invitation/Invitation
 const Invitation_Create = React.lazy(() => import('./views/Invitation/Invitation_Create.js'));
 const Ojt_Registration = React.lazy(() => import('./views/Ojt_Registration/Ojt_Registration.js'));
 const CV = React.lazy(() => import('./views/Ojt_Registration/CV.js'));
+const student_list = React.lazy(() => import('./views/list_management/student_list.js'));
+const business_list = React.lazy(() => import('./views/list_management/business_list.js'));
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -102,6 +104,8 @@ const routes = [
   { path: '/invitation/new', exact: true, name: 'Gửi lời mời cho sinh viên', component: Invitation_Create },
   { path: '/ojt_registration', exact: true, name: 'DSSV đăng kí thực tập', component: Ojt_Registration },
   { path: '/ojt_registration/cv/:email', exact: true, name: 'Chi tiết CV', component: CV },
+  { path: '/list_management/student_list', exact: true, name: 'Danh sách sinh viên', component: student_list },
+  { path: '/list_management/business_list', exact: true, name: 'Danh sách công ty', component: business_list },
 ];
 
 export default routes;
