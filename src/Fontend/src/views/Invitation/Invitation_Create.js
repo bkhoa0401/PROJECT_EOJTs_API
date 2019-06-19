@@ -64,9 +64,10 @@ class Invitation_Create extends Component {
         const result = await ApiServices.Post(`/business/createInvitation?emailStudent=${email}`, invitation);
 
 
-        const messaging = firebase.messaging();
-        await messaging.requestPermission();
-        const tokenUser = await messaging.getToken();
+        // const messaging = firebase.messaging();
+        // await messaging.requestPermission();
+        // const tokenUser = await messaging.getToken();
+        // console.log(tokenUser);
 
         const notificationDTO = {
             notification: {
@@ -75,7 +76,7 @@ class Invitation_Create extends Component {
                 click_action: "http://localhost:3000/#/invitation/new",
                 icon: "http://url-to-an-icon/icon.png"
             },
-            to: tokenUser
+            to: 'dl4cdeeiWys:APA91bHsJJ-MGHBbOyjghit3M7GZID_asQUH8_IyB9kXlWFSROHA3LPrLo5JUzAfYlZbg22nbzulqQApYMD7ItaoB_j3mcivQ-mU2w_qpyBiaFbRPGpy4U8b_y1U5Ns_yKQxvBAPq3I1'
         }
 
         const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
@@ -131,8 +132,6 @@ class Invitation_Create extends Component {
                                             <th style={{ textAlign: "center" }}>GPA</th>
                                             <th style={{ textAlign: "center" }}>Bảng điểm</th>
                                             <th style={{ textAlign: "center" }}>Hành động</th>
-                                            {/* <th style={{ textAlign: "center" }}>Test</th> */}
-
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -165,9 +164,6 @@ class Invitation_Create extends Component {
                                                         <td style={{ textAlign: "center" }}>
                                                             <Button onClick={() => this.handleSubmit(index)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                         </td>
-                                                        {/* <td style={{ textAlign: "center" }}>
-                                                            <Button onClick={askForPermissioToReceiveNotifications} type="submit" style={{ marginRight: "1.5px" }} color="warning" id={"btnSendInvitation" + index}>Gửi thông báo</Button>
-                                                        </td> */}
                                                     </tr>
                                                 )
                                             })

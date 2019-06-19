@@ -16,9 +16,12 @@ import {
   AppSidebarNav2 as AppSidebarNav,
 } from '@coreui/react';
 // sidebar nav config
-import navigation from '../../_nav';
+import navigationHr from '../../_navHr';
+import navigationAdmin from '../../_navAdmin';
+import navigationSupervisor from '../../_navSupervisor';
 // routes config
 import routes from '../../routes';
+import decode from 'jwt-decode';
 
 const DefaultAside = React.lazy(() => import('./DefaultAside'));
 const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
@@ -34,12 +37,43 @@ class DefaultLayout extends Component {
     this.props.history.push('/login')
   }
 
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      role: ''
+    }
+  }
+
+  async componentWillMount() {
+    const token = localStorage.getItem('id_token');
+    const decoded = decode(token);
+    const role = decoded.role;
+    
+
+    this.setState({
+      role
+    });
+  }
+
+
   render() {
+    const { role } = this.state;
+    var navItems = [];
+
+    if (role === 'ROLE_ADMIN') {
+      navItems = navigationAdmin;
+    } else if (role === 'ROLE_HR') {
+      navItems = navigationHr;
+    } else if (role === 'ROLE_SUPERVISOR') {
+      navItems = navigationSupervisor;
+    }
+
     return (
       <div className="app">
         <AppHeader fixed>
-          <Suspense  fallback={this.loading()}>
-            <DefaultHeader onLogout={e=>this.signOut(e)}/>
+          <Suspense fallback={this.loading()}>
+            <DefaultHeader onLogout={e => this.signOut(e)} />
           </Suspense>
         </AppHeader>
         <div className="app-body">
@@ -47,13 +81,13 @@ class DefaultLayout extends Component {
             <AppSidebarHeader />
             <AppSidebarForm />
             <Suspense>
-            <AppSidebarNav navConfig={navigation} {...this.props} router={router}/>
+              <AppSidebarNav navConfig={navItems} {...this.props} router={router} />
             </Suspense>
             <AppSidebarFooter />
             <AppSidebarMinimizer />
           </AppSidebar>
           <main className="main">
-            <AppBreadcrumb appRoutes={routes} router={router}/>
+            <AppBreadcrumb appRoutes={routes} router={router} />
             <Container fluid>
               <Suspense fallback={this.loading()}>
                 <Switch>

@@ -107,6 +107,9 @@ const routes = [
   { path: '/official-list', exact: true, name: 'Danh sách sinh viên', component: Official_List },
   { path: '/details-task', exact: true, name: 'Nhiệm vụ', component: Details_Task },
   { path: '/job-post', exact: true, name: 'Thông tin tuyển dụng', component: Job_Post },
+  { path: '/admin', name: 'Admin', component: Dashboard },
+  { path: '/hr', name: 'Hr', component: Dashboard },
+  { path: '/supervisor', name: 'Supervisor', component: Dashboard },
 ];
 
 export default routes;
