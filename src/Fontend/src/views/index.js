@@ -25,7 +25,8 @@ import {
   Invitation_Detail,
   Invitation_Create,
   Ojt_Registration,
-  CV
+  CV,
+  Khoa
 } from './Base';
 
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
@@ -36,6 +37,9 @@ import { Alerts, Badges, Modals } from './Notifications';
 import { Login, Page404, Page500, ForgotPassword } from './Pages';
 import { Colors, Typography } from './Theme';
 import Widgets from './Widgets';
+import Official_List from "./Official_List/Official_List";
+import Details_Task from "./Details_Task/Details_Task";
+import Job_Post from "./Job_Post/Job_Post";
 
 export {
   Badges,
@@ -84,6 +88,9 @@ export {
   Invitation_Detail,
   Invitation_Create,
   Ojt_Registration,
-  CV
+  CV,
+  Official_List,
+  Details_Task,
+  Job_Post,
 };
 

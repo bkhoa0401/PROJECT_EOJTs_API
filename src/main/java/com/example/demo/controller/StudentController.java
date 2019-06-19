@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.Job_PostDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class StudentController {
 
     @Autowired
     BusinessService businessService;
+
+    @Autowired
+    Job_PostService job_postService;
 
     @PostMapping
     public ResponseEntity<Void> addListStudent(@RequestBody List<Student> studentList) throws Exception {
@@ -174,10 +178,31 @@ public class StudentController {
     @GetMapping("/getInvitation")
     @ResponseBody
     public ResponseEntity<Invitation> getInvitation(@RequestParam int id) {
-
         Invitation invitation = invitationService.getInvitationById(id);
         if (invitation != null) {
             return new ResponseEntity<Invitation>(invitation, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    //student get job post details by id
+    @GetMapping("/getJobPost")
+    @ResponseBody
+    public ResponseEntity<Job_PostDTO> getListInvitation(@RequestParam int id) {
+
+        Job_Post job_post = job_postService.findJob_PostById(id);
+        String emailOfBusiness = job_post.getOjt_enrollment().getBusiness().getEmail();
+        Business business = businessService.getBusinessByEmail(emailOfBusiness);
+
+        Job_PostDTO job_postDTO = new Job_PostDTO();
+        job_postDTO.setJob_post(job_post);
+        job_postDTO.setBusiness(business);
+
+        int view = job_postService.getViewOfJobPost(id);
+        job_postService.updateViewOfJobPost(id, ++view);
+        if (job_post != null) {
+            return new ResponseEntity<Job_PostDTO>(job_postDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }

@@ -38,6 +38,21 @@ export default {
       url: '/ojt_registration',
       icon: 'icon-star',
     },
+    {
+      name: 'DSSV chính thức',
+      url: '/official-list',
+      icon: 'icon-star',
+    },
+    {
+      name: 'Chi tiết nhiệm vụ',
+      url: '/details-task',
+      icon: 'icon-star',
+    },
+    {
+      name: 'Thông tin tuyển dụng',
+      url: '/job-post',
+      icon: 'icon-star',
+    },
     // {
     //   name: 'test',
     //   url: '/test',
