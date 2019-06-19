@@ -26,7 +26,8 @@ import {
   Invitation_Create,
   Ojt_Registration,
   CV,
-  Khoa
+  student_list,
+  business_list,
 } from './Base';
 
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
@@ -89,6 +90,8 @@ export {
   Invitation_Create,
   Ojt_Registration,
   CV,
+  student_list,
+  business_list,
   Official_List,
   Details_Task,
   Job_Post,

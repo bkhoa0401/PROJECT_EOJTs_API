@@ -91,7 +91,7 @@ class Ojt_Registration extends Component {
 
                                                 const linkDownload = `http://localhost:8000/api/file/downloadFile?emailStudent=${student.email}`;
 
-                                                let tmp = 'Pending';
+                                                let tmp = 'N/A';
 
                                                 if (student.option1 == business_name) {
                                                     tmp = 1;
@@ -114,7 +114,7 @@ class Ojt_Registration extends Component {
                                                             </strong>
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>
-                                                            <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect(`ojt_registration/cv/${student.email}`)}>Xem CV</Button>
+                                                            <Button type="submit" style={{ marginRight: "1.5px" , fontWeight: "bold", borderWidth: 0  }} color="primary" onClick={() => this.handleDirect(`Student/Student/${student.email}`)}>Chi tiết</Button>
                                                         </td>
                                                     </tr>
                                                 )
