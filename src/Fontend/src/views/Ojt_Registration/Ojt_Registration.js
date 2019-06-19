@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
+import { async } from 'q';
 
 
 class Ojt_Registration extends Component {
@@ -88,6 +89,8 @@ class Ojt_Registration extends Component {
                                         {
                                             filteredListStudents && filteredListStudents.map((student, index) => {
 
+                                                const linkDownload = `http://localhost:8000/api/file/downloadFile?emailStudent=${student.email}`;
+
                                                 let tmp = 'Pending';
 
                                                 if (student.option1 == business_name) {
@@ -104,7 +107,7 @@ class Ojt_Registration extends Component {
                                                         <td style={{ textAlign: "center" }}>{student.code}</td>
                                                         <td style={{ textAlign: "center" }}>{student.name}</td>
                                                         <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                                                        <td style={{ textAlign: "center" }}><a href="">Tải</a></td>
+                                                        <td style={{ textAlign: "center" }}><a href={linkDownload} download>Tải</a></td>
                                                         <td style={{ textAlign: "center" }}>
                                                             <strong>
                                                                 {tmp}

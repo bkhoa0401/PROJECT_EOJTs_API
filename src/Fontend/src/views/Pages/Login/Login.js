@@ -5,6 +5,7 @@ import AuthService from '../../../service/auth-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../Toastify/Toastify';
 import { async } from 'q';
+import decode from 'jwt-decode';
 
 class Login extends Component {
 
@@ -24,18 +25,29 @@ class Login extends Component {
   }
 
   handleSubmit = async () => {
-    const { email, password } = this.state;    
+    const { email, password } = this.state;
     const result = await AuthService.login(email, password);
-    console.log("result", result);
+
     if (result) {
-      this.props.history.push('/company');
+      const token = localStorage.getItem('id_token');
+      const decoded = decode(token);
+      const role = decoded.role;
+
+      if (role === 'ROLE_ADMIN') {
+        this.props.history.push('/admin');
+      } else if (role === 'ROLE_HR') {
+        this.props.history.push('/hr');
+      } else if (role === 'ROLE_SUPERVISOR') {
+        this.props.history.push('/supervisor');
+      }
+
     } else {
       Toastify.actionFail("Incorrect Email Or Password!");
     }
   }
 
-  handForgotPassword = async() => {
-      this.props.history.push('/forgotpassword');
+  handForgotPassword = async () => {
+    this.props.history.push('/forgotpassword');
   }
 
   // componentWillMount() {
