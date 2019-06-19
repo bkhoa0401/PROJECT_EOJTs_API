@@ -22,18 +22,18 @@ import 'firebase/storage';
 import { async } from 'q';
 
 
-// Your web app's Firebase configuration
-var firebaseConfig = {
-    apiKey: "AIzaSyBZRXJdcBsa3i0QXfFKsvNxWhn_1mKjmmc",
-    authDomain: "eojts-ddc9e.firebaseapp.com",
-    databaseURL: "https://eojts-ddc9e.firebaseio.com",
-    projectId: "eojts-ddc9e",
-    storageBucket: "gs://eojts-ddc9e.appspot.com",
-    messagingSenderId: "365126484633",
-    appId: "1:365126484633:web:623e362d3746d457"
-};
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+// // Your web app's Firebase configuration
+// var firebaseConfig = {
+//     apiKey: "AIzaSyBZRXJdcBsa3i0QXfFKsvNxWhn_1mKjmmc",
+//     authDomain: "eojts-ddc9e.firebaseapp.com",
+//     databaseURL: "https://eojts-ddc9e.firebaseio.com",
+//     projectId: "eojts-ddc9e",
+//     storageBucket: "gs://eojts-ddc9e.appspot.com",
+//     messagingSenderId: "365126484633",
+//     appId: "1:365126484633:web:623e362d3746d457"
+// };
+// // Initialize Firebase
+// firebase.initializeApp(firebaseConfig);
 
 
 const storage = firebase.storage();
