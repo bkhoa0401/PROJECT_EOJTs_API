@@ -145,7 +145,7 @@ class Excels extends Component {
                     const result = [];
 
                     skillsAndNumber = data.split("+");
-                    skillsAndNumber && skillsAndNumber.map(async(element, index) => {
+                    skillsAndNumber && skillsAndNumber.map(async (element, index) => {
                         if (index > 0) {
                             skills_number = element.split(":");
                             var name = skills_number[0].trim();
@@ -306,7 +306,7 @@ class Excels extends Component {
                                 flag = false;
                                 break;
                             }
-                        }   
+                        }
                     }
 
                     if (!flag) {
