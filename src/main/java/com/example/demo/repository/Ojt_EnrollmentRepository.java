@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface Ojt_EnrollmentRepository extends JpaRepository<Ojt_Enrollment, Integer> {
 
     Ojt_Enrollment getOjt_EnrollmentByBusiness_Email(String email);
+
+    Ojt_Enrollment getOjt_EnrollmentByStudentEmail(String email);
 }

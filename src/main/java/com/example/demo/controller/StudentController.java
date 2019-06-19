@@ -300,6 +300,8 @@ public class StudentController {
         return new ResponseEntity<List<Student>>(listAllStudent, HttpStatus.OK);
     }
 
+    
+
     //get email from token
     private String getEmailFromToken() {
         String email = "";

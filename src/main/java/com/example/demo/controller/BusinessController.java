@@ -171,6 +171,19 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    // update status of option student when interview
+    @PutMapping("/updateStatusOfStudent")
+    public ResponseEntity<Void> updateStatusOfOptionStudent(@RequestParam int numberOfOption, @RequestParam boolean statusOfOption
+            , @RequestParam String emailOfStudent) {
+        boolean updateStatus = studentService.updateStatusOptionOfStudent(numberOfOption, statusOfOption, emailOfStudent);
+        if(updateStatus==true){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+
+
     //get email from token
     private String getEmailFromToken() {
         String email = "";
