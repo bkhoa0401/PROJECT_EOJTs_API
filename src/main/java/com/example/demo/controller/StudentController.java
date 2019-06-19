@@ -300,7 +300,16 @@ public class StudentController {
         return new ResponseEntity<List<Student>>(listAllStudent, HttpStatus.OK);
     }
 
-    
+    @PutMapping("/updateToken")
+    public ResponseEntity<Void> updateTokenForStudent(@RequestParam String token) {
+        String emailStudent = getEmailFromToken();
+        boolean updateToken = studentService.updateTokenDeviceForStudent(emailStudent, token);
+        if (updateToken == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
 
     //get email from token
     private String getEmailFromToken() {

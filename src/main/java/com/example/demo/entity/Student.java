@@ -94,7 +94,19 @@ public class Student implements Serializable {
     @JoinColumn(name = "specialized_id")
     private Specialized specialized;
 
+    @Column(name = "token")
+    private String token;
+
+
     public Student() {
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getEmail() {

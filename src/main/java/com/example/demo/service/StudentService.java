@@ -133,4 +133,13 @@ public class StudentService {
         }
         return null;
     }
+
+    public boolean updateTokenDeviceForStudent(String emailStudent,String token){
+        Student student = getStudentByEmail(emailStudent);
+        if(student!=null){
+            student.setToken(token);
+            studentRepository.save(student);
+        }
+        return false;
+    }
 }
