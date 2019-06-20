@@ -43,6 +43,19 @@ class Ojt_Registration extends Component {
         })
     }
 
+    handleIsAcceptedOption = async (email, numberOfOption, statusOfOption, btnId) => {
+
+        document.getElementById(btnId).setAttribute("disabled", "disabled");
+
+        const result = await ApiServices.Put(`/business/updateStatusOfStudent?numberOfOption=${numberOfOption}&statusOfOption=${statusOfOption}&emailOfStudent=${email}`);
+
+        if (result.status == 200) {
+            Toastify.actionSuccess('Thao tác thành công!');
+        } else {
+            Toastify.actionFail('Thao tác thất bại!');
+        }
+    }
+
     render() {
         const { students, business_name, searchValue } = this.state;
 
@@ -89,15 +102,16 @@ class Ojt_Registration extends Component {
                                         {
                                             filteredListStudents && filteredListStudents.map((student, index) => {
 
-                                                const linkDownload = `http://localhost:8000/api/file/downloadFile?emailStudent=${student.email}`;
+                                                let email = student.email;
+                                                let numberOfOption = 'N/A';
 
-                                                let tmp = 'N/A';
+                                                const linkDownload = `http://localhost:8000/api/file/downloadFile?emailStudent=${email}`;
 
                                                 if (student.option1 == business_name) {
-                                                    tmp = 1;
+                                                    numberOfOption = 1;
                                                 }
                                                 if (student.option2 == business_name) {
-                                                    tmp = 2;
+                                                    numberOfOption = 2;
                                                 }
 
 
@@ -109,13 +123,12 @@ class Ojt_Registration extends Component {
                                                         <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
                                                         <td style={{ textAlign: "center" }}><a href={linkDownload} download>Tải</a></td>
                                                         <td style={{ textAlign: "center" }}>
-                                                            <strong>{tmp}</strong>
+                                                            <strong>{numberOfOption}</strong>
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>
                                                             <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect(`Student/Student/${student.email}`)}>Chi tiết</Button>
-                                                            <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`ojt_registration/cv/${student.email}`)}>Duyệt</Button>
-                                                            <Button type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleDirect(`ojt_registration/cv/${student.email}`)}>Từ chối</Button>
-
+                                                            <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleIsAcceptedOption(email, numberOfOption, true, 'a' + index)}>Duyệt</Button>
+                                                            <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleIsAcceptedOption(email, numberOfOption, false, 'r' + index)}>Từ chối</Button>
                                                         </td>
                                                     </tr>
                                                 )
