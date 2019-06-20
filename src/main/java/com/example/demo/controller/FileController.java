@@ -64,7 +64,6 @@ public class FileController {
                 logger.info("Could not determine file type.");
             }
         }
-        return null;
         return new ResponseEntity<String>("File not found !!!",HttpStatus.EXPECTATION_FAILED);
     }
 

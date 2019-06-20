@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
+import { forEach } from '@firebase/util';
 
 
 class student_list extends Component {
@@ -17,9 +18,19 @@ class student_list extends Component {
         this.state = {
             activeTab: new Array(1).fill('1'),
             open: false,
+            students: null,
         };
         this.openPopupRegist = this.openPopupRegist.bind(this);
         this.closePopupRegist = this.closePopupRegist.bind(this);
+    }
+
+    async componentDidMount() {
+        const students = await ApiServices.Get('/student/getAllStudent');
+        if (students != null) {
+            this.setState({
+                students,
+            });
+        }
     }
 
     toggle(tabPane, tab) {
@@ -39,6 +50,7 @@ class student_list extends Component {
     }
 
     tabPane() {
+        const { students } = this.state;
         return (
             <>
                 <TabPane tabId="1">
@@ -58,30 +70,30 @@ class student_list extends Component {
                                         <th style={{ textAlign: "center" }}>Email</th>
                                         <th style={{ textAlign: "center" }}>Chuyên ngành</th>
                                         <th style={{ textAlign: "center" }}>Bảng điểm</th>
-                                        <th style={{ textAlign: "center" }}>Học kỳ</th>
-                                        <th style={{ textAlign: "center" }}>Điều kiện thực tập</th>
                                         <th style={{ textAlign: "center" }}>GPA</th>
-                                        <th style={{ textAlign: "center" }}>Bảng điểm</th>
                                         <th style={{ textAlign: "center" }}></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "right" }}>
-                                            <a href="">Xem</a> &nbsp;&nbsp;
-                                            <a href="">Xoá</a>
-                                        </td>
-                                    </tr>
+                                    {students && students.map((student, index) => {
+                                        return (
+                                            <tr>
+                                                <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                <td style={{ textAlign: "center" }}>{student.email}</td>
+                                                <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                <td style={{ textAlign: "center" }}></td>
+                                                <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                                                <td style={{ textAlign: "right" }}>
+                                                    <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="primary">Chi tiết</Button>
+                                                    &nbsp;&nbsp;
+                                                    <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="danger">Xoá</Button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                    }
                                 </tbody>
                             </Table>
                         </div>
@@ -109,18 +121,23 @@ class student_list extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>1</td>
-                                        <td style={{ textAlign: "center" }}>
-                                            <Button onClick={this.openPopupRegist} style={{ fontWeight: "bold", backgroundColor: "#59c9e7", color: "white", borderWidth: 0 }}>Đăng ký</Button>
-                                        </td>
-                                    </tr>
+                                    {students && students.map((student, index) => {
+                                        return (
+                                            <tr>
+                                                <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                <td style={{ textAlign: "center" }}>{student.option1 === null ? 'N/A':student.option1}</td>
+                                                <td style={{ textAlign: "center" }}>{student.option2 === null ? 'N/A':student.option2}</td>
+                                                <td style={{ textAlign: "center" }}>{student.option1 === null && student.option2 === null ?'N/A':'Công ty ABC'}</td>
+                                                <td style={{ textAlign: "center" }}>
+                                                    <Button onClick={this.openPopupRegist} style={{ fontWeight: "bold", borderWidth: 0 }} color="primary">Đăng ký</Button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                    }
                                 </tbody>
                             </Table>
                         </div>
@@ -165,7 +182,6 @@ class student_list extends Component {
     }
 
     render() {
-
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -175,7 +191,7 @@ class student_list extends Component {
                                 <i className="fa fa-align-justify"></i>Danh sách sinh viên
                             </CardHeader>
                             <CardBody>
-                                <Nav tabs style = {{fontWeight: "bold"}}>
+                                <Nav tabs style={{ fontWeight: "bold" }}>
                                     <NavItem>
                                         <NavLink
                                             active={this.state.activeTab[0] === '1'}
