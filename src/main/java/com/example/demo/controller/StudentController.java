@@ -276,6 +276,42 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //danh sach nhung dua set cong ty vao nguyen vong va trang thai cua nv đó
+    @GetMapping("/getListStudentByOptionAndStatusOption")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getListStudentByOptionNameBusinessAndStatusOption() {
+        //email of business
+        String email = getEmailFromToken();
+
+        Business business = businessService.getBusinessByEmail(email);
+
+        //list student set cty vao nguyen vong
+        List<Student> studentList = studentService.findStudentByBusinessNameOption(business.getBusiness_name(), business.getBusiness_name());
+
+        List<Student> listResult = new ArrayList<>();
+
+        String businessName = business.getBusiness_name();
+
+        if (studentList != null) {
+            for (int i = 0; i < studentList.size(); i++) {
+                if (studentList.get(i).getOption1().equals(businessName)) {
+                    if (studentList.get(i).isInterviewed1() == false) {
+                        listResult.add(studentList.get(i));
+                    }
+                } else if (studentList.get(i).getOption2().equals(businessName)) {
+                    if (studentList.get(i).isInterviewed2() == false) {
+                        listResult.add(studentList.get(i));
+                    }
+                }
+            }
+        }
+
+        if (listResult != null) {
+            return new ResponseEntity<List<Student>>(listResult, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     // lay list student chua duoc moi boi cong ty
     @GetMapping("/getListStudentNotYetInvited")
     @ResponseBody

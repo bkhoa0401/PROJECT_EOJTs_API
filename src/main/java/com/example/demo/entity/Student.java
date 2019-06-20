@@ -17,7 +17,7 @@ public class Student implements Serializable {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "name",columnDefinition = "NVARCHAR(150)")
+    @Column(name = "name", columnDefinition = "NVARCHAR(150)")
     private String name;
 
     @Column(name = "gpa")
@@ -26,23 +26,29 @@ public class Student implements Serializable {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "address",columnDefinition = "NVARCHAR(150)")
+    @Column(name = "address", columnDefinition = "NVARCHAR(150)")
     private String address;
 
-    @Column(name = "objective",columnDefinition = "NVARCHAR(550)")
+    @Column(name = "objective", columnDefinition = "NVARCHAR(550)")
     private String objective;
 
-    @Column(name = "option1",columnDefinition = "NVARCHAR(150)")
+    @Column(name = "option1", columnDefinition = "NVARCHAR(150)")
     private String option1;
 
-    @Column(name = "option2",columnDefinition = "NVARCHAR(150)")
+    @Column(name = "option2", columnDefinition = "NVARCHAR(150)")
     private String option2;
 
     @Column(name = "isAcceptedOption1")
     private boolean acceptedOption1;
 
+    @Column(name = "isInterviewed1")
+    private boolean interviewed1;
+
     @Column(name = "isAcceptedOption2")
     private boolean acceptedOption2;
+
+    @Column(name = "isInterviewed2")
+    private boolean interviewed2;
 
     @Column(name = "code")
     private String code;
@@ -52,7 +58,6 @@ public class Student implements Serializable {
 
     @Column(name = "resumeLink")
     private String resumeLink;
-
 
 
     @OneToMany(mappedBy = "student")
@@ -96,6 +101,8 @@ public class Student implements Serializable {
 
     @Column(name = "token")
     private String token;
+
+
 
 
     public Student() {
@@ -253,5 +260,21 @@ public class Student implements Serializable {
 
     public void setResumeLink(String resumeLink) {
         this.resumeLink = resumeLink;
+    }
+
+    public boolean isInterviewed1() {
+        return interviewed1;
+    }
+
+    public void setInterviewed1(boolean interviewed1) {
+        this.interviewed1 = interviewed1;
+    }
+
+    public boolean isInterviewed2() {
+        return interviewed2;
+    }
+
+    public void setInterviewed2(boolean interviewed2) {
+        this.interviewed2 = interviewed2;
     }
 }

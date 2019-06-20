@@ -104,17 +104,20 @@ public class StudentService {
         if (student != null) {
             if (numberOfOption == 1) {
                 student.setAcceptedOption1(statusOfOption);
+                student.setInterviewed1(true);
                 studentRepository.save(student);
                 return true;
             }
             if (numberOfOption == 2) {
                 student.setAcceptedOption2(statusOfOption);
+                student.setInterviewed2(true);
                 studentRepository.save(student);
                 return true;
             }
         }
         return false;
     }
+    
 
     public List<Student> getAllStudentByStatusOption(int typeGetStatus) {
         List<Student> studentList ;
@@ -142,4 +145,6 @@ public class StudentService {
         }
         return false;
     }
+
+
 }
