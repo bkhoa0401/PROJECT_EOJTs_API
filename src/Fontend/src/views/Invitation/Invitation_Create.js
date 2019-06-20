@@ -45,7 +45,7 @@ class Invitation_Create extends Component {
     }
 
 
-    handleSubmit = async (index) => {
+    handleSubmit = async (index, deviceToken) => {
         const { students, business_name } = this.state;
         const studentName = students[index].name;
         const email = students[index].email;
@@ -76,7 +76,7 @@ class Invitation_Create extends Component {
                 click_action: "http://localhost:3000/#/invitation/new",
                 icon: "http://url-to-an-icon/icon.png"
             },
-            to: 'c13kE1dWpcE:APA91bGlqsTuuSQdwqJPeXECF4T_2LnIrXm9Gpvb6MVG2-nOhG-zddhSeinpmsda_xhaWpDlVIPrdQDgvZnVOi4Wom-Hq4N8tDxQkdK6sQGAV_3PqdutZTjmKMd-pTR4Kfim02fubpIy'
+            to: `${deviceToken}`
         }
 
         const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
@@ -137,6 +137,7 @@ class Invitation_Create extends Component {
                                     <tbody>
                                         {
                                             filteredListStudents && filteredListStudents.map((student, index) => {
+                                                const deviceToken = student.token;
                                                 const skills = student.skills;
                                                 const linkDownload = `http://localhost:8000/api/file/downloadFile?emailStudent=${student.email}`;
 
@@ -162,7 +163,7 @@ class Invitation_Create extends Component {
                                                         <td style={{ textAlign: "center" }}>{student.gpa}</td>
                                                         <td style={{ textAlign: "center" }}><a href={linkDownload} download>Tải</a></td>
                                                         <td style={{ textAlign: "center" }}>
-                                                            <Button onClick={() => this.handleSubmit(index)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+                                                            <Button onClick={() => this.handleSubmit(index, deviceToken)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                         </td>
                                                     </tr>
                                                 )
