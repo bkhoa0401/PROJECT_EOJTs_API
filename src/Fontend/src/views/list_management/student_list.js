@@ -19,6 +19,7 @@ class student_list extends Component {
             activeTab: new Array(1).fill('1'),
             open: false,
             students: null,
+            searchValue: '',
         };
         this.openPopupRegist = this.openPopupRegist.bind(this);
         this.closePopupRegist = this.closePopupRegist.bind(this);
@@ -49,8 +50,26 @@ class student_list extends Component {
         this.setState({ open: false })
     }
 
+    handleInput = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value.substr(0, 20),
+        })
+    }
+
     tabPane() {
-        const { students } = this.state;
+        const { students, searchValue } = this.state;
+        let filteredListStudents;
+
+        if (students != null) {
+            filteredListStudents = students.filter(
+                (student) => {
+                    if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+                        return student;
+                    }
+                }
+            );
+        }
         return (
             <>
                 <TabPane tabId="1">
@@ -75,7 +94,7 @@ class student_list extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {students && students.map((student, index) => {
+                                    {filteredListStudents && filteredListStudents.map((student, index) => {
                                         return (
                                             <tr>
                                                 <td style={{ textAlign: "center" }}>{index + 1}</td>

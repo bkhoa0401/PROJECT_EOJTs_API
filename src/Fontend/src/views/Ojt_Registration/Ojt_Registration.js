@@ -115,6 +115,7 @@ class Ojt_Registration extends Component {
                                                             <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect(`ojt_registration/cv/${student.email}`)}>Chi tiết</Button>
                                                             <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`ojt_registration/cv/${student.email}`)}>Duyệt</Button>
                                                             <Button type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleDirect(`ojt_registration/cv/${student.email}`)}>Từ chối</Button>
+                                                            <Button type="submit" style={{ marginRight: "1.5px" , fontWeight: "bold", borderWidth: 0  }} color="primary" onClick={() => this.handleDirect(`Student/Student/${student.email}`)}>Chi tiết</Button>
                                                         </td>
                                                     </tr>
                                                 )
