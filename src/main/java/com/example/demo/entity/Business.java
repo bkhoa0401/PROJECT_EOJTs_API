@@ -52,10 +52,10 @@ public class Business implements Serializable{
     private List<Invitation> invitations;
 
     @Column(name = "rate_count")
-    private int rateCount;
+    private int rateCount=0;
 
     @Column(name = "rate_average")
-    private int rateAverage;
+    private int rateAverage=0;
 
 
     public Business() {
