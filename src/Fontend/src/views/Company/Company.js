@@ -20,6 +20,7 @@ import SimpleReactValidator from 'simple-react-validator';
 import firebase from 'firebase/app';
 import 'firebase/storage';
 import { async } from 'q';
+import { initializeApp } from '../Invitation/push-notification';
 
 
 // // Your web app's Firebase configuration
