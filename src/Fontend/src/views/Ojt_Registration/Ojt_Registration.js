@@ -91,7 +91,7 @@ class Ojt_Registration extends Component {
 
                                                 const linkDownload = `http://localhost:8000/api/file/downloadFile?emailStudent=${student.email}`;
 
-                                                let tmp = 'Pending';
+                                                let tmp = 'N/A';
 
                                                 if (student.option1 == business_name) {
                                                     tmp = 1;

@@ -46,6 +46,9 @@ const Invitation_Detail = React.lazy(() => import('./views/Invitation/Invitation
 const Invitation_Create = React.lazy(() => import('./views/Invitation/Invitation_Create.js'));
 const Ojt_Registration = React.lazy(() => import('./views/Ojt_Registration/Ojt_Registration.js'));
 const CV = React.lazy(() => import('./views/Ojt_Registration/CV.js'));
+const student_list = React.lazy(() => import('./views/list_management/student_list.js'));
+const business_list = React.lazy(() => import('./views/list_management/business_list.js'));
+
 const Official_List = React.lazy(() => import('./views/Official_List/Official_List.js'));
 const Details_Task = React.lazy(() => import('./views/Details_Task/Details_Task.js'));
 const Job_Post = React.lazy(() => import('./views/Job_Post/Job_Post.js'));
@@ -104,6 +107,8 @@ const routes = [
   { path: '/invitation/new', exact: true, name: 'Gửi lời mời cho sinh viên', component: Invitation_Create },
   { path: '/ojt_registration', exact: true, name: 'DSSV đăng kí thực tập', component: Ojt_Registration },
   { path: '/ojt_registration/cv/:email', exact: true, name: 'Chi tiết CV', component: CV },
+  { path: '/list_management/student_list', exact: true, name: 'Danh sách sinh viên', component: student_list },
+  { path: '/list_management/business_list', exact: true, name: 'Danh sách doanh nghiệp', component: business_list },
   { path: '/official-list', exact: true, name: 'Danh sách sinh viên', component: Official_List },
   { path: '/details-task', exact: true, name: 'Nhiệm vụ', component: Details_Task },
   { path: '/job-post', exact: true, name: 'Thông tin tuyển dụng', component: Job_Post },
