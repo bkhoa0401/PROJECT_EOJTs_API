@@ -61,6 +61,7 @@ class CV extends Component {
 
     render() {
         const { name, code, email, phone, address, specialized, objective, gpa, skills } = this.state;
+        const linkDownload = `http://localhost:8000/api/file/downloadFile?emailStudent=${email}`;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -163,6 +164,14 @@ class CV extends Component {
                                                     )
                                                 })
                                             }
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="2">
+                                            <h6>CV</h6>
+                                        </Col>
+                                        <Col xs="12" md="10">
+                                            <a href={linkDownload} download>Tải</a>
                                         </Col>
                                     </FormGroup>
                                 </Form>

@@ -46,7 +46,7 @@ const Post = async function (api, query) {
 }
 
 const PostNotifications = async function (api, query) {
-  const tokenServer = 'AAAAVQM8Apk:APA91bHE-Xn-G2JIYAA-4rGXjHJGXmXicR31ZsorPmgRMYGLiZ4CkN8cPTyhCSE-yK3HjIuAJyg8g8ngVSekypXxb9f2YRhtbqsHHdtP6qkj0oFgYV1i2AeVBaF8BiRJbcnYN8Ic2op_';
+  const tokenServer = 'AAAAzX5jJP0:APA91bFkwT2CIBpBoRklfpHhMwFNuZ3whbUDb9s0ya5JSeZOjfpsh3z_Vx2yGhZEd4wtpqxBzau5unUJ7HrbsKEzqcJCrBr164TWCLTT1hIBAjsg56AhUJ4M9ZzxIu6hYWE1wJD-ME00';
   if (isNullOrUndefined(api)) {
     return;
   }

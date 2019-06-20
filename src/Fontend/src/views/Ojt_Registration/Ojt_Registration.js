@@ -109,12 +109,12 @@ class Ojt_Registration extends Component {
                                                         <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
                                                         <td style={{ textAlign: "center" }}><a href={linkDownload} download>Tải</a></td>
                                                         <td style={{ textAlign: "center" }}>
-                                                            <strong>
-                                                                {tmp}
-                                                            </strong>
+                                                            <strong>{tmp}</strong>
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>
-                                                            <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect(`ojt_registration/cv/${student.email}`)}>Xem CV</Button>
+                                                            <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect(`ojt_registration/cv/${student.email}`)}>Chi tiết</Button>
+                                                            <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`ojt_registration/cv/${student.email}`)}>Duyệt</Button>
+                                                            <Button type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleDirect(`ojt_registration/cv/${student.email}`)}>Từ chối</Button>
                                                         </td>
                                                     </tr>
                                                 )

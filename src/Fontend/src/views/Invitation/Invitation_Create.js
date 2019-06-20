@@ -76,7 +76,7 @@ class Invitation_Create extends Component {
                 click_action: "http://localhost:3000/#/invitation/new",
                 icon: "http://url-to-an-icon/icon.png"
             },
-            to: 'dl4cdeeiWys:APA91bHsJJ-MGHBbOyjghit3M7GZID_asQUH8_IyB9kXlWFSROHA3LPrLo5JUzAfYlZbg22nbzulqQApYMD7ItaoB_j3mcivQ-mU2w_qpyBiaFbRPGpy4U8b_y1U5Ns_yKQxvBAPq3I1'
+            to: 'c13kE1dWpcE:APA91bGlqsTuuSQdwqJPeXECF4T_2LnIrXm9Gpvb6MVG2-nOhG-zddhSeinpmsda_xhaWpDlVIPrdQDgvZnVOi4Wom-Hq4N8tDxQkdK6sQGAV_3PqdutZTjmKMd-pTR4Kfim02fubpIy'
         }
 
         const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
