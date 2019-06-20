@@ -105,7 +105,7 @@ const routes = [
   { path: '/ojt_registration', exact: true, name: 'DSSV đăng kí thực tập', component: Ojt_Registration },
   { path: '/ojt_registration/cv/:email', exact: true, name: 'Chi tiết CV', component: CV },
   { path: '/list_management/student_list', exact: true, name: 'Danh sách sinh viên', component: student_list },
-  { path: '/list_management/business_list', exact: true, name: 'Danh sách công ty', component: business_list },
+  { path: '/list_management/business_list', exact: true, name: 'Danh sách doanh nghiệp', component: business_list },
 ];
 
 export default routes;

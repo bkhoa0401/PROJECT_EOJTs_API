@@ -132,7 +132,7 @@ class student_list extends Component {
                     onClose={this.closePopupRegist}
                 >
                     <div className="TabContent">
-                        <Button className="close" onClick={this.closePopupRegist}>
+                        <Button className="close" onClick={this.closePopupRegist} >
                             &times;
                         </Button>
                         <h3 style={{ textAlign: "center" }}>Đăng ký công ty thực tập</h3>
@@ -147,7 +147,7 @@ class student_list extends Component {
                             <tbody>
                                 <tr>
                                     <td>Công ty A</td>
-                                    <td style={{ textAlign: "right" }}><Button>Chọn</Button></td>
+                                    <td style={{ textAlign: "right" }}><Button style={{ fontWeight: "bold", backgroundColor: "#59c9e7", color: "white", borderWidth: 0 }}>Chọn</Button></td>
                                 </tr>
                             </tbody>
                         </Table>
@@ -175,7 +175,7 @@ class student_list extends Component {
                                 <i className="fa fa-align-justify"></i>Danh sách sinh viên
                             </CardHeader>
                             <CardBody>
-                                <Nav tabs>
+                                <Nav tabs style = {{fontWeight: "bold"}}>
                                     <NavItem>
                                         <NavLink
                                             active={this.state.activeTab[0] === '1'}
