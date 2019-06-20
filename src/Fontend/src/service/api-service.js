@@ -45,6 +45,28 @@ const Post = async function (api, query) {
   return response;
 }
 
+const PostNotifications = async function (api, query) {
+  const tokenServer = 'AAAAVQM8Apk:APA91bHE-Xn-G2JIYAA-4rGXjHJGXmXicR31ZsorPmgRMYGLiZ4CkN8cPTyhCSE-yK3HjIuAJyg8g8ngVSekypXxb9f2YRhtbqsHHdtP6qkj0oFgYV1i2AeVBaF8BiRJbcnYN8Ic2op_';
+  if (isNullOrUndefined(api)) {
+    return;
+  }
+
+  const setting = {
+    headers: {
+      'content-type': 'application/json',
+      'Authorization': 'key=' + tokenServer,
+    },
+    method: 'post',
+    body: JSON.stringify(query),
+  }
+  const response = await fetch(api, setting);
+  if (response.status == 401 || response.status == 403) {
+    return null;
+  }
+  // const data = await response.json();
+  return response;
+}
+
 const Put = async function (api, query) {
   if (isNullOrUndefined(api)) {
     return;
@@ -86,6 +108,7 @@ const Delete = async function (api, query) {
 const ApiServices = {
   Get,
   Post,
+  PostNotifications,
   Put,
   Delete,
   API

@@ -39,6 +39,7 @@ export default {
       icon: 'icon-star',
     },
     {
+<<<<<<< HEAD:src/Fontend/src/_nav.js
       name: 'Quản lý danh sách',
       url: '/list_management',
       icon: 'icon-puzzle',
@@ -54,6 +55,21 @@ export default {
           icon: 'icon-star',
         },
       ],
+=======
+      name: 'DSSV chính thức',
+      url: '/official-list',
+      icon: 'icon-star',
+    },
+    {
+      name: 'Chi tiết nhiệm vụ',
+      url: '/details-task',
+      icon: 'icon-star',
+    },
+    {
+      name: 'Thông tin tuyển dụng',
+      url: '/job-post',
+      icon: 'icon-star',
+>>>>>>> master:src/Fontend/src/_navHr.js
     },
     // {
     //   name: 'test',

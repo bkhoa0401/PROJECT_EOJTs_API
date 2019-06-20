@@ -110,10 +110,22 @@ class Invitation extends Component {
                                             filteredListStudents && filteredListStudents.map((student, index) => {
 
                                                 const invitations = student.invitations;
+                                                var invitationDetail = null;
+
+                                                invitations && invitations.map((invitation, index) => {
+                                                    const business_name_invitation = student.invitations[index].business.business_name;
+                                                    if (business_name === business_name_invitation) {
+                                                        invitationDetail = student.invitations[index];
+                                                    }
+                                                })
+
+
+
+
                                                 const skills = student.skills;
 
                                                 let tmp = 'N/A';
-                                                if (invitations[0].state != 'false') {
+                                                if (invitationDetail != null && invitationDetail.state != 'false') {
                                                     if (student.option1 == business_name) {
                                                         tmp = 1;
                                                     }
@@ -144,11 +156,13 @@ class Invitation extends Component {
                                                         <td style={{ textAlign: "center" }}>{student.gpa}</td>
                                                         <td style={{ textAlign: "center" }}>
                                                             {
-                                                                invitations[0].state.toString() == 'true' ? (
-                                                                    <Badge color="success">Accepted</Badge>
-                                                                ) : (
-                                                                        <Badge color="danger">Pending</Badge>
-                                                                    )
+                                                                invitationDetail && (
+                                                                    invitationDetail.state.toString() == 'true' ? (
+                                                                        <Badge color="success">Accepted</Badge>
+                                                                    ) : (
+                                                                            <Badge color="danger">Pending</Badge>
+                                                                        )
+                                                                )
                                                             }
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>

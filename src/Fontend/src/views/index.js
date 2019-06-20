@@ -38,6 +38,9 @@ import { Alerts, Badges, Modals } from './Notifications';
 import { Login, Page404, Page500, ForgotPassword } from './Pages';
 import { Colors, Typography } from './Theme';
 import Widgets from './Widgets';
+import Official_List from "./Official_List/Official_List";
+import Details_Task from "./Details_Task/Details_Task";
+import Job_Post from "./Job_Post/Job_Post";
 
 export {
   Badges,
@@ -89,5 +92,8 @@ export {
   CV,
   student_list,
   business_list,
+  Official_List,
+  Details_Task,
+  Job_Post,
 };
 

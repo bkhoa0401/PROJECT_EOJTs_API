@@ -53,30 +53,19 @@ public class FileController {
     }
 
     @GetMapping("/downloadFile")
-    public ResponseEntity<Resource> downloadFile(HttpServletRequest request, @RequestParam String emailStudent) {
-        // Load file as Resource
+    public ResponseEntity<String> downloadFile(HttpServletRequest request, @RequestParam String emailStudent) {
         Student student = studentService.getStudentByEmail(emailStudent);
         if (student != null) {
-            Resource resource = fileStorageService.loadFileAsResource(student.getResumeLink());
 
-            // Try to determine file's content type
-            String contentType = null;
+            Resource resource = fileStorageService.loadFileAsResource(student.getResumeLink());
             try {
-                contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+                return new ResponseEntity<String>(resource.getFile().getAbsolutePath(),HttpStatus.OK);
             } catch (IOException ex) {
                 logger.info("Could not determine file type.");
             }
-
-            if (contentType == null) {
-                contentType = "application/octet-stream";
-            }
-
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(contentType))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                    .body(resource);
         }
         return null;
+        return new ResponseEntity<String>("File not found !!!",HttpStatus.EXPECTATION_FAILED);
     }
 
 

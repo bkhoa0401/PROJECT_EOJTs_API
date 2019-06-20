@@ -6,7 +6,8 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
-
+import { askForPermissioToReceiveNotifications } from './push-notification';
+import firebase from 'firebase';
 
 class Invitation_Create extends Component {
 
@@ -16,6 +17,7 @@ class Invitation_Create extends Component {
             students: null,
             business_name: '',
             searchValue: '',
+            isAction: ''
         }
     }
 
@@ -53,8 +55,7 @@ class Invitation_Create extends Component {
 
 
         const invitation = {
-            description: `Xin chào ${studentName}!
-            Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
+            description: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
             state: 0,
             time_created: "2019-09-09",
             title: `Lời mời thực tập từ công ty ${business_name}`
@@ -62,12 +63,32 @@ class Invitation_Create extends Component {
 
         const result = await ApiServices.Post(`/business/createInvitation?emailStudent=${email}`, invitation);
 
+
+        // const messaging = firebase.messaging();
+        // await messaging.requestPermission();
+        // const tokenUser = await messaging.getToken();
+        // console.log(tokenUser);
+
+        const notificationDTO = {
+            notification: {
+                title: `Lời mời thực tập từ công ty ${business_name}`,
+                body: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
+                click_action: "http://localhost:3000/#/invitation/new",
+                icon: "http://url-to-an-icon/icon.png"
+            },
+            to: 'dl4cdeeiWys:APA91bHsJJ-MGHBbOyjghit3M7GZID_asQUH8_IyB9kXlWFSROHA3LPrLo5JUzAfYlZbg22nbzulqQApYMD7ItaoB_j3mcivQ-mU2w_qpyBiaFbRPGpy4U8b_y1U5Ns_yKQxvBAPq3I1'
+        }
+
+        const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
+
         if (result.status == 201) {
             Toastify.actionSuccess('Gửi lời mời thành công');
+            if (isSend == null || isSend.status != 200) {
+                Toastify.actionWarning('Gửi thông báo thất bại');
+            }
         } else {
             Toastify.actionFail('Gửi lời mời thất bại');
         }
-
     }
 
     render() {
@@ -117,6 +138,7 @@ class Invitation_Create extends Component {
                                         {
                                             filteredListStudents && filteredListStudents.map((student, index) => {
                                                 const skills = student.skills;
+                                                const linkDownload = `http://localhost:8000/api/file/downloadFile?emailStudent=${student.email}`;
 
                                                 return (
                                                     <tr key={index}>
@@ -138,7 +160,7 @@ class Invitation_Create extends Component {
                                                             }
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>{student.gpa}</td>
-                                                        <td style={{ textAlign: "center" }}><a href="">Tải</a></td>
+                                                        <td style={{ textAlign: "center" }}><a href={linkDownload} download>Tải</a></td>
                                                         <td style={{ textAlign: "center" }}>
                                                             <Button onClick={() => this.handleSubmit(index)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                         </td>

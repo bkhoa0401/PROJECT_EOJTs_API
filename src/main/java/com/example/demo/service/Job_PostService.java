@@ -23,4 +23,20 @@ public class Job_PostService {
         }
         return null;
     }
+
+    public int getViewOfJobPost(int id){
+        Job_Post job_post=job_postRepository.findJob_PostById(id);
+        if(job_post!=null){
+            return job_post.getViews();
+        }
+        return 0;
+    }
+
+    public void updateViewOfJobPost(int id,int views){
+        Job_Post job_post=job_postRepository.findJob_PostById(id);
+        if(job_post!=null){
+            job_post.setViews(views);
+            job_postRepository.save(job_post);
+        }
+    }
 }

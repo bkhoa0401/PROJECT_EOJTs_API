@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.BusinessDTO;
 import com.example.demo.dto.Business_JobPostDTO;
+import com.example.demo.dto.Job_PostDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,11 +123,18 @@ public class BusinessController {
     //get job post details by id
     @GetMapping("/getJobPost")
     @ResponseBody
-    public ResponseEntity<Job_Post> getListInvitation(@RequestParam int id) {
+    public ResponseEntity<Job_PostDTO> getListInvitation(@RequestParam int id) {
 
         Job_Post job_post = job_postService.findJob_PostById(id);
+        String emailOfBusiness = job_post.getOjt_enrollment().getBusiness().getEmail();
+        Business business = businessService.getBusinessByEmail(emailOfBusiness);
+
+        Job_PostDTO job_postDTO = new Job_PostDTO();
+        job_postDTO.setJob_post(job_post);
+        job_postDTO.setBusiness(business);
+
         if (job_post != null) {
-            return new ResponseEntity<Job_Post>(job_post, HttpStatus.OK);
+            return new ResponseEntity<Job_PostDTO>(job_postDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -151,8 +159,8 @@ public class BusinessController {
     @PostMapping("/createInvitation")
     public ResponseEntity<Void> createInvitationForStudent(@RequestBody Invitation invitation
             , @RequestParam String emailStudent) {
-        String emailBusiness=getEmailFromToken();
-        Business business=businessService.getBusinessByEmail(emailBusiness);
+        String emailBusiness = getEmailFromToken();
+        Business business = businessService.getBusinessByEmail(emailBusiness);
 
         Student student = studentService.getStudentByEmail(emailStudent);
 
