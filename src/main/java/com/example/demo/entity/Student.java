@@ -39,10 +39,10 @@ public class Student implements Serializable {
     private String option2;
 
     @Column(name = "isAcceptedOption1")
-    private boolean isAcceptedOption1;
+    private boolean acceptedOption1;
 
     @Column(name = "isAcceptedOption2")
-    private boolean isAcceptedOption2;
+    private boolean acceptedOption2;
 
     @Column(name = "code")
     private String code;
@@ -94,7 +94,19 @@ public class Student implements Serializable {
     @JoinColumn(name = "specialized_id")
     private Specialized specialized;
 
+    @Column(name = "token")
+    private String token;
+
+
     public Student() {
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getEmail() {
@@ -155,19 +167,19 @@ public class Student implements Serializable {
     }
 
     public boolean isAcceptedOption1() {
-        return isAcceptedOption1;
+        return acceptedOption1;
     }
 
     public void setAcceptedOption1(boolean acceptedOption1) {
-        isAcceptedOption1 = acceptedOption1;
+        this.acceptedOption1 = acceptedOption1;
     }
 
     public boolean isAcceptedOption2() {
-        return isAcceptedOption2;
+        return acceptedOption2;
     }
 
     public void setAcceptedOption2(boolean acceptedOption2) {
-        isAcceptedOption2 = acceptedOption2;
+        this.acceptedOption2 = acceptedOption2;
     }
 
     public String getCode() {

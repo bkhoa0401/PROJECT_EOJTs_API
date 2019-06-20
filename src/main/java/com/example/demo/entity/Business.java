@@ -51,6 +51,13 @@ public class Business implements Serializable{
     @JsonIgnore
     private List<Invitation> invitations;
 
+    @Column(name = "rate_count")
+    private int rateCount;
+
+    @Column(name = "rate_average")
+    private int rateAverage;
+
+
     public Business() {
     }
 
@@ -151,5 +158,21 @@ public class Business implements Serializable{
         this.business_overview = business_overview;
         this.business_website = business_website;
         this.logo = logo;
+    }
+
+    public int getRateCount() {
+        return rateCount;
+    }
+
+    public void setRateCount(int rateCount) {
+        this.rateCount = rateCount;
+    }
+
+    public int getRateAverage() {
+        return rateAverage;
+    }
+
+    public void setRateAverage(int rateAverage) {
+        this.rateAverage = rateAverage;
     }
 }

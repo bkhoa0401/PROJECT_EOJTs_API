@@ -30,11 +30,11 @@ const btnSave = {
   height: '40px'
 };
 
-const divSelcectSpecilized = {
+const divSelectSpecialized = {
   textAlign: 'center',
 }
 
-const selcectSpecilized = {
+const selectSpecialized = {
   width: '200px'
 }
 
@@ -48,13 +48,14 @@ const rowSave = {
   paddingLeft: '50%'
 }
 
+const table = {
+  width: '400px',
+  border: '#00BFFF solid 1px'
+}
 const specializedThreadJobPost = {
-  height: '200px',
   color: 'white',
   backgroundColor: '#00BFFF',
   textAlign: 'center',
-  paddingLeft: '90px',
-  paddingRight: '90px',
   paddingBottom: '10px',
   fontSize: '15px'
 }
@@ -70,10 +71,7 @@ class Job_Post extends Component {
   }
 
   addNewTable = () => {
-
     var specialized = document.getElementById('selectSpecialized').value;
-
-
     this.setState({
       array: [...this.state.array, specialized]
     })
@@ -99,8 +97,8 @@ class Job_Post extends Component {
               </CardHeader>
               <CardBody>
                 <br/><br/><br/>
-                <div style={divSelcectSpecilized}>
-                  <select id={'selectSpecialized'} style={selcectSpecilized}>
+                <div style={divSelectSpecialized}>
+                  <select id={'selectSpecialized'} style={selectSpecialized}>
                     <option value="Kỹ thuật phần mềm">Kỹ thuật phần mềm</option>
                     <option value="Ngôn ngữ nhật">Ngôn ngữ nhật</option>
                     <option value="Ngôn ngữ anh">Ngôn ngữ anh</option>
@@ -108,21 +106,21 @@ class Job_Post extends Component {
                   <input name={"btnChoose"} value={"Chọn"} type={"button"} style={btnChoose}
                          onClick={this.addNewTable}/>
                 </div>
-                <table style={{border: '#00BFFF solid 1px'}}>
-                  <thread style={specializedThreadJobPost}>
-                    <tr>
-                      <td>Kỹ thuật phần mềm</td>
-                    </tr>
-                  </thread>
-                  <tbody>
-                  <br/>
-                  <tr>
-                    <td><b>Java developer</b> : 20</td>
-                  </tr>
-                  </tbody>
-                </table>
+                {/*<table style={table}>*/}
+                {/*  <thread style={specializedThreadJobPost}>*/}
+                {/*    <tr>*/}
+                {/*      <td>Kỹ thuật phần mềm</td>*/}
+                {/*    </tr>*/}
+                {/*  </thread>*/}
+                {/*  <tbody>*/}
+                {/*  <br/>*/}
+                {/*  <tr>*/}
+                {/*    <td><b>Java developer</b> : 20</td>*/}
+                {/*  </tr>*/}
+                {/*  </tbody>*/}
+                {/*</table>*/}
                 {array.map((item, index) =>
-                  <table style={{border: '#00BFFF solid 1px'}} key={index}>
+                  <table style={table} key={index}>
                     <thread style={specializedThreadJobPost}>
                       <tr>
                         <td>{item}</td>

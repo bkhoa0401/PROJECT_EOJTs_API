@@ -6,6 +6,7 @@ import com.example.demo.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -94,6 +95,50 @@ public class StudentService {
                 studentRepository.save(student);
                 return true;
             }
+        }
+        return false;
+    }
+
+    public boolean updateStatusOptionOfStudent(int numberOfOption, boolean statusOfOption, String emailStudent) {
+        Student student = getStudentByEmail(emailStudent);
+        if (student != null) {
+            if (numberOfOption == 1) {
+                student.setAcceptedOption1(statusOfOption);
+                studentRepository.save(student);
+                return true;
+            }
+            if (numberOfOption == 2) {
+                student.setAcceptedOption2(statusOfOption);
+                studentRepository.save(student);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<Student> getAllStudentByStatusOption(int typeGetStatus) {
+        List<Student> studentList ;
+        if (typeGetStatus == 1) {// get all sv pass  option 1
+            studentList = studentRepository.findStudentsByAcceptedOption1TrueAndAcceptedOption2False();
+            return studentList;
+        } else if (typeGetStatus == 2) {// get all sv pass  option 2
+            studentList = studentRepository.findStudentsByAcceptedOption2TrueAndAcceptedOption1False();
+            return studentList;
+        } else if (typeGetStatus == 3) {// get all sv pass 2 option
+            studentList = studentRepository.findStudentsByAcceptedOption1TrueAndAcceptedOption2True();
+            return studentList;
+        } else if (typeGetStatus == 4) {// get all sv fail 2 option
+            studentList = studentRepository.findStudentsByAcceptedOption1FalseAndAcceptedOption2False();
+            return studentList;
+        }
+        return null;
+    }
+
+    public boolean updateTokenDeviceForStudent(String emailStudent,String token){
+        Student student = getStudentByEmail(emailStudent);
+        if(student!=null){
+            student.setToken(token);
+            studentRepository.save(student);
         }
         return false;
     }
