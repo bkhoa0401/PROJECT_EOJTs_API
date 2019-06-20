@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import {Badge, Card, CardBody, CardHeader, Col, Pagination, Row, Table} from 'reactstrap';
-import {Button} from 'reactstrap';
+import React, { Component } from 'react';
+import { Badge, Card, CardBody, CardHeader, Col, Pagination, Row, Table, ButtonDropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
+import { Button } from 'reactstrap';
 import ApiServices from '../../service/api-service';
-import {ToastContainer} from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import orderBy from "lodash/orderBy";
 import Toastify from '../../views/Toastify/Toastify';
 import {
@@ -12,140 +12,87 @@ import {
 } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
 
-const invertDirection = {
-  asc: 'desc',
-  desc: 'asc'
-};
-const btnMission = {
-  color: 'white',
-  backgroundColor: '#00BFFF',
-  borderRadius: '25px',
-};
-const btnSave = {
-  color: 'white',
-  backgroundColor: '#00BFFF',
-  borderRadius: '5px',
-  marginRight: '200px',
-  width: '80px',
-  height: '40px'
-};
-
-const divSelectSpecialized = {
-  textAlign: 'center',
-}
-
-const selectSpecialized = {
-  width: '200px'
-}
-
-const btnChoose = {
-  color: 'white',
-  backgroundColor: '#00BFFF',
-  width: '60px',
-  border: '10px'
-}
-const rowSave = {
-  paddingLeft: '50%'
-}
-
 const table = {
-  width: '400px',
-  border: '#00BFFF solid 1px'
+  textAlign: "left",
+  height: "40px",
+  border: "2px solid #20a8d8",
+  width: "500px",
+  margin: "50px auto",
 }
-const specializedThreadJobPost = {
-  color: 'white',
-  backgroundColor: '#00BFFF',
-  textAlign: 'center',
-  paddingBottom: '10px',
-  fontSize: '15px'
-}
-
 
 class Job_Post extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      array: ['java'], // get data trong db ,
-      isVisible: false,
+      arrayJob: ['Kỹ thuật phần mềm', 'Kinh tế', 'Đồ hoạ', 'Ngôn ngữ']
     };
   }
 
-  addNewTable = () => {
-    var specialized = document.getElementById('selectSpecialized').value;
-    this.setState({
-      array: [...this.state.array, specialized]
-    })
+  handleDirect = (uri) => {
+    this.props.history.push(uri);
   }
-
-  addNewRowInTable = () => {
-    this.setState({
-      isVisible: true,
-    })
-  }
-
 
   render() {
-    var {array, isVisible} = this.state;
+    const { arrayJob } = this.state;
     return (
-
       <div className="animated fadeIn">
         <Row>
           <Col xs="12" lg="12">
             <Card>
-              <CardHeader>
-                <i className="fa fa-align-justify"></i> <b>Thông tin tuyển dụng</b>
+              <CardHeader style={{ fontWeight: "bold" }}>
+                <i className="fa fa-align-justify"></i>Thông tin tuyển dụng
               </CardHeader>
               <CardBody>
-                <br/><br/><br/>
-                <div style={divSelectSpecialized}>
-                  <select id={'selectSpecialized'} style={selectSpecialized}>
-                    <option value="Kỹ thuật phần mềm">Kỹ thuật phần mềm</option>
-                    <option value="Ngôn ngữ nhật">Ngôn ngữ nhật</option>
-                    <option value="Ngôn ngữ anh">Ngôn ngữ anh</option>
-                  </select>&nbsp;&nbsp;
-                  <input name={"btnChoose"} value={"Chọn"} type={"button"} style={btnChoose}
-                         onClick={this.addNewTable}/>
-                </div>
-                {/*<table style={table}>*/}
-                {/*  <thread style={specializedThreadJobPost}>*/}
-                {/*    <tr>*/}
-                {/*      <td>Kỹ thuật phần mềm</td>*/}
-                {/*    </tr>*/}
-                {/*  </thread>*/}
-                {/*  <tbody>*/}
-                {/*  <br/>*/}
-                {/*  <tr>*/}
-                {/*    <td><b>Java developer</b> : 20</td>*/}
-                {/*  </tr>*/}
-                {/*  </tbody>*/}
-                {/*</table>*/}
-                {array.map((item, index) =>
-                  <table style={table} key={index}>
-                    <thread style={specializedThreadJobPost}>
-                      <tr>
-                        <td>{item}</td>
-                      </tr>
-                    </thread>
-                    <tbody>
-                    <br/>
-                    <tr>
-                      <input type={'button'} value={'Thêm'} onClick={this.addNewRowInTable}/>
-                      {isVisible ?
-                        <div>
-                          <input type={'text'}/>
-                          <input type={'text'}/>
-                        </div> : ''
-                      }
-                    </tr>
-                    </tbody>
-                  </table>
-                )}
+                <div style={{ textAlign: "center" }}>
+                  <Button 
+                    style={{ fontWeight: "bold", borderWidth: 0 }} color="primary"
+                    onClick={() => this.handleDirect(`Job_Post/Add_Job/`)}
+                  >
+                    Thêm ngành tuyển dụng
+                  </Button>
+                  </div>
+                <Row>
+                    {arrayJob.map((job, index) =>
+                    <>
+                      <table style={table}>
+                        <thead 
+                          style={{ backgroundColor: '#20a8d8', color: 'white', textAlign: "center", fontWeight:"bold", height:"40px", fontSize:"16px" }}
+                          specialized={job}
+                        >
+                          {job}
+                        </thead>
+                        <tbody style={{textAlign: "center", fontSize:"14px"}}>
+                          <tr>Java: 30</tr>
+                          <tr style={{ textAlign: "center", height:"40px" }}>
+                            <Button style={{ fontWeight: "bold"}} color="danger">Xoá</Button>
+                            <Button 
+                            style={{ fontWeight: "bold", borderColor:'#20a8d8', color: '#20a8d8', backgroundColor: 'white' }}
+                            onClick={() => this.handleDirect(`Job_Post/Update_Job/`)}
+                            >
+                              Sửa
+                            </Button>
+                          </tr>
+                          <tr></tr>
+                        </tbody>
+                      </table>
+                      </>
+                    )}
+                  
+                </Row>
+                <Pagination>
+                  {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                </Pagination>
               </CardBody>
+              {/* <CardFooter className="p-4">
+                                <Row>
+                                    <Col xs="3" sm="3">
+                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/invitation")} type="submit" color="primary" block>Trở về</Button>
+                                    </Col>
+                                </Row>
+                            </CardFooter> */}
             </Card>
           </Col>
         </Row>
-        <div style={rowSave}><input type={"button"} name={"btnSave"} style={btnSave} value={"Lưu"}/></div>
-
       </div>
     );
   }
