@@ -22,6 +22,7 @@ import navigationSupervisor from '../../_navSupervisor';
 // routes config
 import routes from '../../routes';
 import decode from 'jwt-decode';
+import AuthServices from '../../service/auth-service';
 
 const DefaultAside = React.lazy(() => import('./DefaultAside'));
 const DefaultFooter = React.lazy(() => import('./DefaultFooter'));
@@ -47,13 +48,14 @@ class DefaultLayout extends Component {
 
   async componentWillMount() {
     const token = localStorage.getItem('id_token');
-    const decoded = decode(token);
-    const role = decoded.role;
-    
+    if (token != null) {
+      const decoded = decode(token);
+      const role = decoded.role;
 
-    this.setState({
-      role
-    });
+      this.setState({
+        role
+      });
+    }
   }
 
 
@@ -68,59 +70,64 @@ class DefaultLayout extends Component {
     } else if (role === 'ROLE_SUPERVISOR') {
       navItems = navigationSupervisor;
     }
-
-    return (
-      <div className="app">
-        <AppHeader fixed>
-          <Suspense fallback={this.loading()}>
-            <DefaultHeader onLogout={e => this.signOut(e)} />
-          </Suspense>
-        </AppHeader>
-        <div className="app-body">
-          <AppSidebar fixed display="lg">
-            <AppSidebarHeader />
-            <AppSidebarForm />
-            <Suspense>
-              <AppSidebarNav navConfig={navItems} {...this.props} router={router} />
-            </Suspense>
-            <AppSidebarFooter />
-            <AppSidebarMinimizer />
-          </AppSidebar>
-          <main className="main">
-            <AppBreadcrumb appRoutes={routes} router={router} />
-            <Container fluid>
-              <Suspense fallback={this.loading()}>
-                <Switch>
-                  {routes.map((route, idx) => {
-                    return route.component ? (
-                      <Route
-                        key={idx}
-                        path={route.path}
-                        exact={route.exact}
-                        name={route.name}
-                        render={props => (
-                          <route.component {...props} />
-                        )} />
-                    ) : (null);
-                  })}
-                  <Redirect from="/" to="/dashboard" />
-                </Switch>
-              </Suspense>
-            </Container>
-          </main>
-          <AppAside fixed>
+    if (AuthServices.isLoggedIn()) {
+      return (
+        <div className="app">
+          <AppHeader fixed>
             <Suspense fallback={this.loading()}>
-              <DefaultAside />
+              <DefaultHeader onLogout={e => this.signOut(e)} />
             </Suspense>
-          </AppAside>
+          </AppHeader>
+          <div className="app-body">
+            <AppSidebar fixed display="lg">
+              <AppSidebarHeader />
+              <AppSidebarForm />
+              <Suspense>
+                <AppSidebarNav navConfig={navItems} {...this.props} router={router} />
+              </Suspense>
+              <AppSidebarFooter />
+              <AppSidebarMinimizer />
+            </AppSidebar>
+            <main className="main">
+              <AppBreadcrumb appRoutes={routes} router={router} />
+              <Container fluid>
+                <Suspense fallback={this.loading()}>
+                  <Switch>
+                    {routes.map((route, idx) => {
+                      return route.component ? (
+                        <Route
+                          key={idx}
+                          path={route.path}
+                          exact={route.exact}
+                          name={route.name}
+                          render={props => (
+                            <route.component {...props} />
+                          )} />
+                      ) : (null);
+                    })}
+                    <Redirect from="/" to="/dashboard" />
+                  </Switch>
+                </Suspense>
+              </Container>
+            </main>
+            <AppAside fixed>
+              <Suspense fallback={this.loading()}>
+                <DefaultAside />
+              </Suspense>
+            </AppAside>
+          </div>
+          <AppFooter>
+            <Suspense fallback={this.loading()}>
+              <DefaultFooter />
+            </Suspense>
+          </AppFooter>
         </div>
-        <AppFooter>
-          <Suspense fallback={this.loading()}>
-            <DefaultFooter />
-          </Suspense>
-        </AppFooter>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <Redirect from="/" to="/login" />
+      )
+    }
   }
 }
 
