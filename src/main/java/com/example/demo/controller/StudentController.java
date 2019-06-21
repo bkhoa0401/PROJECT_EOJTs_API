@@ -294,13 +294,33 @@ public class StudentController {
 
         if (studentList != null) {
             for (int i = 0; i < studentList.size(); i++) {
-                if (studentList.get(i).getOption1().equals(businessName)) {
-                    if (studentList.get(i).isInterviewed1() == false) {
-                        listResult.add(studentList.get(i));
+                if (studentList.get(i).getOption1() == null && studentList.get(i).getOption2() == null) {
+                    continue;
+                }
+                if (studentList.get(i).getOption2() == null) {
+                    if (studentList.get(i).getOption1().equals(businessName)) {
+                        if (studentList.get(i).isInterviewed1() == false) {
+                            listResult.add(studentList.get(i));
+                        }
                     }
-                } else if (studentList.get(i).getOption2().equals(businessName)) {
-                    if (studentList.get(i).isInterviewed2() == false) {
-                        listResult.add(studentList.get(i));
+                }
+                if (studentList.get(i).getOption1() == null) {
+                    if (studentList.get(i).getOption2().equals(businessName)) {
+                        if (studentList.get(i).isInterviewed2() == false) {
+                            listResult.add(studentList.get(i));
+                        }
+                    }
+                }
+                if (studentList.get(i).getOption1() != null && studentList.get(i).getOption2() != null) {
+                    if (studentList.get(i).getOption1().equals(businessName)) {
+                        if (studentList.get(i).isInterviewed1() == false) {
+                            listResult.add(studentList.get(i));
+                        }
+                    }
+                    if (studentList.get(i).getOption2().equals(businessName)) {
+                        if (studentList.get(i).isInterviewed2() == false) {
+                            listResult.add(studentList.get(i));
+                        }
                     }
                 }
             }

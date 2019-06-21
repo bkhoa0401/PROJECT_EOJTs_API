@@ -34,6 +34,7 @@ class CV extends Component {
             specialized: '',
             objective: '',
             gpa: '',
+            resumeLink: '',
             skills: []
         }
     }
@@ -51,7 +52,8 @@ class CV extends Component {
             specialized: students.specialized.name,
             objective: students.objective,
             gpa: students.gpa,
-            skills: students.skills
+            skills: students.skills,
+            resumeLink: students.resumeLink
         });
     }
 
@@ -60,8 +62,9 @@ class CV extends Component {
     }
 
     render() {
-        const { name, code, email, phone, address, specialized, objective, gpa, skills } = this.state;
-        const linkDownload = `http://localhost:8000/api/file/downloadFile?emailStudent=${email}`;
+        const { name, code, email, phone, address, specialized, objective, gpa, skills, resumeLink } = this.state;
+        const downloadLink = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
+
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -170,9 +173,17 @@ class CV extends Component {
                                         <Col md="2">
                                             <h6>CV</h6>
                                         </Col>
-                                        <Col xs="12" md="10">
-                                            <a href={linkDownload} download>Tải</a>
-                                        </Col>
+                                        {
+                                            resumeLink && resumeLink ?
+                                                (<Col xs="12" md="10">
+                                                    <a href={downloadLink} download>Tải</a>
+                                                </Col>)
+                                                :
+                                                (
+                                                <Col xs="12" md="10">
+                                                    <label>N/A</label>
+                                                </Col>)
+                                        }
                                     </FormGroup>
                                 </Form>
                                 <ToastContainer />
