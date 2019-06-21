@@ -21,7 +21,9 @@ public class InvitationService {
     }
 
     public Invitation getInvitationById(int id){
-        return invitationRepository.findInvitationById(id);
+        Invitation invitation=invitationRepository.findInvitationById(id);
+        invitation.setRead(true);
+        return invitation;
     }
 
     public void createInvitation(Invitation invitation){
