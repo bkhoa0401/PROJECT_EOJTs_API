@@ -142,9 +142,19 @@ public class StudentService {
         if(student!=null){
             student.setToken(token);
             studentRepository.save(student);
+            return true;
         }
         return false;
     }
 
+    public boolean updateLinkTranscriptForStudent(String emailStudent,String transcriptLink){
+        Student student = getStudentByEmail(emailStudent);
+        if(student!=null){
+            student.setTranscriptLink(transcriptLink);
+            studentRepository.save(student);
+            return true;
+        }
+        return false;
+    }
 
 }

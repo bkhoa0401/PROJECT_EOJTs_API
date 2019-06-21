@@ -148,7 +148,10 @@ public class BusinessController {
         for (int i = 0; i < businessList.size(); i++) {
             Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
             business_jobPostDTO.setBusiness(businessList.get(i));
-            business_jobPostDTO.setJob_postList(businessList.get(i).getOjt_enrollments().get(0).getJob_posts());
+
+            //get instance ojt_enrollments
+            Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(businessList.get(i));
+            business_jobPostDTO.setJob_postList(ojt_enrollment.getJob_posts());
 
             business_jobPostDTOS.add(business_jobPostDTO);
         }
@@ -176,13 +179,41 @@ public class BusinessController {
     public ResponseEntity<Void> updateStatusOfOptionStudent(@RequestParam int numberOfOption, @RequestParam boolean statusOfOption
             , @RequestParam String emailOfStudent) {
         boolean updateStatus = studentService.updateStatusOptionOfStudent(numberOfOption, statusOfOption, emailOfStudent);
-        if(updateStatus==true){
+        if (updateStatus == true) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @PutMapping("/updateJobPost")
+    public ResponseEntity<Void> updateJobPostOfBusiness(@RequestBody Job_Post job_post) {
+        boolean updateJobPost = job_postService.updateInforJobPost(job_post);
+        if (updateJobPost == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 
+    @GetMapping("/getStudentsByBusiness")
+    public ResponseEntity<List<Student>> getListStudentByBusiness() {
+        String emailBusiness=getEmailFromToken();
+
+        List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
+
+        if (studentList !=null) {
+            return new ResponseEntity<List<Student>>(studentList,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PutMapping("/updateLinkTranscript")
+    public ResponseEntity<Void> updateLinkTranscript(@RequestParam String emailStudent,@RequestParam String linkTranscript) {
+        boolean updateLinkTranscript = studentService.updateLinkTranscriptForStudent(emailStudent,linkTranscript);
+        if (updateLinkTranscript == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 
     //get email from token
     private String getEmailFromToken() {
