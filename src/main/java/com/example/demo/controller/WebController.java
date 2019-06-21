@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,6 +27,12 @@ public class WebController {
 
     @Autowired
     private StudentService studentService;
+
+
+    @GetMapping("")
+    public String hello() {
+        return "hello";
+    }
 
     @PostMapping("/token")
     public ResponseEntity<LoginDTO> checkLogin(HttpServletRequest request, @RequestBody Users users, HttpServletResponse response) {
@@ -43,10 +50,10 @@ public class WebController {
                 login.setUser(usersFound);
                 login.setToken(result);
 
-                for (int i=0;i<usersFound.getRoles().size();i++){
-                    String name=usersFound.getRoles().get(i).getDescription();
-                    if(name.equals("ROLE_STUDENT")){
-                        Student student=studentService.getStudentByEmail(users.getEmail());
+                for (int i = 0; i < usersFound.getRoles().size(); i++) {
+                    String name = usersFound.getRoles().get(i).getDescription();
+                    if (name.equals("ROLE_STUDENT")) {
+                        Student student = studentService.getStudentByEmail(users.getEmail());
                         StudentDTO studentDTO = new StudentDTO();
                         studentDTO.convertFromStudentEntity(student);
                         login.setStudent(studentDTO);

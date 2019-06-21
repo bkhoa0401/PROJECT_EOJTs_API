@@ -45,6 +45,10 @@ public class Invitation {
     @JoinColumn(name = "semester_id")
     private Semester semester;
 
+    @Column(name = "isRead")
+    private boolean isRead;
+
+
     public int getId() {
         return id;
     }
@@ -109,6 +113,11 @@ public class Invitation {
         this.semester = semester;
     }
 
+    public boolean isRead() {
+        return isRead;
+    }
 
-
+    public void setRead(boolean read) {
+        isRead = read;
+    }
 }
