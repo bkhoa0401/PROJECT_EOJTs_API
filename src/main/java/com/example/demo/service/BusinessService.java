@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -52,4 +53,20 @@ public class BusinessService {
         return null;
     }
 
+    public List<Business> findTop5BusinessByRateAverage() {
+        List<Business> businessList = businessRepository.findTop5OrderByRateAverageDesc();
+        List<Business> businessListTop5 = new ArrayList<>();
+
+        if (businessList != null) {
+            for (int i = 0; i < businessList.size(); i++) {
+                if (i < 5) {
+                    businessListTop5.add(businessList.get(i));
+                }else{
+                    break;
+                }
+            }
+            return businessListTop5;
+        }
+        return null;
+    }
 }

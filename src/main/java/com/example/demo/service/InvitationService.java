@@ -13,11 +13,11 @@ public class InvitationService {
     InvitationRepository invitationRepository;
 
     public List<Invitation> getListInvitationByStudentEmail(String email){
-        return invitationRepository.findInvitationByStudentEmail(email);
+        return invitationRepository.findInvitationByStudentEmailOrderByTimeCreatedDesc(email);
     }
 
     public List<Invitation> getListInvitationByBusinessEmail(String email){
-        return invitationRepository.findInvitationByBusinessEmail(email);
+        return invitationRepository.findInvitationByBusinessEmailOrderByTimeCreatedDesc(email);
     }
 
     public Invitation getInvitationById(int id){

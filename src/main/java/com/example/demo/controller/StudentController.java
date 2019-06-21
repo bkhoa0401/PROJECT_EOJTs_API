@@ -366,6 +366,17 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //student get all job post time post desc
+    @GetMapping("/getAllJobPost")
+    @ResponseBody
+    public ResponseEntity<List<Job_Post>> getAllJobPost() {
+        List<Job_Post> job_postList = job_postService.getAllJobPost();
+        if (job_postList != null) {
+            return new ResponseEntity<List<Job_Post>>(job_postList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
 
     //get email from token
     private String getEmailFromToken() {

@@ -10,9 +10,9 @@ import java.util.List;
 
 @Repository
 public interface InvitationRepository extends JpaRepository<Invitation, Integer> {
-   List<Invitation> findInvitationByStudentEmail(String email);
+   List<Invitation> findInvitationByStudentEmailOrderByTimeCreatedDesc(String email);
 
-    List<Invitation> findInvitationByBusinessEmail(String email);
+    List<Invitation> findInvitationByBusinessEmailOrderByTimeCreatedDesc(String email);
 
     Invitation findInvitationById(int id);
 

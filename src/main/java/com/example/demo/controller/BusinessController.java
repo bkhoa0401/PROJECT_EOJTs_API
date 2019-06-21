@@ -6,6 +6,7 @@ import com.example.demo.dto.Job_PostDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/business")
@@ -142,6 +144,7 @@ public class BusinessController {
 
     //get all post of business
     @GetMapping("/getAllJobPostOfBusiness")
+    @ResponseBody
     public ResponseEntity<List<Business_JobPostDTO>> getAllJobPostBusiness() {
         List<Business> businessList = businessService.getAllBusiness();
         List<Business_JobPostDTO> business_jobPostDTOS = new ArrayList<>();
@@ -155,6 +158,7 @@ public class BusinessController {
 
             business_jobPostDTOS.add(business_jobPostDTO);
         }
+
         return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOS, HttpStatus.OK);
     }
 
@@ -194,23 +198,35 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //get ds chinh thuc cua cong ty
     @GetMapping("/getStudentsByBusiness")
+    @ResponseBody
     public ResponseEntity<List<Student>> getListStudentByBusiness() {
-        String emailBusiness=getEmailFromToken();
+        String emailBusiness = getEmailFromToken();
 
         List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
 
-        if (studentList !=null) {
-            return new ResponseEntity<List<Student>>(studentList,HttpStatus.OK);
+        if (studentList != null) {
+            return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
     @PutMapping("/updateLinkTranscript")
-    public ResponseEntity<Void> updateLinkTranscript(@RequestParam String emailStudent,@RequestParam String linkTranscript) {
-        boolean updateLinkTranscript = studentService.updateLinkTranscriptForStudent(emailStudent,linkTranscript);
+    public ResponseEntity<Void> updateLinkTranscript(@RequestParam String emailStudent, @RequestParam String linkTranscript) {
+        boolean updateLinkTranscript = studentService.updateLinkTranscriptForStudent(emailStudent, linkTranscript);
         if (updateLinkTranscript == true) {
             return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/getTop5Business")
+    @ResponseBody
+    public ResponseEntity<List<Business>> getTop5Business() {
+        List<Business> businessList = businessService.findTop5BusinessByRateAverage();
+        if (businessList != null) {
+            return new ResponseEntity<List<Business>>(businessList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
