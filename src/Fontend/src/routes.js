@@ -52,6 +52,8 @@ const business_list = React.lazy(() => import('./views/list_management/business_
 const Official_List = React.lazy(() => import('./views/Official_List/Official_List.js'));
 const Details_Task = React.lazy(() => import('./views/Details_Task/Details_Task.js'));
 const Job_Post = React.lazy(() => import('./views/Job_Post/Job_Post.js'));
+const Update_Job = React.lazy(() => import('./views/Job_Post/Update_Job.js'));
+const Add_Job = React.lazy(() => import('./views/Job_Post/Add_Job.js'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -112,6 +114,8 @@ const routes = [
   { path: '/official-list', exact: true, name: 'Danh sách sinh viên', component: Official_List },
   { path: '/details-task', exact: true, name: 'Nhiệm vụ', component: Details_Task },
   { path: '/job-post', exact: true, name: 'Thông tin tuyển dụng', component: Job_Post },
+  { path: '/job_post/update_job', exact:true, name: 'Chi tiết công việc', component: Update_Job },
+  { path: '/job_post/add_job', exact:true, name: 'Thêm công việc', component: Add_Job },
   { path: '/admin', name: 'Admin', component: Dashboard },
   { path: '/hr', name: 'Hr', component: Dashboard },
   { path: '/supervisor', name: 'Supervisor', component: Dashboard },
