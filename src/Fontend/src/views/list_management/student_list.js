@@ -57,6 +57,10 @@ class student_list extends Component {
         })
     }
 
+    handleDirect = (uri) => {
+        this.props.history.push(uri);
+    }
+
     tabPane() {
         const { students, searchValue } = this.state;
         let filteredListStudents;
@@ -105,7 +109,7 @@ class student_list extends Component {
                                                 <td style={{ textAlign: "center" }}></td>
                                                 <td style={{ textAlign: "center" }}>{student.gpa}</td>
                                                 <td style={{ textAlign: "right" }}>
-                                                    <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="primary">Chi tiết</Button>
+                                                    <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}>Chi tiết</Button>
                                                     &nbsp;&nbsp;
                                                     <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="danger">Xoá</Button>
                                                 </td>

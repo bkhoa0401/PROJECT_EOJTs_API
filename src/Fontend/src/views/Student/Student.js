@@ -16,10 +16,14 @@ import {
 } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
+import firebase from 'firebase/app';
+import decode from 'jwt-decode';
 import Toastify from '../../views/Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
 
+
+const storage = firebase.storage();
 
 class CV extends Component {
 
@@ -35,7 +39,10 @@ class CV extends Component {
             objective: '',
             gpa: '',
             resumeLink: '',
-            skills: []
+            transcriptLink: '',
+            file: null,
+            skills: [],
+            role: '',
         }
     }
 
@@ -43,6 +50,13 @@ class CV extends Component {
     async componentDidMount() {
         const email = window.location.href.split("/").pop();
         const students = await ApiServices.Get(`/student/student/${email}`);
+
+        const token = localStorage.getItem('id_token');
+        let role = '';
+        if (token != null) {
+            const decoded = decode(token);
+            role = decoded.role;
+        }
         this.setState({
             name: students.name,
             code: students.code,
@@ -53,7 +67,9 @@ class CV extends Component {
             objective: students.objective,
             gpa: students.gpa,
             skills: students.skills,
-            resumeLink: students.resumeLink
+            resumeLink: students.resumeLink,
+            transcriptLink: students.transcriptLink,
+            role: role
         });
     }
 
@@ -61,10 +77,38 @@ class CV extends Component {
         this.props.history.push(uri);
     }
 
-    render() {
-        const { name, code, email, phone, address, specialized, objective, gpa, skills, resumeLink } = this.state;
-        const downloadLink = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
+    uploadTranscriptToFireBase = async () => {
+        let { file } = this.state;
 
+        const uploadTask = await storage.ref(`transcripts/${file.name}`).put(file);
+        await storage.ref('transcripts').child(file.name).getDownloadURL().then(url => {
+            console.log("URL", url);
+            this.setState({
+                transcriptLink: url
+            })
+        })
+
+        console.log("transcriptLink", this.state.transcriptLink);
+    }
+
+    handleChange = (event) => {
+        if (event.target.files[0]) {
+            const file = event.target.files[0];
+            console.log("FILE", file);
+            this.setState({
+                file: file
+            })
+        }
+    }
+
+    handleSubmit = async () => {
+        await this.uploadTranscriptToFireBase();
+    }
+
+    render() {
+        const { name, code, email, phone, address, specialized, objective, gpa, skills, resumeLink, transcriptLink, role } = this.state;
+        const linkDownCV = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
+        const linkDownTranscript = transcriptLink;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -176,14 +220,26 @@ class CV extends Component {
                                         {
                                             resumeLink && resumeLink ?
                                                 (<Col xs="12" md="10">
-                                                    <a href={downloadLink} download>Tải</a>
+                                                    <a href={linkDownCV} download>Tải</a>
                                                 </Col>)
                                                 :
                                                 (
-                                                <Col xs="12" md="10">
-                                                    <label>N/A</label>
-                                                </Col>)
+                                                    <Col xs="12" md="10">
+                                                        <label>N/A</label>
+                                                    </Col>)
                                         }
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="2">
+                                            <h6>Bảng điểm</h6>
+                                        </Col>
+                                        <Col xs="12" md="10">
+                                            {
+                                                role && role === 'ROLE_HR' ?
+                                                    (<a href={linkDownTranscript} download>Tải</a>) :
+                                                    (<input onChange={this.handleChange} type="file" />)
+                                            }
+                                        </Col>
                                     </FormGroup>
                                 </Form>
                                 <ToastContainer />
@@ -193,9 +249,22 @@ class CV extends Component {
                             </CardBody>
                             <CardFooter className="p-4">
                                 <Row>
-                                    <Col xs="3" sm="3">
-                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/ojt_registration")} type="submit" color="primary" block>Trở về</Button>
-                                    </Col>
+                                    {
+                                        role && role === 'ROLE_ADMIN' ?
+                                            (<Col xs="3" sm="3">
+                                                <Button onClick={() => this.handleSubmit()} type="submit" color="success" block>Xác nhận</Button>
+                                            </Col>) :
+                                            (<label></label>)
+                                    }
+                                    {
+                                        role && role === 'ROLE_ADMIN' ?
+                                            (<Col xs="3" sm="3">
+                                                <Button id="submitBusinesses" onClick={() => this.handleDirect("/list_management/student_list")} type="submit" color="primary" block>Trở về</Button>
+                                            </Col>) :
+                                            (<Col xs="3" sm="3">
+                                                <Button id="submitBusinesses" onClick={() => this.handleDirect("/ojt_registration")} type="submit" color="primary" block>Trở về</Button>
+                                            </Col>)
+                                    }
                                 </Row>
                             </CardFooter>
                         </Card>
