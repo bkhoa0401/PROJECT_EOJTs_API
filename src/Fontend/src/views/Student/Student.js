@@ -21,6 +21,8 @@ import decode from 'jwt-decode';
 import Toastify from '../../views/Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
+import { initializeApp } from '../Invitation/push-notification';
+import 'firebase/storage';
 
 
 const storage = firebase.storage();
@@ -30,6 +32,7 @@ class CV extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            student: null,
             name: '',
             code: '',
             email: '',
@@ -57,7 +60,9 @@ class CV extends Component {
             const decoded = decode(token);
             role = decoded.role;
         }
+
         this.setState({
+            student: students,
             name: students.name,
             code: students.code,
             email: students.email,
@@ -82,19 +87,27 @@ class CV extends Component {
 
         const uploadTask = await storage.ref(`transcripts/${file.name}`).put(file);
         await storage.ref('transcripts').child(file.name).getDownloadURL().then(url => {
-            console.log("URL", url);
             this.setState({
                 transcriptLink: url
             })
         })
+    }
 
-        console.log("transcriptLink", this.state.transcriptLink);
+    saveTranscript = async () => {
+        const { student, transcriptLink } = this.state;
+        student.transcriptLink = transcriptLink;
+        const result = await ApiServices.Put('/business/updateLinkTranscript', student);
+
+        if (result.status == 200) {
+            Toastify.actionSuccess('Cập nhật bảng điểm thành công');
+        } else {
+            Toastify.actionFail('Cập nhật bảng điểm thất bại');
+        }
     }
 
     handleChange = (event) => {
         if (event.target.files[0]) {
             const file = event.target.files[0];
-            console.log("FILE", file);
             this.setState({
                 file: file
             })
@@ -103,12 +116,25 @@ class CV extends Component {
 
     handleSubmit = async () => {
         await this.uploadTranscriptToFireBase();
+        await this.saveTranscript();
+    }
+
+    showTranscript(transcriptLink) {
+        if (transcriptLink != null) {
+            return (
+                <a href={transcriptLink}>Tải</a>
+            )
+        } else {
+            return (
+                <label>N/A</label>
+            )
+        }
     }
 
     render() {
         const { name, code, email, phone, address, specialized, objective, gpa, skills, resumeLink, transcriptLink, role } = this.state;
         const linkDownCV = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
-        const linkDownTranscript = transcriptLink;
+
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -236,7 +262,9 @@ class CV extends Component {
                                         <Col xs="12" md="10">
                                             {
                                                 role && role === 'ROLE_HR' ?
-                                                    (<a href={linkDownTranscript} download>Tải</a>) :
+                                                    (
+                                                        this.showTranscript(transcriptLink)
+                                                    ) :
                                                     (<input onChange={this.handleChange} type="file" />)
                                             }
                                         </Col>

@@ -207,8 +207,8 @@ public class BusinessController {
     }
 
     @PutMapping("/updateLinkTranscript")
-    public ResponseEntity<Void> updateLinkTranscript(@RequestParam String emailStudent,@RequestParam String linkTranscript) {
-        boolean updateLinkTranscript = studentService.updateLinkTranscriptForStudent(emailStudent,linkTranscript);
+    public ResponseEntity<Void> updateLinkTranscript(@RequestBody Student student) {
+        boolean updateLinkTranscript = studentService.updateLinkTranscriptForStudent(student);
         if (updateLinkTranscript == true) {
             return new ResponseEntity<>(HttpStatus.OK);
         }

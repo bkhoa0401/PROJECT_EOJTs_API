@@ -45,8 +45,8 @@ class Ojt_Registration extends Component {
 
     handleIsAcceptedOption = async (email, numberOfOption, statusOfOption, btnApprove, btnReject) => {
 
-        document.getElementById(btnApprove).setAttribute("disabled", "disabled");
-        document.getElementById(btnReject).setAttribute("disabled", "disabled");
+        // document.getElementById(btnApprove).setAttribute("disabled", "disabled");
+        // document.getElementById(btnReject).setAttribute("disabled", "disabled");
 
         const result = await ApiServices.Put(`/business/updateStatusOfStudent?numberOfOption=${numberOfOption}&statusOfOption=${statusOfOption}&emailOfStudent=${email}`);
 
@@ -54,6 +54,15 @@ class Ojt_Registration extends Component {
             Toastify.actionSuccess('Thao tác thành công!');
         } else {
             Toastify.actionFail('Thao tác thất bại!');
+        }
+
+        const students = await ApiServices.Get('/student/getListStudentByOptionAndStatusOption');
+        const business = await ApiServices.Get('/business/getBusiness');
+        if (students != null) {
+            this.setState({
+                students,
+                business_name: business.business_name
+            });
         }
     }
 

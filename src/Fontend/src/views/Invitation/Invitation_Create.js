@@ -49,9 +49,9 @@ class Invitation_Create extends Component {
         const { students, business_name } = this.state;
         const studentName = students[index].name;
         const email = students[index].email;
-        const btnId = "btnSendInvitation" + index;
+        // const btnId = "btnSendInvitation" + index;
 
-        document.getElementById(btnId).setAttribute("disabled", "disabled");
+        // document.getElementById(btnId).setAttribute("disabled", "disabled");
 
 
         const invitation = {
@@ -88,6 +88,15 @@ class Invitation_Create extends Component {
             }
         } else {
             Toastify.actionFail('Gửi lời mời thất bại');
+        }
+
+        const students2nd = await ApiServices.Get('/student/getListStudentNotYetInvited');
+        const business = await ApiServices.Get('/business/getBusiness');
+        if (students2nd != null) {
+            this.setState({
+                students: students2nd,
+                business_name: business.business_name
+            });
         }
     }
 
