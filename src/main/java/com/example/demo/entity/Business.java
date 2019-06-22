@@ -55,7 +55,7 @@ public class Business implements Serializable{
     private int rateCount=0;
 
     @Column(name = "rate_average")
-    private int rateAverage=0;
+    private float rateAverage=0;
 
 
     public Business() {
@@ -168,11 +168,11 @@ public class Business implements Serializable{
         this.rateCount = rateCount;
     }
 
-    public int getRateAverage() {
+    public float getRateAverage() {
         return rateAverage;
     }
 
-    public void setRateAverage(int rateAverage) {
+    public void setRateAverage(float rateAverage) {
         this.rateAverage = rateAverage;
     }
 }

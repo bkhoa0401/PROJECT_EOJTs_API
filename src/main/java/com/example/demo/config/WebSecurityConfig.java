@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().ignoringAntMatchers("/api/**");
 
         http.authorizeRequests().antMatchers("/api/account/token**").permitAll();
-        http.authorizeRequests().antMatchers("/api/file/downloadFile").permitAll();
+        http.authorizeRequests().antMatchers("/api/file/downloadFile/**").permitAll();
 
         http
                 .antMatcher("/api/**").httpBasic().authenticationEntryPoint(restServicesEntryPoint()).and()

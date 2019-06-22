@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Invitation;
 import com.example.demo.repository.InvitationRepository;
+import com.example.demo.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,16 +13,21 @@ public class InvitationService {
     @Autowired
     InvitationRepository invitationRepository;
 
+
     public List<Invitation> getListInvitationByStudentEmail(String email){
-        return invitationRepository.findInvitationByStudentEmail(email);
+        return invitationRepository.findInvitationByStudentEmailOrderByTimeCreatedDesc(email);
     }
 
     public List<Invitation> getListInvitationByBusinessEmail(String email){
-        return invitationRepository.findInvitationByBusinessEmail(email);
+        return invitationRepository.findInvitationByBusinessEmailOrderByTimeCreatedDesc(email);
     }
 
     public Invitation getInvitationById(int id){
-        return invitationRepository.findInvitationById(id);
+        Invitation invitation=invitationRepository.findInvitationById(id);
+        invitation.setRead(true);
+
+        invitationRepository.save(invitation);
+        return invitation;
     }
 
     public void createInvitation(Invitation invitation){

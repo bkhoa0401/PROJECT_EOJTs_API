@@ -6,6 +6,7 @@ import com.example.demo.dto.Job_PostDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/business")
@@ -142,16 +144,21 @@ public class BusinessController {
 
     //get all post of business
     @GetMapping("/getAllJobPostOfBusiness")
+    @ResponseBody
     public ResponseEntity<List<Business_JobPostDTO>> getAllJobPostBusiness() {
         List<Business> businessList = businessService.getAllBusiness();
         List<Business_JobPostDTO> business_jobPostDTOS = new ArrayList<>();
         for (int i = 0; i < businessList.size(); i++) {
             Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
             business_jobPostDTO.setBusiness(businessList.get(i));
-            business_jobPostDTO.setJob_postList(businessList.get(i).getOjt_enrollments().get(0).getJob_posts());
+
+            //get instance ojt_enrollments
+            Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(businessList.get(i));
+            business_jobPostDTO.setJob_postList(ojt_enrollment.getJob_posts());
 
             business_jobPostDTOS.add(business_jobPostDTO);
         }
+
         return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOS, HttpStatus.OK);
     }
 
@@ -176,13 +183,53 @@ public class BusinessController {
     public ResponseEntity<Void> updateStatusOfOptionStudent(@RequestParam int numberOfOption, @RequestParam boolean statusOfOption
             , @RequestParam String emailOfStudent) {
         boolean updateStatus = studentService.updateStatusOptionOfStudent(numberOfOption, statusOfOption, emailOfStudent);
-        if(updateStatus==true){
+        if (updateStatus == true) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @PutMapping("/updateJobPost")
+    public ResponseEntity<Void> updateJobPostOfBusiness(@RequestBody Job_Post job_post) {
+        boolean updateJobPost = job_postService.updateInforJobPost(job_post);
+        if (updateJobPost == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 
+    //get ds chinh thuc cua cong ty
+    @GetMapping("/getStudentsByBusiness")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getListStudentByBusiness() {
+        String emailBusiness = getEmailFromToken();
+
+        List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
+
+        if (studentList != null) {
+            return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PutMapping("/updateLinkTranscript")
+    public ResponseEntity<Void> updateLinkTranscript(@RequestBody Student student) {
+        boolean updateLinkTranscript = studentService.updateLinkTranscriptForStudent(student);
+        if (updateLinkTranscript == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/getTop5Business")
+    @ResponseBody
+    public ResponseEntity<List<Business>> getTop5Business() {
+        List<Business> businessList = businessService.findTop5BusinessByRateAverage();
+        if (businessList != null) {
+            return new ResponseEntity<List<Business>>(businessList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 
     //get email from token
     private String getEmailFromToken() {

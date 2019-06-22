@@ -27,7 +27,7 @@ public class Invitation {
     private boolean state;
 
     @Column(name = "time_created")
-    private java.sql.Date time_created;
+    private java.sql.Date timeCreated;
 
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -44,6 +44,10 @@ public class Invitation {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "semester_id")
     private Semester semester;
+
+    @Column(name = "isRead")
+    private boolean isRead;
+
 
     public int getId() {
         return id;
@@ -77,12 +81,12 @@ public class Invitation {
         this.state = state;
     }
 
-    public Date getTime_created() {
-        return time_created;
+    public Date getTimeCreated() {
+        return timeCreated;
     }
 
-    public void setTime_created(Date time_created) {
-        this.time_created = time_created;
+    public void setTimeCreated(Date timeCreated) {
+        this.timeCreated = timeCreated;
     }
 
     public Business getBusiness() {
@@ -109,6 +113,11 @@ public class Invitation {
         this.semester = semester;
     }
 
+    public boolean isRead() {
+        return isRead;
+    }
 
-
+    public void setRead(boolean read) {
+        isRead = read;
+    }
 }
