@@ -16,27 +16,36 @@ public class Job_PostService {
         }
     }
 
-    public Job_Post findJob_PostById(int id){
-        Job_Post job_post=job_postRepository.findJob_PostById(id);
-        if(job_post!=null){
+    public Job_Post findJob_PostById(int id) {
+        Job_Post job_post = job_postRepository.findJob_PostById(id);
+        if (job_post != null) {
             return job_post;
         }
         return null;
     }
 
-    public int getViewOfJobPost(int id){
-        Job_Post job_post=job_postRepository.findJob_PostById(id);
-        if(job_post!=null){
+    public int getViewOfJobPost(int id) {
+        Job_Post job_post = job_postRepository.findJob_PostById(id);
+        if (job_post != null) {
             return job_post.getViews();
         }
         return 0;
     }
 
-    public void updateViewOfJobPost(int id,int views){
-        Job_Post job_post=job_postRepository.findJob_PostById(id);
-        if(job_post!=null){
+    public void updateViewOfJobPost(int id, int views) {
+        Job_Post job_post = job_postRepository.findJob_PostById(id);
+        if (job_post != null) {
             job_post.setViews(views);
             job_postRepository.save(job_post);
         }
+    }
+
+    public boolean updateInforJobPost(Job_Post job_post) {
+        Job_Post job_postIsExisted = job_postRepository.findJob_PostById(job_post.getId());
+        if (job_postIsExisted != null) {
+            job_postRepository.save(job_post);
+            return true;
+        }
+        return false;
     }
 }

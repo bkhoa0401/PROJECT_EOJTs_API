@@ -59,6 +59,8 @@ public class Student implements Serializable {
     @Column(name = "resumeLink")
     private String resumeLink;
 
+    @Column(name = "transcriptLink")
+    private String transcriptLink;
 
     @OneToMany(mappedBy = "student")
     @JsonIgnore
@@ -276,5 +278,13 @@ public class Student implements Serializable {
 
     public void setInterviewed2(boolean interviewed2) {
         this.interviewed2 = interviewed2;
+    }
+
+    public String getTranscriptLink() {
+        return transcriptLink;
+    }
+
+    public void setTranscriptLink(String transcriptLink) {
+        this.transcriptLink = transcriptLink;
     }
 }

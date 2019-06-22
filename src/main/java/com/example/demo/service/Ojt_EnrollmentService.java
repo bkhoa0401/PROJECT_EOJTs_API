@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -61,5 +62,30 @@ public class Ojt_EnrollmentService {
                 ojtEnrollmentRepository.save(ojt_enrollment);
             }
         }
+    }
+
+    public Ojt_Enrollment getOjt_enrollmentOfBusiness(Business business) {
+        List<Ojt_Enrollment> ojt_enrollmentList = ojtEnrollmentRepository.getOjt_EnrollmentsByBusiness_Email(business.getEmail());
+        for (int i = 0; i < ojt_enrollmentList.size(); i++) {
+            if (ojt_enrollmentList.get(i).getStudent() == null) {
+                return ojt_enrollmentList.get(i);
+            }
+        }
+        return null;
+    }
+
+    public List<Student> getListStudentByBusiness(String email) {
+        List<Ojt_Enrollment> ojt_enrollmentList = ojtEnrollmentRepository.getOjt_EnrollmentsByBusiness_Email(email);
+
+        List<Student> studentList = new ArrayList<>();
+        for (int i = 0; i < ojt_enrollmentList.size(); i++) {
+            if (ojt_enrollmentList.get(i).getStudent() != null) {
+                studentList.add(ojt_enrollmentList.get(i).getStudent());
+            }
+        }
+        if (studentList != null) {
+            return studentList;
+        }
+        return null;
     }
 }
