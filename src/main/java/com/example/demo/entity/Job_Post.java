@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "job_post")
-public class Job_Post {
+public class Job_Post implements Comparable<Job_Post> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,7 +25,7 @@ public class Job_Post {
     private String description;
 
     @Column(name = "time_post")
-    private Date time_post;
+    private Date timePost;
 
     @Column(name = "views")
     private int views;
@@ -66,10 +66,10 @@ public class Job_Post {
     public Job_Post() {
     }
 
-    public Job_Post(int id, String description, Date time_post, int views, String contact, String interview_process, String interest, Ojt_Enrollment ojt_enrollment) {
+    public Job_Post(int id, String description, Date timePost, int views, String contact, String interview_process, String interest, Ojt_Enrollment ojt_enrollment) {
         this.id = id;
         this.description = description;
-        this.time_post = time_post;
+        this.timePost = timePost;
         this.views = views;
         this.contact = contact;
         this.interview_process = interview_process;
@@ -77,9 +77,9 @@ public class Job_Post {
         this.ojt_enrollment = ojt_enrollment;
     }
 
-    public Job_Post(String description, Date time_post, int views, String contact, String interview_process, String interest) {
+    public Job_Post(String description, Date timePost, int views, String contact, String interview_process, String interest) {
         this.description = description;
-        this.time_post = time_post;
+        this.timePost = timePost;
         this.views = views;
         this.contact = contact;
         this.interview_process = interview_process;
@@ -110,12 +110,12 @@ public class Job_Post {
         this.description = description;
     }
 
-    public Date getTime_post() {
-        return time_post;
+    public Date getTimePost() {
+        return timePost;
     }
 
-    public void setTime_post(Date time_post) {
-        this.time_post = time_post;
+    public void setTimePost(Date timePost) {
+        this.timePost = timePost;
     }
 
     public int getViews() {
@@ -164,5 +164,10 @@ public class Job_Post {
 
     public void setJob_post_skills(List<Job_Post_Skill> job_post_skills) {
         this.job_post_skills = job_post_skills;
+    }
+
+    @Override
+    public int compareTo(Job_Post job_post) {
+        return job_post.getTimePost().compareTo(getTimePost());
     }
 }

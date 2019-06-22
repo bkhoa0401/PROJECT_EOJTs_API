@@ -3,6 +3,7 @@ package com.example.demo.dto;
 import com.example.demo.entity.Business;
 import com.example.demo.entity.Job_Post;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Business_JobPostDTO {
@@ -26,6 +27,7 @@ public class Business_JobPostDTO {
     }
 
     public List<Job_Post> getJob_postList() {
+        Collections.sort(job_postList);
         return job_postList;
     }
 

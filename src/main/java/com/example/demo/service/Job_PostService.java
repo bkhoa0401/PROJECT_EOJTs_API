@@ -5,6 +5,8 @@ import com.example.demo.repository.Job_PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class Job_PostService {
     @Autowired
@@ -47,5 +49,13 @@ public class Job_PostService {
             return true;
         }
         return false;
+    }
+
+    public List<Job_Post> getAllJobPost() {
+        List<Job_Post> job_postList = job_postRepository.findJob_PostsOrderByTimePostDesc();
+        if (job_postList != null) {
+            return job_postList;
+        }
+        return null;
     }
 }
