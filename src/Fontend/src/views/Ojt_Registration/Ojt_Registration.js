@@ -45,8 +45,8 @@ class Ojt_Registration extends Component {
 
     handleIsAcceptedOption = async (email, numberOfOption, statusOfOption, btnApprove, btnReject) => {
 
-        document.getElementById(btnApprove).setAttribute("disabled", "disabled");
-        document.getElementById(btnReject).setAttribute("disabled", "disabled");
+        // document.getElementById(btnApprove).setAttribute("disabled", "disabled");
+        // document.getElementById(btnReject).setAttribute("disabled", "disabled");
 
         const result = await ApiServices.Put(`/business/updateStatusOfStudent?numberOfOption=${numberOfOption}&statusOfOption=${statusOfOption}&emailOfStudent=${email}`);
 
@@ -54,6 +54,15 @@ class Ojt_Registration extends Component {
             Toastify.actionSuccess('Thao tác thành công!');
         } else {
             Toastify.actionFail('Thao tác thất bại!');
+        }
+
+        const students = await ApiServices.Get('/student/getListStudentByOptionAndStatusOption');
+        const business = await ApiServices.Get('/business/getBusiness');
+        if (students != null) {
+            this.setState({
+                students,
+                business_name: business.business_name
+            });
         }
     }
 
@@ -94,7 +103,6 @@ class Ojt_Registration extends Component {
                                             <th style={{ textAlign: "center" }}>MSSV</th>
                                             <th style={{ textAlign: "center" }}>Họ và Tên</th>
                                             <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                            <th style={{ textAlign: "center" }}>Bảng điểm</th>
                                             <th style={{ textAlign: "center" }}>Nguyện vọng</th>
                                             <th style={{ textAlign: "center" }}>Hành động</th>
                                         </tr>
@@ -105,8 +113,6 @@ class Ojt_Registration extends Component {
 
                                                 let email = student.email;
                                                 let numberOfOption = 'N/A';
-
-                                                const linkDownload = `http://localhost:8000/api/file/downloadFile?emailStudent=${email}`;
 
                                                 if (student.option1 == business_name) {
                                                     numberOfOption = 1;
@@ -122,12 +128,11 @@ class Ojt_Registration extends Component {
                                                         <td style={{ textAlign: "center" }}>{student.code}</td>
                                                         <td style={{ textAlign: "center" }}>{student.name}</td>
                                                         <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                                                        <td style={{ textAlign: "center" }}><a href={linkDownload} download>Tải</a></td>
                                                         <td style={{ textAlign: "center" }}>
                                                             <strong>{numberOfOption}</strong>
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>
-                                                            <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect(`Student/Student/${student.email}`)}>Chi tiết</Button>
+                                                            <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect(`/student/${student.email}`)}>Chi tiết</Button>
                                                             <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleIsAcceptedOption(email, numberOfOption, true, 'a' + index, 'r' + index)}>Duyệt</Button>
                                                             <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleIsAcceptedOption(email, numberOfOption, false, 'a' + index, 'r' + index)}>Từ chối</Button>
                                                         </td>
