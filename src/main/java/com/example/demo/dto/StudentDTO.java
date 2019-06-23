@@ -160,6 +160,7 @@ public class StudentDTO {
 
     public void convertFromStudentEntity(Student student) {
         this.email = student.getEmail();
+        this.objective = student.getObjective();
         this.name = student.getName();
         this.address = student.getAddress();
         this.code = student.getCode();
