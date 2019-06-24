@@ -41,19 +41,19 @@ class Job_Post extends Component {
     }
     this.chooseNewSpecialized = this.chooseNewSpecialized.bind(this);
     this.setNewSpecialized = this.setNewSpecialized.bind(this);
-    this.addRow = this.addRow.bind(this);
+    // this.addRow = this.addRow.bind(this);
   }
 
-  addRow = (sIndex) => {
-    let tmpArraySkill = this.state.arraySkill[sIndex].push('');
-    let tmpArrayQuantity = this.state.arrayQuantity[sIndex].push('');
-    this.setState({
-      tmpArraySkill: [...this.state.tmpArraySkill,''],
-      tmpArrayQuantity: [...this.state.tmpArrayQuantity,''],
-      arraySkill: this.state.arraySkill,
-      arrayQuantity: this.state.arrayQuantity,
-    })
-  }
+  // addRow = (sIndex) => {
+  //   let tmpArraySkill = this.state.arraySkill[sIndex].push('');
+  //   let tmpArrayQuantity = this.state.arrayQuantity[sIndex].push('');
+  //   this.setState({
+  //     tmpArraySkill: [...this.state.tmpArraySkill,''],
+  //     tmpArrayQuantity: [...this.state.tmpArrayQuantity,''],
+  //     arraySkill: this.state.arraySkill,
+  //     arrayQuantity: this.state.arrayQuantity,
+  //   })
+  // }
 
   chooseNewSpecialized(event) {
     this.setState({
@@ -61,7 +61,7 @@ class Job_Post extends Component {
     })
   }
 
-  setNewSpecialized(){
+  setNewSpecialized = () => {
     this.setState({
       arrayJobPost: [...this.state.arrayJobPost, this.state.selectedSpecialized],
       arraySkill: [...this.state.arraySkill, []],
@@ -69,14 +69,26 @@ class Job_Post extends Component {
     })
   }
 
-  confirm = () => {
+  deleteSpecialized = (indexSelected) => {
+    for (let index = 0; index < this.state.arrayJobPost.length; index++) {
+      if (index === indexSelected) {
+        this.state.arrayJobPost.splice(index, 1);
+        this.setState({
+          arrayJobPost: this.state.arrayJobPost,
+        })
+        break;
+      }
+    }
+  }
+
+  confirmDelete = (indexSelected) => {
     confirmAlert({
       title: 'Xác nhận lại',
-      message: 'Bạn có chắc muốn xoá thông tin tuyển dụng ngành này?',
+      message: 'Bạn có chắc muốn xoá thông tin tuyển dụng ngành ' + this.state.arrayJobPost[indexSelected] + '?',
       buttons: [
         {
           label: 'Có',
-          onClick: () => alert('Có')
+          onClick: () => this.deleteSpecialized(indexSelected)
         },
         {
           label: 'Không',
@@ -84,6 +96,27 @@ class Job_Post extends Component {
         }
       ]
     });
+  }
+
+  confirmAdd = () => {
+    confirmAlert({
+      title: 'Xác nhận lại',
+      message: 'Bạn có chắc muốn thêm ngành '+ this.state.selectedSpecialized +' vào thông tin tuyển dụng?',
+      buttons: [
+        {
+          label: 'Có',
+          onClick: () => this.setNewSpecialized()
+        },
+        {
+          label: 'Không',
+          onClick: () => alert('Không')
+        }
+      ]
+    });
+  }
+
+  handleDirect = (uri) => {
+    this.props.history.push(uri);
   }
 
   render() {
@@ -106,7 +139,7 @@ class Job_Post extends Component {
                   </Input>
                   <Button
                     style={{ fontWeight: "bold", borderColor: '#20a8d8', color: '#20a8d8', backgroundColor: 'white' }}
-                    onClick={this.setNewSpecialized}
+                    onClick={this.confirmAdd}
                   >
                     Thêm
                   </Button>
@@ -134,15 +167,15 @@ class Job_Post extends Component {
                           }
                           <tr style={{ textAlign: "center", height: "40px" }}>
                             <Button style={{ fontWeight: "bold" }} color="danger" 
-                              onClick={this.confirm}
+                              onClick={() => this.confirmDelete(index1)}
                             >
                               Xoá
                             </Button>
                             <Button
                               style={{ fontWeight: "bold", borderColor: '#20a8d8', color: '#20a8d8', backgroundColor: 'white' }}
-                              onClick={() => this.addRow(index1)}
+                              onClick={() => this.handleDirect(`/Job_Post/Update_Job`)}
                             >
-                              Thêm
+                              Sửa
                             </Button>
                           </tr>
                           <tr></tr>
@@ -150,7 +183,6 @@ class Job_Post extends Component {
                       </table>
                     </>
                   )}
-
                 </Row>
                 <Pagination>
                   {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
@@ -166,6 +198,7 @@ class Job_Post extends Component {
             </Card>
           </Col>
         </Row>
+        <div style={{paddingLeft:"49%"}}><Button style={{ fontWeight: "bold" }} color="primary" onClick={{}}>Lưu</Button></div>
       </div>
     );
   }
