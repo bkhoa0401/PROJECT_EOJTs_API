@@ -88,4 +88,12 @@ public class Ojt_EnrollmentService {
         }
         return null;
     }
+
+    public Ojt_Enrollment getOjt_EnrollmentById(int id){
+        Ojt_Enrollment ojt_enrollment=ojtEnrollmentRepository.getOjt_EnrollmentById(id);
+        if(ojt_enrollment!=null){
+            return ojt_enrollment;
+        }
+        return null;
+    }
 }

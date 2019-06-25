@@ -377,6 +377,18 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+//  get Invitation By Business Email AndStudentEmail
+    @GetMapping("/getInvitationByBusinessEmailAndStudentEmail")
+    @ResponseBody
+    public ResponseEntity<Invitation> getInvitationByBusinessEmailAndStudentEmail(@RequestParam String businessEmail) {
+        String studentEmail = getEmailFromToken();
+        Invitation invitation = invitationService.getInvitationByBusinessEmailAndStudentEmail(businessEmail, studentEmail);
+        if (invitation != null) {
+            return new ResponseEntity<Invitation>(invitation, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
 
     //get email from token
     private String getEmailFromToken() {

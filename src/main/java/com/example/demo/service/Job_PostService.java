@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Job_Post;
+import com.example.demo.entity.Ojt_Enrollment;
 import com.example.demo.repository.Job_PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,14 @@ public class Job_PostService {
 
     public List<Job_Post> getAllJobPost() {
         List<Job_Post> job_postList = job_postRepository.findJob_PostsOrderByTimePostDesc();
+        if (job_postList != null) {
+            return job_postList;
+        }
+        return null;
+    }
+
+    public List<Job_Post> getAllJobPostOfBusiness(Ojt_Enrollment ojt_enrollment) {
+        List<Job_Post> job_postList = job_postRepository.findJob_PostByOjt_enrollment(ojt_enrollment);
         if (job_postList != null) {
             return job_postList;
         }
