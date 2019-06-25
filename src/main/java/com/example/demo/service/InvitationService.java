@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Invitation;
 import com.example.demo.repository.InvitationRepository;
+import com.example.demo.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class InvitationService {
         Invitation invitation = invitationRepository.findInvitationById(id);
         invitation.setRead(true);
 
-        // thieu chua save xuong db
+        invitationRepository.save(invitation);
         return invitation;
     }
 

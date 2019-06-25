@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import {Badge, Card, CardBody, CardHeader, Col, Pagination, Row, Table} from 'reactstrap';
-import {Button} from 'reactstrap';
+import React, { Component } from 'react';
+import { Badge, Card, CardBody, CardHeader, Col, Pagination, Row, Table } from 'reactstrap';
+import { Button } from 'reactstrap';
 import ApiServices from '../../service/api-service';
-import {ToastContainer} from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import orderBy from "lodash/orderBy";
 import Toastify from '../../views/Toastify/Toastify';
 import {
@@ -16,28 +16,59 @@ const invertDirection = {
   asc: 'desc',
   desc: 'asc'
 };
-const btnMission = {
-  color: 'white',
-  backgroundColor: '#00BFFF',
-  borderRadius: '25px',
-};
-const btnSave = {
-  color: 'white',
-  backgroundColor: '#00BFFF',
-  borderRadius: '5px',
-  marginRight: '200px',
-  width:'80px',
-  height:'40px'
-};
 
 const rowSave = {
-  paddingLeft: '50%'
+  paddingLeft: '45%'
 }
 
 class Official_List extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      students: null,
+      searchValue: '',
+      columnToSort: '',
+      sortDirection: 'desc'
+    }
+  }
+
+
+  async componentDidMount() {
+    await ApiServices.Put('/admin');
+    const students = await ApiServices.Get('/business/getStudentsByBusiness');
+    if (students != null) {
+      this.setState({
+        students
+      });
+    }
+  }
+
+  handleDirect = (uri) => {
+    this.props.history.push(uri);
+  }
+
+  handleInput = async (event) => {
+    const { name, value } = event.target;
+    await this.setState({
+      [name]: value.substr(0, 20),
+    })
+  }
 
   render() {
+    const { students, searchValue, columnToSort, sortDirection } = this.state;
+    let filteredListStudents = orderBy(students, columnToSort, sortDirection);
+
+    if (students != null) {
+      filteredListStudents = students.filter(
+        (student) => {
+          if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+            return student;
+          }
+        }
+      );
+    }
+
     return (
       <div className="animated fadeIn">
         <Row>
@@ -47,15 +78,11 @@ class Official_List extends Component {
                 <i className="fa fa-align-justify"></i> <b>Danh sách sinh viên thực tập tại doanh nghiệp</b>
               </CardHeader>
               <CardBody>
-                <br/>
-                <br/>
-                <br/>
                 <nav className="navbar navbar-light bg-light justify-content-between">
                   <form className="form-inline">
-                    <input name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search"
-                           aria-label="Search"/>
+                    <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
                   </form>
-                  <div style={{marginRight: "70px"}}>
+                  <div style={{ marginRight: "70px" }}>
                     <b>Sắp xếp theo: </b>
                     &nbsp;&nbsp;&nbsp;
                     <select>
@@ -68,64 +95,59 @@ class Official_List extends Component {
 
                 <Table responsive striped>
                   <thead>
-                  <tr>
-                    <th style={{textAlign: "center"}}>STT</th>
-                    <th style={{textAlign: "center"}}>MSSV</th>
-                    <th style={{textAlign: "center"}}>Họ và Tên</th>
-                    <th style={{textAlign: "center"}}>Chuyên ngành</th>
-                    {/* <th style={{ textAlign: "center" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
-                    <th style={{textAlign: "center"}}>GPA</th>
-                    <th style={{textAlign: "center"}}>Bảng điểm</th>
-                    <th style={{textAlign: "center"}}>Supervisor</th>
-                    <th style={{textAlign: "center"}}></th>
-                  </tr>
+                    <tr>
+                      <th style={{ textAlign: "center" }}>STT</th>
+                      <th style={{ textAlign: "center" }}>MSSV</th>
+                      <th style={{ textAlign: "center" }}>Họ và Tên</th>
+                      <th style={{ textAlign: "center" }}>Chuyên ngành</th>
+                      {/* <th style={{ textAlign: "center" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
+                      <th style={{ textAlign: "center" }}>GPA</th>
+                      <th style={{ textAlign: "center" }}>Bảng điểm</th>
+                      <th style={{ textAlign: "center" }}>Supervisor</th>
+                      <th style={{ textAlign: "center" }}>Hành động</th>
+                    </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td style={{textAlign: "center"}}>
-                      1
-                    </td>
-                    <td style={{textAlign: "center"}}>
-                      SE62519
-                    </td>
-                    <td style={{textAlign: "center"}}>
-                      Nguyễn Văn A
-                    </td>
-                    <td style={{textAlign: "center"}}>
-                      JS
-                    </td>
-                    <td style={{textAlign: "center"}}>
-                      9.8
-                    </td>
-                    <td style={{textAlign: "center"}}>
-                      <a href={"#"}>Tải</a>
-                    </td>
-                    <td style={{textAlign: "center"}}>
-                      <select>
-                        <option>
-                          supervisor 1
-                        </option>
-                        <option>
-                          supervisor 2
-                        </option>
-                        <option>
-                          supervisor 3
-                        </option>
-                      </select>
-                    </td>
-                    <td style={{textAlign: "center"}}>
-                      <input type={"button"} name={"btnMission"} style={btnMission} value={"Nhiệm vụ"}/>
-                    </td>
-                  </tr>
+                    {
+                      filteredListStudents && filteredListStudents.map((student, index) => {
+                        return (
+                          <tr key={index}>
+                            <td style={{ textAlign: "center" }}>{index + 1}</td>
+                            <td style={{ textAlign: "center" }}>{student.code}</td>
+                            <td style={{ textAlign: "center" }}>{student.name}</td>
+                            <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                            <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                            <td style={{ textAlign: "center" }}>
+                              {
+                                student.transcriptLink && student.transcriptLink ? (
+                                  <a href={student.transcriptLink} download>Tải</a>
+                                ) :
+                                  (<label>N/A</label>)
+                              }
+                            </td>
+                            <td style={{ textAlign: "center" }}>
+                              <select>
+                                <option> supervisor 1 </option>
+                                <option> supervisor 2 </option>
+                                <option> supervisor 3 </option>
+                              </select>
+                            </td>
+                            <td style={{ textAlign: "center" }}>
+                              <Button style={{ width: '100px' }} color="primary" type="submit" id="btnSave">Nhiệm vụ</Button>
+                            </td>
+                          </tr>
+                        )
+                      })
+                    }
                   </tbody>
                 </Table>
-                <ToastContainer/>
+                <ToastContainer />
 
               </CardBody>
             </Card>
           </Col>
         </Row>
-        <div style={rowSave}><input type={"button"} name={"btnSave"} style={btnSave} value={"Lưu"}/></div>
+        <div style={rowSave}><Button style={{ width: '100px' }} color="primary" type="submit" id="btnSave">Lưu</Button></div>
       </div>
     );
   }

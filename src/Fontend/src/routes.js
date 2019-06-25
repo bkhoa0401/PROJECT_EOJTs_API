@@ -108,7 +108,7 @@ const routes = [
   { path: '/invitation/detail', exact: true, name: 'Chi tiết lời mời', component: Invitation_Detail },
   { path: '/invitation/new', exact: true, name: 'Gửi lời mời cho sinh viên', component: Invitation_Create },
   { path: '/ojt_registration', exact: true, name: 'DSSV đăng kí thực tập', component: Ojt_Registration },
-  { path: '/student/student/:email', exact: true, name: 'Chi tiết', component: Profile },
+  { path: '/student/:email', exact: true, name: 'Chi tiết', component: Profile },
   { path: '/list_management/student_list', exact: true, name: 'Danh sách sinh viên', component: student_list },
   { path: '/list_management/business_list', exact: true, name: 'Danh sách doanh nghiệp', component: business_list },
   { path: '/official-list', exact: true, name: 'Danh sách sinh viên', component: Official_List },

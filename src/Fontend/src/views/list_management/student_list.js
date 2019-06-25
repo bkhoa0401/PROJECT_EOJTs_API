@@ -57,6 +57,10 @@ class student_list extends Component {
         })
     }
 
+    handleDirect = (uri) => {
+        this.props.history.push(uri);
+    }
+
     tabPane() {
         const { students, searchValue } = this.state;
         let filteredListStudents;
@@ -102,10 +106,17 @@ class student_list extends Component {
                                                 <td style={{ textAlign: "center" }}>{student.name}</td>
                                                 <td style={{ textAlign: "center" }}>{student.email}</td>
                                                 <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                                                <td style={{ textAlign: "center" }}></td>
+                                                <td style={{ textAlign: "center" }}>
+                                                    {
+                                                        student.transcriptLink && student.transcriptLink ? (
+                                                            <a href={student.transcriptLink} download>Tải</a>
+                                                        ) :
+                                                            (<label>N/A</label>)
+                                                    }
+                                                </td>
                                                 <td style={{ textAlign: "center" }}>{student.gpa}</td>
                                                 <td style={{ textAlign: "right" }}>
-                                                    <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="primary">Chi tiết</Button>
+                                                    <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}>Chi tiết</Button>
                                                     &nbsp;&nbsp;
                                                     <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="danger">Xoá</Button>
                                                 </td>
@@ -147,9 +158,9 @@ class student_list extends Component {
                                                 <td style={{ textAlign: "center" }}>{student.code}</td>
                                                 <td style={{ textAlign: "center" }}>{student.name}</td>
                                                 <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                                                <td style={{ textAlign: "center" }}>{student.option1 === null ? 'N/A':student.option1}</td>
-                                                <td style={{ textAlign: "center" }}>{student.option2 === null ? 'N/A':student.option2}</td>
-                                                <td style={{ textAlign: "center" }}>{student.option1 === null && student.option2 === null ?'N/A':'Công ty ABC'}</td>
+                                                <td style={{ textAlign: "center" }}>{student.option1 === null ? 'N/A' : student.option1}</td>
+                                                <td style={{ textAlign: "center" }}>{student.option2 === null ? 'N/A' : student.option2}</td>
+                                                <td style={{ textAlign: "center" }}>{student.option1 === null && student.option2 === null ? 'N/A' : 'Công ty ABC'}</td>
                                                 <td style={{ textAlign: "center" }}>
                                                     <Button onClick={this.openPopupRegist} style={{ fontWeight: "bold", borderWidth: 0 }} color="primary">Đăng ký</Button>
                                                 </td>

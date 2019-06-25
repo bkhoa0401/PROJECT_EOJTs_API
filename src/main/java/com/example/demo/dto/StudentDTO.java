@@ -19,6 +19,7 @@ public class StudentDTO {
     private float gpa;
     private String resumeLink;
 
+
     public StudentDTO(String email, String name, String specialized, String phone, String address, String objective, String option1, String option2, boolean isAcceptedOption1, boolean isAcceptedOption2, String code, String token, String avatarLink, float gpa, String resumeLink) {
         this.email = email;
         this.name = name;
@@ -160,6 +161,7 @@ public class StudentDTO {
 
     public void convertFromStudentEntity(Student student) {
         this.email = student.getEmail();
+        this.objective = student.getObjective();
         this.name = student.getName();
         this.address = student.getAddress();
         this.code = student.getCode();

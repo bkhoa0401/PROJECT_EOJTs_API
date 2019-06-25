@@ -117,10 +117,10 @@ public class StudentService {
         }
         return false;
     }
-    
+
 
     public List<Student> getAllStudentByStatusOption(int typeGetStatus) {
-        List<Student> studentList ;
+        List<Student> studentList;
         if (typeGetStatus == 1) {// get all sv pass  option 1
             studentList = studentRepository.findStudentsByAcceptedOption1TrueAndAcceptedOption2False();
             return studentList;
@@ -137,9 +137,9 @@ public class StudentService {
         return null;
     }
 
-    public boolean updateTokenDeviceForStudent(String emailStudent,String token){
+    public boolean updateTokenDeviceForStudent(String emailStudent, String token) {
         Student student = getStudentByEmail(emailStudent);
-        if(student!=null){
+        if (student != null) {
             student.setToken(token);
             studentRepository.save(student);
             return true;
@@ -147,14 +147,9 @@ public class StudentService {
         return false;
     }
 
-    public boolean updateLinkTranscriptForStudent(String emailStudent,String transcriptLink){
-        Student student = getStudentByEmail(emailStudent);
-        if(student!=null){
-            student.setTranscriptLink(transcriptLink);
-            studentRepository.save(student);
-            return true;
-        }
-        return false;
+    public boolean updateLinkTranscriptForStudent(Student student) {
+        studentRepository.save(student);
+        return true;
     }
 
 }
