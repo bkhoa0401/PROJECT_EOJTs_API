@@ -304,4 +304,20 @@ public class Student implements Serializable {
     public void setSupervisor(Supervisor supervisor) {
         this.supervisor = supervisor;
     }
+
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+
+    public boolean isGender() {
+        return gender;
+    }
+
+    public void setGender(boolean gender) {
+        this.gender = gender;
+    }
 }
