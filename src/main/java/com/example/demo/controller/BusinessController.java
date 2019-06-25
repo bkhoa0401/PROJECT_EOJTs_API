@@ -142,7 +142,7 @@ public class BusinessController {
         }
     }
 
-    //get all post of business
+    //get all post of all business
     @GetMapping("/getAllJobPostOfBusiness")
     @ResponseBody
     public ResponseEntity<List<Business_JobPostDTO>> getAllJobPostBusiness() {
@@ -227,6 +227,22 @@ public class BusinessController {
         List<Business> businessList = businessService.findTop5BusinessByRateAverage();
         if (businessList != null) {
             return new ResponseEntity<List<Business>>(businessList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    //get all job post of a business
+    @GetMapping("/getAllJobPostABusiness")
+    @ResponseBody
+    public ResponseEntity<List<Job_Post>> getAllJobPostOfABusiness(@RequestParam String businessEmail) {
+        int ojt_enrollment_id = ojt_enrollmentService.getOjt_EnrollmentIdByBusinessEmail(businessEmail);
+
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentById(ojt_enrollment_id);
+
+        List<Job_Post> job_postList = job_postService.getAllJobPostOfBusiness(ojt_enrollment);
+
+        if (job_postList != null) {
+            return new ResponseEntity<List<Job_Post>>(job_postList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

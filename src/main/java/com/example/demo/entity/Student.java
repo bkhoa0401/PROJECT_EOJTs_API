@@ -7,6 +7,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.List;
 
 @Entity
@@ -104,8 +105,16 @@ public class Student implements Serializable {
     @Column(name = "token")
     private String token;
 
+    @ManyToOne
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "supervisor_email")
+    private Supervisor supervisor;
 
+    @Column(name="dob")
+    private Date dob;
 
+    @Column(name="gender")
+    private boolean gender;
 
     public Student() {
     }
@@ -286,5 +295,29 @@ public class Student implements Serializable {
 
     public void setTranscriptLink(String transcriptLink) {
         this.transcriptLink = transcriptLink;
+    }
+
+    public Supervisor getSupervisor() {
+        return supervisor;
+    }
+
+    public void setSupervisor(Supervisor supervisor) {
+        this.supervisor = supervisor;
+    }
+
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+
+    public boolean isGender() {
+        return gender;
+    }
+
+    public void setGender(boolean gender) {
+        this.gender = gender;
     }
 }

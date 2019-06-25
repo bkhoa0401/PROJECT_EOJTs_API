@@ -18,4 +18,5 @@ public interface Ojt_EnrollmentRepository extends JpaRepository<Ojt_Enrollment, 
 
     List<Ojt_Enrollment> getOjt_EnrollmentsByBusiness_Email(String email);
 
+    Ojt_Enrollment getOjt_EnrollmentById(int id);
 }

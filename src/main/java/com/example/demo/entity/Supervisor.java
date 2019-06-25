@@ -32,6 +32,15 @@ public class Supervisor {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Evaluation> evaluations;
 
+    @OneToMany(mappedBy = "supervisor")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Student> students;
+
+    @ManyToOne
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "ojt_enrollment_id")
+    private Ojt_Enrollment ojt_enrollment;
+
     public String getEmail() {
         return email;
     }
@@ -70,5 +79,29 @@ public class Supervisor {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    public List<Evaluation> getEvaluations() {
+        return evaluations;
+    }
+
+    public void setEvaluations(List<Evaluation> evaluations) {
+        this.evaluations = evaluations;
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
+    public Ojt_Enrollment getOjt_enrollment() {
+        return ojt_enrollment;
+    }
+
+    public void setOjt_enrollment(Ojt_Enrollment ojt_enrollment) {
+        this.ojt_enrollment = ojt_enrollment;
     }
 }

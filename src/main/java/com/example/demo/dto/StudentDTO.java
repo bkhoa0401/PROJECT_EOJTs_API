@@ -2,6 +2,8 @@ package com.example.demo.dto;
 
 import com.example.demo.entity.Student;
 
+import java.sql.Date;
+
 public class StudentDTO {
     private String email;
     private String name;
@@ -13,11 +15,16 @@ public class StudentDTO {
     private String option2;
     private boolean isAcceptedOption1;
     private boolean isAcceptedOption2;
+    private boolean isInterviewed1;
+    private boolean isInterviewed2;
     private String code;
     private String token;
     private String avatarLink;
     private float gpa;
     private String resumeLink;
+    private boolean gender;
+    private Date dob;
+
 
     public StudentDTO(String email, String name, String specialized, String phone, String address, String objective, String option1, String option2, boolean isAcceptedOption1, boolean isAcceptedOption2, String code, String token, String avatarLink, float gpa, String resumeLink) {
         this.email = email;
@@ -33,6 +40,28 @@ public class StudentDTO {
         this.code = code;
         this.avatarLink = avatarLink;
         this.gpa = gpa;
+    }
+
+    public StudentDTO(String email, String name, String specialized, String phone, String address, String objective, String option1, String option2, boolean isAcceptedOption1, boolean isAcceptedOption2, boolean isInterviewed1, boolean isInterviewed2, String code, String token, String avatarLink, float gpa, String resumeLink, boolean gender, Date dob) {
+        this.email = email;
+        this.name = name;
+        this.specialized = specialized;
+        this.phone = phone;
+        this.address = address;
+        this.objective = objective;
+        this.option1 = option1;
+        this.option2 = option2;
+        this.isAcceptedOption1 = isAcceptedOption1;
+        this.isAcceptedOption2 = isAcceptedOption2;
+        this.isInterviewed1 = isInterviewed1;
+        this.isInterviewed2 = isInterviewed2;
+        this.code = code;
+        this.token = token;
+        this.avatarLink = avatarLink;
+        this.gpa = gpa;
+        this.resumeLink = resumeLink;
+        this.gender = gender;
+        this.dob = dob;
     }
 
     public StudentDTO() {
@@ -173,5 +202,41 @@ public class StudentDTO {
         this.phone = student.getPhone();
         this.avatarLink = student.getAvatarLink();
         this.resumeLink = student.getResumeLink();
+        this.isInterviewed1=student.isInterviewed1();
+        this.isInterviewed2=student.isInterviewed2();
+        this.dob=student.getDob();
+        this.gender=student.isGender();
+    }
+
+    public boolean isInterviewed1() {
+        return isInterviewed1;
+    }
+
+    public void setInterviewed1(boolean interviewed1) {
+        isInterviewed1 = interviewed1;
+    }
+
+    public boolean isInterviewed2() {
+        return isInterviewed2;
+    }
+
+    public void setInterviewed2(boolean interviewed2) {
+        isInterviewed2 = interviewed2;
+    }
+
+    public boolean isGender() {
+        return gender;
+    }
+
+    public void setGender(boolean gender) {
+        this.gender = gender;
+    }
+
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
     }
 }

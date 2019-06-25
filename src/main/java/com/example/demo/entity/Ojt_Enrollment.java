@@ -47,6 +47,12 @@ public class Ojt_Enrollment implements Serializable{
     @JoinColumn(name = "semester_id")
     private Semester semester;
 
+
+    @OneToMany(mappedBy = "ojt_enrollment", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Supervisor> supervisors;
+
+
     public Ojt_Enrollment() {
     }
 
@@ -106,5 +112,11 @@ public class Ojt_Enrollment implements Serializable{
         this.semester = semester;
     }
 
+    public List<Supervisor> getSupervisors() {
+        return supervisors;
+    }
 
+    public void setSupervisors(List<Supervisor> supervisors) {
+        this.supervisors = supervisors;
+    }
 }
