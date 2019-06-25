@@ -109,28 +109,37 @@ class Excels extends Component {
             if (buttonName === 'Students') {
 
                 rows_Students && rows_Students.map((student, index) => {
+                    var tmp = student[4];
+                    let gender;
+                    if (tmp.toLowerCase() === 'nam') {
+                        gender = 1
+                    } else if (tmp.toLowerCase() === 'nữ') {
+                        gender = 0
+                    }
                     var student = {
                         code: student[1],
                         name: student[2],
-                        phone: student[3],
-                        email: student[4],
-                        address: student[5],
+                        dob: student[3],
+                        gender: gender,
+                        phone: student[5],
+                        email: student[6],
+                        address: student[7],
                         specialized: {
-                            name: student[6]
+                            name: student[8]
                         },
-                        semester: student[7],
+                        semester: student[9],
                     };
                     listStudents.push(student);
                 })
 
                 console.log("LIST STUDENTS", listStudents);
 
-                const resultStudents = await ApiServices.Post('/student', listStudents);
-                if (resultStudents.status == 201) {
-                    Toastify.actionSuccess("Thêm tệp thành công!");
-                } else {
-                    Toastify.actionFail("Thêm tệp thất bại!");
-                }
+                // const resultStudents = await ApiServices.Post('/student', listStudents);
+                // if (resultStudents.status == 201) {
+                //     Toastify.actionSuccess("Thêm tệp thành công!");
+                // } else {
+                //     Toastify.actionFail("Thêm tệp thất bại!");
+                // }
             }
         } else if (buttonName === 'Students') {
             Toastify.actionFail("Không tệp nào được chọn!");
@@ -230,7 +239,7 @@ class Excels extends Component {
         }
 
         let flag = true;
-        var titles = ["STT", "MSSV", "Họ Tên", "SĐT", "Email", "Địa chỉ", "Ngành học", "Kì"];
+        var titles = ["STT", "MSSV", "Họ Tên", "Ngày sinh", "Giới tính", "SĐT", "Email", "Địa chỉ", "Ngành học", "Kì"];
 
         if (fileType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 
@@ -241,7 +250,7 @@ class Excels extends Component {
                 else {
                     let titlesExcel = resp.rows[0];
 
-                    if (titlesExcel.length != 8) {
+                    if (titlesExcel.length != 10) {
                         flag = false;
                     } else {
                         for (let i = 0; i < titles.length; i++) {
@@ -395,6 +404,8 @@ class Excels extends Component {
                                                     <th>STT</th>
                                                     <th>MSSV</th>
                                                     <th>Họ Tên</th>
+                                                    <th>Ngày sinh</th>
+                                                    <th>Giới tính</th>
                                                     <th>SĐT</th>
                                                     <th>Email</th>
                                                     <th>Địa chỉ</th>
@@ -414,6 +425,8 @@ class Excels extends Component {
                                                                     <td id={"s-" + index + "-5"} onKeyUp={this.rowStudentEdited}>{student[5]}</td>
                                                                     <td id={"s-" + index + "-6"} onKeyUp={this.rowStudentEdited}>{student[6]}</td>
                                                                     <td id={"s-" + index + "-7"} onKeyUp={this.rowStudentEdited}>{student[7]}</td>
+                                                                    <td id={"s-" + index + "-8"} onKeyUp={this.rowStudentEdited}>{student[8]}</td>
+                                                                    <td id={"s-" + index + "-9"} onKeyUp={this.rowStudentEdited}>{student[9]}</td>
                                                                 </tr>
                                                             )
                                                         })
