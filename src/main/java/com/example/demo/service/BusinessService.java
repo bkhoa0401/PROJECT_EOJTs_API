@@ -46,7 +46,7 @@ public class BusinessService {
     }
 
     public Business findBusinessByName(String name) {
-        Business business = businessRepository.findBusinessByBusiness_name(name);
+        Business business = businessRepository.findBusinessByBusiness_eng_name(name);
         if (business != null) {
             return business;
         }

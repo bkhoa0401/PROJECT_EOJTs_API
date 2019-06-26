@@ -134,12 +134,12 @@ class Excels extends Component {
 
                 console.log("LIST STUDENTS", listStudents);
 
-                // const resultStudents = await ApiServices.Post('/student', listStudents);
-                // if (resultStudents.status == 201) {
-                //     Toastify.actionSuccess("Thêm tệp thành công!");
-                // } else {
-                //     Toastify.actionFail("Thêm tệp thất bại!");
-                // }
+                const resultStudents = await ApiServices.Post('/student', listStudents);
+                if (resultStudents.status == 201) {
+                    Toastify.actionSuccess("Thêm tệp thành công!");
+                } else {
+                    Toastify.actionFail("Thêm tệp thất bại!");
+                }
             }
         } else if (buttonName === 'Students') {
             Toastify.actionFail("Không tệp nào được chọn!");

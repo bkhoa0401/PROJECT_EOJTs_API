@@ -83,11 +83,11 @@ public class StudentController {
             usersService.saveListUser(usersList);
             ojt_enrollmentService.saveListOjtEnrollment(ojtEnrollmentList);
 
-//            if (usersService.saveListUser(usersList)) {
-//                for (int i = 0; i < usersList.size(); i++) {
-//                    usersService.sendEmail(nameList.get(i), usersList.get(i).getEmail(), usersList.get(i).getPassword());
-//                }
-//            }
+            if (usersService.saveListUser(usersList)) {
+                for (int i = 0; i < usersList.size(); i++) {
+                    usersService.sendEmail(nameList.get(i), usersList.get(i).getEmail(), usersList.get(i).getPassword());
+                }
+            }
 
         } catch (PersistenceException ex) {
             ex.printStackTrace();
@@ -286,11 +286,11 @@ public class StudentController {
         Business business = businessService.getBusinessByEmail(email);
 
         //list student set cty vao nguyen vong
-        List<Student> studentList = studentService.findStudentByBusinessNameOption(business.getBusiness_name(), business.getBusiness_name());
+        List<Student> studentList = studentService.findStudentByBusinessNameOption(business.getBusiness_eng_name(), business.getBusiness_eng_name());
 
         List<Student> listResult = new ArrayList<>();
 
-        String businessName = business.getBusiness_name();
+        String businessName = business.getBusiness_eng_name();
 
         if (studentList != null) {
             for (int i = 0; i < studentList.size(); i++) {
@@ -377,7 +377,7 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-//  get Invitation By Business Email AndStudentEmail
+    //  get Invitation By Business Email AndStudentEmail
     @GetMapping("/getInvitationByBusinessEmailAndStudentEmail")
     @ResponseBody
     public ResponseEntity<Invitation> getInvitationByBusinessEmailAndStudentEmail(@RequestParam String businessEmail) {

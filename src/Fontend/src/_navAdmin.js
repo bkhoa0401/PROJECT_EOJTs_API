@@ -33,5 +33,10 @@ export default {
         },
       ]
     },
+    {
+      name: 'Chuyên ngành',
+      url: '/specialized',
+      icon: 'icon-star',
+    },
   ]
 };

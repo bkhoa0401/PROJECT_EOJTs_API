@@ -27,7 +27,7 @@ class Ojt_Registration extends Component {
         if (students != null) {
             this.setState({
                 students,
-                business_name: business.business_name
+                business_name: business.business_eng_name
             });
         }
     }
@@ -61,7 +61,7 @@ class Ojt_Registration extends Component {
         if (students != null) {
             this.setState({
                 students,
-                business_name: business.business_name
+                business_name: business.business_eng_name
             });
         }
     }

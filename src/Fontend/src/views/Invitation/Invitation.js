@@ -32,7 +32,7 @@ class Invitation extends Component {
         if (students != null) {
             this.setState({
                 students,
-                business_name: business.business_name
+                business_name: business.business_eng_name
             });
         }
     }
@@ -113,7 +113,7 @@ class Invitation extends Component {
                                                 var invitationDetail = null;
 
                                                 invitations && invitations.map((invitation, index) => {
-                                                    const business_name_invitation = student.invitations[index].business.business_name;
+                                                    const business_name_invitation = student.invitations[index].business.business_eng_name;
                                                     if (business_name === business_name_invitation) {
                                                         invitationDetail = student.invitations[index];
                                                     }

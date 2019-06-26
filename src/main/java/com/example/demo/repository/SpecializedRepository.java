@@ -12,4 +12,7 @@ public interface SpecializedRepository extends JpaRepository<Specialized, Intege
             + "       FROM Specialized s\n"
             + "       WHERE s.name =?1")
     int findSpecializedIdByName(String name);
+
+    Specialized findSpecializedById(int id);
+
 }
