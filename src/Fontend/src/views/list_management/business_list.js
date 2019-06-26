@@ -9,6 +9,23 @@ import PaginationComponent from '../Paginations/pagination';
 
 class business_list extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            businesses: null,
+            searchValue: '',
+        };
+    }
+    
+    async componentDidMount() {
+        const businesses = await ApiServices.Get('/business/getAllStudent');
+        if (students != null) {
+            this.setState({
+                students,
+            });
+        }
+    }
+
     handleInput = async (event) => {
         const { name, value } = event.target;
         await this.setState({
@@ -17,7 +34,17 @@ class business_list extends Component {
     }
 
     render() {
-
+        const { businesses, searchValue } = this.state;
+        let filteredListBusinesses;
+        if (businesses != null) {
+            filteredListBusinesses = businesses.filter(
+                (business) => {
+                    if (business.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+                        return business;
+                    }
+                }
+            );
+        }
         return (
             <div className="animated fadeIn">
                 <Row>
