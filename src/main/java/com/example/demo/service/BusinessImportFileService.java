@@ -50,11 +50,11 @@ public class BusinessImportFileService {
             job_post_skill = new Job_Post_Skill();
         }
 
-        //insert account to table user
-       // String name = businessDTO.getBusiness_name();
+//        insert account to table user
+        String name = businessDTO.getBusiness_name();
         String email = businessDTO.getEmail();
         String password = usersService.getAlphaNumericString();
-      //  usersService.sendEmail(name, email, password);
+        usersService.sendEmail(name, email, password);
         Users users = new Users(email, password);
 
         List<Role> roleList = new ArrayList<>();

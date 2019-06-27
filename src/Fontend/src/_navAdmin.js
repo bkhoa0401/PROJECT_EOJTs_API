@@ -33,5 +33,15 @@ export default {
         },
       ]
     },
+    {
+      name: 'Chuyên ngành',
+      url: '/specialized',
+      icon: 'icon-star',
+    },
+    {
+      name: 'Kỹ năng',
+      url: '/skill',
+      icon: 'icon-star',
+    },
   ]
 };

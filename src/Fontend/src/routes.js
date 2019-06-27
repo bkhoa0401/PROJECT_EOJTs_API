@@ -48,12 +48,17 @@ const Ojt_Registration = React.lazy(() => import('./views/Ojt_Registration/Ojt_R
 const Profile = React.lazy(() => import('./views/Student/Student.js'));
 const student_list = React.lazy(() => import('./views/list_management/student_list.js'));
 const business_list = React.lazy(() => import('./views/list_management/business_list.js'));
-
 const Official_List = React.lazy(() => import('./views/Official_List/Official_List.js'));
 const Details_Task = React.lazy(() => import('./views/Details_Task/Details_Task.js'));
 const Job_Post = React.lazy(() => import('./views/Job_Post/Job_Post.js'));
 const Update_Job = React.lazy(() => import('./views/Job_Post/Update_Job.js'));
 const Add_Job = React.lazy(() => import('./views/Job_Post/Add_Job.js'));
+const Specialized = React.lazy(() => import('./views/Specialized/Specialized.js'));
+const Specialized_Create = React.lazy(() => import('./views/Specialized/Specialized_Create.js'));
+const Specialized_Update = React.lazy(() => import('./views/Specialized/Specialized_Update.js'));
+const Skill = React.lazy(() => import('./views/Skill/Skill.js'));
+const Skill_Create = React.lazy(() => import('./views/Skill/Skill_Create.js'));
+const Skill_Update = React.lazy(() => import('./views/Skill/Skill_Update.js'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -114,11 +119,17 @@ const routes = [
   { path: '/official-list', exact: true, name: 'Danh sách sinh viên', component: Official_List },
   { path: '/details-task', exact: true, name: 'Nhiệm vụ', component: Details_Task },
   { path: '/job-post', exact: true, name: 'Thông tin tuyển dụng', component: Job_Post },
-  { path: '/job_post/update_job', exact:true, name: 'Chi tiết công việc', component: Update_Job },
-  { path: '/job_post/add_job', exact:true, name: 'Thêm công việc', component: Add_Job },
-  { path: '/admin', name: 'Admin', component: Dashboard },
-  { path: '/hr', name: 'Hr', component: Dashboard },
-  { path: '/supervisor', name: 'Supervisor', component: Dashboard },
+  { path: '/job_post/update_job', exact: true, name: 'Chi tiết công việc', component: Update_Job },
+  { path: '/job_post/add_job', exact: true, name: 'Thêm công việc', component: Add_Job },
+  { path: '/admin', exact: true, name: 'Admin', component: Dashboard },
+  { path: '/hr', exact: true, name: 'Hr', component: Dashboard },
+  { path: '/supervisor', exact: true, name: 'Supervisor', component: Dashboard },
+  { path: '/specialized', exact: true, name: 'Danh sách ngành', component: Specialized },
+  { path: '/specialized/create', exact: true, name: 'Tạo chuyên ngành mới', component: Specialized_Create },
+  { path: '/specialized/update/:id', exact: true, name: 'Cập nhật chuyên ngành', component: Specialized_Update },
+  { path: '/skill', exact: true, name: 'Danh sách kỹ năng', component: Skill },
+  { path: '/skill/create', exact: true, name: 'Tạo kỹ năng mới', component: Skill_Create },
+  { path: '/skill/update/:id', exact: true, name: 'Cập nhật kỹ năng mới', component: Skill_Update },
 ];
 
 export default routes;

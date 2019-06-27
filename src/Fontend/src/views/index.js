@@ -28,6 +28,12 @@ import {
   CV,
   student_list,
   business_list,
+  Specialized,
+  Specialized_Create,
+  Specialized_Update,
+  Skill,
+  Skill_Create,
+  Skill_Update
 } from './Base';
 
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
@@ -95,5 +101,11 @@ export {
   Official_List,
   Details_Task,
   Job_Post,
+  Specialized,
+  Specialized_Create,
+  Specialized_Update,
+  Skill,
+  Skill_Create,
+  Skill_Update
 };
 

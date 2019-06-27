@@ -3,6 +3,9 @@ package com.example.demo.entity;
 import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.TermVector;
 
 import javax.persistence.*;
 import javax.xml.crypto.Data;
@@ -13,6 +16,7 @@ import java.util.List;
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property  = "id")
 
 @Entity
+@Indexed
 @Table(name = "specialized")
 public class Specialized {
 
@@ -21,11 +25,13 @@ public class Specialized {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @Column(name = "name")
+    @Column(name = "name", columnDefinition = "NVARCHAR(100)")
+    @Field(termVector = TermVector.YES)
     private String name;
 
     @OneToMany(mappedBy = "specialized")
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
     private List<Skill> skills;
 
     @OneToMany(mappedBy = "specialized")
@@ -33,6 +39,9 @@ public class Specialized {
     @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Student> students;
+
+    @Column(name = "isActive")
+    private Boolean status;
 
     public int getId() {
         return id;
@@ -66,4 +75,11 @@ public class Specialized {
         this.students = students;
     }
 
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
 }
