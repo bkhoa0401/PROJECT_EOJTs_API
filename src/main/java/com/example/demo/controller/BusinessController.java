@@ -42,6 +42,9 @@ public class BusinessController {
     @Autowired
     StudentService studentService;
 
+    @Autowired
+    SupervisorService supervisorService;
+
     @PostMapping("")
     public ResponseEntity<Void> saveBusiness(@RequestBody List<BusinessDTO> listBusinessDTO) throws Exception {
         for (int i = 0; i < listBusinessDTO.size(); i++) {
@@ -247,6 +250,45 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/getAllSupervisorABusiness")
+    @ResponseBody
+    public ResponseEntity<List<Supervisor>> getSupervisorOfABusiness(){
+        String email=getEmailFromToken();
+
+        List<Supervisor> supervisors=supervisorService.getAllSupervisorOfABusiness(email);
+        if(supervisors!=null){
+            return new ResponseEntity<List<Supervisor>>(supervisors,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+// create a supervisor
+    @PostMapping("/createSupervisor")
+    public ResponseEntity<Void> createSupervisor(@RequestBody Supervisor supervisor){
+        String email=getEmailFromToken();
+        supervisorService.createSupervisor(supervisor,email);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    //update state isActive supervisor
+    @PutMapping("/updateStatus")
+    public ResponseEntity<Void> updateStatusSupervisor(@RequestParam String email,@RequestParam boolean isActive){
+        boolean updateStatus=supervisorService.updateStateSupervisor(email,isActive);
+        if(updateStatus==true){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    //assign supervisor for student
+    @PutMapping("/assignSupervisor")
+    public ResponseEntity<Void> assignSupervisorForStudent(@RequestParam String emailStudent,@RequestParam String emailSupervisor){
+        boolean assign=studentService.assignSupervisorForStudent(emailStudent,emailSupervisor);
+        if(assign==true){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
     //get email from token
     private String getEmailFromToken() {
         String email = "";

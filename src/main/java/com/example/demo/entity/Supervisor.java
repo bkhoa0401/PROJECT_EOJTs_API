@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -37,9 +38,13 @@ public class Supervisor {
     private List<Student> students;
 
     @ManyToOne
+    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "ojt_enrollment_id")
     private Ojt_Enrollment ojt_enrollment;
+
+    @Column(name = "isActive")
+    private boolean isActive;
 
     public String getEmail() {
         return email;
@@ -103,5 +108,13 @@ public class Supervisor {
 
     public void setOjt_enrollment(Ojt_Enrollment ojt_enrollment) {
         this.ojt_enrollment = ojt_enrollment;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

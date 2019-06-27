@@ -2,7 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Skill;
 import com.example.demo.entity.Student;
+import com.example.demo.entity.Supervisor;
 import com.example.demo.repository.StudentRepository;
+import com.example.demo.repository.SupervisorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,9 @@ import java.util.List;
 public class StudentService {
     @Autowired
     StudentRepository studentRepository;
+
+    @Autowired
+    SupervisorRepository supervisorRepository;
 
     public Student getStudentByEmail(String email) {
         Student student = studentRepository.findByEmail(email);
@@ -152,4 +157,16 @@ public class StudentService {
         return true;
     }
 
+    public boolean assignSupervisorForStudent(String emailStudent, String emailSupervisor) {
+        Student student = studentRepository.findByEmail(emailStudent);
+        Supervisor supervisor=supervisorRepository.findByEmail(emailSupervisor);
+        if(student!=null){
+            if(supervisor!=null){
+                student.setSupervisor(supervisor);
+                studentRepository.save(student);
+                return true;
+            }
+        }
+        return false;
+    }
 }
