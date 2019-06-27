@@ -38,5 +38,10 @@ export default {
       url: '/specialized',
       icon: 'icon-star',
     },
+    {
+      name: 'Kỹ năng',
+      url: '/skill',
+      icon: 'icon-star',
+    },
   ]
 };

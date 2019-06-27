@@ -56,7 +56,9 @@ const Add_Job = React.lazy(() => import('./views/Job_Post/Add_Job.js'));
 const Specialized = React.lazy(() => import('./views/Specialized/Specialized.js'));
 const Specialized_Create = React.lazy(() => import('./views/Specialized/Specialized_Create.js'));
 const Specialized_Update = React.lazy(() => import('./views/Specialized/Specialized_Update.js'));
-
+const Skill = React.lazy(() => import('./views/Skill/Skill.js'));
+const Skill_Create = React.lazy(() => import('./views/Skill/Skill_Create.js'));
+const Skill_Update = React.lazy(() => import('./views/Skill/Skill_Update.js'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -125,6 +127,9 @@ const routes = [
   { path: '/specialized', exact: true, name: 'Danh sách ngành', component: Specialized },
   { path: '/specialized/create', exact: true, name: 'Tạo chuyên ngành mới', component: Specialized_Create },
   { path: '/specialized/update/:id', exact: true, name: 'Cập nhật chuyên ngành', component: Specialized_Update },
+  { path: '/skill', exact: true, name: 'Danh sách kỹ năng', component: Skill },
+  { path: '/skill/create', exact: true, name: 'Tạo kỹ năng mới', component: Skill_Create },
+  { path: '/skill/update/:id', exact: true, name: 'Cập nhật kỹ năng mới', component: Skill_Update },
 ];
 
 export default routes;
