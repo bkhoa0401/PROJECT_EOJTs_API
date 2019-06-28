@@ -32,7 +32,8 @@ public class SupervisorService {
     }
 
     public boolean createSupervisor(Supervisor supervisor, String emailBusiness) {
-        if (supervisor != null) {
+        Supervisor supervisorFound = supervisorRepository.findByEmail(supervisor.getEmail());
+        if (supervisorFound == null) {
             Business business = businessService.getBusinessByEmail(emailBusiness);
             Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(business);
             supervisor.setOjt_enrollment(ojt_enrollment);

@@ -267,8 +267,13 @@ public class BusinessController {
     @PostMapping("/createSupervisor")
     public ResponseEntity<Void> createSupervisor(@RequestBody Supervisor supervisor) {
         String email = getEmailFromToken();
-        supervisorService.createSupervisor(supervisor, email);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        boolean result = false;
+
+        result = supervisorService.createSupervisor(supervisor, email);
+        if (result) {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     //update state isActive supervisor
@@ -301,8 +306,6 @@ public class BusinessController {
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
-
-
 
 
     //get email from token
