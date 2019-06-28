@@ -16,12 +16,12 @@ class business_list extends Component {
             searchValue: '',
         };
     }
-    
+
     async componentDidMount() {
-        const businesses = await ApiServices.Get('/business/getAllStudent');
-        if (students != null) {
+        const businesses = await ApiServices.Get('/business/getAllBusiness');
+        if (businesses != null) {
             this.setState({
-                students,
+                businesses,
             });
         }
     }
@@ -39,7 +39,7 @@ class business_list extends Component {
         if (businesses != null) {
             filteredListBusinesses = businesses.filter(
                 (business) => {
-                    if (business.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+                    if (business.business_name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
                         return business;
                     }
                 }
@@ -68,25 +68,31 @@ class business_list extends Component {
                                                 <th style={{ textAlign: "center" }}>Tên Tiếng Anh</th>
                                                 <th style={{ textAlign: "center" }}>Địa chỉ</th>
                                                 <th style={{ textAlign: "center" }}>Website</th>
-                                                <th style={{ textAlign: "center" }}>Địa chỉ thực tập</th>
                                                 <th style={{ textAlign: "center" }}>Liên hệ</th>
                                                 <th style={{ textAlign: "center" }}></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td style={{ textAlign: "center" }}>1</td>
-                                                <td style={{ textAlign: "center" }}>1</td>
-                                                <td style={{ textAlign: "center" }}>1</td>
-                                                <td style={{ textAlign: "center" }}>1</td>
-                                                <td style={{ textAlign: "center" }}>1</td>
-                                                <td style={{ textAlign: "center" }}>1</td>
-                                                <td style={{ textAlign: "center" }}>1</td>
-                                                <td style={{ textAlign: "center" }}>
-                                                    <a href="">Xem</a> &nbsp;&nbsp;
-                                                    <a href="">Xoá</a>
-                                                </td>
-                                            </tr>
+                                            {filteredListBusinesses && filteredListBusinesses.map((business, index) => {
+                                                return(
+                                                <tr>
+                                                    <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                    <td style={{ textAlign: "center" }}>{business.business_name}</td>
+                                                    <td style={{ textAlign: "center" }}>{business.business_eng_name}</td>
+                                                    <td style={{ textAlign: "center" }}>{business.business_address}</td>
+                                                    <td style={{ textAlign: "center" }}>{business.business_website}</td>
+                                                    <td style={{ textAlign: "center" }}>
+                                                        Email: {business.email}<br/>
+                                                        SĐT: {business.business_phone}
+                                                    </td>
+                                                    <td style={{ textAlign: "center" }}>
+                                                        <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="primary">Xem</Button>
+                                                        &nbsp;&nbsp;
+                                                        <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="danger">Xoá</Button>
+                                                    </td>
+                                                </tr>
+                                                )
+                                            })}
                                         </tbody>
                                     </Table>
                                 </div>

@@ -42,6 +42,12 @@ class ChangePassword extends Component {
         })
     }
 
+    handleKeyDown = (event) => {
+        if(event.key === 'Enter') {
+          this.handleSubmit();
+        }
+      }
+
     handleSubmit = async () => {
         const { newPassword } = this.state;
 
@@ -104,7 +110,7 @@ class ChangePassword extends Component {
                                                     <i className="icon-lock"></i>
                                                 </InputGroupText>
                                             </InputGroupAddon>
-                                            <Input type="password" name="confirmPassword" id="confirmPassword" placeholder="Nhập lại mật khẩu mới" autoComplete="confirm-password" onChange={this.handleInput} />
+                                            <Input type="password" name="confirmPassword" id="confirmPassword" placeholder="Nhập lại mật khẩu mới" autoComplete="confirm-password" onChange={this.handleInput} onKeyDown={this.handleKeyDown}/>
                                         </InputGroup>
                                         <InputGroup className="mb-3">
                                             <span className="form-error is-visible text-danger">

@@ -187,7 +187,7 @@ class Company extends Component {
                                             <h6>Logo</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <img src={logo} style={{ width: "750px", height: "400px" }} onChange={this.handleInput} type="file" id="img_logo" name="logo" />
+                                            <img src={logo} style={{ width: "160px", height: "160px" }} onChange={this.handleInput} type="file" id="img_logo" name="logo" />
                                             <br /><br />
                                             <input onChange={this.handleChange} type="file" />
                                             <br /><br />

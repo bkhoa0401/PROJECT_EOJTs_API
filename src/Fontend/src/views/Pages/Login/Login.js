@@ -24,6 +24,12 @@ class Login extends Component {
     });
   }
 
+  handleKeyDown = (event) => {
+    if(event.key === 'Enter') {
+      this.handleSubmit();
+    }
+  }
+
   handleSubmit = async () => {
     const { email, password } = this.state;
     const result = await AuthService.login(email, password);
@@ -82,7 +88,7 @@ class Login extends Component {
                             <i className="icon-lock"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input onChange={this.handleInput} value={password} type="password" placeholder="Mật khẩu" autoComplete="current-password" name='password' />
+                        <Input onChange={this.handleInput} onKeyDown={this.handleKeyDown} value={password} type="password" placeholder="Mật khẩu" autoComplete="current-password" name='password' />
                       </InputGroup>
                       <Row>
                         <Col xs="6">
