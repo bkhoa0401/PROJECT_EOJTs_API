@@ -57,6 +57,28 @@ public class UserController {
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
+
+    @PutMapping("/updateStatus")
+    public ResponseEntity<Void> updateActive(@RequestParam String email,@RequestParam boolean isActive){
+        boolean update = userService.updateStatus(email,isActive);
+        if(update==true){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    //get all users by type
+    @GetMapping("/getUsersByType")
+    @ResponseBody
+    public ResponseEntity<List<Users>> getUsersByType(@RequestParam int type){
+        List<Users> usersList=userService.getAllUsersByType(type);
+        if(usersList!=null){
+            return new ResponseEntity<List<Users>>(usersList,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+
     //get email from token
     private String getEmailFromToken() {
         String email = "";

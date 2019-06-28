@@ -116,6 +116,9 @@ public class Student implements Serializable {
     @Column(name="gender")
     private boolean gender;
 
+    @Column(name="status")
+    private String status;
+
     public Student() {
     }
 
@@ -319,5 +322,13 @@ public class Student implements Serializable {
 
     public void setGender(boolean gender) {
         this.gender = gender;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

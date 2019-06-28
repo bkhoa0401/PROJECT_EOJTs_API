@@ -192,6 +192,7 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //update infor job post
     @PutMapping("/updateJobPost")
     public ResponseEntity<Void> updateJobPostOfBusiness(@RequestBody Job_Post job_post) {
         boolean updateJobPost = job_postService.updateInforJobPost(job_post);
@@ -252,29 +253,29 @@ public class BusinessController {
 
     @GetMapping("/getAllSupervisorABusiness")
     @ResponseBody
-    public ResponseEntity<List<Supervisor>> getSupervisorOfABusiness(){
-        String email=getEmailFromToken();
+    public ResponseEntity<List<Supervisor>> getSupervisorOfABusiness() {
+        String email = getEmailFromToken();
 
-        List<Supervisor> supervisors=supervisorService.getAllSupervisorOfABusiness(email);
-        if(supervisors!=null){
-            return new ResponseEntity<List<Supervisor>>(supervisors,HttpStatus.OK);
+        List<Supervisor> supervisors = supervisorService.getAllSupervisorOfABusiness(email);
+        if (supervisors != null) {
+            return new ResponseEntity<List<Supervisor>>(supervisors, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-// create a supervisor
+    // create a supervisor
     @PostMapping("/createSupervisor")
-    public ResponseEntity<Void> createSupervisor(@RequestBody Supervisor supervisor){
-        String email=getEmailFromToken();
-        supervisorService.createSupervisor(supervisor,email);
+    public ResponseEntity<Void> createSupervisor(@RequestBody Supervisor supervisor) {
+        String email = getEmailFromToken();
+        supervisorService.createSupervisor(supervisor, email);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     //update state isActive supervisor
     @PutMapping("/updateStatus")
-    public ResponseEntity<Void> updateStatusSupervisor(@RequestParam String email,@RequestParam boolean isActive){
-        boolean updateStatus=supervisorService.updateStateSupervisor(email,isActive);
-        if(updateStatus==true){
+    public ResponseEntity<Void> updateStatusSupervisor(@RequestParam String email, @RequestParam boolean isActive) {
+        boolean updateStatus = supervisorService.updateStateSupervisor(email, isActive);
+        if (updateStatus == true) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -282,13 +283,28 @@ public class BusinessController {
 
     //assign supervisor for student
     @PutMapping("/assignSupervisor")
-    public ResponseEntity<Void> assignSupervisorForStudent(@RequestParam String emailStudent,@RequestParam String emailSupervisor){
-        boolean assign=studentService.assignSupervisorForStudent(emailStudent,emailSupervisor);
-        if(assign==true){
+    public ResponseEntity<Void> assignSupervisorForStudent(@RequestParam String emailStudent, @RequestParam String emailSupervisor) {
+        boolean assign = studentService.assignSupervisorForStudent(emailStudent, emailSupervisor);
+        if (assign == true) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
+
+    //create job post
+    @PostMapping("/createJobPost")
+    public ResponseEntity<Void> createJobPost(@RequestBody Job_Post job_post) {
+        String emailBusiness = getEmailFromToken();
+        boolean create = job_postService.createJob_Post(emailBusiness, job_post);
+        if (create == true) {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+
+
+
     //get email from token
     private String getEmailFromToken() {
         String email = "";
