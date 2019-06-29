@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Job_Post;
+import com.example.demo.entity.Job_Post_Skill;
 import com.example.demo.entity.Skill;
 import com.example.demo.entity.Specialized;
 import com.example.demo.repository.SkillRepository;
@@ -106,5 +108,16 @@ public class SkillService {
         } else {
             return null;
         }
+    }
+
+    public List<Skill> getListSkillJobPost(Job_Post job_post) {
+
+        List<Job_Post_Skill> job_post_skills = job_post.getJob_post_skills();
+        List<Skill> skillList = new ArrayList<>();
+
+        for (int i = 0; i < job_post_skills.size(); i++) {
+            skillList.add(job_post_skills.get(i).getSkill());
+        }
+        return skillList;
     }
 }

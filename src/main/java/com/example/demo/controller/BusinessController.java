@@ -238,15 +238,19 @@ public class BusinessController {
     //get all job post of a business
     @GetMapping("/getAllJobPostABusiness")
     @ResponseBody
-    public ResponseEntity<List<Job_Post>> getAllJobPostOfABusiness(@RequestParam String businessEmail) {
+    public ResponseEntity<Business_JobPostDTO> getAllJobPostOfABusiness(@RequestParam String businessEmail) {
         int ojt_enrollment_id = ojt_enrollmentService.getOjt_EnrollmentIdByBusinessEmail(businessEmail);
 
         Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentById(ojt_enrollment_id);
 
+        Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
+
         List<Job_Post> job_postList = job_postService.getAllJobPostOfBusiness(ojt_enrollment);
 
+        business_jobPostDTO.setJob_postList(job_postList);
+        business_jobPostDTO.setBusiness(ojt_enrollment.getBusiness());
         if (job_postList != null) {
-            return new ResponseEntity<List<Job_Post>>(job_postList, HttpStatus.OK);
+            return new ResponseEntity<Business_JobPostDTO>(business_jobPostDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
