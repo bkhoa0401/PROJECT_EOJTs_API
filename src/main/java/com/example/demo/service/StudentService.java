@@ -203,11 +203,22 @@ public class StudentService {
     }
 
     public float compareSkillsStudentAndSkillsJobPost(List<Skill> skillListStudent, List<Skill> skillListJobPost) {
-        Collection<Skill> skillCollection = skillListStudent;
+        int similar = 0;
+        for (int i = 0; i < skillListStudent.size(); i++) {
+            Skill studentSkill = skillListStudent.get(i);
+            for (int j = 0; j < skillListJobPost.size(); j++) {
+                Skill jobPostSkill = skillListJobPost.get(j);
+                if (studentSkill.getName().equals(jobPostSkill.getName())) {
+                    similar = similar + 1;
+                }
+            }
+        }
 
-        skillCollection.retainAll(skillListJobPost);
+        float indexSimilarAndStudentSkills=(float)similar/(float)skillListStudent.size();
+        float indexSimilarAndJobPostSkills=(float)similar/(float)skillListJobPost.size();
 
-        float result = (float)skillCollection.size() / (float)skillListJobPost.size();
+        float result =(indexSimilarAndStudentSkills+indexSimilarAndJobPostSkills)/2;
+
         return result;
     }
 }
