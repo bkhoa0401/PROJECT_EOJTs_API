@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Role;
 import com.example.demo.entity.Users;
 import com.example.demo.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,6 +20,9 @@ public class UsersService {
 
     @Autowired
     private JavaMailSender sender;
+
+    @Autowired
+    RoleService roleService;
 
 
     public void sendEmail(String name, String mail, String password) throws Exception {
@@ -77,13 +82,34 @@ public class UsersService {
         return usersRepository.findAll();
     }
 
-    public boolean updatePasswordOfUserByEmail(String email,String password){
-        Users users=findUserByEmail(email);
-        if(users!=null){
+    public boolean updatePasswordOfUserByEmail(String email, String password) {
+        Users users = findUserByEmail(email);
+        if (users != null) {
             users.setPassword(password);
             usersRepository.save(users);
             return true;
         }
         return false;
+    }
+
+    public boolean updateStatus(String email, boolean isActive) {
+        Users users = usersRepository.findUserByEmail(email);
+        if (users != null) {
+            users.setActive(isActive);
+            usersRepository.save(users);
+            return true;
+        }
+        return false;
+    }
+
+    public List<Users> getAllUsersByType(int type) {
+        Role role = roleService.findRoleById(type);
+        List<Role> roleList=new ArrayList<>();
+        roleList.add(role);
+
+        List<Users> usersList=  usersRepository.findUsersByRoles(roleList);
+
+
+        return usersList;
     }
 }

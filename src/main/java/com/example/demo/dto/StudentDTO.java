@@ -1,8 +1,10 @@
 package com.example.demo.dto;
 
+import com.example.demo.entity.Skill;
 import com.example.demo.entity.Student;
 
 import java.sql.Date;
+import java.util.List;
 
 public class StudentDTO {
     private String email;
@@ -24,6 +26,7 @@ public class StudentDTO {
     private String resumeLink;
     private boolean gender;
     private Date dob;
+    private List<Skill> skillList;
 
 
     public StudentDTO(String email, String name, String specialized, String phone, String address, String objective, String option1, String option2, boolean isAcceptedOption1, boolean isAcceptedOption2, String code, String token, String avatarLink, float gpa, String resumeLink) {
@@ -202,10 +205,11 @@ public class StudentDTO {
         this.phone = student.getPhone();
         this.avatarLink = student.getAvatarLink();
         this.resumeLink = student.getResumeLink();
-        this.isInterviewed1=student.isInterviewed1();
-        this.isInterviewed2=student.isInterviewed2();
-        this.dob=student.getDob();
-        this.gender=student.isGender();
+        this.isInterviewed1 = student.isInterviewed1();
+        this.isInterviewed2 = student.isInterviewed2();
+        this.dob = student.getDob();
+        this.gender = student.isGender();
+        this.skillList=student.getSkills();
     }
 
     public boolean isInterviewed1() {
@@ -238,5 +242,13 @@ public class StudentDTO {
 
     public void setDob(Date dob) {
         this.dob = dob;
+    }
+
+    public List<Skill> getSkillList() {
+        return skillList;
+    }
+
+    public void setSkillList(List<Skill> skillList) {
+        this.skillList = skillList;
     }
 }

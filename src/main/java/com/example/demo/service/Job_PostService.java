@@ -1,17 +1,26 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Business;
 import com.example.demo.entity.Job_Post;
 import com.example.demo.entity.Ojt_Enrollment;
 import com.example.demo.repository.Job_PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
 public class Job_PostService {
     @Autowired
     Job_PostRepository job_postRepository;
+
+    @Autowired
+    BusinessService businessService;
+
+    @Autowired
+    Ojt_EnrollmentService ojt_enrollmentService;
 
     public void saveJobPost(Job_Post job_post) {
         if (job_post != null) {
@@ -67,4 +76,19 @@ public class Job_PostService {
         }
         return null;
     }
+
+    public boolean createJob_Post(String emailBusiness,Job_Post job_post){
+        Business business = businessService.getBusinessByEmail(emailBusiness);
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(business);
+        if(job_post!=null){
+            Date date = new Date(Calendar.getInstance().getTime().getTime());
+            job_post.setTimePost(date);
+            job_post.setOjt_enrollment(ojt_enrollment);
+            job_postRepository.save(job_post);
+            return true;
+        }
+        return false;
+    }
+
+
 }

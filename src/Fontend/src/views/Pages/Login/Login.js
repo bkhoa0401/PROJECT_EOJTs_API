@@ -29,8 +29,7 @@ class Login extends Component {
       this.handleSubmit();
     }
   }
-
-  handleSubmit = async () => {
+  handleLogin = async () => {
     const { email, password } = this.state;
     const result = await AuthService.login(email, password);
 
@@ -48,7 +47,7 @@ class Login extends Component {
       }
 
     } else {
-      Toastify.actionFail("Incorrect Email Or Password!");
+      Toastify.actionFail("Thông tin chưa chính xác! Vui lòng thử lại!");
     }
   }
 
@@ -92,7 +91,7 @@ class Login extends Component {
                       </InputGroup>
                       <Row>
                         <Col xs="6">
-                          <Button onClick={this.handleSubmit} color="primary" className="px-4">Đăng nhập</Button>
+                          <Button onClick={this.handleLogin} color="primary" className="px-4">Đăng nhập</Button>
                         </Col>
                         <Col xs="6" className="text-right">
                           <Button color="link" className="px-0" onClick={this.handForgotPassword}>Quên mật khẩu?</Button>

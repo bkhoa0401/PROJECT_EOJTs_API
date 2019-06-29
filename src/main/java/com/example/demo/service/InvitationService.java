@@ -6,6 +6,8 @@ import com.example.demo.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -30,6 +32,8 @@ public class InvitationService {
     }
 
     public void createInvitation(Invitation invitation) {
+        Date date = new Date(Calendar.getInstance().getTime().getTime());
+        invitation.setTimeCreated(date);
         invitationRepository.save(invitation);
     }
 

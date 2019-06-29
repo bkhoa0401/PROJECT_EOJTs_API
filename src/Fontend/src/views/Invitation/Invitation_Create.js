@@ -57,7 +57,7 @@ class Invitation_Create extends Component {
         const invitation = {
             description: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
             state: 0,
-            time_created: "2019-09-09",
+            timeCreated: "2019-09-09",
             title: `Lời mời thực tập từ công ty ${business_name}`
         }
 

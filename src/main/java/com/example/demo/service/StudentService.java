@@ -1,18 +1,32 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Job_Post;
 import com.example.demo.entity.Skill;
 import com.example.demo.entity.Student;
+import com.example.demo.entity.Supervisor;
 import com.example.demo.repository.StudentRepository;
+import com.example.demo.repository.SupervisorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
 public class StudentService {
     @Autowired
     StudentRepository studentRepository;
+
+    @Autowired
+    SupervisorRepository supervisorRepository;
+
+    @Autowired
+    Job_PostService job_postService;
+
+    @Autowired
+    SkillService skillService;
 
     public Student getStudentByEmail(String email) {
         Student student = studentRepository.findByEmail(email);
@@ -152,4 +166,59 @@ public class StudentService {
         return true;
     }
 
+    public boolean assignSupervisorForStudent(String emailStudent, String emailSupervisor) {
+        Student student = studentRepository.findByEmail(emailStudent);
+        Supervisor supervisor = supervisorRepository.findByEmail(emailSupervisor);
+        if (student != null) {
+            if (supervisor != null) {
+                student.setSupervisor(supervisor);
+                studentRepository.save(student);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<Job_Post> getSuggestListJobPost(String emailStudent) {
+        Student student = studentRepository.findByEmail(emailStudent);
+        List<Job_Post> job_postListSuggest = new ArrayList<>();
+        List<Skill> skillListOfJobPost;
+
+        List<Skill> skillListStudent = student.getSkills();
+
+        List<Job_Post> job_postList = job_postService.getAllJobPost();
+
+        for (int i = 0; i < job_postList.size(); i++) {
+
+            Job_Post job_post = job_postList.get(i);
+
+            skillListOfJobPost = skillService.getListSkillJobPost(job_post);
+
+            float result = compareSkillsStudentAndSkillsJobPost(skillListStudent, skillListOfJobPost);
+            if (result >= 0.5) {
+                job_postListSuggest.add(job_postList.get(i));
+            }
+        }
+        return job_postListSuggest;
+    }
+
+    public float compareSkillsStudentAndSkillsJobPost(List<Skill> skillListStudent, List<Skill> skillListJobPost) {
+        int similar = 0;
+        for (int i = 0; i < skillListStudent.size(); i++) {
+            Skill studentSkill = skillListStudent.get(i);
+            for (int j = 0; j < skillListJobPost.size(); j++) {
+                Skill jobPostSkill = skillListJobPost.get(j);
+                if (studentSkill.getName().equals(jobPostSkill.getName())) {
+                    similar = similar + 1;
+                }
+            }
+        }
+
+        float indexSimilarAndStudentSkills=(float)similar/(float)skillListStudent.size();
+        float indexSimilarAndJobPostSkills=(float)similar/(float)skillListJobPost.size();
+
+        float result =(indexSimilarAndStudentSkills+indexSimilarAndJobPostSkills)/2;
+
+        return result;
+    }
 }

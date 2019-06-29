@@ -27,7 +27,7 @@ public class Skill {
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "specialized_id")
-    @JsonIgnore
+//    @JsonIgnore
     private Specialized specialized;
 
     @ManyToMany(mappedBy = "skills")
@@ -41,6 +41,9 @@ public class Skill {
     @OneToMany(mappedBy = "skill")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Job_Post_Skill> job_post_skills;
+
+    @Column(name = "isActive")
+    private Boolean status;
 
     public int getId() {
         return id;
@@ -75,6 +78,14 @@ public class Skill {
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 
 //    public List<Job_Post> getJob_posts() {

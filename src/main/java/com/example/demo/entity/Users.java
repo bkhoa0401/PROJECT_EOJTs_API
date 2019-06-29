@@ -41,6 +41,9 @@ public class Users {
 //    @JsonManagedReference
     private List<Role> roles;
 
+    @Column(name = "isActive")
+    private boolean isActive;
+
     public Users() {
     }
 
@@ -81,5 +84,13 @@ public class Users {
         }
         System.out.println("authorities" + authorities);
         return authorities;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

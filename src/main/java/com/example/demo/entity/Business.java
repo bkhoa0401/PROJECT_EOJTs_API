@@ -4,19 +4,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "business")
-public class Business implements Serializable{
+public class Business implements Serializable {
 
     @Id
     @Column(name = "email")
     private String email;
 
-    @Column(name = "business_name",columnDefinition = "NVARCHAR(250)")
+    @Column(name = "business_name", columnDefinition = "NVARCHAR(250)")
     private String business_name;
 
     @Column(name = "business_eng_name")
@@ -25,10 +26,10 @@ public class Business implements Serializable{
     @Column(name = "business_phone")
     private String business_phone;
 
-    @Column(name = "business_address",columnDefinition = "NVARCHAR(250)")
+    @Column(name = "business_address", columnDefinition = "NVARCHAR(250)")
     private String business_address;
 
-    @Column(name = "business_overview",columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "business_overview", columnDefinition = "NVARCHAR(MAX)")
     private String business_overview;
 
     @Column(name = "business_website")
@@ -52,10 +53,11 @@ public class Business implements Serializable{
     private List<Invitation> invitations;
 
     @Column(name = "rate_count")
-    private int rateCount=0;
+    private int rateCount = 0;
 
     @Column(name = "rate_average")
-    private float rateAverage=0;
+    private float rateAverage = 0;
+
 
 
     public Business() {
@@ -175,4 +177,6 @@ public class Business implements Serializable{
     public void setRateAverage(float rateAverage) {
         this.rateAverage = rateAverage;
     }
+
+
 }

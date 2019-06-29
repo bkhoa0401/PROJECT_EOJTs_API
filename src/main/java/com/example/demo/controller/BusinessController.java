@@ -42,6 +42,9 @@ public class BusinessController {
     @Autowired
     StudentService studentService;
 
+    @Autowired
+    SupervisorService supervisorService;
+
     @PostMapping("")
     public ResponseEntity<Void> saveBusiness(@RequestBody List<BusinessDTO> listBusinessDTO) throws Exception {
         for (int i = 0; i < listBusinessDTO.size(); i++) {
@@ -189,6 +192,7 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //update infor job post
     @PutMapping("/updateJobPost")
     public ResponseEntity<Void> updateJobPostOfBusiness(@RequestBody Job_Post job_post) {
         boolean updateJobPost = job_postService.updateInforJobPost(job_post);
@@ -234,18 +238,79 @@ public class BusinessController {
     //get all job post of a business
     @GetMapping("/getAllJobPostABusiness")
     @ResponseBody
-    public ResponseEntity<List<Job_Post>> getAllJobPostOfABusiness(@RequestParam String businessEmail) {
+    public ResponseEntity<Business_JobPostDTO> getAllJobPostOfABusiness(@RequestParam String businessEmail) {
         int ojt_enrollment_id = ojt_enrollmentService.getOjt_EnrollmentIdByBusinessEmail(businessEmail);
 
         Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentById(ojt_enrollment_id);
 
+        Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
+
         List<Job_Post> job_postList = job_postService.getAllJobPostOfBusiness(ojt_enrollment);
 
+        business_jobPostDTO.setJob_postList(job_postList);
+        business_jobPostDTO.setBusiness(ojt_enrollment.getBusiness());
         if (job_postList != null) {
-            return new ResponseEntity<List<Job_Post>>(job_postList, HttpStatus.OK);
+            return new ResponseEntity<Business_JobPostDTO>(business_jobPostDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
+
+    @GetMapping("/getAllSupervisorABusiness")
+    @ResponseBody
+    public ResponseEntity<List<Supervisor>> getSupervisorOfABusiness() {
+        String email = getEmailFromToken();
+
+        List<Supervisor> supervisors = supervisorService.getAllSupervisorOfABusiness(email);
+        if (supervisors != null) {
+            return new ResponseEntity<List<Supervisor>>(supervisors, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    // create a supervisor
+    @PostMapping("/createSupervisor")
+    public ResponseEntity<Void> createSupervisor(@RequestBody Supervisor supervisor) {
+        String email = getEmailFromToken();
+        boolean result = false;
+
+        result = supervisorService.createSupervisor(supervisor, email);
+        if (result) {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    //update state isActive supervisor
+    @PutMapping("/updateStatus")
+    public ResponseEntity<Void> updateStatusSupervisor(@RequestParam String email, @RequestParam boolean isActive) {
+        boolean updateStatus = supervisorService.updateStateSupervisor(email, isActive);
+        if (updateStatus == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    //assign supervisor for student
+    @PutMapping("/assignSupervisor")
+    public ResponseEntity<Void> assignSupervisorForStudent(@RequestParam String emailStudent, @RequestParam String emailSupervisor) {
+        boolean assign = studentService.assignSupervisorForStudent(emailStudent, emailSupervisor);
+        if (assign == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    //create job post
+    @PostMapping("/createJobPost")
+    public ResponseEntity<Void> createJobPost(@RequestBody Job_Post job_post) {
+        String emailBusiness = getEmailFromToken();
+        boolean create = job_postService.createJob_Post(emailBusiness, job_post);
+        if (create == true) {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
 
     //get email from token
     private String getEmailFromToken() {
