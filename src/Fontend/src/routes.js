@@ -59,6 +59,8 @@ const Specialized_Update = React.lazy(() => import('./views/Specialized/Speciali
 const Skill = React.lazy(() => import('./views/Skill/Skill.js'));
 const Skill_Create = React.lazy(() => import('./views/Skill/Skill_Create.js'));
 const Skill_Update = React.lazy(() => import('./views/Skill/Skill_Update.js'));
+const ManageAccount = React.lazy(() => import('./views/Account/ManageAccount.js'));
+const Account_Create = React.lazy(() => import('./views/Account/Account_Create.js'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -130,6 +132,8 @@ const routes = [
   { path: '/skill', exact: true, name: 'Danh sách kỹ năng', component: Skill },
   { path: '/skill/create', exact: true, name: 'Tạo kỹ năng mới', component: Skill_Create },
   { path: '/skill/update/:id', exact: true, name: 'Cập nhật kỹ năng mới', component: Skill_Update },
+  { path: '/manage_account', exact: true, name: 'Danh sách tài khoản HR', component: ManageAccount },
+  { path: '/account/create', exact: true, name: 'Tạo tài khoản HR', component: Account_Create },
 ];
 
 export default routes;

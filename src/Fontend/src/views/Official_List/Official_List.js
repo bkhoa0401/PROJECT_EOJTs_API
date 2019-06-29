@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Pagination, Row, Table } from 'reactstrap';
+import { Badge, Card, CardBody, CardHeader, Col, Pagination, Row, Table, Input } from 'reactstrap';
 import { Button } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
@@ -11,6 +11,7 @@ import {
   getPaginationCurrentPageNumber
 } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
+import { async } from 'q';
 
 const invertDirection = {
   asc: 'desc',
@@ -27,6 +28,10 @@ class Official_List extends Component {
     super(props);
     this.state = {
       students: null,
+      supervisors: [],
+      supervisors_FirstBlank: [],
+      listDataEdited: [],
+      supervisorItem: {},
       searchValue: '',
       columnToSort: '',
       sortDirection: 'desc'
@@ -37,9 +42,20 @@ class Official_List extends Component {
   async componentDidMount() {
     await ApiServices.Put('/admin');
     const students = await ApiServices.Get('/business/getStudentsByBusiness');
-    if (students != null) {
+    const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness');
+    const supervisors_FirstBlank = await ApiServices.Get('/business/getAllSupervisorABusiness');
+
+    const supervisors_FirstBlank_Obj = {
+      email: '',
+      name: ''
+    }
+    supervisors_FirstBlank.unshift(supervisors_FirstBlank_Obj);
+
+    if (students != null && supervisors != null) {
       this.setState({
-        students
+        students,
+        supervisors,
+        supervisors_FirstBlank
       });
     }
   }
@@ -48,17 +64,60 @@ class Official_List extends Component {
     this.props.history.push(uri);
   }
 
-  handleInput = async (event) => {
+  handleInputSearch = async (event) => {
     const { name, value } = event.target;
     await this.setState({
       [name]: value.substr(0, 20),
     })
   }
 
-  render() {
-    const { students, searchValue, columnToSort, sortDirection } = this.state;
-    let filteredListStudents = orderBy(students, columnToSort, sortDirection);
+  handleInputSupervisor = async (event, student) => {
+    const { name, value } = event.target;
+    const { supervisors, supervisors_FirstBlank, listDataEdited } = this.state;
 
+    if (name === 'supervisor') {
+      await this.setState({
+        supervisorItem: supervisors[value]
+      })
+    } else if (name === 'withBlank') {
+      await this.setState({
+        supervisorItem: supervisors_FirstBlank[value]
+      })
+    }
+    student.supervisor = this.state.supervisorItem;
+
+    if (listDataEdited.length > 0) {
+      for (let i = 0; i < listDataEdited.length; i++) {
+        if (listDataEdited[i].email === student.email) {
+          listDataEdited.splice(i, 1);
+        }
+      }
+      listDataEdited.push(student);
+    } else {
+      listDataEdited.push(student);
+    }
+  }
+
+  handleSubmit = async () => {
+    const { listDataEdited } = this.state;
+    console.log(listDataEdited);
+    if (listDataEdited.length == 0) {
+      Toastify.actionWarning("Không có sự thay đổi!");
+    } else {
+      const result = await ApiServices.Put('/business/assignSupervisor', listDataEdited);
+      if (result.status == 200) {
+        Toastify.actionSuccess("Thao tác thành công!");
+        
+      } else {
+        Toastify.actionFail("Thao tác thất bại!");
+      }
+    }
+  }
+
+  render() {
+    const { students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection } = this.state;
+
+    let filteredListStudents = orderBy(students, columnToSort, sortDirection);
     if (students != null) {
       filteredListStudents = students.filter(
         (student) => {
@@ -80,7 +139,7 @@ class Official_List extends Component {
               <CardBody>
                 <nav className="navbar navbar-light bg-light justify-content-between">
                   <form className="form-inline">
-                    <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
+                    <input onChange={this.handleInputSearch} name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
                   </form>
                   <div style={{ marginRight: "70px" }}>
                     <b>Sắp xếp theo: </b>
@@ -126,11 +185,27 @@ class Official_List extends Component {
                               }
                             </td>
                             <td style={{ textAlign: "center" }}>
-                              <select>
-                                <option> supervisor 1 </option>
-                                <option> supervisor 2 </option>
-                                <option> supervisor 3 </option>
-                              </select>
+                              {
+                                student.supervisor == null ? (
+
+                                  <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="withBlank">
+                                    {supervisors_FirstBlank && supervisors_FirstBlank.map((supervisor, i) => {
+                                      return (
+                                        <option value={i}>{supervisor.name}</option>
+                                      )
+                                    })}
+                                  </Input>
+                                ) : (
+                                    <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="supervisor">
+                                      {supervisors && supervisors.map((supervisor, i) => {
+                                        return (
+                                          <option value={i} selected={student.supervisor.email === supervisor.email}>{supervisor.name}</option>
+                                        )
+                                      })}
+                                    </Input>
+                                  )
+                              }
+
                             </td>
                             <td style={{ textAlign: "center" }}>
                               <Button style={{ width: '100px' }} color="primary" type="submit" id="btnSave">Nhiệm vụ</Button>
@@ -147,7 +222,7 @@ class Official_List extends Component {
             </Card>
           </Col>
         </Row>
-        <div style={rowSave}><Button style={{ width: '100px' }} color="primary" type="submit" id="btnSave">Lưu</Button></div>
+        <div style={rowSave}><Button onClick={() => this.handleSubmit()} style={{ width: '100px' }} color="primary" type="submit" id="btnSave">Lưu</Button></div>
       </div>
     );
   }
