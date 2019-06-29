@@ -86,7 +86,7 @@ class business_list extends Component {
                                                         SĐT: {business.business_phone}
                                                     </td>
                                                     <td style={{ textAlign: "center" }}>
-                                                        <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="primary">Xem</Button>
+                                                        <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="primary">Chi tiết</Button>
                                                         &nbsp;&nbsp;
                                                         <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="danger">Xoá</Button>
                                                     </td>
