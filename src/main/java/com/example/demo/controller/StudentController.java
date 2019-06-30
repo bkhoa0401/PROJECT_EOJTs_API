@@ -430,7 +430,6 @@ public class StudentController {
 
     @GetMapping("/getJobPostsSuggest")
     @ResponseBody
-<<<<<<< HEAD
     public ResponseEntity<List<Business_JobPostDTO>> getJobPostsSuggest() {
         String email=getEmailFromToken();
         List<Business_JobPostDTO> business_jobPostDTOS = new ArrayList<>();
@@ -448,14 +447,6 @@ public class StudentController {
         }
         if(business_jobPostDTOS!=null){
             return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOS,HttpStatus.OK);
-=======
-    public ResponseEntity<List<Job_Post>> getJobPostsSuggest() {
-        String email = getEmailFromToken();
-
-        List<Job_Post> job_postList = studentService.getSuggestListJobPost(email);
-        if (job_postList != null) {
-            return new ResponseEntity<List<Job_Post>>(job_postList, HttpStatus.OK);
->>>>>>> master
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
