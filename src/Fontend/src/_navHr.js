@@ -6,16 +6,16 @@ export default {
       icon: 'icon-star',
     },
     {
-      name: 'Tài khoản',
-      url: '/account',
+      name: 'Quản lí tài khoản',
+      url: '/manage_account',
       icon: 'icon-puzzle',
-      children: [
-        {
-          name: 'Đổi mật khẩu',
-          url: '/account/changepassword',
-          icon: 'icon-star',
-        },
-      ],
+      // children: [
+      //   {
+      //     name: 'Đổi mật khẩu',
+      //     url: '/account/changepassword',
+      //     icon: 'icon-star',
+      //   },
+      // ],
     },
     {
       name: 'Quản lí lời mời',

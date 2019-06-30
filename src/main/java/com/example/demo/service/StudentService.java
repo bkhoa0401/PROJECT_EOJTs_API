@@ -38,6 +38,11 @@ public class StudentService {
         return true;
     }
 
+    public boolean saveStudent(Student student) {
+        studentRepository.save(student);
+        return true;
+    }
+
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
     }
@@ -166,15 +171,10 @@ public class StudentService {
         return true;
     }
 
-    public boolean assignSupervisorForStudent(String emailStudent, String emailSupervisor) {
-        Student student = studentRepository.findByEmail(emailStudent);
-        Supervisor supervisor = supervisorRepository.findByEmail(emailSupervisor);
-        if (student != null) {
-            if (supervisor != null) {
-                student.setSupervisor(supervisor);
-                studentRepository.save(student);
-                return true;
-            }
+    public boolean assignSupervisorForStudent(List<Student> studentList) {
+        if (studentList.size() != 0) {
+            studentRepository.saveAll(studentList);
+            return true;
         }
         return false;
     }
@@ -214,10 +214,10 @@ public class StudentService {
             }
         }
 
-        float indexSimilarAndStudentSkills=(float)similar/(float)skillListStudent.size();
-        float indexSimilarAndJobPostSkills=(float)similar/(float)skillListJobPost.size();
+        float indexSimilarAndStudentSkills = (float) similar / (float) skillListStudent.size();
+        float indexSimilarAndJobPostSkills = (float) similar / (float) skillListJobPost.size();
 
-        float result =(indexSimilarAndStudentSkills+indexSimilarAndJobPostSkills)/2;
+        float result = (indexSimilarAndStudentSkills + indexSimilarAndJobPostSkills) / 2;
 
         return result;
     }

@@ -65,6 +65,7 @@ public class StudentController {
             users.setPassword(password);
             nameList.add(studentList.get(i).getName());
             users.setRoles(roleList);
+            users.setActive(true);
 
             specializedName = studentList.get(i).getSpecialized().getName();
             specializedID = specializedService.getIdByName(specializedName);
@@ -88,6 +89,43 @@ public class StudentController {
                 for (int i = 0; i < usersList.size(); i++) {
                     usersService.sendEmail(nameList.get(i), usersList.get(i).getEmail(), usersList.get(i).getPassword());
                 }
+            }
+
+        } catch (PersistenceException ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping("/new")
+    public ResponseEntity<Void> createNewStudent(@RequestBody Student student) throws Exception {
+
+        List<Role> roleList = new ArrayList<>();
+        Role role = new Role();
+        Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
+        Users users = new Users();
+        String password = usersService.getAlphaNumericString();
+
+        role.setId(2);
+        roleList.add(role);
+        users.setRoles(roleList);
+        users.setEmail(student.getEmail());
+        users.setPassword(password);
+        users.setActive(true);
+
+        ojt_enrollment.setStudent(student);
+
+        try {
+            studentService.saveStudent(student);
+            usersService.saveUser(users);
+            ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);
+
+            if (usersService.saveUser(users)) {
+                usersService.sendEmail(student.getName(), users.getEmail(), users.getPassword());
             }
 
         } catch (PersistenceException ex) {
@@ -392,6 +430,7 @@ public class StudentController {
 
     @GetMapping("/getJobPostsSuggest")
     @ResponseBody
+<<<<<<< HEAD
     public ResponseEntity<List<Business_JobPostDTO>> getJobPostsSuggest() {
         String email=getEmailFromToken();
         List<Business_JobPostDTO> business_jobPostDTOS = new ArrayList<>();
@@ -409,6 +448,14 @@ public class StudentController {
         }
         if(business_jobPostDTOS!=null){
             return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOS,HttpStatus.OK);
+=======
+    public ResponseEntity<List<Job_Post>> getJobPostsSuggest() {
+        String email = getEmailFromToken();
+
+        List<Job_Post> job_postList = studentService.getSuggestListJobPost(email);
+        if (job_postList != null) {
+            return new ResponseEntity<List<Job_Post>>(job_postList, HttpStatus.OK);
+>>>>>>> master
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

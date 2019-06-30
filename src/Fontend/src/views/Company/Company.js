@@ -102,7 +102,6 @@ class Company extends Component {
             business_name: '',
             business_eng_name: '',
             business_overview: '',
-            email: '',
             business_address: '',
             business_phone: '',
             business_website: ''

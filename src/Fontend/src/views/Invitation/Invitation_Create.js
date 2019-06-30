@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table } from 'reactstrap';
+import { Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import { Button } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
@@ -17,8 +17,10 @@ class Invitation_Create extends Component {
             students: null,
             business_name: '',
             searchValue: '',
-            isAction: ''
+            isAction: '',
+            activeTab: new Array(1).fill('1'),
         }
+        this.toggle = this.toggle.bind(this);
     }
 
 
@@ -42,6 +44,164 @@ class Invitation_Create extends Component {
         await this.setState({
             [name]: value.substr(0, 20),
         })
+    }
+
+    tabPane() {
+        const { students, business_name, searchValue } = this.state;
+
+        let filteredListStudents;
+
+        if (students != null) {
+            filteredListStudents = students.filter(
+                (student) => {
+                    if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+                        return student;
+                    }
+                }
+            );
+        }
+        return (
+            <>
+                <TabPane tabId="1">
+                    {
+                        <div>
+                            <nav className="navbar navbar-light bg-light justify-content-between">
+                                <form className="form-inline">
+                                    <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                </form>
+
+                            </nav>
+                            <Table responsive striped>
+                                <thead>
+                                    <tr>
+                                        <th style={{ textAlign: "center" }}>STT</th>
+                                        <th style={{ textAlign: "center" }}>MSSV</th>
+                                        <th style={{ textAlign: "center" }}>Họ và Tên</th>
+                                        <th style={{ textAlign: "center" }}>Chuyên ngành</th>
+                                        <th style={{ textAlign: "center" }}>Kỹ năng</th>
+                                        <th style={{ textAlign: "center" }}>GPA</th>
+                                        <th style={{ textAlign: "center" }}>Bảng điểm</th>
+                                        <th style={{ textAlign: "center" }}>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        filteredListStudents && filteredListStudents.map((student, index) => {
+                                            const deviceToken = student.token;
+                                            const skills = student.skills;
+                                            const linkDownload = `http://localhost:8000/api/file/downloadFile?emailStudent=${student.email}`;
+
+                                            return (
+                                                <tr key={index}>
+                                                    <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                    <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                    <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                    <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                    <td style={{ textAlign: "center" }}>
+                                                        {
+                                                            skills && skills.map((skill, index) => {
+                                                                return (
+                                                                    <div>
+                                                                        {
+                                                                            <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                        }
+                                                                    </div>
+                                                                )
+                                                            })
+                                                        }
+                                                    </td>
+                                                    <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                                                    <td style={{ textAlign: "center" }}>
+                                                        {
+                                                            student.transcriptLink && student.transcriptLink ? (
+                                                                <a href={student.transcriptLink} download>Tải</a>
+                                                            ) :
+                                                                (<label>N/A</label>)
+                                                        }
+                                                    </td>
+                                                    <td style={{ textAlign: "center" }}>
+                                                        <Button onClick={() => this.handleSubmit(index, deviceToken)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                            </Table>
+                        </div>
+                    }
+                </TabPane>
+                <TabPane tabId="2">
+                    {
+                        <div>
+                            <nav className="navbar navbar-light bg-light justify-content-between">
+                                <form className="form-inline">
+                                    <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                </form>
+
+                            </nav>
+                            <Table responsive striped>
+                                <thead>
+                                    <tr>
+                                        <th style={{ textAlign: "center" }}>STT</th>
+                                        <th style={{ textAlign: "center" }}>MSSV</th>
+                                        <th style={{ textAlign: "center" }}>Họ và Tên</th>
+                                        <th style={{ textAlign: "center" }}>Chuyên ngành</th>
+                                        <th style={{ textAlign: "center" }}>Kỹ năng</th>
+                                        <th style={{ textAlign: "center" }}>GPA</th>
+                                        <th style={{ textAlign: "center" }}>Bảng điểm</th>
+                                        <th style={{ textAlign: "center" }}>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {/* {
+                                        filteredListStudents && filteredListStudents.map((student, index) => {
+                                            const deviceToken = student.token;
+                                            const skills = student.skills;
+                                            const linkDownload = `http://localhost:8000/api/file/downloadFile?emailStudent=${student.email}`;
+
+                                            return (
+                                                <tr key={index}>
+                                                    <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                    <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                    <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                    <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                    <td style={{ textAlign: "center" }}>
+                                                        {
+                                                            skills && skills.map((skill, index) => {
+                                                                return (
+                                                                    <div>
+                                                                        {
+                                                                            <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                        }
+                                                                    </div>
+                                                                )
+                                                            })
+                                                        }
+                                                    </td>
+                                                    <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                                                    <td style={{ textAlign: "center" }}>
+                                                        {
+                                                            student.transcriptLink && student.transcriptLink ? (
+                                                                <a href={student.transcriptLink} download>Tải</a>
+                                                            ) :
+                                                                (<label>N/A</label>)
+                                                        }
+                                                    </td>
+                                                    <td style={{ textAlign: "center" }}>
+                                                        <Button onClick={() => this.handleSubmit(index, deviceToken)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    } */}
+                                </tbody>
+                            </Table>
+                        </div>
+                    }
+                </TabPane>
+            </>
+        );
     }
 
 
@@ -100,21 +260,15 @@ class Invitation_Create extends Component {
         }
     }
 
+    toggle(tabPane, tab) {
+        const newArray = this.state.activeTab.slice()
+        newArray[tabPane] = tab
+        this.setState({
+            activeTab: newArray,
+        });
+    }
+
     render() {
-        const { students, business_name, searchValue } = this.state;
-
-        let filteredListStudents;
-
-        if (students != null) {
-            filteredListStudents = students.filter(
-                (student) => {
-                    if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
-                        return student;
-                    }
-                }
-            );
-        }
-
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -124,62 +278,27 @@ class Invitation_Create extends Component {
                                 <i className="fa fa-align-justify"></i> Danh sách sinh viên thực tập
                             </CardHeader>
                             <CardBody>
-                                <nav className="navbar navbar-light bg-light justify-content-between">
-                                    <form className="form-inline">
-                                        <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-                                    </form>
-
-                                </nav>
-                                <Table responsive striped>
-                                    <thead>
-                                        <tr>
-                                            <th style={{ textAlign: "center" }}>STT</th>
-                                            <th style={{ textAlign: "center" }}>MSSV</th>
-                                            <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                            <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                            <th style={{ textAlign: "center" }}>Kỹ năng</th>
-                                            <th style={{ textAlign: "center" }}>GPA</th>
-                                            <th style={{ textAlign: "center" }}>Bảng điểm</th>
-                                            <th style={{ textAlign: "center" }}>Hành động</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            filteredListStudents && filteredListStudents.map((student, index) => {
-                                                const deviceToken = student.token;
-                                                const skills = student.skills;
-                                                const linkDownload = `http://localhost:8000/api/file/downloadFile?emailStudent=${student.email}`;
-
-                                                return (
-                                                    <tr key={index}>
-                                                        <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.code}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.name}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            {
-                                                                skills && skills.map((skill, index) => {
-                                                                    return (
-                                                                        <div>
-                                                                            {
-                                                                                <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
-                                                                            }
-                                                                        </div>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </td>
-                                                        <td style={{ textAlign: "center" }}>{student.gpa}</td>
-                                                        <td style={{ textAlign: "center" }}><a href={linkDownload} download>Tải</a></td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <Button onClick={() => this.handleSubmit(index, deviceToken)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })
-                                        }
-                                    </tbody>
-                                </Table>
+                                <Nav tabs style={{ fontWeight: "bold" }}>
+                                    <NavItem>
+                                        <NavLink
+                                            active={this.state.activeTab[0] === '1'}
+                                            onClick={() => { this.toggle(0, '1'); }}
+                                        >
+                                            Tổng
+                                        </NavLink>
+                                    </NavItem>
+                                    <NavItem>
+                                        <NavLink
+                                            active={this.state.activeTab[0] === '2'}
+                                            onClick={() => { this.toggle(0, '2'); }}
+                                        >
+                                            Danh sách sinh viên gợi ý
+                                        </NavLink>
+                                    </NavItem>
+                                </Nav>
+                                <TabContent activeTab={this.state.activeTab[0]}>
+                                    {this.tabPane()}
+                                </TabContent>
                                 <ToastContainer />
                                 <Pagination>
                                     {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}

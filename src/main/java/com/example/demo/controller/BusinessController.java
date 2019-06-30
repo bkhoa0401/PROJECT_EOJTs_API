@@ -292,8 +292,8 @@ public class BusinessController {
 
     //assign supervisor for student
     @PutMapping("/assignSupervisor")
-    public ResponseEntity<Void> assignSupervisorForStudent(@RequestParam String emailStudent, @RequestParam String emailSupervisor) {
-        boolean assign = studentService.assignSupervisorForStudent(emailStudent, emailSupervisor);
+    public ResponseEntity<Void> assignSupervisorForStudent(@RequestBody List<Student> studentList) {
+        boolean assign = studentService.assignSupervisorForStudent(studentList);
         if (assign == true) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
