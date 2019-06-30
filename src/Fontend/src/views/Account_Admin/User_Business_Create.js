@@ -27,6 +27,8 @@ import {
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../Toastify/Toastify';
+import CKEditor from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 class User_Business_Create extends Component {
 
@@ -34,40 +36,20 @@ class User_Business_Create extends Component {
         super(props);
         this.state = {
             email: '',
-            name: '',
-            phone: '',
-            address: '',
-            code: '',
-            dob: '',
-            gender: 0,
-            specializeds: [],
-            specializedItem: {},
-            semester: '',
-        }
-    }
-
-    async componentDidMount() {
-        const specializeds = await ApiServices.Get('/specialized');
-        if (specializeds != null) {
-            this.setState({
-                specializeds,
-                specializedItem: specializeds[0],
-            });
+            business_address: '',
+            business_eng_name: '',
+            business_name: '',
+            business_overview: '',
+            business_phone: '',
+            business_website: ''
         }
     }
 
     handleInput = async (event) => {
         const { name, value } = event.target;
-        const { specializeds } = this.state;
-        if (name.includes('specialized')) {
-            await this.setState({
-                specializedItem: specializeds[value]
-            })
-        } else {
-            await this.setState({
-                [name]: value,
-            })
-        }
+        await this.setState({
+            [name]: value,
+        })
     }
 
 
@@ -78,43 +60,36 @@ class User_Business_Create extends Component {
     handleReset = async () => {
         this.setState({
             email: '',
-            name: '',
-            phone: '',
-            address: '',
-            code: '',
-            dob: '',
-            gender: 0,
-            specializedItem: this.state.specializeds[0],
-            semester: '',
+            business_address: '',
+            business_eng_name: '',
+            business_name: '',
+            business_overview: '',
+            business_phone: '',
+            business_website: ''
         })
     }
 
     handleSubmit = async () => {
-        const { email, name, phone, address, code, dob, gender, specializedItem, semester, status } = this.state;
-        const specialized = {
-            id: specializedItem.id
-        }
-        const student = {
+        const { email, business_address, business_eng_name, business_name,
+            business_overview, business_phone, business_website } = this.state;
+        const business = {
             email,
-            name,
-            phone,
-            address,
-            code,
-            dob,
-            gender,
-            specialized,
-            semester,
-            status
+            business_address,
+            business_eng_name,
+            business_name,
+            business_overview,
+            business_phone,
+            business_website
         }
 
-        console.log(student);
+        console.log(business);
 
-        const result = await ApiServices.Post('/student/new', student);
+        const result = await ApiServices.Post('/business/new', business);
         if (result.status == 201) {
             Toastify.actionSuccess("Tạo tài khoản mới thành công!");
             setTimeout(
                 function () {
-                    this.props.history.push('/admin_account/studentList');
+                    this.props.history.push('/admin_account/businessList');
                 }
                     .bind(this),
                 2000
@@ -126,7 +101,8 @@ class User_Business_Create extends Component {
 
 
     render() {
-        const { specializeds } = this.state;
+        const { email, business_address, business_eng_name, business_name,
+            business_overview, business_phone, business_website } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -142,80 +118,63 @@ class User_Business_Create extends Component {
                                             <Label htmlFor="email">Email</Label>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Input value={this.state.email} onChange={this.handleInput} type="text" name="email" placeholder="Email" />
+                                            <Input value={email} onChange={this.handleInput} type="text" name="email" placeholder="Email" />
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
                                         <Col md="2">
-                                            <Label htmlFor="email">Họ Tên</Label>
+                                            <Label htmlFor="business_name">Tên doanh nhiệp</Label>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Input value={this.state.name} onChange={this.handleInput} type="text" name="name" placeholder="Họ và tên" />
+                                            <Input value={business_name} onChange={this.handleInput} type="text" name="business_name" placeholder="Tên doanh nghiệp" />
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
                                         <Col md="2">
-                                            <Label htmlFor="code">MSSV</Label>
+                                            <Label htmlFor="business_eng_name">Tên tiếng anh</Label>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Input value={this.state.code} onChange={this.handleInput} type="text" name="code" placeholder="Mã số sinh viên" />
+                                            <Input value={business_eng_name} onChange={this.handleInput} type="text" name="business_eng_name" placeholder="Tên tiếng anh" />
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
                                         <Col md="2">
-                                            <Label htmlFor="phone">SĐT</Label>
+                                            <Label htmlFor="business_overview">Giới thiệu</Label>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Input value={this.state.phone} onChange={this.handleInput} type="number" name="phone" placeholder="Số điện thoại" />
+                                            <CKEditor
+                                                editor={ClassicEditor}
+                                                data={business_overview}
+                                                onChange={(event, editor) => {
+                                                    this.setState({
+                                                        business_overview: editor.getData(),
+                                                    })
+                                                }}
+                                            />
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
                                         <Col md="2">
-                                            <Label htmlFor="address">Địa chỉ </Label>
+                                            <Label htmlFor="business_website">Website</Label>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Input value={this.state.address} onChange={this.handleInput} type="text" name="address" placeholder="Địa chỉ" />
+                                            <Input value={business_website} onChange={this.handleInput} type="text" name="business_website" placeholder="Website" />
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
                                         <Col md="2">
-                                            <Label htmlFor="dob">Ngày sinh</Label>
+                                            <Label htmlFor="business_phone">SĐT</Label>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Input value={this.state.dob} onChange={this.handleInput} type="date" name="dob" placeholder="Ngày sinh" />
+                                            <Input value={business_phone} onChange={this.handleInput} type="number" name="business_phone" placeholder="Số điện thoại" />
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
                                         <Col md="2">
-                                            <Label htmlFor="gender">Giới tính</Label>
+                                            <Label htmlFor="business_address">Địa chỉ</Label>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Input value={this.state.gender} onChange={this.handleInput} type="select" name="gender">
-                                                <option value={false}>Nữ</option>
-                                                <option value={true}>Nam</option>
-                                            </Input>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <Label htmlFor="specialized">Chuyên ngành</Label>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input onChange={this.handleInput} type="select" name="specialized">
-                                                {specializeds && specializeds.map((specialized, i) => {
-                                                    return (
-                                                        <option value={i} selected={this.state.specializedItem.id == i + 1}>{specialized.name}</option>
-                                                    )
-                                                })}
-                                            </Input>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <Label htmlFor="semester">Học kì</Label>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value={this.state.semester} onChange={this.handleInput} type="number" name="semester" placeholder="Học kì" />
+                                            <Input value={business_address} onChange={this.handleInput} type="text" name="business_address" placeholder="Địa chỉ" />
                                         </Col>
                                     </FormGroup>
                                 </Form>
@@ -230,7 +189,7 @@ class User_Business_Create extends Component {
                                         <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
                                     </Col>
                                     <Col xs="3" sm="3">
-                                        <Button color="success" block onClick={() => this.handleDirect('/admin_account/studentList')}>Trở về</Button>
+                                        <Button color="success" block onClick={() => this.handleDirect('/admin_account/businessList')}>Trở về</Button>
                                     </Col>
                                 </Row>
                             </CardFooter>
