@@ -59,6 +59,11 @@ class DefaultHeader extends Component {
               <DropdownItem><i className="fa fa-envelope-o"></i> Messages<Badge color="success">42</Badge></DropdownItem>
               {/* <DropdownItem><i className="fa fa-tasks"></i> Tasks<Badge color="danger">42</Badge></DropdownItem> */}
               <DropdownItem><i className="fa fa-comments"></i> Comments<Badge color="warning">42</Badge></DropdownItem>
+              <DropdownItem><i className="fa fa-comments"></i>
+              <NavItem className="d-md-down-none">
+                  <NavLink to="account/changepassword" className="nav-link">Đổi mật khẩu</NavLink>
+                </NavItem>
+              </DropdownItem>
               {/* <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem> */}
               {/* <DropdownItem><i className="fa fa-user"></i> Profile</DropdownItem>
               <DropdownItem><i className="fa fa-wrench"></i> Settings</DropdownItem>
