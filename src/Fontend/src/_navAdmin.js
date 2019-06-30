@@ -6,6 +6,23 @@ export default {
       icon: 'icon-star',
     },
     {
+      name: 'Quản lý tài khoản',
+      url: '/admin_account',
+      icon: 'icon-puzzle',
+      children: [
+        {
+          name: 'Tài khoản sinh viên',
+          url: '/admin_account/studentList',
+          icon: 'icon-star',
+        },
+        {
+          name: 'Tài khoản doanh nghiệp',
+          url: '/admin_account/businessList',
+          icon: 'icon-star',
+        },
+      ]
+    },
+    {
       name: 'Nhập tập tin',
       url: '/importfiles',
       icon: 'icon-star',

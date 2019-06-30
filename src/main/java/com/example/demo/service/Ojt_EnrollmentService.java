@@ -26,6 +26,11 @@ public class Ojt_EnrollmentService {
         return true;
     }
 
+    public boolean saveOjtEnrollment(Ojt_Enrollment ojtEnrollment) {
+        ojtEnrollmentRepository.save(ojtEnrollment);
+        return true;
+    }
+
     public List<Ojt_Enrollment> getAllOjt_Enrollment() {
         return ojtEnrollmentRepository.findAll();
     }
@@ -89,9 +94,9 @@ public class Ojt_EnrollmentService {
         return null;
     }
 
-    public Ojt_Enrollment getOjt_EnrollmentById(int id){
-        Ojt_Enrollment ojt_enrollment=ojtEnrollmentRepository.getOjt_EnrollmentById(id);
-        if(ojt_enrollment!=null){
+    public Ojt_Enrollment getOjt_EnrollmentById(int id) {
+        Ojt_Enrollment ojt_enrollment = ojtEnrollmentRepository.getOjt_EnrollmentById(id);
+        if (ojt_enrollment != null) {
             return ojt_enrollment;
         }
         return null;

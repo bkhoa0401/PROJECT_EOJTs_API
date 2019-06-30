@@ -38,6 +38,11 @@ public class StudentService {
         return true;
     }
 
+    public boolean saveStudent(Student student) {
+        studentRepository.save(student);
+        return true;
+    }
+
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
     }

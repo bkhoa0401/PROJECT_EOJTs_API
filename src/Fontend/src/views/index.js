@@ -36,6 +36,11 @@ import {
   Skill_Update,
   ManageAccount,
   Account_Create,
+  User_Student,
+  User_Student_Create,
+  User_Business,
+  User_Business_Create
+
 } from './Base';
 
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
@@ -111,5 +116,10 @@ export {
   Skill_Update,
   ManageAccount,
   Account_Create,
+  User_Student,
+  User_Student_Create,
+  User_Business,
+  User_Business_Create
+
 };
 
