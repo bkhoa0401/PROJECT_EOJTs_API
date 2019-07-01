@@ -39,8 +39,8 @@ import {
   User_Student,
   User_Student_Create,
   User_Business,
-  User_Business_Create
-
+  User_Business_Create,
+  Job_Post_List,
 } from './Base';
 
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
@@ -120,7 +120,7 @@ export {
   User_Student,
   User_Student_Create,
   User_Business,
-  User_Business_Create
-
+  User_Business_Create,
+  Job_Post_List,
 };
 

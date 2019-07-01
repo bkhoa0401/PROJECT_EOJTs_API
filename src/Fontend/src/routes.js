@@ -65,6 +65,7 @@ const User_Student = React.lazy(() => import('./views/Account_Admin/User_Student
 const User_Student_Create = React.lazy(() => import('./views/Account_Admin/User_Student_Create.js'));
 const User_Business = React.lazy(() => import('./views/Account_Admin/User_Business.js'));
 const User_Business_Create = React.lazy(() => import('./views/Account_Admin/User_Business_Create.js'));
+const Job_Post_List = React.lazy(() => import('./views/Job_Post/Job_Post_List.js'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -142,6 +143,7 @@ const routes = [
   { path: '/admin_account/studentList/create', exact: true, name: 'Tạo tài khoản học sinh mới', component: User_Student_Create },
   { path: '/admin_account/businessList', exact: true, name: 'Danh sách tài khoản doanh nghiệp', component: User_Business },
   { path: '/admin_account/businessList/create', exact: true, name: 'Tạo tài khoản doanh nghiệp mới', component: User_Business_Create },
+  { path: '/job_post/job_post_list', exact: true, name: 'Danh sách thông tin tuyển dụng', component: Job_Post_List},
 ];
 
 export default routes;

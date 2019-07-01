@@ -26,7 +26,7 @@ class Login extends Component {
 
   handleKeyDown = (event) => {
     if(event.key === 'Enter') {
-      this.handleSubmit();
+      this.handleLogin();
     }
   }
   handleLogin = async () => {
