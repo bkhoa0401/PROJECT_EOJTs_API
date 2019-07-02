@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.PersistenceException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,9 @@ public class BusinessController {
     @Autowired
     SupervisorService supervisorService;
 
+    @Autowired
+    UsersService usersService;
+
     @PostMapping("")
     public ResponseEntity<Void> saveBusiness(@RequestBody List<BusinessDTO> listBusinessDTO) throws Exception {
         for (int i = 0; i < listBusinessDTO.size(); i++) {
@@ -61,6 +65,45 @@ public class BusinessController {
         }
         for (int i = 0; i < listBusinessDTO.size(); i++) {
             businessImportFileService.insertBusiness(listBusinessDTO.get(i));
+        }
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping("/new")
+    public ResponseEntity<Void> createNewBusiness(@RequestBody Business business) throws Exception {
+
+        List<Role> roleList = new ArrayList<>();
+        Role role = new Role();
+        Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
+        List<Ojt_Enrollment> ojtEnrollmentList = new ArrayList<>();
+        Users users = new Users();
+        String password = usersService.getAlphaNumericString();
+
+        role.setId(3);
+        roleList.add(role);
+        users.setRoles(roleList);
+        users.setEmail(business.getEmail());
+        users.setPassword(password);
+        users.setActive(true);
+
+        ojt_enrollment.setBusiness(business);
+        ojtEnrollmentList.add(ojt_enrollment);
+        business.setOjt_enrollments(ojtEnrollmentList);
+
+        try {
+            businessService.saveBusiness(business);
+            usersService.saveUser(users);
+
+            if (usersService.saveUser(users)) {
+                usersService.sendEmail(business.getBusiness_name(), users.getEmail(), users.getPassword());
+            }
+
+        } catch (PersistenceException ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

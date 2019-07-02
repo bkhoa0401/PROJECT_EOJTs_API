@@ -7,7 +7,7 @@ import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurr
 import PaginationComponent from '../Paginations/pagination';
 
 
-class business_list extends Component {
+class Job_Post_List extends Component {
 
     constructor(props) {
         super(props);
@@ -51,7 +51,7 @@ class business_list extends Component {
                     <Col xs="12" lg="12">
                         <Card>
                             <CardHeader style={{ fontWeight: "bold" }}>
-                                <i className="fa fa-align-justify"></i>Danh sách doanh nghiệp
+                                <i className="fa fa-align-justify"></i>Thông tin tuyển dụng
                             </CardHeader>
                             <CardBody>
                                 <div>
@@ -64,35 +64,40 @@ class business_list extends Component {
                                         <thead>
                                             <tr>
                                                 <th style={{ textAlign: "center" }}>STT</th>
-                                                <th style={{ textAlign: "center" }}>Tên doanh nghiệp</th>
-                                                <th style={{ textAlign: "center" }}>Tên Tiếng Anh</th>
-                                                <th style={{ textAlign: "center" }}>Địa chỉ</th>
-                                                <th style={{ textAlign: "center" }}>Website</th>
-                                                <th style={{ textAlign: "center" }}>Liên hệ</th>
-                                                <th style={{ textAlign: "center" }}></th>
+                                                <th style={{ textAlign: "center" }}>Doanh nghiệp</th>
+                                                <th style={{ textAlign: "center" }}>Ngành</th>
+                                                <th style={{ textAlign: "center" }}>Vị trí - Số lượng</th>
+                                                <th style={{ textAlign: "center" }}>Quy trình tuyển</th>
+                                                <th style={{ textAlign: "center" }}>Chính sách</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {filteredListBusinesses && filteredListBusinesses.map((business, index) => {
-                                                return(
+                                            {/* {filteredListBusinesses && filteredListBusinesses.map((business, index) => {
+                                                return( */}
                                                 <tr>
-                                                    <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                    <td style={{ textAlign: "center" }}>{business.business_name}</td>
-                                                    <td style={{ textAlign: "center" }}>{business.business_eng_name}</td>
-                                                    <td style={{ textAlign: "center" }}>{business.business_address}</td>
-                                                    <td style={{ textAlign: "center" }}>{business.business_website}</td>
+                                                    <td style={{ textAlign: "center" }}>1</td>
+                                                    <td style={{ textAlign: "center" }}>TP Bank</td>
                                                     <td style={{ textAlign: "center" }}>
-                                                        Email: {business.email}<br/>
-                                                        SĐT: {business.business_phone}
+                                                        IS<br/>
+                                                        JS<br/>
+                                                        GD
                                                     </td>
                                                     <td style={{ textAlign: "center" }}>
-                                                        <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="primary">Chi tiết</Button>
-                                                        &nbsp;&nbsp;
-                                                        <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="danger">Xoá</Button>
+                                                        Java: 30<br/>
+                                                        C#:20<br/>
+                                                    </td>
+                                                    <td style={{ textAlign: "center" }}>
+                                                        1. Phỏng vấn tại bàn nhận hồ sơ<br/>
+                                                        2. Liên hệ phỏng vấn qua điện thoại, gửi thư mời tham gia phỏng vấn<br/>
+                                                        3. Phỏng vấn và làm bài test tại công ty
+                                                    </td>
+                                                    <td style={{ textAlign: "center" }}>
+                                                        Lương tháng 13<br/>
+                                                        Không OT
                                                     </td>
                                                 </tr>
-                                                )
-                                            })}
+                                                {/* )
+                                            })} */}
                                         </tbody>
                                     </Table>
                                 </div>
@@ -116,4 +121,4 @@ class business_list extends Component {
     }
 }
 
-export default business_list;
+export default Job_Post_List;

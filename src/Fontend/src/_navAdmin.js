@@ -60,5 +60,10 @@ export default {
       url: '/skill',
       icon: 'icon-star',
     },
+    {
+      name: 'Tuyển dụng',
+      url: '/Job_Post/Job_Post_List',
+      icon: 'icon-star',
+    },
   ]
 };

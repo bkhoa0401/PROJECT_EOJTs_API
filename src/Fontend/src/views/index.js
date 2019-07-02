@@ -39,8 +39,8 @@ import {
   User_Student,
   User_Student_Create,
   User_Business,
-  User_Business_Create
-
+  User_Business_Create,
+  Job_Post_List,
 } from './Base';
 
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
@@ -48,7 +48,7 @@ import Charts from './Charts';
 import Dashboard from './Dashboard';
 import { CoreUIIcons, Flags, FontAwesome, SimpleLineIcons } from './Icons';
 import { Alerts, Badges, Modals } from './Notifications';
-import { Login, Page404, Page500, ForgotPassword } from './Pages';
+import { Login, Page404, Page500, ForgotPassword, ResetPassword } from './Pages';
 import { Colors, Typography } from './Theme';
 import Widgets from './Widgets';
 import Official_List from "./Official_List/Official_List";
@@ -63,6 +63,7 @@ export {
   Page404,
   Page500,
   ForgotPassword,
+  ResetPassword,
   Login,
   Modals,
   Alerts,
@@ -119,7 +120,7 @@ export {
   User_Student,
   User_Student_Create,
   User_Business,
-  User_Business_Create
-
+  User_Business_Create,
+  Job_Post_List,
 };
 

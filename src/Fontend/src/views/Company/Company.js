@@ -21,6 +21,8 @@ import firebase from 'firebase/app';
 import 'firebase/storage';
 import { async } from 'q';
 import { initializeApp } from '../Invitation/push-notification';
+import CKEditor from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 
 // // Your web app's Firebase configuration
@@ -111,12 +113,15 @@ class Company extends Component {
     uploadImageToFireBase = async () => {
         let { image } = this.state;
 
-        const uploadTask = await storage.ref(`images/${image.name}`).put(image);
-        await storage.ref('images').child(image.name).getDownloadURL().then(url => {
-            this.setState({
-                logo: url
+        if (image != null) {
+            const uploadTask = await storage.ref(`images/${image.name}`).put(image);
+            await storage.ref('images').child(image.name).getDownloadURL().then(url => {
+                this.setState({
+                    logo: url
+                })
             })
-        })
+        }
+
         // uploadTask.on('state_changed',
         //     (snapshot) => {
         //         // progress function
@@ -186,7 +191,7 @@ class Company extends Component {
                                             <h6>Logo</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <img src={logo} style={{ width: "750px", height: "400px" }} onChange={this.handleInput} type="file" id="img_logo" name="logo" />
+                                            <img src={logo} style={{ width: "160px", height: "160px" }} onChange={this.handleInput} type="file" id="img_logo" name="logo" />
                                             <br /><br />
                                             <input onChange={this.handleChange} type="file" />
                                             <br /><br />
@@ -233,7 +238,15 @@ class Company extends Component {
                                             <h6>Giới thiệu</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Input value={business_overview} onChange={this.handleInput} type="text" id="business_overview" name="business_overview" />
+                                            <CKEditor
+                                                editor={ClassicEditor}
+                                                data={business_overview}
+                                                onChange={(event, editor) => {
+                                                    this.setState({
+                                                        business_overview: editor.getData(),
+                                                    })
+                                                }}
+                                            />
                                             <span className="form-error is-visible text-danger">
                                                 {this.validator.message('business_overview', business_overview, 'required')}
                                             </span>
