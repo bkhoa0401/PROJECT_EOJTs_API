@@ -20,6 +20,10 @@ public class SupervisorService {
     @Autowired
     BusinessService businessService;
 
+    public Supervisor findByEmail(String email){
+        return supervisorRepository.findByEmail(email);
+    }
+
     public List<Supervisor> getAllSupervisorOfABusiness(String emailBusiness) {
         Business business = businessService.getBusinessByEmail(emailBusiness);
         Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(business);

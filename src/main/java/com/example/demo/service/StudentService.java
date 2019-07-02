@@ -221,4 +221,14 @@ public class StudentService {
 
         return result;
     }
+
+    public boolean updateLinkAvatar(String emailStudent,String linkAvatar){
+        Student student=studentRepository.findByEmail(emailStudent);
+        if(student!=null){
+            student.setAvatarLink(linkAvatar);
+            studentRepository.save(student);
+            return true;
+        }
+        return false;
+    }
 }
