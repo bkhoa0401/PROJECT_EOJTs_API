@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Business;
 import com.example.demo.entity.Job_Post;
+import com.example.demo.entity.Job_Post_Skill;
 import com.example.demo.entity.Ojt_Enrollment;
 import com.example.demo.repository.Job_PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class Job_PostService {
 
     @Autowired
     Ojt_EnrollmentService ojt_enrollmentService;
+
+    @Autowired
+    Job_Post_SkillService job_post_skillService;
 
     public void saveJobPost(Job_Post job_post) {
         if (job_post != null) {
@@ -77,13 +81,21 @@ public class Job_PostService {
         return null;
     }
 
-    public boolean createJob_Post(String emailBusiness,Job_Post job_post){
+    public boolean createJob_Post(String emailBusiness, Job_Post job_post) {
         Business business = businessService.getBusinessByEmail(emailBusiness);
         Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(business);
-        if(job_post!=null){
+
+        List<Job_Post_Skill> job_post_skill = job_post.getJob_post_skills();
+
+
+        if (job_post != null) {
             Date date = new Date(Calendar.getInstance().getTime().getTime());
             job_post.setTimePost(date);
             job_post.setOjt_enrollment(ojt_enrollment);
+
+            for (int i = 0; i < job_post_skill.size(); i++) {
+                job_post_skill.get(i).setJob_post(job_post);
+            }
             job_postRepository.save(job_post);
             return true;
         }
