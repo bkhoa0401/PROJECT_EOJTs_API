@@ -281,10 +281,12 @@ public class BusinessController {
     //get all job post of a business
     @GetMapping("/getAllJobPostABusiness")
     @ResponseBody
-    public ResponseEntity<Business_JobPostDTO> getAllJobPostOfABusiness(@RequestParam String businessEmail) {
-        int ojt_enrollment_id = ojt_enrollmentService.getOjt_EnrollmentIdByBusinessEmail(businessEmail);
+    public ResponseEntity<Business_JobPostDTO> getAllJobPostOfABusiness() {
+        String businessEmail = getEmailFromToken();
 
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentById(ojt_enrollment_id);
+        Business business = businessService.getBusinessByEmail(businessEmail);
+
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(business);
 
         Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
 
