@@ -66,6 +66,7 @@ const User_Student_Create = React.lazy(() => import('./views/Account_Admin/User_
 const User_Business = React.lazy(() => import('./views/Account_Admin/User_Business.js'));
 const User_Business_Create = React.lazy(() => import('./views/Account_Admin/User_Business_Create.js'));
 const Job_Post_List = React.lazy(() => import('./views/Job_Post/Job_Post_List.js'));
+const Job_Post_List_HR = React.lazy(() => import('./views/Job_Post/Job_Post_List_HR.js'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -125,9 +126,9 @@ const routes = [
   { path: '/list_management/business_list', exact: true, name: 'Danh sách doanh nghiệp', component: business_list },
   { path: '/official-list', exact: true, name: 'Danh sách sinh viên', component: Official_List },
   { path: '/details-task', exact: true, name: 'Nhiệm vụ', component: Details_Task },
-  { path: '/job-post', exact: true, name: 'Thông tin tuyển dụng', component: Job_Post },
-  { path: '/job_post/update_job', exact: true, name: 'Chi tiết công việc', component: Update_Job },
-  { path: '/job_post/add_job', exact: true, name: 'Thêm công việc', component: Add_Job },
+  { path: '/job-post/:id', exact: true, name: 'Thông tin tuyển dụng', component: Job_Post },
+  { path: '/job_post/update_job/:id', exact: true, name: 'Chi tiết công việc', component: Update_Job },
+  { path: '/job_post_list_hr/add_job_post', exact: true, name: 'Tạo bài đăng tuyển dụng mới', component: Add_Job },
   { path: '/admin', exact: true, name: 'Admin', component: Dashboard },
   { path: '/hr', exact: true, name: 'Hr', component: Dashboard },
   { path: '/supervisor', exact: true, name: 'Supervisor', component: Dashboard },
@@ -144,6 +145,7 @@ const routes = [
   { path: '/admin_account/businessList', exact: true, name: 'Danh sách tài khoản doanh nghiệp', component: User_Business },
   { path: '/admin_account/businessList/create', exact: true, name: 'Tạo tài khoản doanh nghiệp mới', component: User_Business_Create },
   { path: '/job_post/job_post_list', exact: true, name: 'Danh sách thông tin tuyển dụng', component: Job_Post_List},
+  { path: '/job_post_list_hr', exact: true, name: 'Danh sách bài đăng tuyển dụng', component: Job_Post_List_HR },
 ];
 
 export default routes;

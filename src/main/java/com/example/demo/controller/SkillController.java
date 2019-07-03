@@ -99,4 +99,16 @@ public class SkillController {
     }
 
 
+    @GetMapping("/bySpecializedId")
+    @ResponseBody
+    public ResponseEntity<List<Skill>> getListSkillBySpecializedId(@RequestParam int specializedId) {
+
+        List<Skill> skills = skillService.getListSkillBySpecialized(specializedId);
+
+        if (skills != null) {
+            return new ResponseEntity<List<Skill>>(skills, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
 }

@@ -205,7 +205,7 @@ class Company extends Component {
                                             <h6>Email</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Input readOnly="true" value={email} onChange={this.handleInput} type="text" id="email" name="email" />
+                                            <label type="text" id="email" name="email">{email}</label>
                                             <span className="form-error is-visible text-danger">
                                                 {this.validator.message('email', email, 'required')}
                                             </span>

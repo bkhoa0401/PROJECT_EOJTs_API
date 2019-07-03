@@ -39,7 +39,7 @@ export default {
     },
     {
       name: 'Thông tin tuyển dụng',
-      url: '/job-post',
+      url: '/job_post_list_hr',
       icon: 'icon-star',
     },
     // {

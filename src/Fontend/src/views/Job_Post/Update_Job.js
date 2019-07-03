@@ -82,10 +82,10 @@ class Update_Job extends Component {
 
     deleteSkill = (deleteIndex) => {
         this.state.arraySkill.splice(deleteIndex, 1);
-                this.setState({
-                    arraySkill: this.state.arraySkill,
-                    isModify: true,
-                })
+        this.setState({
+            arraySkill: this.state.arraySkill,
+            isModify: true,
+        })
     }
 
     confirm = (key) => {
@@ -219,16 +219,16 @@ class Update_Job extends Component {
                 </Row>
                 <div className="position-relative row form-group" style={{ paddingLeft: '40%' }}>
                     <Button
-                        style={{ fontWeight: "bold", borderColor: '#20a8d8', color: '#20a8d8', backgroundColor: 'white', width:'80px'}}
+                        style={{ fontWeight: "bold", borderColor: '#20a8d8', color: '#20a8d8', backgroundColor: 'white', width: '80px' }}
                         //tro ve trang thong tin tuyen dung
                         onClick={() => this.handleDirect()}
                     >
                         Trở về
                     </Button>
                     &nbsp;&nbsp;
-                    <Button style={{ fontWeight: "bold", width:'80px', backgroundColor:'white'}} block outline color="warning" onClick={() => this.confirm("Reset")}>Đặt lại</Button>
+                    <Button style={{ fontWeight: "bold", width: '80px', backgroundColor: 'white' }} block outline color="warning" onClick={() => this.confirm("Reset")}>Đặt lại</Button>
                     &nbsp;&nbsp;
-                    <Button style={{ fontWeight: "bold" , width:'80px'}} color="primary" onClick={() => this.confirm("Submit")}>Lưu</Button>
+                    <Button style={{ fontWeight: "bold", width: '80px' }} color="primary" onClick={() => this.confirm("Submit")}>Lưu</Button>
                 </div>
             </div>
         );
