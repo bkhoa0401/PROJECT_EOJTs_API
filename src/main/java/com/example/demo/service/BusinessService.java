@@ -97,13 +97,25 @@ public class BusinessService {
         for (int i = 0; i < studentList.size(); i++) {
             List<Skill> skillListOfAStudent = studentList.get(i).getSkills();
 
-            float result = studentService.compareSkillsStudentAndSkillsJobPost(skillListOfAStudent,skillListBusiness);
+            //get ra list skill phu hop theo nganh cua tung thang student
+            List<Skill> skills=getListSkillBySpecializedOfStudent(skillListBusiness,studentList.get(i).getSpecialized().getId());
+            float result = studentService.compareSkillsStudentAndSkillsJobPost(skillListOfAStudent, skills);
 
             if (result > 0.5) {
                 studentListSuggest.add(studentList.get(i));
             }
         }
         return studentListSuggest;
+    }
+
+    public List<Skill> getListSkillBySpecializedOfStudent(List<Skill> skillListOfBusiness, int specialized) {
+        List<Skill> list = new ArrayList<>();
+        for (int i = 0; i < skillListOfBusiness.size(); i++) {
+            if (skillListOfBusiness.get(i).getSpecialized().getId() == specialized) {
+                list.add(skillListOfBusiness.get(i));
+            }
+        }
+        return list;
     }
 
 }

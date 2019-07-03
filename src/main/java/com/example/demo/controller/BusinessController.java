@@ -319,6 +319,10 @@ public class BusinessController {
         boolean result = false;
 
         result = supervisorService.createSupervisor(supervisor, email);
+
+        String password=usersService.getAlphaNumericString();
+
+        usersService.saveUser(new Users(supervisor.getEmail(),password));
         if (result) {
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
