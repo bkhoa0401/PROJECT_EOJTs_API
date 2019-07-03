@@ -319,6 +319,10 @@ public class BusinessController {
         boolean result = false;
 
         result = supervisorService.createSupervisor(supervisor, email);
+
+        String password=usersService.getAlphaNumericString();
+
+        usersService.saveUser(new Users(supervisor.getEmail(),password));
         if (result) {
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
@@ -352,6 +356,17 @@ public class BusinessController {
         boolean create = job_postService.createJob_Post(emailBusiness, job_post);
         if (create == true) {
             return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/studentsSuggest")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getListSuggestStudent(){
+        String email=getEmailFromToken();
+        List<Student> studentList=businessService.getSuggestListStudent(email);
+        if(studentList!=null){
+            return new ResponseEntity<List<Student>>(studentList,HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
