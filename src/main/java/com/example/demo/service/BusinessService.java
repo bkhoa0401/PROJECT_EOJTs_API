@@ -97,7 +97,7 @@ public class BusinessService {
         for (int i = 0; i < studentList.size(); i++) {
             List<Skill> skillListOfAStudent = studentList.get(i).getSkills();
 
-            float result = studentService.compareSkillsStudentAndSkillsJobPost(skillListBusiness, skillListOfAStudent);
+            float result = studentService.compareSkillsStudentAndSkillsJobPost(skillListOfAStudent,skillListBusiness);
 
             if (result > 0.5) {
                 studentListSuggest.add(studentList.get(i));
