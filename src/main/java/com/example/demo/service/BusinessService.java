@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Business;
+import com.example.demo.entity.*;
 import com.example.demo.repository.BusinessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -13,6 +13,12 @@ import java.util.List;
 public class BusinessService {
     @Autowired
     BusinessRepository businessRepository;
+
+    @Autowired
+    Ojt_EnrollmentService ojt_enrollmentService;
+
+    @Autowired
+    StudentService studentService;
 
     public void saveBusiness(Business business) {
         businessRepository.save(business);
@@ -61,7 +67,7 @@ public class BusinessService {
             for (int i = 0; i < businessList.size(); i++) {
                 if (i < 5) {
                     businessListTop5.add(businessList.get(i));
-                }else{
+                } else {
                     break;
                 }
             }
@@ -70,5 +76,34 @@ public class BusinessService {
         return null;
     }
 
+    public List<Student> getSuggestListStudent(String emailBusiness) {
+        Business business = businessRepository.findBusinessByEmail(emailBusiness);
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(business);
+
+        List<Student> studentListSuggest = new ArrayList<>();
+
+        //lay duoc list skill cua doanh nghiep
+        List<Skill> skillListBusiness = new ArrayList<>();
+
+        for (int i = 0; i < ojt_enrollment.getJob_posts().size(); i++) {
+            for (int j = 0; j < ojt_enrollment.getJob_posts().get(i).getJob_post_skills().size(); j++) {
+                Skill skill = ojt_enrollment.getJob_posts().get(i).getJob_post_skills().get(j).getSkill();
+                skillListBusiness.add(skill);
+            }
+        }
+
+        List<Student> studentList = studentService.getAllStudents();
+
+        for (int i = 0; i < studentList.size(); i++) {
+            List<Skill> skillListOfAStudent = studentList.get(i).getSkills();
+
+            float result = studentService.compareSkillsStudentAndSkillsJobPost(skillListBusiness, skillListOfAStudent);
+
+            if (result > 0.5) {
+                studentListSuggest.add(studentList.get(i));
+            }
+        }
+        return studentListSuggest;
+    }
 
 }

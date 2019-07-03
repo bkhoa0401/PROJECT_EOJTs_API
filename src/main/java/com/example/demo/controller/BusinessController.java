@@ -354,6 +354,17 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/studentsSuggest")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getListSuggestStudent(){
+        String email=getEmailFromToken();
+        List<Student> studentList=businessService.getSuggestListStudent(email);
+        if(studentList!=null){
+            return new ResponseEntity<List<Student>>(studentList,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
 
     //get email from token
     private String getEmailFromToken() {
