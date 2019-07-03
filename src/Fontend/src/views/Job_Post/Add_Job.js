@@ -58,7 +58,6 @@ class Update_Job extends Component {
         const { arraySpecialized, arrayQuantity, arraySkill, selectedOption } = this.state;
         return (
             <div className="animated fadeIn">
-
                 <form onSubmit={this.handleFormSubmit}>
                     <Row>
                         <Col xs="12" lg="12">

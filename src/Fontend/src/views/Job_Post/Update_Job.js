@@ -81,16 +81,11 @@ class Update_Job extends Component {
     }
 
     deleteSkill = (deleteIndex) => {
-        for (let index = 0; index < this.state.arraySkill.length; index++) {
-            if (index === deleteIndex) {
-                this.state.arraySkill.splice(index, 1);
+        this.state.arraySkill.splice(deleteIndex, 1);
                 this.setState({
                     arraySkill: this.state.arraySkill,
                     isModify: true,
                 })
-                break;
-            }
-        }
     }
 
     confirm = (key) => {
