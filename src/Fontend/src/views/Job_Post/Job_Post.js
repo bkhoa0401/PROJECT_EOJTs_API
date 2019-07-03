@@ -152,31 +152,43 @@ class Job_Post extends Component {
       contact, interview_process, interest, job_post_skills, updatedId } = this.state;
 
     let tmpSkills = [];
+    let tmpNumber = [];
 
     for (let i = 0; i < job_post_skills.length; i++) {
       let flag = true;
       let check = job_post_skills[i].skill.specialized.name;
       if (arrayJobPost.length != 0) {
-        for (let j = 0; j < arrayJobPost.length; j++) {
+        for (let j = 0; j < job_post_skills.length; j++) {
           if (arrayJobPost.indexOf(check, 0) == -1) {
             arrayJobPost.push(check);
             if (tmpSkills.length != 0) {
               arraySkill.push(tmpSkills);
+              arrayQuantity.push(tmpNumber);
               tmpSkills = [];
+              tmpNumber = [];
             }
+            if (tmpSkills.indexOf(job_post_skills[i].skill.name, 0) == -1) {
+              tmpSkills.push(job_post_skills[i].skill.name);
+              tmpNumber.push(job_post_skills[i].number);
 
-            if (tmpSkills.indexOf(job_post_skills[i].skill.name, 0) == -1) {
-              tmpSkills.push(job_post_skills[i].skill.name);
             }
-            
           } else {
-            if (tmpSkills.indexOf(job_post_skills[i].skill.name, 0) == -1) {
-              tmpSkills.push(job_post_skills[i].skill.name);
-            }
-            if (j == arrayJobPost.length - 1) {
+            if (i == job_post_skills.length - 1) {
               if (tmpSkills.length != 0) {
+                if (tmpSkills.indexOf(job_post_skills[i].skill.name, 0) == -1) {
+                  tmpSkills.push(job_post_skills[i].skill.name);
+                  tmpNumber.push(job_post_skills[i].number);
+                }
                 arraySkill.push(tmpSkills);
+                arrayQuantity.push(tmpNumber);
                 tmpSkills = [];
+                tmpNumber = [];
+              }
+            } else {
+              if (tmpSkills.indexOf(job_post_skills[i].skill.name, 0) == -1) {
+                tmpSkills.push(job_post_skills[i].skill.name);
+                tmpNumber.push(job_post_skills[i].number);
+                break;
               }
             }
           }
@@ -184,11 +196,8 @@ class Job_Post extends Component {
       } else {
         arrayJobPost.push(check);
         tmpSkills.push(job_post_skills[i].skill.name);
+        tmpNumber.push(job_post_skills[i].number);
       }
-
-      let tmpNumber = [];
-      tmpNumber.push(job_post_skills[i].number);
-      arrayQuantity.push(tmpNumber);
 
       console.log('jobpost', arrayJobPost);
       console.log('skill', arraySkill);

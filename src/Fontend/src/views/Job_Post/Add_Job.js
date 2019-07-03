@@ -20,6 +20,7 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
+import { async } from 'q';
 
 
 class Add_Job extends Component {
@@ -58,6 +59,11 @@ class Add_Job extends Component {
 
             skillsForSave: [],
             numbersForSave: [],
+
+            isChangeSkill: false,
+            isChangeSpecialized: false,
+
+            specializedId: 1
         };
         this.addRow = this.addRow.bind(this);
         this.submit = this.submit.bind(this);
@@ -113,12 +119,22 @@ class Add_Job extends Component {
         }
     }
 
-    addRow() {
+    addRow = async () => {
         this.setState({
             arraySkill: [...this.state.arraySkill, ""],
             arrayQuantity: [...this.state.arrayQuantity, ""],
             isModify: true,
         })
+
+        const { specializedId } = this.state;
+        const skills = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${specializedId}`);
+        if (skills != null) {
+            await this.setState({
+                isChangeSpecialized: true,
+                skills: skills,
+                skillItem: skills[0],
+            })
+        }
     }
 
     deleteSkill = (deleteIndex) => {
@@ -169,19 +185,21 @@ class Add_Job extends Component {
 
     handleInput = async (event) => {
         const { name, value } = event.target;
-        const { specializeds, skills } = this.state;
+        const { specializeds, skills, isChangeSkill, isChangeSpecialized } = this.state;
 
         if (name.includes('specialized')) {
             let specializedId = specializeds[value].id;
-            const skills = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${specializedId}`);
-            if (skills != null) {
-                await this.setState({
-                    skills: skills,
-                    skillItem: skills[0],
-                })
-            }
+
+
+            await this.setState({
+                isChangeSpecialized: true,
+                specializedId,
+            })
+
+
         } else if (name.includes('skill')) {
             await this.setState({
+                isChangeSkill: true,
                 skillItem: skills[value],
             })
         } else if (name.includes('number')) {
@@ -225,7 +243,7 @@ class Add_Job extends Component {
     handleSubmit = async () => {
 
         const { skillsForSave, numbersForSave, description, views,
-            contact, interview_process, interest} = this.state;
+            contact, interview_process, interest } = this.state;
 
         let job_post_skills = [];
 
