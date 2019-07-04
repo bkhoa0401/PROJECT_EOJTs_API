@@ -29,17 +29,17 @@ export default {
     },
     {
       name: 'DSSV chính thức',
-      url: '/official-list',
-      icon: 'icon-star',
-    },
-    {
-      name: 'Chi tiết nhiệm vụ',
-      url: '/details-task',
+      url: '/official_list',
       icon: 'icon-star',
     },
     {
       name: 'Thông tin tuyển dụng',
       url: '/job_post_list_hr',
+      icon: 'icon-star',
+    },
+    {
+      name: 'Thông báo',
+      url: '/InformMessage/InformMessage',
       icon: 'icon-star',
     },
     // {

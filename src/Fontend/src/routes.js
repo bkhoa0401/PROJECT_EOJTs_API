@@ -67,6 +67,9 @@ const User_Business = React.lazy(() => import('./views/Account_Admin/User_Busine
 const User_Business_Create = React.lazy(() => import('./views/Account_Admin/User_Business_Create.js'));
 const Job_Post_List = React.lazy(() => import('./views/Job_Post/Job_Post_List.js'));
 const Job_Post_List_HR = React.lazy(() => import('./views/Job_Post/Job_Post_List_HR.js'));
+const InformMessage = React.lazy(() => import('./views/InformMessage/InformMessage.js'));
+const InformMessage_Detail = React.lazy(() => import('./views/InformMessage/InformMessage_Detail.js'));
+const Create_InformMessage = React.lazy(() => import('./views/InformMessage/Create_InformMessage.js'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -124,8 +127,8 @@ const routes = [
   { path: '/student/:email', exact: true, name: 'Chi tiết', component: Profile },
   { path: '/list_management/student_list', exact: true, name: 'Danh sách sinh viên', component: student_list },
   { path: '/list_management/business_list', exact: true, name: 'Danh sách doanh nghiệp', component: business_list },
-  { path: '/official-list', exact: true, name: 'Danh sách sinh viên', component: Official_List },
-  { path: '/details-task', exact: true, name: 'Nhiệm vụ', component: Details_Task },
+  { path: '/official_list', exact: true, name: 'Danh sách sinh viên', component: Official_List },
+  { path: '/details_task', exact: true, name: 'Nhiệm vụ', component: Details_Task },
   { path: '/job-post/:id', exact: true, name: 'Thông tin tuyển dụng', component: Job_Post },
   { path: '/job_post/update_job/:id', exact: true, name: 'Chi tiết công việc', component: Update_Job },
   { path: '/job_post_list_hr/add_job_post', exact: true, name: 'Tạo bài đăng tuyển dụng mới', component: Add_Job },
@@ -146,6 +149,9 @@ const routes = [
   { path: '/admin_account/businessList/create', exact: true, name: 'Tạo tài khoản doanh nghiệp mới', component: User_Business_Create },
   { path: '/job_post/job_post_list', exact: true, name: 'Danh sách thông tin tuyển dụng', component: Job_Post_List},
   { path: '/job_post_list_hr', exact: true, name: 'Danh sách bài đăng tuyển dụng', component: Job_Post_List_HR },
+  { path: '/informmessage/informmessage', exact: true, name: 'Thông báo', component: InformMessage },
+  { path: '/informmessage/informmessage_detail/:id', exact: true, name: 'Chi tiết thông báo', component: InformMessage_Detail },
+  { path: '/informmessage/create_informmessage', exact: true, name: 'Soạn thông báo', component: Create_InformMessage },
 ];
 
 export default routes;

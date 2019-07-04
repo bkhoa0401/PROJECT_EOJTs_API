@@ -41,8 +41,8 @@ import {
   User_Business,
   User_Business_Create,
   Job_Post_List,
-  Job_Post_List_HR
-
+  Job_Post_List_HR,
+  InformMessage,
 } from './Base';
 
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
@@ -124,7 +124,7 @@ export {
   User_Business,
   User_Business_Create,
   Job_Post_List,
-  Job_Post_List_HR
-
+  Job_Post_List_HR,
+  InformMessage,
 };
 

@@ -63,7 +63,12 @@ class Add_Job extends Component {
             isChangeSkill: false,
             isChangeSpecialized: false,
 
-            specializedId: 1
+            specializedId: 1,
+
+            choseSpecialized: [],
+            flagSelect: false,
+            isChecked: false,
+            // isSelected: false,
         };
         this.addRow = this.addRow.bind(this);
         this.submit = this.submit.bind(this);
@@ -72,14 +77,15 @@ class Add_Job extends Component {
 
     async componentDidMount() {
         const specializeds = await ApiServices.Get('/specialized');
-        let firstSpecialized = specializeds[0].id;
-        const skills = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${firstSpecialized}`);
+        // let firstSpecialized = specializeds[0].id;
+        // const skills = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${firstSpecialized}`);
+        const skills = await ApiServices.Get(`/skill`);
         if (specializeds != null) {
             this.setState({
                 specializeds,
-                specializedItem: specializeds[0],
+                // specializedItem: specializeds[0],
                 skills,
-                skillItem: skills[0]
+                // skillItem: skills[0]
             });
         }
     }
@@ -126,15 +132,15 @@ class Add_Job extends Component {
             isModify: true,
         })
 
-        const { specializedId } = this.state;
-        const skills = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${specializedId}`);
-        if (skills != null) {
-            await this.setState({
-                isChangeSpecialized: true,
-                skills: skills,
-                skillItem: skills[0],
-            })
-        }
+        // const { specializedId } = this.state;
+        // const skills = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${specializedId}`);
+        // if (skills != null) {
+        //     await this.setState({
+        //         isChangeSpecialized: true,
+        //         skills: skills,
+        //         skillItem: skills[0],
+        //     })
+        // }
     }
 
     deleteSkill = (deleteIndex) => {
@@ -183,21 +189,59 @@ class Add_Job extends Component {
         this.props.history.push(uri);
     }
 
+    handleSelect = async (selectSpecialized) => {
+        let tmpFlagSelect = this.state.flagSelect;
+        for (let index = 0; index < this.state.choseSpecialized.length; index++) {
+            if (this.state.choseSpecialized[index] === selectSpecialized) {
+                tmpFlagSelect = true;
+                this.state.choseSpecialized.splice(index, 1);
+                break;
+            }
+        }
+        if (tmpFlagSelect === false) {
+            await this.setState({
+                choseSpecialized: [...this.state.choseSpecialized, selectSpecialized],
+                isChecked: false,
+            })
+            console.log(this.state.choseSpecialized);
+        } else if (tmpFlagSelect === true) {
+            await this.setState({
+                choseSpecialized: this.state.choseSpecialized,
+                flagSelect: false,
+                isChecked: true,
+            })
+        }
+    }
+
+    // isSelect = (skillSpecializedId) => {
+    //     let flagCheck = choseSpecialized.includes(skillSpecializedId);
+    //     if (flagCheck === true) {
+    //         this.setState({
+    //             isSelected: true,
+    //         })
+    //     } else if (flagCheck === false) {
+    //         this.setState({
+    //             isSelected: false,
+    //         })
+    //     }
+    // }
+
     handleInput = async (event) => {
         const { name, value } = event.target;
         const { specializeds, skills, isChangeSkill, isChangeSpecialized } = this.state;
 
-        if (name.includes('specialized')) {
-            let specializedId = specializeds[value].id;
+        // if (name.includes('specialized')) {
+        //     let specializedId = specializeds[value].id;
 
 
-            await this.setState({
-                isChangeSpecialized: true,
-                specializedId,
-            })
+        //     await this.setState({
+        //         isChangeSpecialized: true,
+        //         specializedId,
+        //     })
 
 
-        } else if (name.includes('skill')) {
+        // } else 
+        if (name.includes('skill')) {
             await this.setState({
                 isChangeSkill: true,
                 skillItem: skills[value],
@@ -283,8 +327,20 @@ class Add_Job extends Component {
         }
     }
 
+    showHideOption = (skillName, skillSpecializedId, i) => {
+        if (this.state.choseSpecialized.includes(skillSpecializedId)) {
+            return (
+                <option value={i}>{skillName}</option>
+            )
+        } else if (!this.state.choseSpecialized.includes(skillSpecializedId)) {
+            return (
+                <option value={i} hidden>{skillName}</option>
+            )
+        }
+    }
+
     render() {
-        const { arraySkill, arrayQuantity, description, contact, interview_process, interest, specializeds, specializedItem, skills } = this.state;
+        const { arraySkill, arrayQuantity, description, contact, interview_process, interest, specializeds, specializedItem, skills, choseSpecialized } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -326,25 +382,34 @@ class Add_Job extends Component {
                                     </FormGroup>
                                     <FormGroup row>
                                         <Col md="2">
-                                            <h6>Tên ngành tuyển</h6>
+                                            <h6>Ngành tuyển</h6>
                                         </Col>
-                                        <Col xs="12" md="4">
-                                            <Input onChange={this.handleInput} type="select" name="specialized">
-                                                {specializeds && specializeds.map((specialized, i) => {
-                                                    return (
-                                                        <option selected={specializedItem.id == i + 1} value={i}>{specialized.name}</option>
-                                                    )
-                                                })}
-                                            </Input>
+                                        <Col md="9">
+                                            {/* <Col xs="12" md="4">
+                                            <Input onChange={this.handleInput} type="select" name="specialized"> */}
+                                            {specializeds && specializeds.map((specialized, i) =>
+                                                // <option selected={specializedItem.id == i + 1} value={i}>{specialized.name}</option>
+                                                <>
+                                                    <FormGroup check inline>
+                                                        <Input
+                                                            className="form-check-input"
+                                                            type="checkbox"
+                                                            onChange={() => this.handleSelect(specialized.id)}
+                                                        />
+                                                        <Label className="form-check-label" check htmlFor="inline-checkbox1">{specialized.name}</Label>
+                                                    </FormGroup>
+                                                </>
+                                            )
+                                            }
+                                            {/* </Input>
+                                        </Col> */}
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
                                         <Col md="2">
                                             <h6>Kỹ năng - Số lượng:</h6></Col>
                                         <Col xs="12" md="10">
-                                            <Button
-                                                style={{ fontWeight: "bold", borderColor: '#20a8d8', color: '#20a8d8', backgroundColor: 'white' }}
-                                                onClick={this.addRow}>Thêm</Button>
+                                            <Button outline onClick={this.addRow}>Thêm</Button>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -352,21 +417,19 @@ class Add_Job extends Component {
                                             {
                                                 arraySkill && arraySkill.map((element, index) =>
                                                     <>
-                                                        <tr style={{ height: '50px' }}>
+                                                        <tr>
                                                             <td>{index + 1}.</td>
-                                                            <td style={{ width: "320px", padding: '5px' }}>
+                                                            <td style={{ width: "350px" }}>
                                                                 {
                                                                     <Input onChange={this.handleInput} type="select" name="skill" onBlur={e => { this.handleOnBlur(e, index) }}>
-                                                                        {skills && skills.map((skill, i) => {
-                                                                            return (
-                                                                                <option value={i}>{skill.name}</option>
-                                                                            )
-                                                                        })}
+                                                                        {skills && skills.map((skill, i) => { this.showHideOption(skill.name, skill.specialized.id, i) }
+                                                                        )
+                                                                        }
                                                                     </Input>
                                                                 }
                                                             </td>
-                                                            <label>:</label>
-                                                            <td style={{ padding: '5px' }}><Input onBlur={e => { this.handleOnBlur(e, index) }} onChange={this.handleInput} type="number" name="number" style={{ width: "170px" }}></Input></td>
+                                                            <td>:</td>
+                                                            <td><Input onBlur={e => { this.handleOnBlur(e, index) }} onChange={this.handleInput} type="number" name="number" style={{ width: "170px" }}></Input></td>
                                                             <td><Button color="danger" onClick={() => this.deleteSkill(index)}>Xoá</Button></td>
                                                         </tr>
                                                     </>
