@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import {Badge, Card, CardBody, CardHeader, Col, Pagination, Row, Table} from 'reactstrap';
-import {Button} from 'reactstrap';
+import React, { Component } from 'react';
+import { Badge, Card, CardBody, CardHeader, Col, Pagination, Row, Table, Input, CardFooter } from 'reactstrap';
+import { Button } from 'reactstrap';
 import ApiServices from '../../service/api-service';
-import {ToastContainer} from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import orderBy from "lodash/orderBy";
 import Toastify from '../../views/Toastify/Toastify';
 import {
@@ -34,7 +34,7 @@ const rowBack = {
 }
 
 const selectWeek = {
-  marginLeft: '45%'
+  marginLeft: '35%'
 }
 
 const tdTableTask = {
@@ -45,7 +45,7 @@ const tdTableTask = {
 const tdMissionTableTask = {
   textAlign: 'center',
   paddingLeft: '75px',
-  paddingRight:'75px'
+  paddingRight: '75px'
 }
 
 
@@ -65,34 +65,46 @@ class Details_Task extends Component {
 
                 <table>
                   <tbody>
-                  <div style={divInforStudent}>
-                    <tr>
-                      <th style={{textAlign: "center"}}>Sinh viên:  </th>
-                      <td>Nguyễn Văn A</td>
-                    </tr>
-                  </div>
-                  <div style={divInforStudent}>
-                    <tr>
-                      <th style={{textAlign: "center"}}>MSSV: </th>
-                      <td> SE62519</td>
-                    </tr>
-                  </div>
-                  <div style={divInforStudent}>
-                    <tr>
-                      <th style={{textAlign: "center"}}>Người phụ trách: </th>
-                      <td> Taskman1</td>
-                    </tr>
-                  </div>
-                  <div style={divInforStudent}>
-                    <tr>
-                      <th style={{textAlign: "center"}}>Chuyên ngành: </th>
-                      <td> JS</td>
-                    </tr>
-                  </div>
+                    <div style={divInforStudent}>
+                      <tr>
+                        <th style={{ textAlign: "center" }}>Sinh viên:&nbsp;</th>
+                        <td>
+                          <Input type="select" style={{ height: "40px", fontWeight: "bold" }}>
+                            <option>
+                              Nguyễn Văn A
+                        </option>
+                            <option>
+                              Nguyễn Văn A
+                        </option>
+                            <option>
+                              Nguyễn Văn A
+                        </option>
+                          </Input>
+                        </td>
+                      </tr>
+                    </div>
+                    <div style={divInforStudent}>
+                      <tr>
+                        <th style={{ textAlign: "center" }}>MSSV:&nbsp;</th>
+                        <td>SE62519</td>
+                      </tr>
+                    </div>
+                    <div style={divInforStudent}>
+                      <tr>
+                        <th style={{ textAlign: "center" }}>Người phụ trách:&nbsp;</th>
+                        <td>Taskman1</td>
+                      </tr>
+                    </div>
+                    <div style={divInforStudent}>
+                      <tr>
+                        <th style={{ textAlign: "center" }}>Chuyên ngành:&nbsp;</th>
+                        <td>JS</td>
+                      </tr>
+                    </div>
                   </tbody>
                 </table>
                 <div style={selectWeek}>
-                  <select>
+                  <Input type="select" style={{ width: "350px" }}>
                     <option>
                       1/1/1997-2/1/1997
                     </option>
@@ -102,34 +114,40 @@ class Details_Task extends Component {
                     <option>
                       1/1/1997-2/1/1997
                     </option>
-                  </select>
+                  </Input>
                 </div>
-                <br/><br/>
-                <table border={'1px'} align={'center'}>
-                  <tr>
-                    <th style={{textAlign: "center"}}>STT</th>
-                    <th style={{textAlign: "center"}}>Nhiệm Vụ</th>
-                    <th style={{textAlign: "center"}}>Mức độ</th>
-                    <th style={{textAlign: "center"}}>Kết quả</th>
-                  </tr>
-                  <tr>
-                    <td style={tdTableTask}>1</td>
-                    <td style={tdMissionTableTask}>Đánh liên minh</td>
-                    <td style={tdTableTask}>Khó</td>
-                    <td style={tdTableTask}>Hoàn thành</td>
-                  </tr>
-                  <tr>
-                    <td style={tdTableTask}>2</td>
-                    <td style={tdMissionTableTask}>Chơi gái</td>
-                    <td style={tdTableTask}>Khó</td>
-                    <td style={tdTableTask}>Hoàn thành</td>
-                  </tr>
-                </table>
+                <br /><br />
+                <Table responsive striped>
+                  <thead>
+                    <tr>
+                      <th style={{ textAlign: "center" }}>STT</th>
+                      <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
+                      <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
+                      <th style={{ textAlign: "center" }}>Hạn cuối</th>
+                      <th style={{ textAlign: "center" }}>Mức độ</th>
+                      <th style={{ textAlign: "center" }}>Kết quả</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style={{ textAlign: "center" }}>1</td>
+                      <td style={{ textAlign: "center" }}>Fix bug</td>
+                      <td style={{ textAlign: "center" }}>Cao</td>
+                      <td style={{ textAlign: "center" }}>01/01/0001</td>
+                      <td style={{ textAlign: "center" }}>Khó</td>
+                      <td style={{ textAlign: "center" }}>Hoàn thành</td>
+                    </tr>
+                  </tbody>
+                </Table>
               </CardBody>
             </Card>
           </Col>
         </Row>
-        <div style={rowBack}><input type={"button"} name={"btnBack"} style={btnBack} value={"Trở lại"}/></div>
+        <Row>
+          <Col xs="3" sm="3">
+            <Button color="primary" block>Trở về</Button>
+          </Col>
+        </Row>
       </div>
     );
   }
