@@ -60,8 +60,8 @@ class DefaultHeader extends Component {
               {/* <DropdownItem><i className="fa fa-tasks"></i> Tasks<Badge color="danger">42</Badge></DropdownItem> */}
               <DropdownItem><i className="fa fa-comments"></i> Comments<Badge color="warning">42</Badge></DropdownItem>
               <DropdownItem><i className="fa fa-comments"></i>
-              <NavItem className="d-md-down-none">
-                  <NavLink to="account/changepassword" className="nav-link">Đổi mật khẩu</NavLink>
+                <NavItem className="d-md-down-none">
+                  <NavLink to="account/changepassword" className="nav-link"> Đổi mật khẩu</NavLink>
                 </NavItem>
               </DropdownItem>
               {/* <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem> */}
@@ -71,7 +71,7 @@ class DefaultHeader extends Component {
               <DropdownItem><i className="fa fa-file"></i> Projects<Badge color="primary">42</Badge></DropdownItem>
               <DropdownItem divider />
               <DropdownItem><i className="fa fa-shield"></i> Lock Account</DropdownItem> */}
-              <DropdownItem onClick={e => this.props.onLogout(e)}><i className="fa fa-lock"></i> Logout</DropdownItem>
+              <DropdownItem onClick={e => this.props.onLogout(e)}><i className="fa fa-lock"></i> Đăng xuất</DropdownItem>
             </DropdownMenu>
           </AppHeaderDropdown>
         </Nav>

@@ -162,7 +162,7 @@ class student_list extends Component {
                                                 <td style={{ textAlign: "center" }}>{student.option2 === null ? 'N/A' : student.option2}</td>
                                                 <td style={{ textAlign: "center" }}>{student.option1 === null && student.option2 === null ? 'N/A' : 'Công ty ABC'}</td>
                                                 <td style={{ textAlign: "center" }}>
-                                                    <Button onClick={this.openPopupRegist} style={{ fontWeight: "bold", borderWidth: 0 }} color="primary">Đăng ký</Button>
+                                                    <Button onClick={this.openPopupRegist} color="primary">Đăng ký</Button>
                                                 </td>
                                             </tr>
                                         )
@@ -194,7 +194,7 @@ class student_list extends Component {
                             <tbody>
                                 <tr>
                                     <td>Công ty A</td>
-                                    <td style={{ textAlign: "right" }}><Button style={{ fontWeight: "bold", backgroundColor: "#59c9e7", color: "white", borderWidth: 0 }}>Chọn</Button></td>
+                                    <td style={{ textAlign: "right" }}><Button color="primary">Chọn</Button></td>
                                 </tr>
                             </tbody>
                         </Table>

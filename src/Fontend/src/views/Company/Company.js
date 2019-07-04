@@ -55,7 +55,7 @@ class Company extends Component {
             email: '',
             business_address: '',
             business_phone: '',
-            business_website: ''
+            business_website: '',
         }
     }
 

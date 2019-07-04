@@ -452,10 +452,7 @@ class Add_Job extends Component {
                                         <Col md="2">
                                             <h6>Kỹ năng - Số lượng:</h6></Col>
                                         <Col xs="12" md="10">
-                                            <Button
-                                                id="btnAddRow"
-                                                style={{ fontWeight: "bold", borderColor: '#20a8d8', color: '#20a8d8', backgroundColor: 'white' }}
-                                                onClick={this.addRow}>Thêm</Button>
+                                            <Button outline onClick={this.addRow}>Thêm</Button>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
