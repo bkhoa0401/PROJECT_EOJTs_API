@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -33,12 +34,17 @@ public class Task {
     @Column(name = "state")
     private boolean state;
 
+    @Column(name = "description",columnDefinition = "NVARCHAR(255)")
+    private String description;
+
     @ManyToOne
+    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "supervisor_email")
     private Supervisor supervisor;
 
     @ManyToOne
+    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "ojt_enrollment_id")
     private Ojt_Enrollment  ojt_enrollment;
@@ -105,5 +111,13 @@ public class Task {
 
     public void setOjt_enrollment(Ojt_Enrollment ojt_enrollment) {
         this.ojt_enrollment = ojt_enrollment;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

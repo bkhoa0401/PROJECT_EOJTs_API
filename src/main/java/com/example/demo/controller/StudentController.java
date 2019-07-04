@@ -43,6 +43,12 @@ public class StudentController {
     @Autowired
     Job_PostService job_postService;
 
+    @Autowired
+    TaskService taskService;
+
+    @Autowired
+    EvaluationService evaluationService;
+
     @PostMapping
     public ResponseEntity<Void> addListStudent(@RequestBody List<Student> studentList) throws Exception {
 
@@ -447,6 +453,40 @@ public class StudentController {
         }
         if(business_jobPostDTOS!=null){
             return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOS,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PutMapping("/updateLinkAvatar")
+    public ResponseEntity<Void> updateLinkAvatar(@RequestParam String avatar){
+        String email=getEmailFromToken();
+        boolean update=studentService.updateLinkAvatar(email,avatar);
+        if(update==true){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/tasks")
+    @ResponseBody
+    public ResponseEntity<List<Task>> getTasksOfStudent(){
+        String email=getEmailFromToken();
+
+        List<Task> taskList=taskService.findTaskByStudentEmail(email);
+        if(taskList!=null){
+            return new ResponseEntity<List<Task>>(taskList,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/evaluations")
+    @ResponseBody
+    public ResponseEntity<List<Evaluation>> getEvaluationsOfStudent(){
+        String email=getEmailFromToken();
+
+        List<Evaluation> evaluationList=evaluationService.getEvaluationsByStudentEmail(email);
+        if(evaluationList!=null){
+            return new ResponseEntity<List<Evaluation>>(evaluationList,HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

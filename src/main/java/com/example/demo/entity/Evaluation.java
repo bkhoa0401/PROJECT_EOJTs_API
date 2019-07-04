@@ -1,9 +1,11 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.sql.Date;
 
 @Entity
 @Table(name = "evaluation")
@@ -31,12 +33,21 @@ public class Evaluation {
     @Column(name = "student_code")
     private String student_code;
 
+    @Column(name = "title", columnDefinition = "NVARCHAR(255)")
+    private String title;
+
+    @Column(name = "timeCreated")
+    private Date timeCreated;
+
+
     @ManyToOne
+    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "supervisor_email")
     private Supervisor  supervisor;
 
     @ManyToOne
+    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "ojt_enrollment_id")
     private Ojt_Enrollment  ojt_enrollment;
@@ -87,5 +98,37 @@ public class Evaluation {
 
     public void setStudent_code(String student_code) {
         this.student_code = student_code;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Date getTimeCreated() {
+        return timeCreated;
+    }
+
+    public void setTimeCreated(Date timeCreated) {
+        this.timeCreated = timeCreated;
+    }
+
+    public Supervisor getSupervisor() {
+        return supervisor;
+    }
+
+    public void setSupervisor(Supervisor supervisor) {
+        this.supervisor = supervisor;
+    }
+
+    public Ojt_Enrollment getOjt_enrollment() {
+        return ojt_enrollment;
+    }
+
+    public void setOjt_enrollment(Ojt_Enrollment ojt_enrollment) {
+        this.ojt_enrollment = ojt_enrollment;
     }
 }

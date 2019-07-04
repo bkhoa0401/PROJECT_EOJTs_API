@@ -54,7 +54,7 @@ public class Student implements Serializable {
     @Column(name = "code")
     private String code;
 
-    @Column(name = "avatarLink")
+    @Column(name = "avatarLink",columnDefinition = "varchar(MAX)")
     private String avatarLink;
 
     @Column(name = "resumeLink")
