@@ -65,5 +65,10 @@ export default {
       url: '/Job_Post/Job_Post_List',
       icon: 'icon-star',
     },
+    {
+      name: 'Thông báo',
+      url: '/InformMessage/InformMessage',
+      icon: 'icon-star',
+    },
   ]
 };

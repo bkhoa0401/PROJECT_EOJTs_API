@@ -51,6 +51,9 @@ const tdMissionTableTask = {
 
 class Details_Task extends Component {
 
+  handleDirect = (uri) => {
+    this.props.history.push(uri);
+  }
 
   render() {
     return (
@@ -72,13 +75,13 @@ class Details_Task extends Component {
                           <Input type="select" style={{ height: "40px", fontWeight: "bold" }}>
                             <option>
                               Nguyễn Văn A
-                        </option>
+                            </option>
                             <option>
                               Nguyễn Văn A
-                        </option>
+                            </option>
                             <option>
                               Nguyễn Văn A
-                        </option>
+                            </option>
                           </Input>
                         </td>
                       </tr>
@@ -91,14 +94,14 @@ class Details_Task extends Component {
                     </div>
                     <div style={divInforStudent}>
                       <tr>
-                        <th style={{ textAlign: "center" }}>Người phụ trách:&nbsp;</th>
-                        <td>Taskman1</td>
+                        <th style={{ textAlign: "center" }}>Chuyên ngành:&nbsp;</th>
+                        <td>JS</td>
                       </tr>
                     </div>
                     <div style={divInforStudent}>
                       <tr>
-                        <th style={{ textAlign: "center" }}>Chuyên ngành:&nbsp;</th>
-                        <td>JS</td>
+                        <th style={{ textAlign: "center" }}>Người phụ trách:&nbsp;</th>
+                        <td>Taskman1</td>
                       </tr>
                     </div>
                   </tbody>
@@ -144,8 +147,8 @@ class Details_Task extends Component {
           </Col>
         </Row>
         <Row>
-          <Col xs="3" sm="3">
-            <Button color="primary" block>Trở về</Button>
+          <Col style={{paddingLeft:"45%"}}>
+            <Button color="primary"  onClick={() => this.handleDirect('/official_list')}>Trở về</Button>
           </Col>
         </Row>
       </div>

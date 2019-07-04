@@ -6,7 +6,6 @@ import Toastify from '../Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
 
-
 class business_list extends Component {
 
     constructor(props) {
