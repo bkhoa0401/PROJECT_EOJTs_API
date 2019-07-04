@@ -88,6 +88,7 @@ class Add_Job extends Component {
                 // skillItem: skills[0]
             });
         }
+        document.getElementById('btnAddRow').setAttribute("disabled", "disabled");
     }
 
     handleReset = async () => {
@@ -190,27 +191,76 @@ class Add_Job extends Component {
     }
 
     handleSelect = async (selectSpecialized) => {
-        let tmpFlagSelect = this.state.flagSelect;
-        for (let index = 0; index < this.state.choseSpecialized.length; index++) {
-            if (this.state.choseSpecialized[index] === selectSpecialized) {
-                tmpFlagSelect = true;
-                this.state.choseSpecialized.splice(index, 1);
+        let isChecked = false;
+
+        for (let l = 0; l < this.state.specializeds.length; l++) {
+            // console.log(`cb${selectSpecialized}`);
+            if (document.getElementById(`cb${this.state.specializeds[l].id}`).checked) {
+                isChecked = true;
                 break;
             }
         }
-        if (tmpFlagSelect === false) {
-            await this.setState({
-                choseSpecialized: [...this.state.choseSpecialized, selectSpecialized],
-                isChecked: false,
-            })
-            console.log(this.state.choseSpecialized);
-        } else if (tmpFlagSelect === true) {
-            await this.setState({
-                choseSpecialized: this.state.choseSpecialized,
-                flagSelect: false,
-                isChecked: true,
+
+        if (isChecked) {
+
+            document.getElementById('btnAddRow').removeAttribute("disabled");
+
+            const skillsChoosen = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${selectSpecialized}`);
+
+            for (let i = 0; i < skillsChoosen.length; i++) {
+                if (document.getElementById(`cb${selectSpecialized}`).checked) {
+                    await this.setState({
+                        choseSpecialized: [...this.state.choseSpecialized, skillsChoosen[i].id],
+
+                    })
+                } else {
+                    for (let j = 0; j < this.state.choseSpecialized.length; j++) {
+                        if (this.state.choseSpecialized[j] === skillsChoosen[i].id) {
+                            this.state.choseSpecialized.splice(j, 1);
+                        }
+                    }
+                    this.setState({
+                    })
+                }
+            }
+        } else {
+            document.getElementById('btnAddRow').setAttribute("disabled", "disabled");
+            this.state.choseSpecialized = [];
+            this.setState({
             })
         }
+
+        // console.log(this.state.choseSpecialized);
+    }
+
+    showHideOption(skillName, skillSpecializedId, i) {
+        // console.log(this.state.choseSpecialized);
+        // console.log(skillSpecializedId);
+        // console.log(skillName);
+        // for (let i = 0; i < this.state.skills.length; i++) {
+        //     for (let j = 0; j < this.state.choseSpecialized.length; j++) {
+        //         if (this.state.choseSpecialized[j].id == this.state.skills[i]) {
+        //             return (
+        //                 <option value={i}>{skillName}</option>
+        //             )
+        //         } else {
+        //             return (
+        //                 <option value={i} hidden>{skillName}</option>
+        //             )
+        //         }
+        //     }
+
+        // }
+        // if (this.state.choseSpecialized.includes(skillSpecializedId)) {
+        // <option value={i}>{skillName}</option>
+        // } else if (!this.state.choseSpecialized.includes(skillSpecializedId)) {
+        //     return (
+        //         <option value={i} hidden>{skillName}</option>
+        //     )
+        // }
+        return (
+            <option value={i} hidden>{skillName}</option>
+        )
     }
 
     // isSelect = (skillSpecializedId) => {
@@ -267,7 +317,7 @@ class Add_Job extends Component {
             if (tmpSkill == null && tmpNumber != null) {
                 skillsForSave.push(skills[value]);
             } else if (tmpSkill == null && tmpNumber == null) {
-                numbersForSave.push("");
+                numbersForSave.push(0);
                 skillsForSave.push(skills[value]);
             } else {
                 skillsForSave[index] = skills[value];
@@ -276,12 +326,15 @@ class Add_Job extends Component {
             if (tmpNumber == null && tmpSkill != null) {
                 numbersForSave.push(value);
             } else if (tmpNumber == null && tmpSkill == null) {
-                skillsForSave.push(skills[0]);
+                skillsForSave.push(tmpSkill);
                 numbersForSave.push(value);
             } else {
                 numbersForSave[index] = value;
             }
         }
+
+        console.log(skillsForSave);
+        console.log(numbersForSave);
     }
 
     handleSubmit = async () => {
@@ -327,17 +380,6 @@ class Add_Job extends Component {
         }
     }
 
-    showHideOption = (skillName, skillSpecializedId, i) => {
-        if (this.state.choseSpecialized.includes(skillSpecializedId)) {
-            return (
-                <option value={i}>{skillName}</option>
-            )
-        } else if (!this.state.choseSpecialized.includes(skillSpecializedId)) {
-            return (
-                <option value={i} hidden>{skillName}</option>
-            )
-        }
-    }
 
     render() {
         const { arraySkill, arrayQuantity, description, contact, interview_process, interest, specializeds, specializedItem, skills, choseSpecialized } = this.state;
@@ -392,6 +434,7 @@ class Add_Job extends Component {
                                                 <>
                                                     <FormGroup check inline>
                                                         <Input
+                                                            id={'cb' + specialized.id}
                                                             className="form-check-input"
                                                             type="checkbox"
                                                             onChange={() => this.handleSelect(specialized.id)}
@@ -410,6 +453,7 @@ class Add_Job extends Component {
                                             <h6>Kỹ năng - Số lượng:</h6></Col>
                                         <Col xs="12" md="10">
                                             <Button
+                                                id="btnAddRow"
                                                 style={{ fontWeight: "bold", borderColor: '#20a8d8', color: '#20a8d8', backgroundColor: 'white' }}
                                                 onClick={this.addRow}>Thêm</Button>
                                         </Col>
@@ -424,9 +468,21 @@ class Add_Job extends Component {
                                                             <td style={{ width: "350px" }}>
                                                                 {
                                                                     <Input onChange={this.handleInput} type="select" name="skill" onBlur={e => { this.handleOnBlur(e, index) }}>
-                                                                        {skills && skills.map((skill, i) => { this.showHideOption(skill.name, skill.specialized.id, i) }
+                                                                        {/* {skills && skills.map((skill, i) => { this.showHideOption(skill.name, skill.id, i) }
                                                                         )
-                                                                        }
+                                                                        } */}
+
+                                                                        {skills && skills.map((skill, i) => {
+                                                                            if (this.state.choseSpecialized.includes(skill.id)) {
+                                                                                return (
+                                                                                    <option value={i}>{skill.name}</option>
+                                                                                )
+                                                                            } else {
+                                                                                return (
+                                                                                    <option value={i} hidden disabled>{skill.name}</option>
+                                                                                )
+                                                                            }
+                                                                        })}
                                                                     </Input>
                                                                 }
                                                             </td>
