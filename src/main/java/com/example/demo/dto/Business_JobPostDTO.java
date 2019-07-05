@@ -3,19 +3,17 @@ package com.example.demo.dto;
 import com.example.demo.entity.Business;
 import com.example.demo.entity.Job_Post;
 
-import java.util.Collections;
-import java.util.List;
 
-public class Business_JobPostDTO {
+public class Business_JobPostDTO implements Comparable<Business_JobPostDTO> {
     private Business business;
-    private List<Job_Post> job_postList;
+    private Job_Post job_post;
 
     public Business_JobPostDTO() {
     }
 
-    public Business_JobPostDTO(Business business, List<Job_Post> job_postList) {
+    public Business_JobPostDTO(Business business, Job_Post job_post) {
         this.business = business;
-        this.job_postList = job_postList;
+        this.job_post = job_post;
     }
 
     public Business getBusiness() {
@@ -26,12 +24,16 @@ public class Business_JobPostDTO {
         this.business = business;
     }
 
-    public List<Job_Post> getJob_postList() {
-        Collections.sort(job_postList);
-        return job_postList;
+    public Job_Post getJob_post() {
+        return job_post;
     }
 
-    public void setJob_postList(List<Job_Post> job_postList) {
-        this.job_postList = job_postList;
+    public void setJob_post(Job_Post job_post) {
+        this.job_post = job_post;
+    }
+
+    @Override
+    public int compareTo(Business_JobPostDTO business_jobPostDTO) {
+        return this.job_post.compareTo(business_jobPostDTO.getJob_post());
     }
 }

@@ -4,6 +4,7 @@ import com.example.demo.entity.Job_Post_Skill;
 import com.example.demo.repository.Job_Post_SkillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class Job_Post_SkillService {
@@ -12,6 +13,21 @@ public class Job_Post_SkillService {
 
     public void saveJobPostSkill(Job_Post_Skill job_post_skill) {
         if (job_post_skill != null) {
+            job_post_skillRepository.save(job_post_skill);
+
+        }
+    }
+
+    @Transactional
+    public void updateJobPostSkill(Job_Post_Skill job_post_skill) {
+         Job_Post_Skill job_post_skill_isExisted=job_post_skillRepository.getOne(job_post_skill.getId());
+        if (job_post_skill != null) {
+            job_post_skill_isExisted.setId(job_post_skill.getId());
+            job_post_skill_isExisted.setSkill(job_post_skill.getSkill());
+            job_post_skill_isExisted.setNumber(job_post_skill.getNumber());
+            job_post_skill_isExisted.setJob_post(job_post_skill.getJob_post());
+//
+            //job_post_skillRepository.save(job_post_skill);
             job_post_skillRepository.save(job_post_skill);
         }
     }

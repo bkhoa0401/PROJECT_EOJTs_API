@@ -39,7 +39,8 @@ public class Job_Post implements Comparable<Job_Post> {
     @Column(name = "interest", columnDefinition = "NVARCHAR(500)")
     private String interest;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    //@ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore
     @JoinColumn(name = "ojt_enrollment_id")
