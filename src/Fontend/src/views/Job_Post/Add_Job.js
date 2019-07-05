@@ -42,12 +42,6 @@ class Add_Job extends Component {
             interview_process: '',
             interest: '',
             job_post_skills: [
-                // {
-                //     skill: {
-                //         id: 3
-                //     },
-                //     number: 3333
-                // }
             ],
 
 
@@ -193,6 +187,8 @@ class Add_Job extends Component {
     handleSelect = async (selectSpecialized) => {
         let isChecked = false;
 
+
+
         for (let l = 0; l < this.state.specializeds.length; l++) {
             // console.log(`cb${selectSpecialized}`);
             if (document.getElementById(`cb${this.state.specializeds[l].id}`).checked) {
@@ -233,64 +229,10 @@ class Add_Job extends Component {
         // console.log(this.state.choseSpecialized);
     }
 
-    showHideOption(skillName, skillSpecializedId, i) {
-        // console.log(this.state.choseSpecialized);
-        // console.log(skillSpecializedId);
-        // console.log(skillName);
-        // for (let i = 0; i < this.state.skills.length; i++) {
-        //     for (let j = 0; j < this.state.choseSpecialized.length; j++) {
-        //         if (this.state.choseSpecialized[j].id == this.state.skills[i]) {
-        //             return (
-        //                 <option value={i}>{skillName}</option>
-        //             )
-        //         } else {
-        //             return (
-        //                 <option value={i} hidden>{skillName}</option>
-        //             )
-        //         }
-        //     }
-
-        // }
-        // if (this.state.choseSpecialized.includes(skillSpecializedId)) {
-        // <option value={i}>{skillName}</option>
-        // } else if (!this.state.choseSpecialized.includes(skillSpecializedId)) {
-        //     return (
-        //         <option value={i} hidden>{skillName}</option>
-        //     )
-        // }
-        return (
-            <option value={i} hidden>{skillName}</option>
-        )
-    }
-
-    // isSelect = (skillSpecializedId) => {
-    //     let flagCheck = choseSpecialized.includes(skillSpecializedId);
-    //     if (flagCheck === true) {
-    //         this.setState({
-    //             isSelected: true,
-    //         })
-    //     } else if (flagCheck === false) {
-    //         this.setState({
-    //             isSelected: false,
-    //         })
-    //     }
-    // }
-
     handleInput = async (event) => {
         const { name, value } = event.target;
         const { specializeds, skills, isChangeSkill, isChangeSpecialized } = this.state;
 
-        // if (name.includes('specialized')) {
-        //     let specializedId = specializeds[value].id;
-
-
-        //     await this.setState({
-        //         isChangeSpecialized: true,
-        //         specializedId,
-        //     })
-
-
-        // } else 
         if (name.includes('skill')) {
             await this.setState({
                 isChangeSkill: true,
@@ -317,7 +259,7 @@ class Add_Job extends Component {
             if (tmpSkill == null && tmpNumber != null) {
                 skillsForSave.push(skills[value]);
             } else if (tmpSkill == null && tmpNumber == null) {
-                numbersForSave.push(0);
+                numbersForSave.push("");
                 skillsForSave.push(skills[value]);
             } else {
                 skillsForSave[index] = skills[value];
@@ -452,7 +394,7 @@ class Add_Job extends Component {
                                         <Col md="2">
                                             <h6>Kỹ năng - Số lượng:</h6></Col>
                                         <Col xs="12" md="10">
-                                            <Button outline onClick={this.addRow}>Thêm</Button>
+                                            <Button color="primary" id="btnAddRow" outline onClick={this.addRow}>Thêm</Button>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -464,7 +406,7 @@ class Add_Job extends Component {
                                                             <td>{index + 1}.</td>
                                                             <td style={{ width: "350px" }}>
                                                                 {
-                                                                    <Input onChange={this.handleInput} type="select" name="skill" onBlur={e => { this.handleOnBlur(e, index) }}>
+                                                                    <Input autoFocus="true" id="selectSkill" onChange={this.handleInput} type="select" name="skill" onBlur={e => { this.handleOnBlur(e, index) }}>
                                                                         {/* {skills && skills.map((skill, i) => { this.showHideOption(skill.name, skill.id, i) }
                                                                         )
                                                                         } */}
@@ -472,11 +414,11 @@ class Add_Job extends Component {
                                                                         {skills && skills.map((skill, i) => {
                                                                             if (this.state.choseSpecialized.includes(skill.id)) {
                                                                                 return (
-                                                                                    <option value={i}>{skill.name}</option>
+                                                                                    <option id={'op' + i} value={i}>{skill.name}</option>
                                                                                 )
                                                                             } else {
                                                                                 return (
-                                                                                    <option value={i} hidden disabled>{skill.name}</option>
+                                                                                    <option id={'op' + i} value={i} hidden disabled>{skill.name}</option>
                                                                                 )
                                                                             }
                                                                         })}
