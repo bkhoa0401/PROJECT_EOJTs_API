@@ -208,7 +208,7 @@ class Official_List extends Component {
 
                             </td>
                             <td style={{ textAlign: "center" }}>
-                              <Button style={{ width: '100px' }} color="primary" type="submit" id="btnSave">Nhiệm vụ</Button>
+                              <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/details_task')}>Nhiệm vụ</Button>
                             </td>
                           </tr>
                         )
