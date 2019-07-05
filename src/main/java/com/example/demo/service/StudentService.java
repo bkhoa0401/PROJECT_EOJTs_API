@@ -1,9 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Job_Post;
-import com.example.demo.entity.Skill;
-import com.example.demo.entity.Student;
-import com.example.demo.entity.Supervisor;
+import com.example.demo.entity.*;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.SupervisorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +24,9 @@ public class StudentService {
 
     @Autowired
     SkillService skillService;
+
+    @Autowired
+    BusinessService businessService;
 
     public Student getStudentByEmail(String email) {
         Student student = studentRepository.findByEmail(email);
@@ -232,4 +232,23 @@ public class StudentService {
         }
         return false;
     }
+
+    public List<Business> getBusinessByOptionStudent(String studentEmail) {
+
+        Student student = studentRepository.findByEmail(studentEmail);
+
+        String option1=student.getOption1();
+        String option2=student.getOption2();
+
+        Business businessOption1=businessService.findBusinessByName((option1));
+        Business businessOption2=businessService.findBusinessByName((option2));
+
+        List<Business> businessList=new ArrayList<>();
+        businessList.add(businessOption1);
+        businessList.add(businessOption2);
+
+        return businessList;
+    }
+
+
 }

@@ -44,4 +44,16 @@ public class InvitationService {
         }
         return null;
     }
+
+    public boolean updateStateOfInvitation(int id) {
+        Invitation invitation = invitationRepository.findInvitationById(id);
+        if (invitation != null) {
+            invitation.setState(true);
+            invitationRepository.save(invitation);
+            return true;
+        }
+        return false;
+    }
+
+
 }
