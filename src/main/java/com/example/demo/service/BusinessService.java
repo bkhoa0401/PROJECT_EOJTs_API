@@ -83,13 +83,16 @@ public class BusinessService {
         List<Student> studentListSuggest = new ArrayList<>();
 
         //lay duoc list skill cua doanh nghiep
-        List<Skill> skillListBusiness = new ArrayList<>();
+        //List<Skill> skillListBusiness = new ArrayList<>();
+        List<Skill> skillListOfAJobPost = new ArrayList<>();
 
+        List<Job_Post> job_postListOfBusiness = new ArrayList<>();
         for (int i = 0; i < ojt_enrollment.getJob_posts().size(); i++) {
-            for (int j = 0; j < ojt_enrollment.getJob_posts().get(i).getJob_post_skills().size(); j++) {
-                Skill skill = ojt_enrollment.getJob_posts().get(i).getJob_post_skills().get(j).getSkill();
-                skillListBusiness.add(skill);
-            }
+            job_postListOfBusiness.add(ojt_enrollment.getJob_posts().get(i)); // lay duoc list job post
+//            for (int j = 0; j < ojt_enrollment.getJob_posts().get(i).getJob_post_skills().size(); j++) {
+//                Skill skill = ojt_enrollment.getJob_posts().get(i).getJob_post_skills().get(j).getSkill();
+//                skillListBusiness.add(skill);
+//            }
         }
 
         List<Student> studentList = studentService.getAllStudents();
@@ -97,13 +100,26 @@ public class BusinessService {
         for (int i = 0; i < studentList.size(); i++) {
             List<Skill> skillListOfAStudent = studentList.get(i).getSkills();
 
-            //get ra list skill phu hop theo nganh cua tung thang student
-            List<Skill> skills=getListSkillBySpecializedOfStudent(skillListBusiness,studentList.get(i).getSpecialized().getId());
-            float result = studentService.compareSkillsStudentAndSkillsJobPost(skillListOfAStudent, skills);
 
-            if (result > 0.5) {
-                studentListSuggest.add(studentList.get(i));
+            for (int j = 0; j < job_postListOfBusiness.size(); j++) {
+                Job_Post job_post = job_postListOfBusiness.get(j);
+                for (int k = 0; k < job_post.getJob_post_skills().size(); k++) {
+                    Skill skill = job_post.getJob_post_skills().get(k).getSkill();
+                    skillListOfAJobPost.add(skill);
+                }
+                //get ra list skill phu hop theo nganh cua tung thang student
+                List<Skill> skills = getListSkillBySpecializedOfStudent(skillListOfAJobPost, studentList.get(i).getSpecialized().getId());
+
+                float result = studentService.compareSkillsStudentAndSkillsJobPost(skillListOfAStudent, skills);
+
+                if (result >= 0.5) {
+                    if(!studentListSuggest.contains(studentList.get(i))){
+                        studentListSuggest.add(studentList.get(i));
+                    }
+                }
+                skillListOfAJobPost=new ArrayList<>();
             }
+
         }
         return studentListSuggest;
     }

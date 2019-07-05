@@ -19,4 +19,6 @@ public interface BusinessRepository extends JpaRepository<Business, String> {
 
     @Query(value = "select b from Business b order by b.rateAverage DESC")
     List<Business> findTop5OrderByRateAverageDesc();
+
+
 }

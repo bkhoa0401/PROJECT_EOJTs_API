@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -30,14 +31,17 @@ public class Event {
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "admin_email")
+    @JsonIgnore
     private Admin  admin;
 
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "business_email")
+    @JsonIgnore
     private Business  business;
 
     @ManyToMany(mappedBy = "events")
+    @JsonIgnore
 //    @JsonBackReference
     private List<Student> students;
 
