@@ -22,4 +22,6 @@ public interface StudentRepository extends JpaRepository<Student, String> {
     List<Student> findStudentsByAcceptedOption1TrueAndAcceptedOption2True();
 
     List<Student> findStudentsByAcceptedOption1FalseAndAcceptedOption2False();
+
+    List<Student> findStudentsBySupervisorEmail(String email);
 }
