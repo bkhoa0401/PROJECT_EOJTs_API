@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -515,6 +516,7 @@ public class StudentController {
 
         List<Event> eventList = eventService.getEventList(email);
         if (eventList != null) {
+            Collections.sort(eventList);
             return new ResponseEntity<List<Event>>(eventList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);

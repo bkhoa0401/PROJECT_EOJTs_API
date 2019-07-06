@@ -70,5 +70,10 @@ export default {
       url: '/InformMessage/InformMessage',
       icon: 'icon-star',
     },
+    {
+      name: 'Báo cáo',
+      url: '/Report/Report',
+      icon: 'icon-star',
+    },
   ]
 };

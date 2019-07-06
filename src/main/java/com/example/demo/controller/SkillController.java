@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 
+import com.example.demo.dto.SpecializedDTO;
 import com.example.demo.entity.Skill;
 import com.example.demo.service.SkillService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,5 +111,19 @@ public class SkillController {
         } else {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/byListSpecializedId")
+    @ResponseBody
+    public ResponseEntity<List<Skill>> getListSkillByListSpecializedId(@RequestBody List<SpecializedDTO> listSpecializedId) {
+        List<Skill> skillList = new ArrayList<>();
+        for (int i = 0; i < listSpecializedId.size(); i++) {
+            List<Skill> skillsBySpecializedId = skillService.getListSkillBySpecialized(listSpecializedId.get(i).getId());
+            skillList.addAll(skillsBySpecializedId);
+        }
+        if (skillList != null) {
+            return new ResponseEntity<List<Skill>>(skillList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 }

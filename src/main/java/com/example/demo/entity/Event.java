@@ -11,17 +11,17 @@ import java.util.List;
 
 @Entity
 @Table(name = "event")
-public class Event {
+public class Event implements Comparable<Event> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
 
-    @Column(name = "title",columnDefinition = "NVARCHAR(150)")
+    @Column(name = "title", columnDefinition = "NVARCHAR(150)")
     private String title;
 
 
-    @Column(name = "description",columnDefinition = "NVARCHAR(150)")
+    @Column(name = "description", columnDefinition = "NVARCHAR(150)")
     private String description;
 
 
@@ -32,13 +32,13 @@ public class Event {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "admin_email")
     @JsonIgnore
-    private Admin  admin;
+    private Admin admin;
 
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "business_email")
     @JsonIgnore
-    private Business  business;
+    private Business business;
 
     @ManyToMany(mappedBy = "events")
     @JsonIgnore
@@ -91,5 +91,10 @@ public class Event {
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    @Override
+    public int compareTo(Event event) {
+        return event.getTime_created().compareTo(this.getTime_created());
     }
 }

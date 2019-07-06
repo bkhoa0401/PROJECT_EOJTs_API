@@ -237,17 +237,25 @@ public class StudentService {
 
         Student student = studentRepository.findByEmail(studentEmail);
 
-        String option1=student.getOption1();
-        String option2=student.getOption2();
+        String option1 = student.getOption1();
+        String option2 = student.getOption2();
 
-        Business businessOption1=businessService.findBusinessByName((option1));
-        Business businessOption2=businessService.findBusinessByName((option2));
+        Business businessOption1 = businessService.findBusinessByName((option1));
+        Business businessOption2 = businessService.findBusinessByName((option2));
 
-        List<Business> businessList=new ArrayList<>();
+        List<Business> businessList = new ArrayList<>();
         businessList.add(businessOption1);
         businessList.add(businessOption2);
 
         return businessList;
+    }
+
+    public List<Student> getAllStudentOfASupervisor(String email) {
+        List<Student> studentList = studentRepository.findStudentsBySupervisorEmail(email);
+        if (studentList != null) {
+            return studentList;
+        }
+        return null;
     }
 
 

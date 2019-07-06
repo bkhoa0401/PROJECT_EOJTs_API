@@ -36,11 +36,22 @@ public class AdminController {
         List<Student> studentListPassOnlyOption1 = studentService.getAllStudentByStatusOption(1); // only pass nv1
         List<Student> studentListPassOnlyOption2 = studentService.getAllStudentByStatusOption(2); // only pass nv2
 
-        List<Student> listTotalStudentPassOnlyOption1OrOption2=new ArrayList<>();
+        List<Student> listTotalStudentPassOnlyOption1OrOption2 = new ArrayList<>();
         listTotalStudentPassOnlyOption1OrOption2.addAll(studentListPassOnlyOption1);
         listTotalStudentPassOnlyOption1OrOption2.addAll(studentListPassOnlyOption2);
 
         ojt_enrollmentService.updateStudentToBusinessPassOption1OrOption2(listTotalStudentPassOnlyOption1OrOption2);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    //get all student to send inform message
+    @GetMapping("/students")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getAllStudentToSendInform() {
+        List<Student> studentList = studentService.getAllStudents();
+        if (studentList != null) {
+            return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 }
