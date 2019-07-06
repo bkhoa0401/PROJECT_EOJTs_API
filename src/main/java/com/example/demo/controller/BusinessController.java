@@ -257,7 +257,7 @@ public class BusinessController {
 
         List<Job_Post_Skill> job_post_skills = job_post.getJob_post_skills();
         for (int i = 0; i < job_post_skills.size(); i++) {
-            Job_Post_Skill job_post_skill=job_post_skills.get(i);
+            Job_Post_Skill job_post_skill = job_post_skills.get(i);
             job_post_skill.setJob_post(job_post);
             job_post_skillService.updateJobPostSkill(job_post_skill);
         }
@@ -302,24 +302,31 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-    //get all job post of a business
+    //get all job post of a business for student
     @GetMapping("/getAllJobPostABusiness")
     @ResponseBody
-    public ResponseEntity<Business_ListJobPostDTO> getAllJobPostOfABusiness() {
+    public ResponseEntity<List<Business_JobPostDTO>> getAllJobPostOfABusiness() {
         String businessEmail = getEmailFromToken();
 
         Business business = businessService.getBusinessByEmail(businessEmail);
 
         Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(business);
 
-        Business_ListJobPostDTO business_jobPostDTO = new Business_ListJobPostDTO();
+        List<Business_JobPostDTO> business_jobPostDTOList = new ArrayList<>();
+
+        Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
 
         List<Job_Post> job_postList = job_postService.getAllJobPostOfBusiness(ojt_enrollment);
+        for (int i = 0; i < job_postList.size(); i++) {
+            business_jobPostDTO.setBusiness(business);
+            business_jobPostDTO.setJob_post(job_postList.get(i));
+            business_jobPostDTOList.add(business_jobPostDTO);
+            business_jobPostDTO = new Business_JobPostDTO();
+        }
 
-        business_jobPostDTO.setJob_postList(job_postList);
-        business_jobPostDTO.setBusiness(ojt_enrollment.getBusiness());
         if (job_postList != null) {
-            return new ResponseEntity<Business_ListJobPostDTO>(business_jobPostDTO, HttpStatus.OK);
+            Collections.sort(business_jobPostDTOList);
+            return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
