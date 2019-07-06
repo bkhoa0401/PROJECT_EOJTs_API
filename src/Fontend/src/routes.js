@@ -70,6 +70,8 @@ const Job_Post_List_HR = React.lazy(() => import('./views/Job_Post/Job_Post_List
 const InformMessage = React.lazy(() => import('./views/InformMessage/InformMessage.js'));
 const InformMessage_Detail = React.lazy(() => import('./views/InformMessage/InformMessage_Detail.js'));
 const Create_InformMessage = React.lazy(() => import('./views/InformMessage/Create_InformMessage.js'));
+const Report = React.lazy(() => import('./views/Report/Report.js'));
+const Report_Detail = React.lazy(() => import('./views/Report/Report_Detail.js'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -152,6 +154,8 @@ const routes = [
   { path: '/informmessage/informmessage', exact: true, name: 'Thông báo', component: InformMessage },
   { path: '/informmessage/informmessage_detail/:id', exact: true, name: 'Chi tiết thông báo', component: InformMessage_Detail },
   { path: '/informmessage/create_informmessage', exact: true, name: 'Soạn thông báo', component: Create_InformMessage },
+  { path: '/report/report', exact: true, name: 'Báo cáo', component: Report },
+  { path: '/report/report_detail/:id', exact: true, name: 'Chi tiết báo cáo', component: Report_Detail },
 ];
 
 export default routes;
