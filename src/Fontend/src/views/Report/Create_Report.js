@@ -9,7 +9,7 @@ import PaginationComponent from '../Paginations/pagination';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-class Report_Detail extends Component {
+class Create_Report extends Component {
 
     constructor(props) {
         super(props);
@@ -24,9 +24,9 @@ class Report_Detail extends Component {
         this.state.reportId = window.location.href.split("/").pop();
         // const data = await ApiServices.Get(`/informmessage/getInformMessage?id=${informMessageID}`);
         // if (data != null) {
-          this.setState({
-              reportId: this.state.reportId,
-          });
+            this.setState({
+                reportId: this.state.reportId,
+            });
         // }
         console.log(this.state.reportId);
     }
@@ -43,7 +43,7 @@ class Report_Detail extends Component {
                     <Col xs="12" lg="12">
                         <Card>
                             <CardHeader style={{ fontWeight: "bold" }}>
-                                <i className="fa fa-align-justify"></i>Chi tiết báo cáo #{reportId}
+                                <i className="fa fa-align-justify"></i>Tạo báo cáo #{reportId}
                             </CardHeader>
                             <CardBody>
                                 <FormGroup row>
@@ -83,7 +83,7 @@ class Report_Detail extends Component {
                                         <h6>Điểm hiệu quả công việc:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Label>9</Label>
+                                        <Input type='number' style={{width:'70px'}}></Input>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
@@ -91,7 +91,7 @@ class Report_Detail extends Component {
                                         <h6>Điểm thái độ làm việc:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Label>9</Label>
+                                        <Input type='number' style={{width:'70px'}}></Input>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
@@ -99,7 +99,7 @@ class Report_Detail extends Component {
                                         <h6>Điểm kỷ luật:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Label>9</Label>
+                                        <Input type='number' style={{width:'70px'}}></Input>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
@@ -115,7 +115,7 @@ class Report_Detail extends Component {
                                         <h6>Nhận xét:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Label>Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</Label>
+                                    <Input type="textarea" name="textarea-input" id="textarea-input" rows="9" placeholder="Nhập nhận xét..." />
                                     </Col>
                                 </FormGroup>
                                 <ToastContainer />
@@ -136,4 +136,4 @@ class Report_Detail extends Component {
     }
 }
 
-export default Report_Detail;
+export default Create_Report;

@@ -59,6 +59,8 @@ import Official_List from "./Official_List/Official_List";
 import Details_Task from "./Details_Task/Details_Task";
 import Job_Post from "./Job_Post/Job_Post";
 import InformMessage_Detail from "./InformMessage/InformMessage_Detail";
+import Report_Detail from "./Report/Report_Detail";
+import Create_Report from "./Report/Create_Report";
 
 export {
   Badges,
@@ -132,5 +134,7 @@ export {
   Create_InformMessage,
   InformMessage_Detail,
   Report,
+  Report_Detail,
+  Create_Report,
 };
 

@@ -9,7 +9,7 @@ import PaginationComponent from '../Paginations/pagination';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-class Create_InformMessage extends Component {
+class InformMessage_Detail extends Component {
 
     constructor(props) {
         super(props);
@@ -21,9 +21,9 @@ class Create_InformMessage extends Component {
         const informMessageID = window.location.href.split("/").pop();
         // const data = await ApiServices.Get(`/informmessage/getInformMessage?id=${informMessageID}`);
         // if (data != null) {
-        //   this.setState({
+        //     this.setState({
             
-        //   });
+        //     });
         // }
         console.log(informMessageID);
     }
@@ -94,4 +94,4 @@ class Create_InformMessage extends Component {
     }
 }
 
-export default Create_InformMessage;
+export default InformMessage_Detail;

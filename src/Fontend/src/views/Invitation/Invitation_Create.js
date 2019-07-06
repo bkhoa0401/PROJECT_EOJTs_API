@@ -32,7 +32,7 @@ class Invitation_Create extends Component {
 
     async componentDidMount() {
         const students = await ApiServices.Get('/student/getListStudentNotYetInvited');
-        const suggestedStudents = await ApiServices.Get('/business/studentsSuggest');
+        const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
 
         const business = await ApiServices.Get('/business/getBusiness');
         if (students != null && suggestedStudents != null) {
@@ -290,10 +290,12 @@ class Invitation_Create extends Component {
         }
 
         const students2nd = await ApiServices.Get('/student/getListStudentNotYetInvited');
+        const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
         const business = await ApiServices.Get('/business/getBusiness');
         if (students2nd != null) {
             this.setState({
                 students: students2nd,
+                suggestedStudents: suggestedStudents,
                 business_name: business.business_name
             });
         }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { FormGroup, ButtonGroup, Input, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
+import decode from 'jwt-decode';
 import Toastify from '../Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
@@ -13,7 +14,20 @@ class Report extends Component {
         this.state = {
             reportColor: ['success', 'primary', 'warning', 'danger', 'dark'],
             rate: ['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu'],
+            role:'',
         };
+    }
+
+    async componentDidMount() {
+        const token = localStorage.getItem('id_token');
+        let role = '';
+        if (token != null) {
+            const decoded = decode(token);
+            role = decoded.role;
+        }
+        this.setState({
+            role: role
+        });
     }
 
     handleInput = async (event) => {
@@ -28,7 +42,7 @@ class Report extends Component {
     }
 
     render() {
-        const { searchValue, reportColor, rate } = this.state;
+        const { searchValue, reportColor, rate, role } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -69,9 +83,33 @@ class Report extends Component {
                                                         {rate[0]}
                                                     </Button>
                                                 </td>
-                                                <td style={{ textAlign: "center" }}>N/A</td>
-                                                <td style={{ textAlign: "center" }}>N/A</td>
-                                                <td style={{ textAlign: "center" }}>N/A</td>
+                                                <td style={{ textAlign: "center" }}>
+                                                {
+                                                    role && role === 'ROLE_SUPERVISOR' ?
+                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/${1}`)}>
+                                                        Tạo
+                                                    </Button> :
+                                                    <p>N/A</p>
+                                                }
+                                                </td>
+                                                <td style={{ textAlign: "center" }}>
+                                                {
+                                                    role && role === 'ROLE_SUPERVISOR' ?
+                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/${1}`)}>
+                                                        Tạo
+                                                    </Button> :
+                                                    <p>N/A</p>
+                                                }
+                                                </td>
+                                                <td style={{ textAlign: "center" }}>
+                                                {
+                                                    role && role === 'ROLE_SUPERVISOR' ?
+                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/${1}`)}>
+                                                        Tạo
+                                                    </Button> :
+                                                    <p>N/A</p>
+                                                }
+                                                </td>
                                                 <td style={{ textAlign: "center" }}>N/A</td>
                                             </tr>
                                         </tbody>

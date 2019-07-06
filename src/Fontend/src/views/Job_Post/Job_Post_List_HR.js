@@ -38,9 +38,14 @@ class Job_Post_List_HR extends Component {
 
     async componentDidMount() {
         const job_posts_business = await ApiServices.Get('/business/getAllJobPostABusiness');
+        let job_postList = [];
+        for(let i = 0; i < job_posts_business.length; i++) {
+            job_postList.push(job_posts_business[i].job_post);
+        }
+
         if (job_posts_business != null) {
             this.setState({
-                job_posts: job_posts_business.job_postList
+                job_posts: job_postList
             });
         }
     }
