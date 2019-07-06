@@ -72,6 +72,7 @@ const InformMessage_Detail = React.lazy(() => import('./views/InformMessage/Info
 const Create_InformMessage = React.lazy(() => import('./views/InformMessage/Create_InformMessage.js'));
 const Report = React.lazy(() => import('./views/Report/Report.js'));
 const Report_Detail = React.lazy(() => import('./views/Report/Report_Detail.js'));
+const Create_Report = React.lazy(() => import('./views/Report/Create_Report.js'))
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -156,6 +157,7 @@ const routes = [
   { path: '/informmessage/create_informmessage', exact: true, name: 'Soạn thông báo', component: Create_InformMessage },
   { path: '/report/report', exact: true, name: 'Báo cáo', component: Report },
   { path: '/report/report_detail/:id', exact: true, name: 'Chi tiết báo cáo', component: Report_Detail },
+  { path: '/report/create_report/:id', exact: true, name: 'Tạo báo cáo', component: Create_Report }
 ];
 
 export default routes;
