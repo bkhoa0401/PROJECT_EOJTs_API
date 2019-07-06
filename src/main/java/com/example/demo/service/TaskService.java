@@ -25,20 +25,58 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    public List<Task> findTaskBySupervisorEmail(String email){
-        List<Task> taskList= taskRepository.findTasksBySupervisorEmail(email);
-        if(taskList!=null){
+    public List<Task> findTaskBySupervisorEmail(String email) {
+        List<Task> taskList = taskRepository.findTasksBySupervisorEmail(email);
+        if (taskList != null) {
             return taskList;
         }
         return null;
     }
 
-    public List<Task> findTaskByStudentEmail(String email){
-        Ojt_Enrollment ojt_enrollment=ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
-        List<Task> taskList= taskRepository.findTasksByOjt_enrollment(ojt_enrollment);
-        if(taskList!=null){
+    public List<Task> findTaskByStudentEmail(String email) {
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        List<Task> taskList = taskRepository.findTasksByOjt_enrollment(ojt_enrollment);
+        if (taskList != null) {
             return taskList;
         }
         return null;
+    }
+
+    public Task findTaskById(int id) {
+        Task task = taskRepository.findById(id);
+        if (task != null) {
+            return task;
+        }
+        return null;
+    }
+
+    public boolean updateTask(Task task) {
+        Task taskIsExisted = taskRepository.findById(task.getId());
+        if (taskIsExisted != null) {
+            task.setOjt_enrollment(taskIsExisted.getOjt_enrollment());
+            task.setSupervisor(taskIsExisted.getSupervisor());
+            taskRepository.save(task);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean deleteTask(int id) {
+        Task task = taskRepository.findById(id);
+        if (task != null) {
+            taskRepository.deleteById(task.getId());
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateStateTask(int id) {
+        Task taskIsExisted = taskRepository.findById(id);
+        if (taskIsExisted != null) {
+            taskIsExisted.setState(true);
+            taskRepository.save(taskIsExisted);
+            return true;
+        }
+        return false;
     }
 }

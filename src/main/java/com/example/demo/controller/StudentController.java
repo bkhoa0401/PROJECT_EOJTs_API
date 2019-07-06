@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.Business_JobPostDTO;
+import com.example.demo.dto.Business_ListJobPostDTO;
 import com.example.demo.dto.Job_PostDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -48,6 +50,9 @@ public class StudentController {
 
     @Autowired
     EvaluationService evaluationService;
+
+    @Autowired
+    EventService eventService;
 
     @PostMapping
     public ResponseEntity<Void> addListStudent(@RequestBody List<Student> studentList) throws Exception {
@@ -437,31 +442,32 @@ public class StudentController {
     @GetMapping("/getJobPostsSuggest")
     @ResponseBody
     public ResponseEntity<List<Business_JobPostDTO>> getJobPostsSuggest() {
-        String email=getEmailFromToken();
-        List<Business_JobPostDTO> business_jobPostDTOS = new ArrayList<>();
+        String email = getEmailFromToken();
+        List<Business_JobPostDTO> business_jobPostDTOList = new ArrayList<>();
 
-        List<Job_Post> job_postList=studentService.getSuggestListJobPost(email);
-        for (int i=0;i<job_postList.size();i++){
-            Business_JobPostDTO business_jobPostDTO=new Business_JobPostDTO();
+        List<Job_Post> job_postList = studentService.getSuggestListJobPost(email);
+        for (int i = 0; i < job_postList.size(); i++) {
+            Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
             business_jobPostDTO.setBusiness(job_postList.get(i).getOjt_enrollment().getBusiness());
 
-            List<Job_Post> postList=new ArrayList<>();
-            postList.add(job_postList.get(i));
-            business_jobPostDTO.setJob_postList(postList);
+            business_jobPostDTO.setJob_post(job_postList.get(i));
+//            List<Job_Post> postList = new ArrayList<>();
+//            postList.add(job_postList.get(i));
+            // sua business_jobPostDTO.setJob_postList(postList);
 
-            business_jobPostDTOS.add(business_jobPostDTO);
+            business_jobPostDTOList.add(business_jobPostDTO);
         }
-        if(business_jobPostDTOS!=null){
-            return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOS,HttpStatus.OK);
+        if (business_jobPostDTOList != null) {
+            return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
     @PutMapping("/updateLinkAvatar")
-    public ResponseEntity<Void> updateLinkAvatar(@RequestParam String avatar){
-        String email=getEmailFromToken();
-        boolean update=studentService.updateLinkAvatar(email,avatar);
-        if(update==true){
+    public ResponseEntity<Void> updateLinkAvatar(@RequestParam String avatar) {
+        String email = getEmailFromToken();
+        boolean update = studentService.updateLinkAvatar(email, avatar);
+        if (update == true) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -469,24 +475,91 @@ public class StudentController {
 
     @GetMapping("/tasks")
     @ResponseBody
-    public ResponseEntity<List<Task>> getTasksOfStudent(){
-        String email=getEmailFromToken();
+    public ResponseEntity<List<Task>> getTasksOfStudent() {
+        String email = getEmailFromToken();
 
-        List<Task> taskList=taskService.findTaskByStudentEmail(email);
-        if(taskList!=null){
-            return new ResponseEntity<List<Task>>(taskList,HttpStatus.OK);
+        List<Task> taskList = taskService.findTaskByStudentEmail(email);
+        if (taskList != null) {
+            return new ResponseEntity<List<Task>>(taskList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
     @GetMapping("/evaluations")
     @ResponseBody
-    public ResponseEntity<List<Evaluation>> getEvaluationsOfStudent(){
-        String email=getEmailFromToken();
+    public ResponseEntity<List<Evaluation>> getEvaluationsOfStudent() {
+        String email = getEmailFromToken();
 
-        List<Evaluation> evaluationList=evaluationService.getEvaluationsByStudentEmail(email);
-        if(evaluationList!=null){
-            return new ResponseEntity<List<Evaluation>>(evaluationList,HttpStatus.OK);
+        List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(email);
+        if (evaluationList != null) {
+            return new ResponseEntity<List<Evaluation>>(evaluationList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/businesses")
+    @ResponseBody
+    public ResponseEntity<List<Business>> getBusinessesOfStudent() {
+        String email = getEmailFromToken();
+
+        List<Business> businessList = studentService.getBusinessByOptionStudent(email);
+        if (businessList != null) {
+            return new ResponseEntity<List<Business>>(businessList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/events")
+    @ResponseBody
+    public ResponseEntity<List<Event>> getEventsOfStudent() {
+        String email = getEmailFromToken();
+
+        List<Event> eventList = eventService.getEventList(email);
+        if (eventList != null) {
+            Collections.sort(eventList);
+            return new ResponseEntity<List<Event>>(eventList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/studentsSuggest")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getListSuggestStudent() {
+        getListStudentOfBusiness(); // lay ra nhung dua da moi
+
+        String email = getEmailFromToken();
+        List<Student> studentList = businessService.getSuggestListStudent(email);
+
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            for (int j = 0; j < studentListIsInvited.size(); j++) {
+                Student studentIsInvited = studentListIsInvited.get(j);
+                if (student.getEmail().equals(studentIsInvited.getEmail())) {
+                    studentList.remove(student); // xoa dua da duoc moi ra khoi list suggest
+                }
+            }
+        }
+        if (studentList != null) {
+            return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PutMapping("/stateInvitation")
+    public ResponseEntity<Void> setInvitationForOption(@RequestParam int id,
+                                                       @RequestParam int numberOfOption) {
+        String studentEmail = getEmailFromToken();
+        Invitation invitation = invitationService.getInvitationById(id);
+        if (numberOfOption == 1) {
+            String businessEngName = invitation.getBusiness().getBusiness_eng_name();
+            studentService.updateOption1Student(studentEmail, businessEngName);
+            invitationService.updateStateOfInvitation(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else if (numberOfOption == 2) {
+            String businessEngName = invitation.getBusiness().getBusiness_eng_name();
+            studentService.updateOption2Student(studentEmail, businessEngName);
+            invitationService.updateStateOfInvitation(id);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

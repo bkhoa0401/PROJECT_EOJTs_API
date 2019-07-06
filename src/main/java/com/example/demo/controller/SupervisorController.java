@@ -1,13 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Evaluation;
-import com.example.demo.entity.Ojt_Enrollment;
-import com.example.demo.entity.Supervisor;
-import com.example.demo.entity.Task;
-import com.example.demo.service.EvaluationService;
-import com.example.demo.service.Ojt_EnrollmentService;
-import com.example.demo.service.SupervisorService;
-import com.example.demo.service.TaskService;
+import com.example.demo.entity.*;
+import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +26,9 @@ public class SupervisorController {
 
     @Autowired
     EvaluationService evaluationService;
+
+    @Autowired
+    StudentService studentService;
 
     @PostMapping("")
     public ResponseEntity<Void> createNewTask(@RequestBody Task task, @RequestParam String emailStudent) {
@@ -58,24 +55,73 @@ public class SupervisorController {
     }
 
     @PostMapping("/evaluation")
-    public ResponseEntity<Void> createNewEvaluation(@RequestBody Evaluation evaluation,@RequestParam String emailStudent){
-        String email=getEmailFromToken();
+    public ResponseEntity<Void> createNewEvaluation(@RequestBody Evaluation evaluation, @RequestParam String emailStudent) {
+        String email = getEmailFromToken();
 
-        Supervisor supervisor=supervisorService.findByEmail(email);
+        Supervisor supervisor = supervisorService.findByEmail(email);
         evaluation.setSupervisor(supervisor);
 
-        evaluationService.createNewEvaluation(evaluation,emailStudent);
+        evaluationService.createNewEvaluation(evaluation, emailStudent);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/evaluations")
     @ResponseBody
-    public ResponseEntity<List<Evaluation>> getAllEvaluationBySupervisorEmail(){
-        String email=getEmailFromToken();
+    public ResponseEntity<List<Evaluation>> getAllEvaluationBySupervisorEmail() {
+        String email = getEmailFromToken();
 
-        List<Evaluation> evaluationList=evaluationService.getEvaluationsBySupervisorEmail(email);
-        if(evaluationList!=null){
-            return new ResponseEntity<List<Evaluation>>(evaluationList,HttpStatus.OK);
+        List<Evaluation> evaluationList = evaluationService.getEvaluationsBySupervisorEmail(email);
+        if (evaluationList != null) {
+            return new ResponseEntity<List<Evaluation>>(evaluationList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/students")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getAllStudentBySupervisorEmail() {
+        String email = getEmailFromToken();
+
+        List<Student> studentList = studentService.getAllStudentOfASupervisor(email);
+        if (studentList != null) {
+            return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/task")
+    @ResponseBody
+    public ResponseEntity<Task> getTaskById(@RequestParam int id) {
+        Task task = taskService.findTaskById(id);
+        if (task != null) {
+            return new ResponseEntity<Task>(task, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PutMapping("/task")
+    public ResponseEntity<Void> updateTask(@RequestBody Task task) {
+        boolean update = taskService.updateTask(task);
+        if (update == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @DeleteMapping("/task")
+    public ResponseEntity<Void> deleteTask(@RequestParam int id) {
+        boolean delete = taskService.deleteTask(id);
+        if (delete == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PutMapping("/stateTask")
+    public ResponseEntity<Void> updateStateTask(@RequestParam int id) {
+        boolean updateStateTask = taskService.updateStateTask(id);
+        if (updateStateTask == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
