@@ -14,18 +14,21 @@ class Create_InformMessage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            reportColor:['lime', 'DeepSkyBlue', 'gold', 'red', 'black'],
+            rate:['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu'],
+            reportId: -1,
         };
     }
 
     async componentDidMount() {
-        const informMessageID = window.location.href.split("/").pop();
+        this.state.reportId = window.location.href.split("/").pop();
         // const data = await ApiServices.Get(`/informmessage/getInformMessage?id=${informMessageID}`);
         // if (data != null) {
-        //   this.setState({
-            
-        //   });
+          this.setState({
+              reportId: this.state.reportId,
+          });
         // }
-        console.log(informMessageID);
+        console.log(this.state.reportId);
     }
 
     handleDirect = (uri) => {
@@ -33,19 +36,19 @@ class Create_InformMessage extends Component {
     }
 
     render() {
-        // const { searchValue } = this.state;
+        const { searchValue, reportColor, rate, reportId } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
                     <Col xs="12" lg="12">
                         <Card>
                             <CardHeader style={{ fontWeight: "bold" }}>
-                                <i className="fa fa-align-justify"></i>Chi tiết thông báo
+                                <i className="fa fa-align-justify"></i>Chi tiết báo cáo #{reportId}
                             </CardHeader>
                             <CardBody>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Từ:</h6>
+                                        <h6>Doanh nghiệp:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
                                         <Label>Công ty ABC</Label>
@@ -53,27 +56,58 @@ class Create_InformMessage extends Component {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Đến:</h6>
+                                        <h6>Sinh viên:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Label>Nhà trường</Label>
+                                        <Label>Nguyễn Văn A</Label>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Chủ đề:</h6>
+                                        <h6>Nhà trường:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Label style={{fontWeight:'bold'}}>Nghỉ tết Âm lịch</Label>
+                                        <Label>FPT University</Label>
                                     </Col>
                                 </FormGroup>
-                                <hr />
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Nội dung:</h6>
+                                        <h6>MSSV:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Label> Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.  Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.  Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</Label>
+                                        <Label>SE60001</Label>
+                                    </Col>
+                                </FormGroup>
+                                <FormGroup row>
+                                    <Col md="2">
+                                        <h6>Điểm hiệu quả công việc:</h6>
+                                    </Col>
+                                    <Col xs="12" md="10">
+                                        <Label>9</Label>
+                                    </Col>
+                                </FormGroup>
+                                <FormGroup row>
+                                    <Col md="2">
+                                        <h6>Điểm thái độ làm việc:</h6>
+                                    </Col>
+                                    <Col xs="12" md="10">
+                                        <Label>9</Label>
+                                    </Col>
+                                </FormGroup>
+                                <FormGroup row>
+                                    <Col md="2">
+                                        <h6>Điểm kỷ luật:</h6>
+                                    </Col>
+                                    <Col xs="12" md="10">
+                                        <Label>9</Label>
+                                    </Col>
+                                </FormGroup>
+                                <FormGroup row>
+                                    <Col md="2">
+                                        <h6>Xếp loại:</h6>
+                                    </Col>
+                                    <Col xs="12" md="10">
+                                        <Label style={{fontWeight:'bold', color:reportColor[0]}}>{rate[0]}</Label>
                                     </Col>
                                 </FormGroup>
                                 <ToastContainer />
@@ -85,7 +119,7 @@ class Create_InformMessage extends Component {
                     </Col>
                 </Row>
                 <div style={{paddingLeft:'45%'}}>
-                    <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
+                    <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/Report/Report')}>
                         Trở về
                     </Button>
                 </div>

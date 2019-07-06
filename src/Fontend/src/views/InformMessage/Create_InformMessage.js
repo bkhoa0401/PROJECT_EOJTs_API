@@ -28,6 +28,10 @@ class Create_InformMessage extends Component {
         this.setState({ open: false })
     }
 
+    handleDirect = (uri) => {
+        this.props.history.push(uri);
+    }
+
     render() {
         // const { searchValue } = this.state;
         return (
@@ -56,6 +60,14 @@ class Create_InformMessage extends Component {
                                     </Col>
                                     <Col xs="12" md="1">
                                         <Button block outline color="primary" onClick={this.openPopupRegist}>Thêm</Button>
+                                    </Col>
+                                </FormGroup>
+                                <FormGroup row>
+                                    <Col md="2">
+                                        <h6>Chủ đề:</h6>
+                                    </Col>
+                                    <Col xs="12" md="10">
+                                        <Input type="text" />
                                     </Col>
                                 </FormGroup>
                                 <hr />
@@ -105,6 +117,11 @@ class Create_InformMessage extends Component {
                         </ListGroup>
                     </div>
                 </Popup>
+                <div style={{paddingLeft:'45%'}}>
+                    <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
+                        Trở về
+                    </Button>
+                </div>
             </div>
         );
     }
