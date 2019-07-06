@@ -34,6 +34,7 @@ class Update_Job extends Component {
             arrayQuantity: [],
             isModify: false,
             isError: false,
+            updatedId: '',
 
 
             description: '',
@@ -101,8 +102,8 @@ class Update_Job extends Component {
         for (let j = 0; j < specializedUpdate.length; j++) {
             const skills = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${specializedUpdate[j]}`);
             if (skills != null) {
-                for(let k = 0; k < skills.length; k++) {
-                    choseSpecialized.push(skills[k]);
+                for (let k = 0; k < skills.length; k++) {
+                    choseSpecialized.push(skills[k].id);
                 }
             }
         }
@@ -110,6 +111,7 @@ class Update_Job extends Component {
         // console.log(choseSpecialized);
 
         this.setState({
+            updatedId: updatedId,
             description: data.job_post.description,
             contact: data.job_post.contact,
             interview_process: data.job_post.interview_process,
@@ -122,7 +124,6 @@ class Update_Job extends Component {
             numbersForSave: arrayQuantity
         })
 
-        console.log(this.state.choseSpecialized);
     }
 
     handleReset = async () => {
@@ -200,7 +201,7 @@ class Update_Job extends Component {
         }
         // console.log(this.state.specializedUpdate);
         // console.log(selectSpecialized);
-        console.log(this.state.choseSpecialized);
+        // console.log(this.state.choseSpecialized);
 
 
         // console.log(this.state.arraySkill);
@@ -305,8 +306,8 @@ class Update_Job extends Component {
             }
         }
 
-        // console.log(skillsForSave);
-        // console.log(numbersForSave);
+        console.log(skillsForSave);
+        console.log(numbersForSave);
     }
 
     handleSubmit = async () => {
@@ -354,7 +355,7 @@ class Update_Job extends Component {
 
 
     render() {
-        const { skillsForSave, numbersForSave, specializedUpdate, arraySkill, arrayQuantity, description, contact, interview_process, interest, specializeds, specializedItem, skills, choseSpecialized } = this.state;
+        const { skillsForSave, numbersForSave, specializedUpdate, arraySkill, arrayQuantity, description, contact, updatedId, interview_process, interest, specializeds, specializedItem, skills, choseSpecialized } = this.state;
         // console.log(description, interview_process, interest, contact, specializedUpdate, arraySkill, arrayQuantity);
         // console.log(this.state.choseSpecialized);
         return (
@@ -456,9 +457,22 @@ class Update_Job extends Component {
                                                                 {
                                                                     <Input autoFocus="true" id="selectSkill" onChange={this.handleInput} type="select" name="skill" onBlur={e => { this.handleOnBlur(e, index) }}>
                                                                         {skills && skills.map((skill, i) => {
-                                                                            if (choseSpecialized.includes(skill.id)) {
+
+                                                                            let a = choseSpecialized.indexOf(skill.id);
+                                                                            {/* console.log(a); */ }
+
+                                                                            if (a != -1) {
+                                                                                {/* console.log('all', choseSpecialized);
+                                                                                console.log('skill.id', skill.id);
+                                                                                console.log('a', a);
+                                                                                console.log('choseSpecialized[a]', choseSpecialized[a]);
+                                                                                console.log(choseSpecialized[a] === skill.id); */}
+                                                                                console.log('choseSpecialized[a]', choseSpecialized[a]);
+                                                                                {/* console.log('arraySkill', arraySkill); */}
+                                                                                console.log('arraySkill[index]', arraySkill[index]);
+                                                                                console.log(choseSpecialized[a] === arraySkill[index]);
                                                                                 return (
-                                                                                    <option selected={arraySkill[index] === skill.id} id={'op' + i} value={i}>{skill.name}</option>
+                                                                                    <option selected={choseSpecialized[a] === arraySkill[index]} id={'op' + i} value={i}>{skill.name}</option>
                                                                                 )
                                                                             } else {
                                                                                 return (
@@ -493,7 +507,7 @@ class Update_Job extends Component {
                                         <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
                                     </Col>
                                     <Col xs="3" sm="3">
-                                        <Button color="success" block onClick={() => this.handleDirect('/job_post_list_hr')}>Trở về</Button>
+                                        <Button color="success" block onClick={() => this.handleDirect(`/job-post/${updatedId}`)}>Trở về</Button>
                                     </Col>
                                 </Row>
                             </CardFooter>
