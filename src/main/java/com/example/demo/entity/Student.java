@@ -108,7 +108,7 @@ public class Student implements Serializable {
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "supervisor_email")
-    @JsonIgnore
+//    @JsonIgnore
     private Supervisor supervisor;
 
     @Column(name="dob")
