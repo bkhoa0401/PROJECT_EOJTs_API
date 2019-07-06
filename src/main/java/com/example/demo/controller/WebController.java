@@ -2,9 +2,11 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.dto.StudentDTO;
+import com.example.demo.entity.Ojt_Enrollment;
 import com.example.demo.entity.Student;
 import com.example.demo.entity.Users;
 import com.example.demo.service.JwtService;
+import com.example.demo.service.Ojt_EnrollmentService;
 import com.example.demo.service.StudentService;
 import com.example.demo.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class WebController {
 
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    private Ojt_EnrollmentService ojt_enrollmentService;
 
 
     @GetMapping("")
@@ -56,6 +61,10 @@ public class WebController {
                         Student student = studentService.getStudentByEmail(users.getEmail());
                         StudentDTO studentDTO = new StudentDTO();
                         studentDTO.convertFromStudentEntity(student);
+                        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(studentDTO.getEmail());
+                        if (ojt_enrollment.getBusiness() != null) {
+                            studentDTO.setIntership(true);
+                        }
                         login.setStudent(studentDTO);
                     }
                 }
