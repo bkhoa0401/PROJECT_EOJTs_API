@@ -244,9 +244,12 @@ public class StudentService {
         Business businessOption2 = businessService.findBusinessByName((option2));
 
         List<Business> businessList = new ArrayList<>();
-        businessList.add(businessOption1);
-        businessList.add(businessOption2);
-
+        if (businessOption1 != null) {
+            businessList.add(businessOption1);
+        }
+        if (businessOption2 != null) {
+            businessList.add(businessOption2);
+        }
         return businessList;
     }
 
