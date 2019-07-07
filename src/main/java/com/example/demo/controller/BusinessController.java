@@ -51,6 +51,9 @@ public class BusinessController {
     @Autowired
     Job_Post_SkillService job_post_skillService;
 
+    @Autowired
+    EventService eventService;
+
     @PostMapping("")
     public ResponseEntity<Void> saveBusiness(@RequestBody List<BusinessDTO> listBusinessDTO) throws Exception {
         for (int i = 0; i < listBusinessDTO.size(); i++) {
@@ -390,6 +393,20 @@ public class BusinessController {
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
+
+    //get all events of business
+    @GetMapping("/events")
+    @ResponseBody
+    public ResponseEntity<List<Event>> getAllEventOfBusiness(){
+        String email=getEmailFromToken();
+        List<Event> events=eventService.getEventListOfBusiness(email);
+        if(events!=null){
+            Collections.sort(events);
+            return new ResponseEntity<List<Event>>(events,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
 
     //get email from token
     private String getEmailFromToken() {

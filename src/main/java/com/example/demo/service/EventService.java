@@ -20,4 +20,20 @@ public class EventService {
         }
         return null;
     }
+
+    public List<Event> getEventListOfAdmin(String email){
+        List<Event> events = eventRepository.findEventsByAdmin_Email(email);
+        if (events != null) {
+            return events;
+        }
+        return null;
+    }
+
+    public List<Event> getEventListOfBusiness(String email){
+        List<Event> events = eventRepository.findEventsByBusinessEmail(email);
+        if (events != null) {
+            return events;
+        }
+        return null;
+    }
 }
