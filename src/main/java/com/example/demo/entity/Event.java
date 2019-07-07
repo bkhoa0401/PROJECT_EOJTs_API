@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -10,17 +11,17 @@ import java.util.List;
 
 @Entity
 @Table(name = "event")
-public class Event {
+public class Event implements Comparable<Event> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
 
-    @Column(name = "title",columnDefinition = "NVARCHAR(150)")
+    @Column(name = "title", columnDefinition = "NVARCHAR(150)")
     private String title;
 
 
-    @Column(name = "description",columnDefinition = "NVARCHAR(150)")
+    @Column(name = "description", columnDefinition = "NVARCHAR(150)")
     private String description;
 
 
@@ -30,14 +31,17 @@ public class Event {
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "admin_email")
-    private Admin  admin;
+    @JsonIgnore
+    private Admin admin;
 
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "business_email")
-    private Business  business;
+    @JsonIgnore
+    private Business business;
 
     @ManyToMany(mappedBy = "events")
+    @JsonIgnore
 //    @JsonBackReference
     private List<Student> students;
 
@@ -87,5 +91,10 @@ public class Event {
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    @Override
+    public int compareTo(Event event) {
+        return event.getTime_created().compareTo(this.getTime_created());
     }
 }

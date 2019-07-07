@@ -43,6 +43,8 @@ import {
   Job_Post_List,
   Job_Post_List_HR,
   InformMessage,
+  Create_InformMessage,
+  Report,
 } from './Base';
 
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
@@ -56,6 +58,9 @@ import Widgets from './Widgets';
 import Official_List from "./Official_List/Official_List";
 import Details_Task from "./Details_Task/Details_Task";
 import Job_Post from "./Job_Post/Job_Post";
+import InformMessage_Detail from "./InformMessage/InformMessage_Detail";
+import Report_Detail from "./Report/Report_Detail";
+import Create_Report from "./Report/Create_Report";
 
 export {
   Badges,
@@ -126,5 +131,10 @@ export {
   Job_Post_List,
   Job_Post_List_HR,
   InformMessage,
+  Create_InformMessage,
+  InformMessage_Detail,
+  Report,
+  Report_Detail,
+  Create_Report,
 };
 

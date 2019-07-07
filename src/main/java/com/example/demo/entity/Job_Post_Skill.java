@@ -52,4 +52,21 @@ public class Job_Post_Skill {
     public void setNumber(int number) {
         this.number = number;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Job_Post_Skill(Job_Post job_post, Skill skill, int number) {
+        this.job_post = job_post;
+        this.skill = skill;
+        this.number = number;
+    }
+
+    public Job_Post_Skill() {
+    }
 }

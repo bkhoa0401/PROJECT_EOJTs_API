@@ -11,12 +11,16 @@ import firebase from 'firebase';
 
 class Invitation_Create extends Component {
 
+
+
     constructor(props) {
         super(props);
         this.state = {
             students: null,
+            suggestedStudents: null,
             business_name: '',
             searchValue: '',
+            searchSuggestedValue: '',
             isAction: '',
             activeTab: new Array(1).fill('1'),
         }
@@ -24,15 +28,46 @@ class Invitation_Create extends Component {
     }
 
 
+
+
     async componentDidMount() {
         const students = await ApiServices.Get('/student/getListStudentNotYetInvited');
+        const suggestedStudents = await ApiServices.Get('/business/studentsSuggest');
+
         const business = await ApiServices.Get('/business/getBusiness');
-        if (students != null) {
+        if (students != null && suggestedStudents != null) {
             this.setState({
                 students,
+                suggestedStudents,
                 business_name: business.business_name
             });
         }
+
+
+        // since I can connect from multiple devices or browser tabs, we store each connection instance separately
+        // any time that connectionsRef's value is null (i.e. has no children) I am offline
+        var myConnectionsRef = firebase.database().ref('users/joe/connections');
+
+        // stores the timestamp of my last disconnect (the last time I was seen online)
+        var lastOnlineRef = firebase.database().ref('users/joe/lastOnline');
+
+        var connectedRef = firebase.database().ref('.info/connected');
+        connectedRef.on('value', function (snap) {
+            if (snap.val() === true) {
+                // We're connected (or reconnected)! Do anything here that should happen only if online (or on reconnect)
+                var con = myConnectionsRef.push();
+
+                // When I disconnect, remove this device
+                con.onDisconnect().remove();
+
+                // Add this device to my connections list
+                // this value could contain info about the device or a timestamp too
+                con.set(true);
+
+                // When I disconnect, update the last time I was seen online
+                lastOnlineRef.onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
+            }
+        });
     }
 
     handleDirect = (uri) => {
@@ -47,15 +82,26 @@ class Invitation_Create extends Component {
     }
 
     tabPane() {
-        const { students, business_name, searchValue } = this.state;
+        const { students, suggestedStudents, business_name, searchValue, searchSuggestedValue } = this.state;
 
-        let filteredListStudents;
+        let filteredListStudents, filteredSuggestedListStudents;
 
         if (students != null) {
             filteredListStudents = students.filter(
                 (student) => {
                     if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
                         return student;
+                    }
+                }
+            );
+        }
+
+
+        if (suggestedStudents != null) {
+            filteredSuggestedListStudents = suggestedStudents.filter(
+                (suggestedStudent) => {
+                    if (suggestedStudent.name.toLowerCase().indexOf(searchSuggestedValue.toLowerCase()) !== -1) {
+                        return suggestedStudent;
                     }
                 }
             );
@@ -87,9 +133,7 @@ class Invitation_Create extends Component {
                                 <tbody>
                                     {
                                         filteredListStudents && filteredListStudents.map((student, index) => {
-                                            const deviceToken = student.token;
                                             const skills = student.skills;
-                                            const linkDownload = `http://localhost:8000/api/file/downloadFile?emailStudent=${student.email}`;
 
                                             return (
                                                 <tr key={index}>
@@ -120,7 +164,7 @@ class Invitation_Create extends Component {
                                                         }
                                                     </td>
                                                     <td style={{ textAlign: "center" }}>
-                                                        <Button onClick={() => this.handleSubmit(index, deviceToken)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+                                                        <Button onClick={() => this.handleSubmit(student)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                     </td>
                                                 </tr>
                                             )
@@ -136,7 +180,7 @@ class Invitation_Create extends Component {
                         <div>
                             <nav className="navbar navbar-light bg-light justify-content-between">
                                 <form className="form-inline">
-                                    <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                    <input onChange={this.handleInput} name="searchSuggestedValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
                                 </form>
 
                             </nav>
@@ -154,18 +198,16 @@ class Invitation_Create extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {/* {
-                                        filteredListStudents && filteredListStudents.map((student, index) => {
-                                            const deviceToken = student.token;
-                                            const skills = student.skills;
-                                            const linkDownload = `http://localhost:8000/api/file/downloadFile?emailStudent=${student.email}`;
+                                    {
+                                        filteredSuggestedListStudents && filteredSuggestedListStudents.map((suggestedStudent, index) => {
+                                            const skills = suggestedStudent.skills;
 
                                             return (
                                                 <tr key={index}>
                                                     <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                    <td style={{ textAlign: "center" }}>{student.code}</td>
-                                                    <td style={{ textAlign: "center" }}>{student.name}</td>
-                                                    <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                    <td style={{ textAlign: "center" }}>{suggestedStudent.code}</td>
+                                                    <td style={{ textAlign: "center" }}>{suggestedStudent.name}</td>
+                                                    <td style={{ textAlign: "center" }}>{suggestedStudent.specialized.name}</td>
                                                     <td style={{ textAlign: "center" }}>
                                                         {
                                                             skills && skills.map((skill, index) => {
@@ -179,22 +221,22 @@ class Invitation_Create extends Component {
                                                             })
                                                         }
                                                     </td>
-                                                    <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                                                    <td style={{ textAlign: "center" }}>{suggestedStudent.gpa}</td>
                                                     <td style={{ textAlign: "center" }}>
                                                         {
-                                                            student.transcriptLink && student.transcriptLink ? (
-                                                                <a href={student.transcriptLink} download>Tải</a>
+                                                            suggestedStudent.transcriptLink && suggestedStudent.transcriptLink ? (
+                                                                <a href={suggestedStudent.transcriptLink} download>Tải</a>
                                                             ) :
                                                                 (<label>N/A</label>)
                                                         }
                                                     </td>
                                                     <td style={{ textAlign: "center" }}>
-                                                        <Button onClick={() => this.handleSubmit(index, deviceToken)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+                                                        <Button onClick={() => this.handleSubmit(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                     </td>
                                                 </tr>
                                             )
                                         })
-                                    } */}
+                                    }
                                 </tbody>
                             </Table>
                         </div>
@@ -205,14 +247,11 @@ class Invitation_Create extends Component {
     }
 
 
-    handleSubmit = async (index, deviceToken) => {
-        const { students, business_name } = this.state;
-        const studentName = students[index].name;
-        const email = students[index].email;
-        // const btnId = "btnSendInvitation" + index;
-
-        // document.getElementById(btnId).setAttribute("disabled", "disabled");
-
+    handleSubmit = async (student) => {
+        const { business_name } = this.state;
+        const studentName = student.name;
+        const email = student.email;
+        const deviceToken = student.token;
 
         const invitation = {
             description: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,

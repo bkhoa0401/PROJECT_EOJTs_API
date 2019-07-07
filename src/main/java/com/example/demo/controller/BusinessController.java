@@ -2,11 +2,11 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.BusinessDTO;
 import com.example.demo.dto.Business_JobPostDTO;
+import com.example.demo.dto.Business_ListJobPostDTO;
 import com.example.demo.dto.Job_PostDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,10 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/business")
@@ -48,6 +47,9 @@ public class BusinessController {
 
     @Autowired
     UsersService usersService;
+
+    @Autowired
+    Job_Post_SkillService job_post_skillService;
 
     @PostMapping("")
     public ResponseEntity<Void> saveBusiness(@RequestBody List<BusinessDTO> listBusinessDTO) throws Exception {
@@ -193,19 +195,28 @@ public class BusinessController {
     @ResponseBody
     public ResponseEntity<List<Business_JobPostDTO>> getAllJobPostBusiness() {
         List<Business> businessList = businessService.getAllBusiness();
-        List<Business_JobPostDTO> business_jobPostDTOS = new ArrayList<>();
+        List<Business_JobPostDTO> business_jobPostDTOList = new ArrayList<>();
+
         for (int i = 0; i < businessList.size(); i++) {
             Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
             business_jobPostDTO.setBusiness(businessList.get(i));
 
             //get instance ojt_enrollments
             Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(businessList.get(i));
-            business_jobPostDTO.setJob_postList(ojt_enrollment.getJob_posts());
+            // business_jobPostDTO.setJob_postList(ojt_enrollment.getJob_posts());
+            for (int j = 0; j < ojt_enrollment.getJob_posts().size(); j++) {
+                Job_Post job_post = ojt_enrollment.getJob_posts().get(j);
+                business_jobPostDTO.setJob_post(job_post);
+                business_jobPostDTOList.add(business_jobPostDTO);
 
-            business_jobPostDTOS.add(business_jobPostDTO);
+                business_jobPostDTO = new Business_JobPostDTO();
+                business_jobPostDTO.setBusiness(businessList.get(i));
+            }
         }
 
-        return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOS, HttpStatus.OK);
+        Collections.sort(business_jobPostDTOList);
+
+        return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOList, HttpStatus.OK);
     }
 
 
@@ -238,6 +249,19 @@ public class BusinessController {
     //update infor job post
     @PutMapping("/updateJobPost")
     public ResponseEntity<Void> updateJobPostOfBusiness(@RequestBody Job_Post job_post) {
+        String businessEmail = getEmailFromToken();
+        Business business = businessService.getBusinessByEmail(businessEmail);
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(business);
+        job_post.setOjt_enrollment(ojt_enrollment);
+
+
+        List<Job_Post_Skill> job_post_skills = job_post.getJob_post_skills();
+        for (int i = 0; i < job_post_skills.size(); i++) {
+            Job_Post_Skill job_post_skill = job_post_skills.get(i);
+            job_post_skill.setJob_post(job_post);
+            job_post_skillService.updateJobPostSkill(job_post_skill);
+        }
+
         boolean updateJobPost = job_postService.updateInforJobPost(job_post);
         if (updateJobPost == true) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -278,24 +302,31 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-    //get all job post of a business
+    //get all job post of a business for student
     @GetMapping("/getAllJobPostABusiness")
     @ResponseBody
-    public ResponseEntity<Business_JobPostDTO> getAllJobPostOfABusiness() {
+    public ResponseEntity<List<Business_JobPostDTO>> getAllJobPostOfABusiness() {
         String businessEmail = getEmailFromToken();
 
         Business business = businessService.getBusinessByEmail(businessEmail);
 
         Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(business);
 
+        List<Business_JobPostDTO> business_jobPostDTOList = new ArrayList<>();
+
         Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
 
         List<Job_Post> job_postList = job_postService.getAllJobPostOfBusiness(ojt_enrollment);
+        for (int i = 0; i < job_postList.size(); i++) {
+            business_jobPostDTO.setBusiness(business);
+            business_jobPostDTO.setJob_post(job_postList.get(i));
+            business_jobPostDTOList.add(business_jobPostDTO);
+            business_jobPostDTO = new Business_JobPostDTO();
+        }
 
-        business_jobPostDTO.setJob_postList(job_postList);
-        business_jobPostDTO.setBusiness(ojt_enrollment.getBusiness());
         if (job_postList != null) {
-            return new ResponseEntity<Business_JobPostDTO>(business_jobPostDTO, HttpStatus.OK);
+            Collections.sort(business_jobPostDTOList);
+            return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -320,9 +351,9 @@ public class BusinessController {
 
         result = supervisorService.createSupervisor(supervisor, email);
 
-        String password=usersService.getAlphaNumericString();
+        String password = usersService.getAlphaNumericString();
 
-        usersService.saveUser(new Users(supervisor.getEmail(),password));
+        usersService.saveUser(new Users(supervisor.getEmail(), password));
         if (result) {
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
@@ -359,18 +390,6 @@ public class BusinessController {
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
-
-    @GetMapping("/studentsSuggest")
-    @ResponseBody
-    public ResponseEntity<List<Student>> getListSuggestStudent(){
-        String email=getEmailFromToken();
-        List<Student> studentList=businessService.getSuggestListStudent(email);
-        if(studentList!=null){
-            return new ResponseEntity<List<Student>>(studentList,HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-    }
-
 
     //get email from token
     private String getEmailFromToken() {

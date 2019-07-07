@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Popup from "reactjs-popup";
-import { FormGroup, Input, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
+import { Label, FormGroup, Input, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../Toastify/Toastify';
@@ -9,23 +9,27 @@ import PaginationComponent from '../Paginations/pagination';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-class Create_InformMessage extends Component {
+class InformMessage_Detail extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            open: false,
         };
-        this.openPopupRegist = this.openPopupRegist.bind(this);
-        this.closePopupRegist = this.closePopupRegist.bind(this);
     }
 
-    openPopupRegist() {
-        this.setState({ open: true })
+    async componentDidMount() {
+        const informMessageID = window.location.href.split("/").pop();
+        // const data = await ApiServices.Get(`/informmessage/getInformMessage?id=${informMessageID}`);
+        // if (data != null) {
+        //     this.setState({
+            
+        //     });
+        // }
+        console.log(informMessageID);
     }
 
-    closePopupRegist() {
-        this.setState({ open: false })
+    handleDirect = (uri) => {
+        this.props.history.push(uri);
     }
 
     render() {
@@ -44,18 +48,23 @@ class Create_InformMessage extends Component {
                                         <h6>Từ:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Input type="text" disabled defaultValue="Công ty ABC" />
+                                        <Label>Công ty ABC</Label>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
                                         <h6>Đến:</h6>
                                     </Col>
-                                    <Col xs="12" md="9">
-                                        <Input type="text" />
+                                    <Col xs="12" md="10">
+                                        <Label>Nhà trường</Label>
                                     </Col>
-                                    <Col xs="12" md="1">
-                                        <Button block outline color="primary" onClick={this.openPopupRegist}>Thêm</Button>
+                                </FormGroup>
+                                <FormGroup row>
+                                    <Col md="2">
+                                        <h6>Chủ đề:</h6>
+                                    </Col>
+                                    <Col xs="12" md="10">
+                                        <Label style={{fontWeight:'bold'}}>Nghỉ tết Âm lịch</Label>
                                     </Col>
                                 </FormGroup>
                                 <hr />
@@ -64,9 +73,7 @@ class Create_InformMessage extends Component {
                                         <h6>Nội dung:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <CKEditor
-                                            editor={ClassicEditor}
-                                        />
+                                        <Label> Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.  Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.  Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</Label>
                                     </Col>
                                 </FormGroup>
                                 <ToastContainer />
@@ -77,9 +84,14 @@ class Create_InformMessage extends Component {
                         </Card>
                     </Col>
                 </Row>
+                <div style={{paddingLeft:'45%'}}>
+                    <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
+                        Trở về
+                    </Button>
+                </div>
             </div>
         );
     }
 }
 
-export default Create_InformMessage;
+export default InformMessage_Detail;
