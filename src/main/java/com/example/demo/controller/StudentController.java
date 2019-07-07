@@ -564,6 +564,15 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //set doanh nghiep thuc tap cho student
+    @PutMapping("/businessInternship")
+    public ResponseEntity<Void> setBusinessInternshipForStudent(@RequestParam String emailBusiness){
+        String emailStudent=getEmailFromToken();
+        ojt_enrollmentService.updateBusinessForStudent(emailBusiness,emailStudent);
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
     //get email from token
     private String getEmailFromToken() {
         String email = "";
