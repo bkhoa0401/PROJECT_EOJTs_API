@@ -45,6 +45,10 @@ public class Event implements Comparable<Event> {
 //    @JsonBackReference
     private List<Student> students;
 
+    public int getId() {
+        return id;
+    }
+
     public String getTitle() {
         return title;
     }

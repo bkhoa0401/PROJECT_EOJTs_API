@@ -12,4 +12,10 @@ public interface EventRepository extends JpaRepository<Event,Integer> {
 
     @Query("select e from Event e join e.students st where st.email = ?1")
     List<Event> findEventsByStudentEmail(String email);
+
+    List<Event> findEventsByAdmin_Email(String email);
+
+    List<Event> findEventsByBusinessEmail(String email);
+
+    Event findById(int id);
 }

@@ -27,6 +27,7 @@ public class StudentDTO {
     private boolean gender;
     private Date dob;
     private List<Skill> skillList;
+    private boolean isIntership;
 
 
     public StudentDTO(String email, String name, String specialized, String phone, String address, String objective, String option1, String option2, boolean isAcceptedOption1, boolean isAcceptedOption2, String code, String token, String avatarLink, float gpa, String resumeLink) {
@@ -68,6 +69,7 @@ public class StudentDTO {
     }
 
     public StudentDTO() {
+        this.isIntership = false;
     }
 
     public String getEmail() {
@@ -209,7 +211,7 @@ public class StudentDTO {
         this.isInterviewed2 = student.isInterviewed2();
         this.dob = student.getDob();
         this.gender = student.isGender();
-        this.skillList=student.getSkills();
+        this.skillList = student.getSkills();
     }
 
     public boolean isInterviewed1() {
@@ -250,5 +252,13 @@ public class StudentDTO {
 
     public void setSkillList(List<Skill> skillList) {
         this.skillList = skillList;
+    }
+
+    public boolean isIntership() {
+        return isIntership;
+    }
+
+    public void setIntership(boolean intership) {
+        isIntership = intership;
     }
 }

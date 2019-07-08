@@ -51,6 +51,9 @@ public class BusinessController {
     @Autowired
     Job_Post_SkillService job_post_skillService;
 
+    @Autowired
+    EventService eventService;
+
     @PostMapping("")
     public ResponseEntity<Void> saveBusiness(@RequestBody List<BusinessDTO> listBusinessDTO) throws Exception {
         for (int i = 0; i < listBusinessDTO.size(); i++) {
@@ -173,7 +176,7 @@ public class BusinessController {
     //get job post details by id
     @GetMapping("/getJobPost")
     @ResponseBody
-    public ResponseEntity<Job_PostDTO> getListInvitation(@RequestParam int id) {
+    public ResponseEntity<Job_PostDTO> getJobPost(@RequestParam int id) {
 
         Job_Post job_post = job_postService.findJob_PostById(id);
         String emailOfBusiness = job_post.getOjt_enrollment().getBusiness().getEmail();
@@ -219,7 +222,7 @@ public class BusinessController {
         return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOList, HttpStatus.OK);
     }
 
-
+    // create an invitation
     @PostMapping("/createInvitation")
     public ResponseEntity<Void> createInvitationForStudent(@RequestBody Invitation invitation
             , @RequestParam String emailStudent) {
@@ -246,7 +249,7 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-    //update infor job post
+    //update info job post
     @PutMapping("/updateJobPost")
     public ResponseEntity<Void> updateJobPostOfBusiness(@RequestBody Job_Post job_post) {
         String businessEmail = getEmailFromToken();
@@ -283,6 +286,7 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //upload link transcript
     @PutMapping("/updateLinkTranscript")
     public ResponseEntity<Void> updateLinkTranscript(@RequestBody Student student) {
         boolean updateLinkTranscript = studentService.updateLinkTranscriptForStudent(student);
@@ -292,6 +296,7 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //get top 5 business
     @GetMapping("/getTop5Business")
     @ResponseBody
     public ResponseEntity<List<Business>> getTop5Business() {
@@ -331,6 +336,7 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //get all supervisor of business
     @GetMapping("/getAllSupervisorABusiness")
     @ResponseBody
     public ResponseEntity<List<Supervisor>> getSupervisorOfABusiness() {
@@ -390,6 +396,30 @@ public class BusinessController {
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
+
+    //get all events of business
+    @GetMapping("/events")
+    @ResponseBody
+    public ResponseEntity<List<Event>> getAllEventOfBusiness(){
+        String email=getEmailFromToken();
+        List<Event> events=eventService.getEventListOfBusiness(email);
+        if(events!=null){
+            Collections.sort(events);
+            return new ResponseEntity<List<Event>>(events,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/event")
+    @ResponseBody
+    public ResponseEntity<Event> getEventById(@RequestParam int id) {
+        Event event = eventService.findEventById(id);
+        if (event != null) {
+            return new ResponseEntity<Event>(event, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
 
     //get email from token
     private String getEmailFromToken() {

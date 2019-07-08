@@ -101,4 +101,14 @@ public class Ojt_EnrollmentService {
         }
         return null;
     }
+
+    public void updateBusinessForStudent(String emailBusiness,String emailStudent) {
+        Business business = businessService.getBusinessByEmail(emailBusiness);
+
+        Ojt_Enrollment ojt_enrollment = getOjt_EnrollmentByStudentEmail(emailStudent);
+
+        ojt_enrollment.setBusiness(business);
+
+        ojtEnrollmentRepository.save(ojt_enrollment);
+    }
 }
