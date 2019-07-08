@@ -104,7 +104,7 @@ class Ojt_Registration extends Component {
                                             <th style={{ textAlign: "center" }}>Họ và Tên</th>
                                             <th style={{ textAlign: "center" }}>Chuyên ngành</th>
                                             <th style={{ textAlign: "center" }}>Nguyện vọng</th>
-                                            <th style={{ textAlign: "center" }}>Hành động</th>
+                                            <th style={{ textAlign: "center" }}>Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>

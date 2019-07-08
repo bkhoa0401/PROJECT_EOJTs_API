@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -138,6 +139,21 @@ public class SupervisorController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+
+    @GetMapping("/sms")
+    public ResponseEntity<String> sendSms() {
+        SmsService api = new SmsService("pdq_X8f0LCu68sMHzPQGfHQb9t1JqTxP");
+
+        String result = null;
+        try {
+            result = api.sendSMS("0335554120", "hello", 6, "");
+            return new ResponseEntity<String>(result, HttpStatus.OK);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<String>(result, HttpStatus.EXPECTATION_FAILED);
     }
 
     //get email from token

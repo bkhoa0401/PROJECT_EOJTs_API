@@ -21,6 +21,7 @@ import firebase from 'firebase/app';
 import Toastify from '../../views/Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
+import decode from 'jwt-decode';
 import 'firebase/storage';
 
 
@@ -32,6 +33,7 @@ class Hr_Students_Detail extends Component {
         super(props);
         this.state = {
             listStudentTask: [],
+            role: ''
         }
     }
 
@@ -40,20 +42,30 @@ class Hr_Students_Detail extends Component {
         const email = window.location.href.split("/").pop();
         const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${email}`);
 
+        const token = localStorage.getItem('id_token');
+        let role = '';
+        if (token != null) {
+            const decoded = decode(token);
+            role = decoded.role;
+            this.setState({
+                role: role
+            });
+        }
+
         if (listStudentTask != null) {
             this.setState({
                 listStudentTask: listStudentTask
             });
         }
-        console.log(listStudentTask);
+
     }
 
     handleDirect = (uri) => {
         this.props.history.push(uri);
-    }    
+    }
 
     render() {
-
+        const { role } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -62,7 +74,7 @@ class Hr_Students_Detail extends Component {
                             <CardHeader>
                                 <i className="fa fa-align-justify"></i> Chi tiết nhiệm vụ
                             </CardHeader>
-                            <CardBody>                                
+                            <CardBody>
                                 <ToastContainer />
                                 <br />
                                 <div style={{ marginLeft: "42%" }}>
@@ -94,13 +106,13 @@ class Hr_Students_Detail extends Component {
                                                         <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
                                                         <td style={{ textAlign: "center" }}>
                                                             {
-                                                                task.state.toString() === 'true' ? 
-                                                                (
-                                                                    <Badge color="success">Hoàn Thành</Badge>
-                                                                ) :
-                                                                (
-                                                                    <Badge color="danger">Chưa hoàn thành</Badge>
-                                                                )
+                                                                task.state.toString() === 'true' ?
+                                                                    (
+                                                                        <Badge color="success">Hoàn Thành</Badge>
+                                                                    ) :
+                                                                    (
+                                                                        <Badge color="danger">Chưa hoàn thành</Badge>
+                                                                    )
                                                             }
                                                         </td>
                                                     </tr>
@@ -116,7 +128,13 @@ class Hr_Students_Detail extends Component {
                             <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr-student-list")} type="submit" color="primary" block>Trở về</Button>
+                                        {
+                                            role === 'ROLE_HR' ? (
+                                                <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr-student-list")} type="submit" color="primary" block>Trở về</Button>
+                                            ) : (
+                                                    <Button id="submitBusinesses" onClick={() => this.handleDirect("/list_management/student_list")} type="submit" color="primary" block>Trở về</Button>
+                                                )
+                                        }
                                     </Col>
                                 </Row>
                             </CardFooter>

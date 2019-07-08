@@ -163,7 +163,7 @@ class Official_List extends Component {
                       <th style={{ textAlign: "center" }}>CV</th>
                       <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
                       <th style={{ textAlign: "center" }}>Supervisor</th>
-                      <th style={{ textAlign: "center" }}>Hành động</th>
+                      <th style={{ textAlign: "center" }}>Thao tác</th>
                     </tr>
                   </thead>
                   <tbody>
