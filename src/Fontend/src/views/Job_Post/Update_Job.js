@@ -514,22 +514,6 @@ class Update_Job extends Component {
                         </Card>
                     </Col>
                 </Row>
-<<<<<<< HEAD
-                <div className="position-relative row form-group" style={{ paddingLeft: '40%' }}>
-                    <Button
-                        style={{ fontWeight: "bold", borderColor: '#20a8d8', color: '#20a8d8', backgroundColor: 'white', width: '80px' }}
-                        //tro ve trang thong tin tuyen dung
-                        onClick={() => this.handleDirect()}
-                    >
-                        Trở về
-                    </Button>
-                    &nbsp;&nbsp;
-                    <Button style={{ fontWeight: "bold", width: '80px', backgroundColor: 'white' }} block outline color="warning" onClick={() => this.confirm("Reset")}>Đặt lại</Button>
-                    &nbsp;&nbsp;
-                    <Button style={{ fontWeight: "bold", width: '80px' }} color="primary" onClick={() => this.confirm("Submit")}>Lưu</Button>
-                </div>
-=======
->>>>>>> master
             </div>
         );
     }
