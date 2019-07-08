@@ -36,4 +36,12 @@ public class EventService {
         }
         return null;
     }
+
+    public Event findEventById(int id) {
+        Event event = eventRepository.findById(id);
+        if (event != null) {
+            return event;
+        }
+        return null;
+    }
 }
