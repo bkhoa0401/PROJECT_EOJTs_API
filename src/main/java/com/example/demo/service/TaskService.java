@@ -53,7 +53,8 @@ public class TaskService {
     public boolean updateTask(Task task) {
         Task taskIsExisted = taskRepository.findById(task.getId());
         if (taskIsExisted != null) {
-            task.setOjt_enrollment(taskIsExisted.getOjt_enrollment());
+//            task.setOjt_enrollment(taskIsExisted.getOjt_enrollment());
+            task.setTime_created(taskIsExisted.getTime_created());
             task.setSupervisor(taskIsExisted.getSupervisor());
             taskRepository.save(task);
             return true;
@@ -70,10 +71,10 @@ public class TaskService {
         return false;
     }
 
-    public boolean updateStateTask(int id) {
+    public boolean updateStateTask(int id, boolean state) {
         Task taskIsExisted = taskRepository.findById(id);
         if (taskIsExisted != null) {
-            taskIsExisted.setState(true);
+            taskIsExisted.setState(state);
             taskRepository.save(taskIsExisted);
             return true;
         }

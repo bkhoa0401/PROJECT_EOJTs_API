@@ -107,7 +107,7 @@ class Official_List extends Component {
       const result = await ApiServices.Put('/business/assignSupervisor', listDataEdited);
       if (result.status == 200) {
         Toastify.actionSuccess("Thao tác thành công!");
-        
+
       } else {
         Toastify.actionFail("Thao tác thất bại!");
       }
@@ -116,7 +116,6 @@ class Official_List extends Component {
 
   render() {
     const { students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection } = this.state;
-
     let filteredListStudents = orderBy(students, columnToSort, sortDirection);
     if (students != null) {
       filteredListStudents = students.filter(
@@ -160,8 +159,9 @@ class Official_List extends Component {
                       <th style={{ textAlign: "center" }}>Họ và Tên</th>
                       <th style={{ textAlign: "center" }}>Chuyên ngành</th>
                       {/* <th style={{ textAlign: "center" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
-                      <th style={{ textAlign: "center" }}>GPA</th>
-                      <th style={{ textAlign: "center" }}>Bảng điểm</th>
+                      {/* <th style={{ textAlign: "center" }}>GPA</th>
+                      <th style={{ textAlign: "center" }}>CV</th>
+                      <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
                       <th style={{ textAlign: "center" }}>Supervisor</th>
                       <th style={{ textAlign: "center" }}>Hành động</th>
                     </tr>
@@ -169,13 +169,22 @@ class Official_List extends Component {
                   <tbody>
                     {
                       filteredListStudents && filteredListStudents.map((student, index) => {
+                        const linkDownCV = `http://localhost:8000/api/file/downloadFile/${student.resumeLink}`;
                         return (
                           <tr key={index}>
                             <td style={{ textAlign: "center" }}>{index + 1}</td>
                             <td style={{ textAlign: "center" }}>{student.code}</td>
                             <td style={{ textAlign: "center" }}>{student.name}</td>
                             <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                            <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                            {/* <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                            <td style={{ textAlign: "center" }}>
+                              {
+                                student.resumeLink && student.resumeLink ? (
+                                  <a href={linkDownCV} download>Tải</a>
+                                ) :
+                                  (<label>N/A</label>)
+                              }
+                            </td>
                             <td style={{ textAlign: "center" }}>
                               {
                                 student.transcriptLink && student.transcriptLink ? (
@@ -183,7 +192,7 @@ class Official_List extends Component {
                                 ) :
                                   (<label>N/A</label>)
                               }
-                            </td>
+                            </td> */}
                             <td style={{ textAlign: "center" }}>
                               {
                                 student.supervisor == null ? (
@@ -208,7 +217,8 @@ class Official_List extends Component {
 
                             </td>
                             <td style={{ textAlign: "center" }}>
-                              <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/details_task')}>Nhiệm vụ</Button>
+                            <Button style={{ width: '100px', marginRight: '2px' }} color="success" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}>Chi tiết</Button>
+                              <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect(`/details_task/${student.email}`)}>Nhiệm vụ</Button>
                             </td>
                           </tr>
                         )

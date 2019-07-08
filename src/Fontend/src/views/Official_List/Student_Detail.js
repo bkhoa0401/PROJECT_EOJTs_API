@@ -27,7 +27,7 @@ import 'firebase/storage';
 
 const storage = firebase.storage();
 
-class CV extends Component {
+class Student_Detail extends Component {
 
     constructor(props) {
         super(props);
@@ -261,11 +261,7 @@ class CV extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             {
-                                                role && role === 'ROLE_HR' ?
-                                                    (
-                                                        this.showTranscript(transcriptLink)
-                                                    ) :
-                                                    (<input onChange={this.handleChange} type="file" />)
+                                                this.showTranscript(transcriptLink)
                                             }
                                         </Col>
                                     </FormGroup>
@@ -278,19 +274,12 @@ class CV extends Component {
                             <CardFooter className="p-4">
                                 <Row>
                                     {
-                                        role && role === 'ROLE_ADMIN' ?
+                                        role && role === 'ROLE_HR' ?
                                             (<Col xs="3" sm="3">
-                                                <Button onClick={() => this.handleSubmit()} type="submit" color="success" block>Xác nhận</Button>
-                                            </Col>) :
-                                            (<label></label>)
-                                    }
-                                    {
-                                        role && role === 'ROLE_ADMIN' ?
-                                            (<Col xs="3" sm="3">
-                                                <Button id="submitBusinesses" onClick={() => this.handleDirect("/list_management/student_list")} type="submit" color="primary" block>Trở về</Button>
+                                                <Button id="submitBusinesses" onClick={() => this.handleDirect("/official_list")} type="submit" color="primary" block>Trở về</Button>
                                             </Col>) :
                                             (<Col xs="3" sm="3">
-                                                <Button id="submitBusinesses" onClick={() => this.handleDirect("/ojt_registration")} type="submit" color="primary" block>Trở về</Button>
+                                                <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr-student-list")} type="submit" color="primary" block>Trở về</Button>
                                             </Col>)
                                     }
                                 </Row>
@@ -303,4 +292,4 @@ class CV extends Component {
     }
 }
 
-export default CV;
+export default Student_Detail;
