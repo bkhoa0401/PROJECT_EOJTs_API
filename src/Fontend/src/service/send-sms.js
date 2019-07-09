@@ -1,17 +1,7 @@
 var https = require('https');
 
-const apiKeySid = 'SKdL1Lvl5RXLchfojMvADh2BJx1Ck6Ix93';
-const apiKeySecret = "dzEwTUdQc1VoSko1cTZYZnJCS294R3VVaUJTd2ZxYlM=";
-
-// var sms = [
-//     {
-//         "from": "0335554120",
-//         "to": "0335554120",
-//         "text": "Hello"
-//     }
-// ]
-
-// sendSMS(sms)
+const apiKeySid = 'SKljBkoFUsAeBmo2XO7Xmkepx7Qi3hyEz';
+const apiKeySecret = "TE5vYlpaZVJlVkVFMzdEdDIyb3J4V3pGMFBFaERnSg==";
 
 
 function getAccessToken() {
@@ -50,7 +40,6 @@ const sendSMS = function (sms) {
             "sms": sms
         }
     );
-
 
     var req = https.request(options, function (res) {
         console.log('STATUS:', res.statusCode);
