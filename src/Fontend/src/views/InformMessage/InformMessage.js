@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ButtonGroup, Input, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
+import decode from 'jwt-decode';
 import Toastify from '../Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
@@ -11,7 +12,31 @@ class InformMessage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            informs: null,
+            searchValue:'',
         };
+    }
+
+    async componentDidMount() {
+        const token = localStorage.getItem('id_token');
+        let informs = null;
+        let role = '';
+        if (token != null) {
+            const decoded = decode(token);
+            if (decoded.role == "ROLE_ADMIN") {
+                informs = await ApiServices.Get('/admin/events');
+            }
+            if (decoded.role == "ROLE_HR") {
+                informs = await ApiServices.Get('/business/events');
+            }
+        }
+        console.log(role);
+        if (informs != null) {
+            this.setState({
+                informs,
+            });
+        }
+        console.log(informs);
     }
 
     handleInput = async (event) => {
@@ -26,7 +51,17 @@ class InformMessage extends Component {
     }
 
     render() {
-        // const { searchValue } = this.state;
+        const { searchValue, informs } = this.state;
+        let filteredListInforms;
+        if (informs != null) {
+            filteredListInforms = informs.filter(
+                (inform) => {
+                    if (inform.title.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+                        return inform;
+                    }
+                }
+            );
+        }
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -45,24 +80,16 @@ class InformMessage extends Component {
                                         </form>
                                     </nav>
                                     <ListGroup>
-                                        <ListGroupItem action onClick={() => this.handleDirect(`/InformMessage/InformMessage_Detail/${1}`)}>
-                                            <ListGroupItemHeading>List group item heading</ListGroupItemHeading>
-                                            <ListGroupItemText>
-                                                Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
-                                        </ListGroupItemText>
-                                        </ListGroupItem>
-                                        <ListGroupItem action>
-                                            <ListGroupItemHeading>List group item heading</ListGroupItemHeading>
-                                            <ListGroupItemText>
-                                                Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
-                                        </ListGroupItemText>
-                                        </ListGroupItem>
-                                        <ListGroupItem action>
-                                            <ListGroupItemHeading>List group item heading</ListGroupItemHeading>
-                                            <ListGroupItemText>
-                                                Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.
-                                        </ListGroupItemText>
-                                        </ListGroupItem>
+                                        {filteredListInforms && filteredListInforms.map((inform, index) => {
+                                            return (
+                                                <ListGroupItem action onClick={() => this.handleDirect(`/InformMessage/InformMessage_Detail/${inform.id}`)}>
+                                                    <ListGroupItemHeading style={{fontWeight:'bold'}}>{inform.title}</ListGroupItemHeading>
+                                                    <ListGroupItemText>
+                                                        {inform.description}
+                                                    </ListGroupItemText>
+                                                </ListGroupItem>
+                                            )
+                                        })}
                                     </ListGroup>
                                 </div>
                                 <ToastContainer />

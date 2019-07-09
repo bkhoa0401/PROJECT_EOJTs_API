@@ -48,6 +48,7 @@ public class Event implements Comparable<Event> {
     @Column(name = "isRead")
     private boolean isRead;
 
+
     public String getTitle() {
         return title;
     }

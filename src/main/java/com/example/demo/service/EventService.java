@@ -37,9 +37,18 @@ public class EventService {
         return null;
     }
 
+
     public int countEventIsNotRead(String email) {
         int count = eventRepository.findEventsByStudentEmailAndReadIsFalse(email);
 
         return count;
+    }
+    public Event findEventById(int id) {
+        Event event = eventRepository.findEventById(id);
+        if (event != null) {
+            return event;
+        }
+        return null;
+
     }
 }
