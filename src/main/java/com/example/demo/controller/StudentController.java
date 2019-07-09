@@ -584,7 +584,11 @@ public class StudentController {
         DashboardDTO dashboardDTO = new DashboardDTO();
 
         float percentTaskDoneOfStudent = taskService.getPercentTaskDoneOfStudent(email);
-        dashboardDTO.setPercentTaskDone(percentTaskDoneOfStudent*100);
+        if(!Float.isNaN(percentTaskDoneOfStudent)){
+            dashboardDTO.setPercentTaskDone(percentTaskDoneOfStudent*100);
+        }else{
+            dashboardDTO.setPercentTaskDone(0);
+        }
 
         int countEvaluation=evaluationService.countEvaluation(email);
         dashboardDTO.setCountEvaluation(countEvaluation);
