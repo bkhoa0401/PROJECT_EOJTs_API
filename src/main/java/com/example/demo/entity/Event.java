@@ -45,6 +45,9 @@ public class Event implements Comparable<Event> {
 //    @JsonBackReference
     private List<Student> students;
 
+    @Column(name = "isRead")
+    private boolean isRead;
+
     public String getTitle() {
         return title;
     }
@@ -91,6 +94,22 @@ public class Event implements Comparable<Event> {
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
     }
 
     @Override

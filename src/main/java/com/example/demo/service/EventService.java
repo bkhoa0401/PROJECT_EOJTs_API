@@ -21,7 +21,7 @@ public class EventService {
         return null;
     }
 
-    public List<Event> getEventListOfAdmin(String email){
+    public List<Event> getEventListOfAdmin(String email) {
         List<Event> events = eventRepository.findEventsByAdmin_Email(email);
         if (events != null) {
             return events;
@@ -29,11 +29,17 @@ public class EventService {
         return null;
     }
 
-    public List<Event> getEventListOfBusiness(String email){
+    public List<Event> getEventListOfBusiness(String email) {
         List<Event> events = eventRepository.findEventsByBusinessEmail(email);
         if (events != null) {
             return events;
         }
         return null;
+    }
+
+    public int countEventIsNotRead(String email) {
+        int count = eventRepository.findEventsByStudentEmailAndReadIsFalse(email);
+
+        return count;
     }
 }

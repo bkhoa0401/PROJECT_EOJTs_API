@@ -79,4 +79,20 @@ public class TaskService {
         }
         return false;
     }
+
+    public List<Task> findTaskDoneByStudentEmail(String email) {
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        List<Task> taskList = taskRepository.findTasksByOjt_enrollmentAndStateIsTrue(ojt_enrollment);
+        if (taskList != null) {
+            return taskList;
+        }
+        return null;
+    }
+
+    public float getPercentTaskDoneOfStudent(String email) {
+        List<Task> taskListOfStudent = findTaskByStudentEmail(email);
+        List<Task> taskListDoneOfStudent = findTaskDoneByStudentEmail(email);
+
+        return (float)taskListDoneOfStudent.size() / (float)taskListOfStudent.size();
+    }
 }
