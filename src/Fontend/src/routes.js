@@ -49,6 +49,7 @@ const Profile = React.lazy(() => import('./views/Student/Student.js'));
 const student_list = React.lazy(() => import('./views/list_management/student_list.js'));
 const business_list = React.lazy(() => import('./views/list_management/business_list.js'));
 const Official_List = React.lazy(() => import('./views/Official_List/Official_List.js'));
+const Student_Detail = React.lazy(() => import('./views/Official_List/Student_Detail.js'));
 const Details_Task = React.lazy(() => import('./views/Details_Task/Details_Task.js'));
 const Job_Post = React.lazy(() => import('./views/Job_Post/Job_Post.js'));
 const Update_Job = React.lazy(() => import('./views/Job_Post/Update_Job.js'));
@@ -73,6 +74,12 @@ const Create_InformMessage = React.lazy(() => import('./views/InformMessage/Crea
 const Report = React.lazy(() => import('./views/Report/Report.js'));
 const Report_Detail = React.lazy(() => import('./views/Report/Report_Detail.js'));
 const Create_Report = React.lazy(() => import('./views/Report/Create_Report.js'))
+const Hr_Students = React.lazy(() => import('./views/Hr_Students/Hr_Students.js'));
+const Hr_Student_Detail = React.lazy(() => import('./views/Hr_Students/Hr_Student_Detail.js'));
+const Hr_Task = React.lazy(() => import('./views/Hr_Task/Hr_Task.js'));
+const Hr_Task_Create = React.lazy(() => import('./views/Hr_Task/Hr_Task_Create.js'));
+const Hr_Task_Detail = React.lazy(() => import('./views/Hr_Task/Hr_Task_Detail.js'));
+const Hr_Task_Update = React.lazy(() => import('./views/Hr_Task/Hr_Task_Update.js'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -131,7 +138,8 @@ const routes = [
   { path: '/list_management/student_list', exact: true, name: 'Danh sách sinh viên', component: student_list },
   { path: '/list_management/business_list', exact: true, name: 'Danh sách doanh nghiệp', component: business_list },
   { path: '/official_list', exact: true, name: 'Danh sách sinh viên', component: Official_List },
-  { path: '/details_task', exact: true, name: 'Nhiệm vụ', component: Details_Task },
+  { path: '/student-detail/:email', exact: true, name: 'Thông tin chi tiết sinh viên', component: Student_Detail },
+  { path: '/details_task/:email', exact: true, name: 'Nhiệm vụ', component: Details_Task },
   { path: '/job-post/:id', exact: true, name: 'Thông tin tuyển dụng', component: Job_Post },
   { path: '/job_post/update_job/:id', exact: true, name: 'Chi tiết công việc', component: Update_Job },
   { path: '/job_post_list_hr/add_job_post', exact: true, name: 'Tạo bài đăng tuyển dụng mới', component: Add_Job },
@@ -150,7 +158,7 @@ const routes = [
   { path: '/admin_account/studentList/create', exact: true, name: 'Tạo tài khoản học sinh mới', component: User_Student_Create },
   { path: '/admin_account/businessList', exact: true, name: 'Danh sách tài khoản doanh nghiệp', component: User_Business },
   { path: '/admin_account/businessList/create', exact: true, name: 'Tạo tài khoản doanh nghiệp mới', component: User_Business_Create },
-  { path: '/job_post/job_post_list', exact: true, name: 'Danh sách thông tin tuyển dụng', component: Job_Post_List},
+  { path: '/job_post/job_post_list', exact: true, name: 'Danh sách thông tin tuyển dụng', component: Job_Post_List },
   { path: '/job_post_list_hr', exact: true, name: 'Danh sách bài đăng tuyển dụng', component: Job_Post_List_HR },
   { path: '/informmessage/informmessage', exact: true, name: 'Thông báo', component: InformMessage },
   { path: '/informmessage/informmessage_detail/:id', exact: true, name: 'Chi tiết thông báo', component: InformMessage_Detail },
@@ -158,6 +166,12 @@ const routes = [
   { path: '/report/report', exact: true, name: 'Báo cáo', component: Report },
   { path: '/report/report_detail/:id', exact: true, name: 'Chi tiết báo cáo', component: Report_Detail },
   { path: '/report/create_report/:id', exact: true, name: 'Tạo báo cáo', component: Create_Report }
+  { path: '/hr-student-list', exact: true, name: 'Danh sách sinh viên', component: Hr_Students },
+  { path: '/hr-student-list/details/:email', exact: true, name: 'Chi tiết sinh viên', component: Hr_Student_Detail },
+  { path: '/hr-task', exact: true, name: 'Danh sách nhiệm vụ', component: Hr_Task },
+  { path: '/hr-task/create', exact: true, name: 'Tạo nhiệm vụ mới', component: Hr_Task_Create },
+  { path: '/hr-task/details/:id', exact: true, name: 'Chi tiết nhiệm vụ', component: Hr_Task_Detail },
+  { path: '/hr-task/update/:id', exact: true, name: 'Chỉnh sửa nhiệm vụ', component: Hr_Task_Update },
 ];
 
 export default routes;

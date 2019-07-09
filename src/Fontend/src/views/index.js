@@ -45,6 +45,14 @@ import {
   InformMessage,
   Create_InformMessage,
   Report,
+  Hr_Students,
+  Hr_Students_Detail,
+  Hr_Task,
+  Hr_Task_Create,
+  Hr_Task_Detail,
+  Hr_Task_Update,
+
+
 } from './Base';
 
 import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
@@ -136,5 +144,12 @@ export {
   Report,
   Report_Detail,
   Create_Report,
+  Hr_Students,
+  Hr_Students_Detail,
+  Hr_Task,
+  Hr_Task_Create,
+  Hr_Task_Detail,
+  Hr_Task_Update,
+
 };
 
