@@ -41,7 +41,7 @@ public class Event implements Comparable<Event> {
     private Business business;
 
     @ManyToMany(mappedBy = "events")
-    @JsonIgnore
+//    @JsonIgnore
 //    @JsonBackReference
     private List<Student> students;
 

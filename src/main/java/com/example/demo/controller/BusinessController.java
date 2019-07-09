@@ -410,17 +410,6 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-    @GetMapping("/event")
-    @ResponseBody
-    public ResponseEntity<Event> getEventById(@RequestParam int id) {
-        Event event = eventService.findEventById(id);
-        if (event != null) {
-            return new ResponseEntity<Event>(event, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-    }
-
-
     //get email from token
     private String getEmailFromToken() {
         String email = "";

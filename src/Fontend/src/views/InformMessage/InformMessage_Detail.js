@@ -3,6 +3,7 @@ import Popup from "reactjs-popup";
 import { Label, FormGroup, Input, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
+import decode from 'jwt-decode';
 import Toastify from '../Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
@@ -16,19 +17,42 @@ class InformMessage_Detail extends Component {
         this.state = {
             title:'',
             description:'',
+            students: null,
+            business: null,
+            informFromName:'',
+            informFromEmail:'',
         };
     }
 
     async componentDidMount() {
         const informMessageID = window.location.href.split("/").pop();
-        const data = await ApiServices.Get(`/business/event?id=${informMessageID}`);
+        const token = localStorage.getItem('id_token');
+        const data = await ApiServices.Get(`/event/getEvent?id=${informMessageID}`);
+        let business = null;
+        let informFromName = '';
+        let informFromEmail = '';
+        if (token != null) {
+            const decoded = decode(token);
+            if (decoded.role == "ROLE_ADMIN") {
+                informFromName = "FPT University";
+                informFromEmail = decoded.email;
+            }
+            if (decoded.role == "ROLE_HR") {
+                business = await ApiServices.Get('/business/getBusiness');
+                informFromName = business.business_name;
+                informFromEmail = business.email;
+            }
+        }
         if (data != null) {
             this.setState({
                 title: data.title,
                 description: data.description,
+                students: data.students,
+                business: business,
+                informFromName: informFromName,
+                informFromEmail: informFromEmail,
             });
         }
-        console.log(informMessageID);
     }
 
     handleDirect = (uri) => {
@@ -36,7 +60,7 @@ class InformMessage_Detail extends Component {
     }
 
     render() {
-        const { title, description } = this.state;
+        const { title, description, students, informFromName, informFromEmail } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -51,7 +75,7 @@ class InformMessage_Detail extends Component {
                                         <h6>Từ:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Label>Công ty ABC</Label>
+                                        <Label>{<>{informFromName}<br/>({informFromEmail})</>}</Label>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
@@ -59,7 +83,13 @@ class InformMessage_Detail extends Component {
                                         <h6>Đến:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Label>Nhà trường</Label>
+                                        <Label>
+                                            {students && students.map((student, index) =>
+                                            <>
+                                            {student.name} ({student.email})<br/>
+                                            </>
+                                            )}
+                                        </Label>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>

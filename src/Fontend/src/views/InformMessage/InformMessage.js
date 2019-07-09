@@ -20,7 +20,6 @@ class InformMessage extends Component {
     async componentDidMount() {
         const token = localStorage.getItem('id_token');
         let informs = null;
-        let role = '';
         if (token != null) {
             const decoded = decode(token);
             if (decoded.role == "ROLE_ADMIN") {
@@ -30,7 +29,6 @@ class InformMessage extends Component {
                 informs = await ApiServices.Get('/business/events');
             }
         }
-        console.log(role);
         if (informs != null) {
             this.setState({
                 informs,

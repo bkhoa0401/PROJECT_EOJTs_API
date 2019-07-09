@@ -3,6 +3,7 @@ import Popup from "reactjs-popup";
 import { FormGroup, Input, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
+import decode from 'jwt-decode';
 import Toastify from '../Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
@@ -15,9 +16,39 @@ class Create_InformMessage extends Component {
         super(props);
         this.state = {
             open: false,
+            informFromEmail: '',
+            students: null,
+            studentReceived: null,
+            informTo: '',
+            
+            description: '',
+            time_created: '',
+            title: '',
+            admin_email: null,
+            business_email: null,
         };
         this.openPopupRegist = this.openPopupRegist.bind(this);
         this.closePopupRegist = this.closePopupRegist.bind(this);
+    }
+
+    async componentDidMount() {
+        const token = localStorage.getItem('id_token');
+        const students = await ApiServices.Get(`/business/getStudentsByBusiness`);
+        let informFromEmail = '';
+        let today = new Date();
+        let dd = today.getDate();
+        let mm = today.getMonth() + 1;
+        let yyyy = today.getFullYear();
+        today = dd + '/' + mm + '/' + yyyy;
+        if (token != null) {
+            const decoded = decode(token);
+            informFromEmail = decoded.email;
+        }
+        this.setState({
+            informFromEmail: informFromEmail,
+            students: students,
+            time_created: today,
+        });
     }
 
     openPopupRegist() {
@@ -28,12 +59,19 @@ class Create_InformMessage extends Component {
         this.setState({ open: false })
     }
 
+    handleInput = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value,
+        })
+    }
+
     handleDirect = (uri) => {
         this.props.history.push(uri);
     }
 
     render() {
-        // const { searchValue } = this.state;
+        const { informFromEmail, students, informTo, title, description } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -48,7 +86,7 @@ class Create_InformMessage extends Component {
                                         <h6>Từ:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Input type="text" disabled defaultValue="Công ty ABC" />
+                                        <Input type="text" disabled defaultValue={informFromEmail} />
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
@@ -56,7 +94,7 @@ class Create_InformMessage extends Component {
                                         <h6>Đến:</h6>
                                     </Col>
                                     <Col xs="12" md="9">
-                                        <Input type="text" />
+                                        <Input type="text" value={informTo} onChange={this.handleInput} id="informTo" name="informTo"></Input>
                                     </Col>
                                     <Col xs="12" md="1">
                                         <Button block outline color="primary" onClick={this.openPopupRegist}>Thêm</Button>
@@ -67,7 +105,7 @@ class Create_InformMessage extends Component {
                                         <h6>Chủ đề:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Input type="text" />
+                                        <Input type="text" value={title} onChange={this.handleInput} id="title" name="title"/>
                                     </Col>
                                 </FormGroup>
                                 <hr />
@@ -78,6 +116,12 @@ class Create_InformMessage extends Component {
                                     <Col xs="12" md="10">
                                         <CKEditor
                                             editor={ClassicEditor}
+                                            data={description}
+                                            onChange={(event, editor) => {
+                                                this.setState({
+                                                    description: editor.getData(),
+                                                })
+                                            }}
                                         />
                                     </Col>
                                 </FormGroup>
@@ -94,32 +138,26 @@ class Create_InformMessage extends Component {
                     closeOnDocumentClick
                     onClose={this.closePopupRegist}
                 >
-                    <div className="TabContent">
-                        <ListGroup>
-                            <ListGroupItem action>
-                                <ListGroupItemHeading>Nhà trường</ListGroupItemHeading>
-                                <ListGroupItemText>
-                                    admin@gmail.com
-                                </ListGroupItemText>
-                            </ListGroupItem>
-                            <ListGroupItem action>
-                                <ListGroupItemHeading>Nguyễn Văn A</ListGroupItemHeading>
-                                <ListGroupItemText>
-                                    nguyenvana@gmail.com
-                                </ListGroupItemText>
-                            </ListGroupItem>
-                            <ListGroupItem action>
-                                <ListGroupItemHeading>Nguyễn Văn B</ListGroupItemHeading>
-                                <ListGroupItemText>
-                                    nguyenvanb@gmail.com
-                                </ListGroupItemText>
-                            </ListGroupItem>
-                        </ListGroup>
-                    </div>
+                    {students && students.map((student, index) =>
+                        <div className="TabContent">
+                            <ListGroup>
+                                <ListGroupItem action>
+                                    <ListGroupItemHeading style={{fontWeight:'bold'}}>{student.name}</ListGroupItemHeading>
+                                    <ListGroupItemText>
+                                        {student.email}
+                                    </ListGroupItemText>
+                                </ListGroupItem>
+                            </ListGroup>
+                        </div>
+                    )}
                 </Popup>
-                <div style={{paddingLeft:'45%'}}>
+                <div style={{ paddingLeft: '40%' }}>
                     <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
                         Trở về
+                    </Button>
+                    &nbsp;&nbsp;&nbsp;
+                    <Button style={{ width: '100px' }} color="success" onClick={() => this.handleSubmit()}>
+                        Tạo
                     </Button>
                 </div>
             </div>
