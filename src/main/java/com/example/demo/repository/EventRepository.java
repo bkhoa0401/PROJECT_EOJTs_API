@@ -17,5 +17,5 @@ public interface EventRepository extends JpaRepository<Event,Integer> {
 
     List<Event> findEventsByBusinessEmail(String email);
 
-    Event findById(int id);
+    Event findEventById(int id);
 }

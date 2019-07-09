@@ -14,17 +14,20 @@ class InformMessage_Detail extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            title:'',
+            description:'',
         };
     }
 
     async componentDidMount() {
         const informMessageID = window.location.href.split("/").pop();
-        // const data = await ApiServices.Get(`/informmessage/getInformMessage?id=${informMessageID}`);
-        // if (data != null) {
-        //     this.setState({
-            
-        //     });
-        // }
+        const data = await ApiServices.Get(`/business/event?id=${informMessageID}`);
+        if (data != null) {
+            this.setState({
+                title: data.title,
+                description: data.description,
+            });
+        }
         console.log(informMessageID);
     }
 
@@ -33,7 +36,7 @@ class InformMessage_Detail extends Component {
     }
 
     render() {
-        // const { searchValue } = this.state;
+        const { title, description } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -64,7 +67,7 @@ class InformMessage_Detail extends Component {
                                         <h6>Chủ đề:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Label style={{fontWeight:'bold'}}>Nghỉ tết Âm lịch</Label>
+                                        <Label style={{fontWeight:'bold'}}>{title}</Label>
                                     </Col>
                                 </FormGroup>
                                 <hr />
@@ -73,7 +76,7 @@ class InformMessage_Detail extends Component {
                                         <h6>Nội dung:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Label> Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.  Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.  Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</Label>
+                                        <Label>{description}</Label>
                                     </Col>
                                 </FormGroup>
                                 <ToastContainer />
