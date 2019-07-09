@@ -26,6 +26,7 @@ public class Supervisor {
     private String address;
 
     @OneToMany(mappedBy = "supervisor")
+    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Task> tasks;
 

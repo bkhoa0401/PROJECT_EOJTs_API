@@ -93,8 +93,8 @@ class student_list extends Component {
                                         <th style={{ textAlign: "center" }}>Email</th>
                                         <th style={{ textAlign: "center" }}>Chuyên ngành</th>
                                         <th style={{ textAlign: "center" }}>Bảng điểm</th>
-                                        <th style={{ textAlign: "center" }}>GPA</th>
-                                        <th style={{ textAlign: "center" }}></th>
+                                        {/* <th style={{ textAlign: "center" }}>GPA</th> */}
+                                        <th style={{ textAlign: "center" }}>Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -114,11 +114,13 @@ class student_list extends Component {
                                                             (<label>N/A</label>)
                                                     }
                                                 </td>
-                                                <td style={{ textAlign: "center" }}>{student.gpa}</td>
-                                                <td style={{ textAlign: "right" }}>
-                                                    <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}>Chi tiết</Button>
-                                                    &nbsp;&nbsp;
-                                                    <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="danger">Xoá</Button>
+                                                {/* <td style={{ textAlign: "center" }}>{student.gpa}</td> */}
+                                                <td style={{ textAlign: "center" }}>
+                                                    <Button style={{ width: "80px" }} color="success" onClick={() => this.handleDirect(`/student/${student.email}`)}>Chi tiết</Button>
+                                                    &nbsp;
+                                                    <Button style={{ width: "90px" }} color="primary" onClick={() => this.handleDirect(`/hr-student-list/details/${student.email}`)}>Nhiệm vụ</Button>
+                                                    &nbsp;
+                                                    <Button style={{ width: "70px" }} color="danger">Xoá</Button>
                                                 </td>
                                             </tr>
                                         )

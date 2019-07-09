@@ -22,4 +22,8 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
     @Modifying
     @Query("delete from Task t where t.id= ?1")
     void deleteById(int id);
+
+    @Query(value = "select t from Task t where t.ojt_enrollment=?1 and t.state='true'")
+    List<Task> findTasksByOjt_enrollmentAndStateIsTrue(Ojt_Enrollment ojt_enrollmentOfStudent);
+
 }

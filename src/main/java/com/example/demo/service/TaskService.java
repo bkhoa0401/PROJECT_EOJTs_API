@@ -53,7 +53,8 @@ public class TaskService {
     public boolean updateTask(Task task) {
         Task taskIsExisted = taskRepository.findById(task.getId());
         if (taskIsExisted != null) {
-            task.setOjt_enrollment(taskIsExisted.getOjt_enrollment());
+//            task.setOjt_enrollment(taskIsExisted.getOjt_enrollment());
+            task.setTime_created(taskIsExisted.getTime_created());
             task.setSupervisor(taskIsExisted.getSupervisor());
             taskRepository.save(task);
             return true;
@@ -70,13 +71,29 @@ public class TaskService {
         return false;
     }
 
-    public boolean updateStateTask(int id) {
+    public boolean updateStateTask(int id, boolean state) {
         Task taskIsExisted = taskRepository.findById(id);
         if (taskIsExisted != null) {
-            taskIsExisted.setState(true);
+            taskIsExisted.setState(state);
             taskRepository.save(taskIsExisted);
             return true;
         }
         return false;
+    }
+
+    public List<Task> findTaskDoneByStudentEmail(String email) {
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        List<Task> taskList = taskRepository.findTasksByOjt_enrollmentAndStateIsTrue(ojt_enrollment);
+        if (taskList != null) {
+            return taskList;
+        }
+        return null;
+    }
+
+    public float getPercentTaskDoneOfStudent(String email) {
+        List<Task> taskListOfStudent = findTaskByStudentEmail(email);
+        List<Task> taskListDoneOfStudent = findTaskDoneByStudentEmail(email);
+
+        return (float)taskListDoneOfStudent.size() / (float)taskListOfStudent.size();
     }
 }

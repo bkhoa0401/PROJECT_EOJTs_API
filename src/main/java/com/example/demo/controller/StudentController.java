@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.Business_JobPostDTO;
 import com.example.demo.dto.Business_ListJobPostDTO;
+import com.example.demo.dto.DashboardDTO;
 import com.example.demo.dto.Job_PostDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -446,7 +448,7 @@ public class StudentController {
         List<Business_JobPostDTO> business_jobPostDTOList = new ArrayList<>();
 
         List<Job_Post> job_postList = studentService.getSuggestListJobPost(email);
-        for (int i = 0; i < job_postList.size(); i++) {
+        for (int i = 0; i < job_postList.size(); i++) { 
             Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
             business_jobPostDTO.setBusiness(job_postList.get(i).getOjt_enrollment().getBusiness());
 
@@ -566,10 +568,37 @@ public class StudentController {
 
     //set doanh nghiep thuc tap cho student
     @PutMapping("/businessInternship")
-    public ResponseEntity<Void> setBusinessInternshipForStudent(@RequestParam String emailBusiness){
-        String emailStudent=getEmailFromToken();
-        ojt_enrollmentService.updateBusinessForStudent(emailBusiness,emailStudent);
+    public ResponseEntity<Void> setBusinessInternshipForStudent(@RequestParam String emailBusiness) {
+        String emailStudent = getEmailFromToken();
+        ojt_enrollmentService.updateBusinessForStudent(emailBusiness, emailStudent);
         return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<DashboardDTO> getDashboardOfStudent() {
+        String email = getEmailFromToken();
+
+        Ojt_Enrollment ojt_enrollment=ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+
+        DashboardDTO dashboardDTO = new DashboardDTO();
+
+        float percentTaskDoneOfStudent = taskService.getPercentTaskDoneOfStudent(email);
+        if(!Float.isNaN(percentTaskDoneOfStudent)){
+            dashboardDTO.setPercentTaskDone(percentTaskDoneOfStudent*100);
+        }else{
+            dashboardDTO.setPercentTaskDone(0);
+        }
+
+        int countEvaluation=evaluationService.countEvaluation(email);
+        dashboardDTO.setCountEvaluation(countEvaluation);
+
+        int countEventIsNotRead=eventService.countEventIsNotRead(email);
+        dashboardDTO.setInformMessageIsNotRead(countEventIsNotRead);
+
+        dashboardDTO.setBusiness(ojt_enrollment.getBusiness());
+
+        return new ResponseEntity<DashboardDTO>(dashboardDTO,HttpStatus.OK);
 
     }
 

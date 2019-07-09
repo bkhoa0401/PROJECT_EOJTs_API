@@ -15,4 +15,7 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Integer>
 
     @Query(value = "select e from Evaluation e where e.ojt_enrollment=?1")
     List<Evaluation> findEvaluationsByOjt_enrollment(Ojt_Enrollment ojt_enrollmentOfStudent);
+
+    @Query(value = "select count(e.id) from Evaluation e where e.ojt_enrollment=?1")
+    int countEvaluationByOjt_enrollment(Ojt_Enrollment ojt_enrollmentOfStudent);
 }

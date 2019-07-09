@@ -1,55 +1,51 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Pagination, Row, Table, Input, CardFooter } from 'reactstrap';
-import { Button } from 'reactstrap';
+import {
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Col,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Row,
+  Pagination,
+  Table
+} from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
-import orderBy from "lodash/orderBy";
+import firebase from 'firebase/app';
 import Toastify from '../../views/Toastify/Toastify';
-import {
-  getPaginationPageNumber,
-  getPaginationNextPageNumber,
-  getPaginationCurrentPageNumber
-} from '../../service/common-service';
+import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
+import 'firebase/storage';
 
-const invertDirection = {
-  asc: 'desc',
-  desc: 'asc'
-};
-const divInforStudent = {
-  paddingLeft: '30px',
-  marginBottom: '20px'
-};
-const btnBack = {
-  color: 'white',
-  backgroundColor: '#00BFFF',
-  borderRadius: '5px',
-  marginRight: '50%',
-  width: '80px',
-  height: '40px'
-};
 
-const rowBack = {
-  paddingLeft: '47%'
-}
-
-const selectWeek = {
-  marginLeft: '35%'
-}
-
-const tdTableTask = {
-  textAlign: 'center',
-  padding: '15px'
-}
-
-const tdMissionTableTask = {
-  textAlign: 'center',
-  paddingLeft: '75px',
-  paddingRight: '75px'
-}
-
+const storage = firebase.storage();
 
 class Details_Task extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      listStudentTask: [],
+    }
+  }
+
+
+  async componentDidMount() {
+    const email = window.location.href.split("/").pop();
+    const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${email}`);
+
+    if (listStudentTask != null) {
+      this.setState({
+        listStudentTask: listStudentTask
+      });
+    }
+  }
 
   handleDirect = (uri) => {
     this.props.history.push(uri);
@@ -62,93 +58,69 @@ class Details_Task extends Component {
           <Col xs="12" lg="12">
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> <b>Chi tiết nhiệm vụ được giao</b>
+                <i className="fa fa-align-justify"></i> Danh sách nhiệm vụ
               </CardHeader>
               <CardBody>
-
-                <table>
-                  <tbody>
-                    <div style={divInforStudent}>
-                      <tr>
-                        <th style={{ textAlign: "center" }}>Sinh viên:&nbsp;</th>
-                        <td>
-                          <Input type="select" style={{ height: "40px", fontWeight: "bold" }}>
-                            <option>
-                              Nguyễn Văn A
-                            </option>
-                            <option>
-                              Nguyễn Văn A
-                            </option>
-                            <option>
-                              Nguyễn Văn A
-                            </option>
-                          </Input>
-                        </td>
-                      </tr>
-                    </div>
-                    <div style={divInforStudent}>
-                      <tr>
-                        <th style={{ textAlign: "center" }}>MSSV:&nbsp;</th>
-                        <td>SE62519</td>
-                      </tr>
-                    </div>
-                    <div style={divInforStudent}>
-                      <tr>
-                        <th style={{ textAlign: "center" }}>Chuyên ngành:&nbsp;</th>
-                        <td>JS</td>
-                      </tr>
-                    </div>
-                    <div style={divInforStudent}>
-                      <tr>
-                        <th style={{ textAlign: "center" }}>Người phụ trách:&nbsp;</th>
-                        <td>Taskman1</td>
-                      </tr>
-                    </div>
-                  </tbody>
-                </table>
-                <div style={selectWeek}>
-                  <Input type="select" style={{ width: "350px" }}>
-                    <option>
-                      1/1/1997-2/1/1997
-                    </option>
-                    <option>
-                      1/1/1997-2/1/1997
-                    </option>
-                    <option>
-                      1/1/1997-2/1/1997
-                    </option>
-                  </Input>
+                <ToastContainer />
+                <br />
+                <div style={{ marginLeft: "42%" }}>
+                  <strong style={{ fontSize: "20px" }}>Danh sách nhiệm vụ</strong>
                 </div>
-                <br /><br />
+                <br />
                 <Table responsive striped>
                   <thead>
                     <tr>
                       <th style={{ textAlign: "center" }}>STT</th>
                       <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                      <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
+                      <th style={{ textAlign: "center" }}>Trạng thái</th>
+                      <th style={{ textAlign: "center" }}>Giao bởi</th>
+                      <th style={{ textAlign: "center" }}>Ngày tạo</th>
                       <th style={{ textAlign: "center" }}>Hạn cuối</th>
                       <th style={{ textAlign: "center" }}>Mức độ</th>
-                      <th style={{ textAlign: "center" }}>Kết quả</th>
+                      <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td style={{ textAlign: "center" }}>1</td>
-                      <td style={{ textAlign: "center" }}>Fix bug</td>
-                      <td style={{ textAlign: "center" }}>Cao</td>
-                      <td style={{ textAlign: "center" }}>01/01/0001</td>
-                      <td style={{ textAlign: "center" }}>Khó</td>
-                      <td style={{ textAlign: "center" }}>Hoàn thành</td>
-                    </tr>
+                    {
+                      this.state.listStudentTask && this.state.listStudentTask.map((task, index) => {
+                        return (
+                          <tr>
+                            <td style={{ textAlign: "center" }}>{index + 1}</td>
+                            <td style={{ textAlign: "center" }}>{task.title}</td>
+                            <td style={{ textAlign: "center" }}>
+                              {
+                                task.state.toString() === 'true' ?
+                                  (
+                                    <Badge color="success">Hoàn Thành</Badge>
+                                  ) :
+                                  (
+                                    <Badge color="danger">Chưa hoàn thành</Badge>
+                                  )
+                              }
+                            </td>
+                            <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
+                            <td style={{ textAlign: "center" }}>{task.time_created}</td>
+                            <td style={{ textAlign: "center" }}>{task.time_end}</td>
+                            <td style={{ textAlign: "center" }}>{task.level_task}</td>
+                            <td style={{ textAlign: "center" }}>{task.priority}</td>
+                          </tr>
+                        )
+                      })
+                    }
                   </tbody>
                 </Table>
+                <Pagination>
+                  {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                </Pagination>
               </CardBody>
+              <CardFooter className="p-4">
+                <Row>
+                  <Col xs="3" sm="3">
+                    <Button id="submitBusinesses" onClick={() => this.handleDirect("/official_list")} type="submit" color="primary" block>Trở về</Button>
+                  </Col>
+                </Row>
+              </CardFooter>
             </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col style={{paddingLeft:"45%"}}>
-            <Button color="primary"  onClick={() => this.handleDirect('/official_list')}>Trở về</Button>
           </Col>
         </Row>
       </div>

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EventRepository extends JpaRepository<Event,Integer> {
+public interface EventRepository extends JpaRepository<Event, Integer> {
 
     @Query("select e from Event e join e.students st where st.email = ?1")
     List<Event> findEventsByStudentEmail(String email);
@@ -17,5 +17,9 @@ public interface EventRepository extends JpaRepository<Event,Integer> {
 
     List<Event> findEventsByBusinessEmail(String email);
 
+    @Query("select count(e.id) from Event e join e.students st where st.email = ?1 and e.isRead='false'")
+    int  findEventsByStudentEmailAndReadIsFalse(String email);
+
     Event findEventById(int id);
+
 }

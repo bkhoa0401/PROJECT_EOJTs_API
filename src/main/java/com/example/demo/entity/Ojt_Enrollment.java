@@ -20,7 +20,7 @@ public class Ojt_Enrollment implements Serializable{
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
 //    @JsonBackReference
-    @JsonIgnore
+//    @JsonIgnore
     @JoinColumn(name = "student_email")
     private Student student;
 
@@ -34,6 +34,7 @@ public class Ojt_Enrollment implements Serializable{
     private List<Job_Post> job_posts;
 
     @OneToMany(mappedBy = "ojt_enrollment", cascade = CascadeType.ALL)
+    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Task> tasks;
 

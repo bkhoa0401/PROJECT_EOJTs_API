@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -89,6 +90,17 @@ public class SupervisorController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/taskByStudentEmail")
+    @ResponseBody
+    public ResponseEntity<List<Task>> getTasksOfStudent(@RequestParam String emailStudent) {
+
+        List<Task> taskList = taskService.findTaskByStudentEmail(emailStudent);
+        if (taskList != null) {
+            return new ResponseEntity<List<Task>>(taskList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     @GetMapping("/task")
     @ResponseBody
     public ResponseEntity<Task> getTaskById(@RequestParam int id) {
@@ -100,7 +112,10 @@ public class SupervisorController {
     }
 
     @PutMapping("/task")
-    public ResponseEntity<Void> updateTask(@RequestBody Task task) {
+    public ResponseEntity<Void> updateTask(@RequestBody Task task, @RequestParam String emailStudent) {
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(emailStudent);
+
+        task.setOjt_enrollment(ojt_enrollment);
         boolean update = taskService.updateTask(task);
         if (update == true) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -118,8 +133,8 @@ public class SupervisorController {
     }
 
     @PutMapping("/stateTask")
-    public ResponseEntity<Void> updateStateTask(@RequestParam int id) {
-        boolean updateStateTask = taskService.updateStateTask(id);
+    public ResponseEntity<Void> updateStateTask(@RequestParam int id, @RequestParam boolean state) {
+        boolean updateStateTask = taskService.updateStateTask(id, state);
         if (updateStateTask == true) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
