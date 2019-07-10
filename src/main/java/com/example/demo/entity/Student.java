@@ -88,6 +88,8 @@ public class Student implements Serializable {
             inverseJoinColumns = {
                     @JoinColumn(name = "event_id")}
     )
+
+    @JsonIgnore
     private List<Event> events;
 
     @OneToMany(mappedBy = "student")

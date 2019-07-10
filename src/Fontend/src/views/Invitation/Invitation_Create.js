@@ -2,17 +2,16 @@ import React, { Component } from 'react';
 import { Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import { Button } from 'reactstrap';
 import ApiServices from '../../service/api-service';
+import SmsServices from '../../service/send-sms';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
 import { askForPermissioToReceiveNotifications } from './push-notification';
+import { initializeApp } from '../Invitation/push-notification';
 import firebase from 'firebase';
 
 class Invitation_Create extends Component {
-
-
-
     constructor(props) {
         super(props);
         this.state = {
@@ -27,9 +26,6 @@ class Invitation_Create extends Component {
         this.toggle = this.toggle.bind(this);
     }
 
-
-
-
     async componentDidMount() {
         const students = await ApiServices.Get('/student/getListStudentNotYetInvited');
         const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
@@ -42,32 +38,6 @@ class Invitation_Create extends Component {
                 business_name: business.business_name
             });
         }
-
-
-        // since I can connect from multiple devices or browser tabs, we store each connection instance separately
-        // any time that connectionsRef's value is null (i.e. has no children) I am offline
-        var myConnectionsRef = firebase.database().ref('users/joe/connections');
-
-        // stores the timestamp of my last disconnect (the last time I was seen online)
-        var lastOnlineRef = firebase.database().ref('users/joe/lastOnline');
-
-        var connectedRef = firebase.database().ref('.info/connected');
-        connectedRef.on('value', function (snap) {
-            if (snap.val() === true) {
-                // We're connected (or reconnected)! Do anything here that should happen only if online (or on reconnect)
-                var con = myConnectionsRef.push();
-
-                // When I disconnect, remove this device
-                con.onDisconnect().remove();
-
-                // Add this device to my connections list
-                // this value could contain info about the device or a timestamp too
-                con.set(true);
-
-                // When I disconnect, update the last time I was seen online
-                lastOnlineRef.onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
-            }
-        });
     }
 
     handleDirect = (uri) => {
@@ -127,7 +97,7 @@ class Invitation_Create extends Component {
                                         <th style={{ textAlign: "center" }}>Kỹ năng</th>
                                         <th style={{ textAlign: "center" }}>GPA</th>
                                         <th style={{ textAlign: "center" }}>Bảng điểm</th>
-                                        <th style={{ textAlign: "center" }}>Hành động</th>
+                                        <th style={{ textAlign: "center" }}>Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -194,7 +164,7 @@ class Invitation_Create extends Component {
                                         <th style={{ textAlign: "center" }}>Kỹ năng</th>
                                         <th style={{ textAlign: "center" }}>GPA</th>
                                         <th style={{ textAlign: "center" }}>Bảng điểm</th>
-                                        <th style={{ textAlign: "center" }}>Hành động</th>
+                                        <th style={{ textAlign: "center" }}>Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -246,30 +216,44 @@ class Invitation_Create extends Component {
         );
     }
 
-
     handleSubmit = async (student) => {
         const { business_name } = this.state;
         const studentName = student.name;
         const email = student.email;
         const deviceToken = student.token;
+        const code = student.code;
 
-        const invitation = {
-            description: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
-            state: 0,
-            timeCreated: "2019-09-09",
-            title: `Lời mời thực tập từ công ty ${business_name}`
+        var studentNumber = student.phone;
+
+        while (studentNumber.charAt(0) === '0') {
+            studentNumber = studentNumber.substr(1);
         }
 
-        const result = await ApiServices.Post(`/business/createInvitation?emailStudent=${email}`, invitation);
+        studentNumber = '84' + studentNumber;
+
+        var sms = [
+            {
+                "from": "Notify-GSMS-VSMS",
+                "to": `${studentNumber}`,
+                "text": {
+                    "template": 5689,
+                    "params": [`Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`]
+                }
+            }
+        ]
 
 
-        // const messaging = firebase.messaging();
-        // await messaging.requestPermission();
-        // const tokenUser = await messaging.getToken();
-        // console.log(tokenUser);
+        // const invitation = {
+        //     description: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
+        //     state: 0,
+        //     timeCreated: "2019-09-09",
+        //     title: `Lời mời thực tập từ công ty ${business_name}`
+        // }
+
+        // const result = await ApiServices.Post(`/business/createInvitation?emailStudent=${email}`, invitation);
 
         const notificationDTO = {
-            notification: {
+            data: {
                 title: `Lời mời thực tập từ công ty ${business_name}`,
                 body: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
                 click_action: "http://localhost:3000/#/invitation/new",
@@ -280,25 +264,65 @@ class Invitation_Create extends Component {
 
         const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
 
-        if (result.status == 201) {
-            Toastify.actionSuccess('Gửi lời mời thành công');
-            if (isSend == null || isSend.status != 200) {
-                Toastify.actionWarning('Gửi thông báo thất bại');
-            }
-        } else {
-            Toastify.actionFail('Gửi lời mời thất bại');
-        }
+        // if (result.status == 201) {
+        //     Toastify.actionSuccess('Gửi lời mời thành công');
+        //     if (isSend == null || isSend.status != 200) {
+        //         Toastify.actionWarning('Gửi thông báo thất bại');
+        //     }
+        // } else {
+        //     Toastify.actionFail('Gửi lời mời thất bại');
+        // }
 
-        const students2nd = await ApiServices.Get('/student/getListStudentNotYetInvited');
-        const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
-        const business = await ApiServices.Get('/business/getBusiness');
-        if (students2nd != null) {
-            this.setState({
-                students: students2nd,
-                suggestedStudents: suggestedStudents,
-                business_name: business.business_name
-            });
-        }
+        // const students2nd = await ApiServices.Get('/student/getListStudentNotYetInvited');
+        // const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
+        // const business = await ApiServices.Get('/business/getBusiness');
+        // if (students2nd != null && suggestedStudents != null) {
+        //     this.setState({
+        //         students: students2nd,
+        //         suggestedStudents: suggestedStudents,
+        //         business_name: business.business_name
+        //     });
+        //     console.log("DONE");
+        // }
+
+
+        setTimeout(
+            function () {
+                var tempDate = new Date();
+                console.log(tempDate);
+
+                let ref = firebase.database().ref('Users');
+                ref.on('value', snapshot => {
+                    const state = snapshot.val();
+
+                    var codes = Object.keys(state);
+
+                    var index = codes.indexOf(code);
+
+                    if (index != -1) {
+                        var codeFound = codes[index];
+                        var dateFirebase = state[codeFound].userState.date;
+                        var timeFirebase = state[codeFound].userState.time;
+                        var tempDateFirebase = new Date(dateFirebase + ' ' + timeFirebase);
+                        console.log(tempDateFirebase);
+                        var type = state[codeFound].userState.type;
+
+                        var seconds = (tempDate - tempDateFirebase) / 1000;
+                        console.log(seconds);
+
+                        if (type === 'offline') {
+                            const result = SmsServices.sendSMS(sms);
+                        } else if (type === 'online') {
+                            if (seconds > 10) {
+                                const result = SmsServices.sendSMS(sms);
+                            }
+                        }
+                    }
+                });
+            }
+                .bind(this),
+            10000
+        );
     }
 
     toggle(tabPane, tab) {

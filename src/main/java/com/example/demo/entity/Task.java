@@ -38,13 +38,13 @@ public class Task {
     private String description;
 
     @ManyToOne
-    @JsonIgnore
+//    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "supervisor_email")
     private Supervisor supervisor;
 
     @ManyToOne
-    @JsonIgnore
+//    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "ojt_enrollment_id")
     private Ojt_Enrollment  ojt_enrollment;
