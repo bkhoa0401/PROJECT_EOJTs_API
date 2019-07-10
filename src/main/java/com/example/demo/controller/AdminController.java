@@ -1,11 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Event;
-import com.example.demo.entity.Ojt_Enrollment;
-import com.example.demo.entity.Student;
-import com.example.demo.service.EventService;
-import com.example.demo.service.Ojt_EnrollmentService;
-import com.example.demo.service.StudentService;
+import com.example.demo.entity.*;
+import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +9,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +26,15 @@ public class AdminController {
 
     @Autowired
     EventService eventService;
+
+    @Autowired
+    UsersService usersService;
+
+    @Autowired
+    AdminService adminService;
+
+    @Autowired
+    BusinessService businessService;
 
     @GetMapping
     @ResponseBody
@@ -66,15 +73,43 @@ public class AdminController {
     //get all events of admin
     @GetMapping("/events")
     @ResponseBody
-    public ResponseEntity<List<Event>> getAllEventOfAdmin(){
-        String email=getEmailFromToken();
-        List<Event> events=eventService.getEventListOfAdmin(email);
-        if(events!=null){
+    public ResponseEntity<List<Event>> getAllEventOfAdmin() {
+        String email = getEmailFromToken();
+        List<Event> events = eventService.getEventListOfAdmin(email);
+        if (events != null) {
             Collections.sort(events);
-            return new ResponseEntity<List<Event>>(events,HttpStatus.OK);
+            return new ResponseEntity<List<Event>>(events, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
+
+    @PostMapping("/event")
+    public ResponseEntity<Void> createEvent(@RequestParam List<String> listEmail, @RequestBody Event event) {
+        String email = getEmailFromToken();
+        Users users = usersService.findUserByEmail(email);
+
+        List<Role> roleListUsers = users.getRoles();
+
+        for (int i = 0; i < roleListUsers.size(); i++) {
+            int roleId = roleListUsers.get(i).getId();
+            if (roleId == 1) {
+                Admin admin = adminService.findAdminByEmail(email);
+                event.setAdmin(admin);
+            } else if (roleId == 3) {
+                Business business = businessService.getBusinessByEmail(email);
+                event.setBusiness(business);
+            }
+        }
+        Date date = new Date(Calendar.getInstance().getTime().getTime());
+        event.setTime_created(date);
+        boolean create = eventService.createEvent(event);
+        if (create == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+
     //get email from token
     private String getEmailFromToken() {
         String email = "";

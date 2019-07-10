@@ -56,7 +56,7 @@ public class Business implements Serializable {
     private int rateCount = 0;
 
     @Column(name = "rate_average")
-    private float rateAverage = 0;
+    private float rateAverage = 0f;
 
 
 
