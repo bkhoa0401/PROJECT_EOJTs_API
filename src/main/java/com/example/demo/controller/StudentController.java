@@ -579,26 +579,65 @@ public class StudentController {
     public ResponseEntity<DashboardDTO> getDashboardOfStudent() {
         String email = getEmailFromToken();
 
-        Ojt_Enrollment ojt_enrollment=ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
 
         DashboardDTO dashboardDTO = new DashboardDTO();
 
         float percentTaskDoneOfStudent = taskService.getPercentTaskDoneOfStudent(email);
-        if(!Float.isNaN(percentTaskDoneOfStudent)){
-            dashboardDTO.setPercentTaskDone(percentTaskDoneOfStudent*100);
-        }else{
+        if (!Float.isNaN(percentTaskDoneOfStudent)) {
+            dashboardDTO.setPercentTaskDone(percentTaskDoneOfStudent * 100);
+        } else {
             dashboardDTO.setPercentTaskDone(0);
         }
 
-        int countEvaluation=evaluationService.countEvaluation(email);
+        int countEvaluation = evaluationService.countEvaluation(email);
         dashboardDTO.setCountEvaluation(countEvaluation);
 
-        int countEventIsNotRead=eventService.countEventIsNotRead(email);
+        int countEventIsNotRead = eventService.countEventIsNotRead(email);
         dashboardDTO.setInformMessageIsNotRead(countEventIsNotRead);
 
         dashboardDTO.setBusiness(ojt_enrollment.getBusiness());
 
-        return new ResponseEntity<DashboardDTO>(dashboardDTO,HttpStatus.OK);
+        return new ResponseEntity<DashboardDTO>(dashboardDTO, HttpStatus.OK);
+    }
+
+    @PutMapping("/rate")
+    public ResponseEntity<Void> updateRateForBusinessByStudent(@RequestParam int rate) {
+        String email = getEmailFromToken();
+        businessService.updateRateNumber(email, rate);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/event")
+    @ResponseBody
+    public ResponseEntity<Event> getDetailsEvent(@RequestParam int id) {
+        Event event = eventService.findEventById(id);
+        return new ResponseEntity<Event>(event, HttpStatus.OK);
+    }
+
+    @PutMapping("/taskStatus")
+    public ResponseEntity<Void> updateTaskStatus(@RequestParam int id, @RequestParam boolean status) {
+        studentService.updateStatusTask(id, status);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/evaluation")
+    @ResponseBody
+    public ResponseEntity<Evaluation> getEvaluationById(@RequestParam int id) {
+        Evaluation evaluation = evaluationService.getEvaluationById(id);
+        return new ResponseEntity<Evaluation>(evaluation, HttpStatus.OK);
+    }
+
+    @PutMapping("/information")
+    public ResponseEntity<Void> updateInformationStudent(@RequestParam String name, @RequestParam String phone,
+                                                         @RequestParam boolean gender, @RequestParam String address,
+                                                         @RequestParam String birthDate) {
+        String email = getEmailFromToken();
+        boolean update = studentService.updateInformationStudent(email, name, phone, gender, address, birthDate);
+        if (update == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 
     }
 

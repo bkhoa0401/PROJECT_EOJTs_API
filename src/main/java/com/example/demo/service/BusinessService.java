@@ -113,11 +113,11 @@ public class BusinessService {
                 float result = studentService.compareSkillsStudentAndSkillsJobPost(skillListOfAStudent, skills);
 
                 if (result >= 0.5) {
-                    if(!studentListSuggest.contains(studentList.get(i))){
+                    if (!studentListSuggest.contains(studentList.get(i))) {
                         studentListSuggest.add(studentList.get(i));
                     }
                 }
-                skillListOfAJobPost=new ArrayList<>();
+                skillListOfAJobPost = new ArrayList<>();
             }
 
         }
@@ -134,4 +134,23 @@ public class BusinessService {
         return list;
     }
 
+    public void updateRateNumber(String email, int rate) {
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        Business business = ojt_enrollment.getBusiness();
+
+        int countRate = business.getRateCount();
+        float currentRate = business.getRateAverage();
+        if (currentRate == 0) {
+
+        }
+        float average = (currentRate + (float) rate) / 2;
+        if (currentRate == 0) {
+            business.setRateAverage(rate);
+        } else {
+            business.setRateAverage(average);
+        }
+        business.setRateCount(++countRate);
+
+        businessRepository.save(business);
+    }
 }

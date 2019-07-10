@@ -43,12 +43,20 @@ public class EventService {
 
         return count;
     }
+
     public Event findEventById(int id) {
         Event event = eventRepository.findEventById(id);
         if (event != null) {
             return event;
         }
         return null;
+    }
 
+    public boolean createEvent(Event event) {
+        if (event != null) {
+            eventRepository.save(event);
+            return true;
+        }
+        return false;
     }
 }

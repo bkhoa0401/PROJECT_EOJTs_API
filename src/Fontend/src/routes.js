@@ -165,7 +165,7 @@ const routes = [
   { path: '/informmessage/create_informmessage', exact: true, name: 'Soạn thông báo', component: Create_InformMessage },
   { path: '/report/report', exact: true, name: 'Báo cáo', component: Report },
   { path: '/report/report_detail/:id', exact: true, name: 'Chi tiết báo cáo', component: Report_Detail },
-  { path: '/report/create_report/:id', exact: true, name: 'Tạo báo cáo', component: Create_Report }
+  { path: '/report/create_report/:id', exact: true, name: 'Tạo báo cáo', component: Create_Report },
   { path: '/hr-student-list', exact: true, name: 'Danh sách sinh viên', component: Hr_Students },
   { path: '/hr-student-list/details/:email', exact: true, name: 'Chi tiết sinh viên', component: Hr_Student_Detail },
   { path: '/hr-task', exact: true, name: 'Danh sách nhiệm vụ', component: Hr_Task },

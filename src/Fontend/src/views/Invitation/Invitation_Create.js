@@ -216,24 +216,12 @@ class Invitation_Create extends Component {
         );
     }
 
-    // getUserData = () => {
-    //     let ref = Firebase.database().ref('/');
-    //     ref.on('value', snapshot => {
-    //         const state = snapshot.val();
-    //         // this.setState(state);
-    //         console.log(state);
-    //     });
-
-    // }
-
-
-
-
     handleSubmit = async (student) => {
         const { business_name } = this.state;
         const studentName = student.name;
         const email = student.email;
         const deviceToken = student.token;
+        const code = student.code;
 
         var studentNumber = student.phone;
 
@@ -243,15 +231,26 @@ class Invitation_Create extends Component {
 
         studentNumber = '84' + studentNumber;
 
+        var sms = [
+            {
+                "from": "Notify-GSMS-VSMS",
+                "to": `${studentNumber}`,
+                "text": {
+                    "template": 5689,
+                    "params": [`Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`]
+                }
+            }
+        ]
 
-        const invitation = {
-            description: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
-            state: 0,
-            timeCreated: "2019-09-09",
-            title: `Lời mời thực tập từ công ty ${business_name}`
-        }
 
-        const result = await ApiServices.Post(`/business/createInvitation?emailStudent=${email}`, invitation);
+        // const invitation = {
+        //     description: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
+        //     state: 0,
+        //     timeCreated: "2019-09-09",
+        //     title: `Lời mời thực tập từ công ty ${business_name}`
+        // }
+
+        // const result = await ApiServices.Post(`/business/createInvitation?emailStudent=${email}`, invitation);
 
         const notificationDTO = {
             data: {
@@ -265,59 +264,61 @@ class Invitation_Create extends Component {
 
         const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
 
-        if (result.status == 201) {
-            Toastify.actionSuccess('Gửi lời mời thành công');
-            if (isSend == null || isSend.status != 200) {
-                Toastify.actionWarning('Gửi thông báo thất bại');
-            }
-        } else {
-            Toastify.actionFail('Gửi lời mời thất bại');
-        }
-
-        const students2nd = await ApiServices.Get('/student/getListStudentNotYetInvited');
-        const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
-        const business = await ApiServices.Get('/business/getBusiness');
-        if (students2nd != null && suggestedStudents != null) {
-            this.setState({
-                students: students2nd,
-                suggestedStudents: suggestedStudents,
-                business_name: business.business_name
-            });
-            console.log("DONE");
-        }
-
-
-        // setTimeout(
-        //     function () {
-        //         // let ref = firebase.database().ref('Users');
-        //         // ref.on('value', snapshot => {
-        //         //     const state = snapshot.val();
-        //         //     console.log(state);
-        //         // });
-
-        //         var tempDate = new Date();
-        //         var date = tempDate.getFullYear() + '-' + (tempDate.getMonth() + 1) + '-' + tempDate.getDate() + ' ' + tempDate.getHours() + ':' + tempDate.getMinutes() + ':' + tempDate.getSeconds();
-        //         console.log(date);
+        // if (result.status == 201) {
+        //     Toastify.actionSuccess('Gửi lời mời thành công');
+        //     if (isSend == null || isSend.status != 200) {
+        //         Toastify.actionWarning('Gửi thông báo thất bại');
         //     }
-        //         .bind(this),
-        //     10000
-        // );
+        // } else {
+        //     Toastify.actionFail('Gửi lời mời thất bại');
+        // }
+
+        // const students2nd = await ApiServices.Get('/student/getListStudentNotYetInvited');
+        // const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
+        // const business = await ApiServices.Get('/business/getBusiness');
+        // if (students2nd != null && suggestedStudents != null) {
+        //     this.setState({
+        //         students: students2nd,
+        //         suggestedStudents: suggestedStudents,
+        //         business_name: business.business_name
+        //     });
+        //     console.log("DONE");
+        // }
 
 
         setTimeout(
             function () {
-                console.log("START");
-                var sms = [
-                    {
-                        "from": "Notify-GSMS-VSMS",
-                        "to": `${studentNumber}`,
-                        "text": {
-                            "template": 5689,
-                            "params": [`Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`]
+                var tempDate = new Date();
+                console.log(tempDate);
+
+                let ref = firebase.database().ref('Users');
+                ref.on('value', snapshot => {
+                    const state = snapshot.val();
+
+                    var codes = Object.keys(state);
+
+                    var index = codes.indexOf(code);
+
+                    if (index != -1) {
+                        var codeFound = codes[index];
+                        var dateFirebase = state[codeFound].userState.date;
+                        var timeFirebase = state[codeFound].userState.time;
+                        var tempDateFirebase = new Date(dateFirebase + ' ' + timeFirebase);
+                        console.log(tempDateFirebase);
+                        var type = state[codeFound].userState.type;
+
+                        var seconds = (tempDate - tempDateFirebase) / 1000;
+                        console.log(seconds);
+
+                        if (type === 'offline') {
+                            const result = SmsServices.sendSMS(sms);
+                        } else if (type === 'online') {
+                            if (seconds > 10) {
+                                const result = SmsServices.sendSMS(sms);
+                            }
                         }
                     }
-                ]
-                const result = SmsServices.sendSMS(sms);
+                });
             }
                 .bind(this),
             10000

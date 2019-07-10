@@ -45,11 +45,20 @@ public class EvaluationService {
         }
         return null;
     }
-    public int countEvaluation(String email){
+
+    public int countEvaluation(String email) {
         Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
 
-        int count=evaluationRepository.countEvaluationByOjt_enrollment(ojt_enrollment);
+        int count = evaluationRepository.countEvaluationByOjt_enrollment(ojt_enrollment);
 
         return count;
+    }
+
+    public Evaluation getEvaluationById(int id) {
+        Evaluation evaluation = evaluationRepository.findById(id);
+        if (evaluation != null) {
+            return evaluation;
+        }
+        return null;
     }
 }

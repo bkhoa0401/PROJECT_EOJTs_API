@@ -3,9 +3,11 @@ package com.example.demo.service;
 import com.example.demo.entity.*;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.SupervisorRepository;
+import com.example.demo.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -27,6 +29,12 @@ public class StudentService {
 
     @Autowired
     BusinessService businessService;
+
+    @Autowired
+    TaskService taskService;
+
+    @Autowired
+    TaskRepository taskRepository;
 
     public Student getStudentByEmail(String email) {
         Student student = studentRepository.findByEmail(email);
@@ -261,5 +269,29 @@ public class StudentService {
         return null;
     }
 
+
+    public boolean updateStatusTask(int id, boolean status) {
+        Task task = taskService.findTaskById(id);
+        if (task != null) {
+            task.setState(status);
+            taskRepository.save(task);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateInformationStudent(String email, String name, String phone, boolean gender, String address, String birthDate) {
+        Student student = studentRepository.findByEmail(email);
+        if (student != null) {
+            student.setName(name);
+            student.setPhone(phone);
+            student.setGender(gender);
+            student.setAddress(address);
+            student.setDob(Date.valueOf(birthDate));
+            studentRepository.save(student);
+            return true;
+        }
+        return false;
+    }
 
 }

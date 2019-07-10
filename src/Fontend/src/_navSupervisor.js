@@ -10,6 +10,7 @@ export default {
       url: '/Report/Report',
       icon: 'icon-star',
     },
+    {
       name: 'Danh sách sinh viên',
       url: '/hr-student-list',
       icon: 'icon-star',
