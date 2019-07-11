@@ -616,8 +616,8 @@ public class StudentController {
     }
 
     @PutMapping("/taskStatus")
-    public ResponseEntity<Void> updateTaskStatus(@RequestParam int id, @RequestParam boolean status) {
-        studentService.updateStatusTask(id, status);
+    public ResponseEntity<Void> updateTaskStatus(@RequestParam int id, @RequestParam int typeStatus) {
+        taskService.updateStatusTask(id, typeStatus);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

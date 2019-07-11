@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.SupervisorDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,22 @@ public class SupervisorController {
 
     @Autowired
     StudentService studentService;
+
+    @GetMapping("")
+    @ResponseBody
+    public ResponseEntity<SupervisorDTO> getSupervisorDetails() {
+        String email = getEmailFromToken();
+
+        SupervisorDTO supervisorDTO=new SupervisorDTO();
+
+        Supervisor supervisor = supervisorService.findByEmail(email);
+        supervisorDTO.setSupervisor(supervisor);
+        supervisorDTO.setBusiness(supervisor.getOjt_enrollment().getBusiness());
+        if (supervisor != null) {
+            return new ResponseEntity<SupervisorDTO>(supervisorDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 
     @PostMapping("")
     public ResponseEntity<Void> createNewTask(@RequestBody Task task, @RequestParam String emailStudent) {
@@ -171,8 +188,8 @@ public class SupervisorController {
     }
 
     @PutMapping("/stateTask")
-    public ResponseEntity<Void> updateStateTask(@RequestParam int id, @RequestParam boolean state) {
-        boolean updateStateTask = taskService.updateStateTask(id, state);
+    public ResponseEntity<Void> updateStateTask(@RequestParam int id, @RequestParam int typeTask) {
+        boolean updateStateTask = taskService.updateStatusTask(id, typeTask);
         if (updateStateTask == true) {
             return new ResponseEntity<>(HttpStatus.OK);
         }

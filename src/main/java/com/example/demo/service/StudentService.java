@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.config.Status;
 import com.example.demo.entity.*;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.SupervisorRepository;
@@ -269,16 +270,6 @@ public class StudentService {
         return null;
     }
 
-
-    public boolean updateStatusTask(int id, boolean status) {
-        Task task = taskService.findTaskById(id);
-        if (task != null) {
-            task.setState(status);
-            taskRepository.save(task);
-            return true;
-        }
-        return false;
-    }
 
     public boolean updateInformationStudent(String email, String name, String phone, boolean gender, String address, String birthDate) {
         Student student = studentRepository.findByEmail(email);

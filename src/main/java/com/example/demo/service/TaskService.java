@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.config.Status;
 import com.example.demo.entity.Ojt_Enrollment;
 import com.example.demo.entity.Task;
 import com.example.demo.repository.TaskRepository;
@@ -22,6 +23,7 @@ public class TaskService {
     public void createTaskForStudent(Task task) {
         Date date = new Date(Calendar.getInstance().getTime().getTime());
         task.setTime_created(date);
+        task.setStatus(Status.NOTSTART);
         taskRepository.save(task);
     }
 
@@ -71,11 +73,15 @@ public class TaskService {
         return false;
     }
 
-    public boolean updateStateTask(int id, boolean state) {
-        Task taskIsExisted = taskRepository.findById(id);
-        if (taskIsExisted != null) {
-            taskIsExisted.setState(state);
-            taskRepository.save(taskIsExisted);
+    public boolean updateStatusTask(int id, int typeStatusTask) {
+        Task task = findTaskById(id);
+        if (task != null) {
+            if (typeStatusTask == 2) {
+                task.setStatus(Status.PENDING);
+            } else if (typeStatusTask == 3) {
+                task.setStatus(Status.DONE);
+            }
+            taskRepository.save(task);
             return true;
         }
         return false;
@@ -83,7 +89,7 @@ public class TaskService {
 
     public List<Task> findTaskDoneByStudentEmail(String email) {
         Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
-        List<Task> taskList = taskRepository.findTasksByOjt_enrollmentAndStateIsTrue(ojt_enrollment);
+        List<Task> taskList = taskRepository.findTasksByOjt_enrollmentAndStatusIsDone(ojt_enrollment);
         if (taskList != null) {
             return taskList;
         }
@@ -94,6 +100,6 @@ public class TaskService {
         List<Task> taskListOfStudent = findTaskByStudentEmail(email);
         List<Task> taskListDoneOfStudent = findTaskDoneByStudentEmail(email);
 
-        return (float)taskListDoneOfStudent.size() / (float)taskListOfStudent.size();
+        return (float) taskListDoneOfStudent.size() / (float) taskListOfStudent.size();
     }
 }
