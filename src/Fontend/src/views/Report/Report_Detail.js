@@ -3,6 +3,7 @@ import Popup from "reactjs-popup";
 import { Label, FormGroup, Input, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
+import decode from 'jwt-decode';
 import Toastify from '../Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
@@ -19,12 +20,29 @@ class Report_Detail extends Component {
             report: null,
             student: null,
             onScreenRate: 5,
+            busniessName: '',
+            role:'',
         };
     }
 
     async componentDidMount() {
+        const token = localStorage.getItem('id_token');
         var param = window.location.href.split("/").pop();
         var needId = param.split('~');
+        let role = '';
+        let actor = null;
+        let businessName = '';
+        if (token != null) {
+            const decoded = decode(token);
+            role = decoded.role;
+        }
+        if (role == 'ROLE_SUPERVISOR') {
+            actor = await ApiServices.Get(`/supervisor`);
+            businessName = actor.business.business_name;
+        } else if (role == 'ROLE_HR') {
+            actor = await ApiServices.Get(`/business/getBusiness`);
+            businessName = actor.business_name;
+        }
         const report = await ApiServices.Get(`/supervisor/getEvaluation?id=${needId[0]}`);
         const student = await ApiServices.Get(`/student/student/${needId[1]}`);
         let onScreenRate = 5;
@@ -44,9 +62,12 @@ class Report_Detail extends Component {
             report: report,
             student: student,
             onScreenRate: onScreenRate,
+            actor: actor,
+            role: role,
+            businessName: businessName,
           });
         }
-        console.log(needId);
+        console.log(businessName);
     }
 
     handleDirect = (uri) => {
@@ -54,14 +75,14 @@ class Report_Detail extends Component {
     }
 
     render() {
-        const { searchValue, reportColor, rate, report, student, onScreenRate } = this.state;
+        const { searchValue, reportColor, rate, report, student, onScreenRate, businessName } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
                     <Col xs="12" lg="12">
                         <Card>
                             <CardHeader style={{ fontWeight: "bold" }}>
-                                <i className="fa fa-align-justify"></i>Chi tiết báo cáo #
+                                <i className="fa fa-align-justify"></i>{report === null ? "" : report.title}
                             </CardHeader>
                             <CardBody>
                                 <FormGroup row>
@@ -69,7 +90,7 @@ class Report_Detail extends Component {
                                         <h6>Doanh nghiệp:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Label>Công ty ABC</Label>
+                                        <Label>{businessName}</Label>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>

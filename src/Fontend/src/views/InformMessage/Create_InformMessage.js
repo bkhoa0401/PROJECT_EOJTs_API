@@ -48,7 +48,7 @@ class Create_InformMessage extends Component {
         let dd = today.getDate();
         let mm = today.getMonth() + 1;
         let yyyy = today.getFullYear();
-        today = dd + '/' + mm + '/' + yyyy;
+        today = mm + '/' + dd + '/' + yyyy;
         if (token != null) {
             const decoded = decode(token);
             informFromEmail = decoded.email;

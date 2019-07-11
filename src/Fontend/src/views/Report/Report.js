@@ -12,22 +12,36 @@ class Report extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            reportColor: ['success', 'primary', 'warning', 'danger', 'dark'],
-            rate: ['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu'],
+            reportColor: ['success', 'primary', 'warning', 'danger', 'dark', 'black'],
+            rate: ['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu', 'N/A'],
             role: '',
             students: null,
             overviewReports: null,
             overviewReportsRate: null,
             onScreenStatus: null,
+            finalOnScreenStatus: null,
         };
     }
 
     async componentDidMount() {
         const token = localStorage.getItem('id_token');
-        const students = await ApiServices.Get('/supervisor/students');
-        const overviewReports = await ApiServices.Get('/supervisor/evaluations');
         let overviewReportsRate = [];
         let onScreenStatus = [];
+        let role = '';
+        let students = [];
+        let overviewReports = [];
+        let finalOnScreenStatus = [];
+        if (token != null) {
+            const decoded = decode(token);
+            role = decoded.role;
+        }
+        if (role == 'ROLE_SUPERVISOR') {
+            students = await ApiServices.Get('/supervisor/students');
+            overviewReports = await ApiServices.Get('/supervisor/evaluations');
+        } else if (role == 'ROLE_HR') {
+            students = await ApiServices.Get('/business/getStudentsByBusiness');
+            overviewReports = await ApiServices.Get('/business/evaluations');
+        }
         for (let index = 0; index < overviewReports.length; index++) {
             if (overviewReports[index] != null) {
                 overviewReportsRate.push((overviewReports[index].score_discipline + overviewReports[index].score_work + overviewReports[index].score_activity) / 3);
@@ -47,10 +61,23 @@ class Report extends Component {
                 onScreenStatus.push(null);
             }
         }
-        let role = '';
-        if (token != null) {
-            const decoded = decode(token);
-            role = decoded.role;
+        for (let index = 0; index < students.length; index++) {
+            if (overviewReportsRate[index] != null && overviewReportsRate[index + 1] != null && overviewReportsRate[index + 2] != null && overviewReportsRate[index + 3] != null) {
+                let tmpFinalRate = (overviewReportsRate[index] +  overviewReportsRate[index + 1] + overviewReportsRate[index + 2] + overviewReportsRate[index + 3])/4;
+                if (tmpFinalRate > 9) {
+                    finalOnScreenStatus.push(0);
+                } else if (tmpFinalRate > 8) {
+                    finalOnScreenStatus.push(1);
+                } else if (tmpFinalRate > 7) {
+                    finalOnScreenStatus.push(2);
+                } else if (tmpFinalRate >= 5) {
+                    finalOnScreenStatus.push(3);
+                } else if (tmpFinalRate < 5) {
+                    finalOnScreenStatus.push(4);
+                }
+            } else {
+                finalOnScreenStatus.push(5);
+            }
         }
         this.setState({
             role: role,
@@ -58,10 +85,12 @@ class Report extends Component {
             overviewReports: overviewReports,
             overviewReportsRate: overviewReportsRate,
             onScreenStatus: onScreenStatus,
+            finalOnScreenStatus: finalOnScreenStatus,
         });
         console.log(this.state.onScreenStatus);
         console.log(this.state.overviewReports);
         console.log(this.state.students);
+        console.log(this.state.finalOnScreenStatus);
     }
 
     handleInput = async (event) => {
@@ -76,7 +105,7 @@ class Report extends Component {
     }
 
     render() {
-        const { searchValue, reportColor, rate, role, students, overviewReports, onScreenStatus } = this.state;
+        const { searchValue, reportColor, rate, role, students, overviewReports, onScreenStatus, finalOnScreenStatus } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -177,7 +206,10 @@ class Report extends Component {
                                                             )
                                                         }
                                                     </td>
-                                                    <td style={{ textAlign: "center" }}>N/A</td>
+                                                    { finalOnScreenStatus === null ? 
+                                                    <td style={{ textAlign: "center"}}>N/A</td> :
+                                                    <td style={{ textAlign: "center", color: reportColor[finalOnScreenStatus[index]] }}>{rate[finalOnScreenStatus[index]]}</td>
+                                                    }
                                                 </tr>
                                             )}
                                         </tbody>
