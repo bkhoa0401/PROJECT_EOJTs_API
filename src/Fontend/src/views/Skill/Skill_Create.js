@@ -27,7 +27,9 @@ import {
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
-
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import Validators from '../../validator/validator';
 class Skill_Create extends Component {
 
     constructor(props) {
@@ -90,18 +92,27 @@ class Skill_Create extends Component {
 
         const result = await ApiServices.Post('/skill', skill);
         if (result.status == 200) {
-            Toastify.actionSuccess("Tạo kỹ năng mới thành công!");
-            setTimeout(
-                function () {
-                    this.props.history.push('/skill');
-                }
-                    .bind(this),
-                2000
-            );
+            Toastify.actionSuccess("Tạo kỹ năng mới thành công!");            
         } else {
             Toastify.actionFail("Tạo kỹ năng mới thất bại!");
         }
     }
+
+    handleConfirm = () => {
+        confirmAlert({
+            title: 'Xác nhận',
+            message: 'Bạn đã chắc chắn với lựa chọn của mình?',
+            buttons: [
+                {
+                    label: 'Xác nhận',
+                    onClick: () => this.handleSubmit()
+                },
+                {
+                    label: 'Hủy bỏ',
+                }
+            ]
+        });
+    };
 
 
     render() {
@@ -144,7 +155,7 @@ class Skill_Create extends Component {
                             <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Tạo kỹ năng</Button>
+                                        <Button onClick={() => this.handleConfirm()} type="submit" color="primary" block>Tạo kỹ năng</Button>
                                     </Col>
                                     <Col xs="3" sm="3">
                                         <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>

@@ -97,18 +97,25 @@ class Update_Job extends Component {
         }
         // console.log('arraySkill', arraySkill);
         // console.log('arrayQuantity', arrayQuantity);
-        // console.log('specializedUpdate', specializedUpdate);
+        console.log('specializedUpdate', specializedUpdate);
 
-        for (let j = 0; j < specializedUpdate.length; j++) {
-            const skills = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${specializedUpdate[j]}`);
-            if (skills != null) {
-                for (let k = 0; k < skills.length; k++) {
-                    choseSpecialized.push(skills[k].id);
-                }
+        // for (let j = 0; j < specializedUpdate.length; j++) {
+        //     const skills = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${specializedUpdate[j]}`);
+        //     if (skills != null) {
+        //         for (let k = 0; k < skills.length; k++) {
+        //             choseSpecialized.push(skills[k].id);
+        //         }
+        //     }
+        // }
+
+        const skillsUpdate = await ApiServices.Post('/skill/byListSpecializedId', specializedUpdate);
+        if (skillsUpdate != null) {
+            for (let k = 0; k < skillsUpdate.length; k++) {
+                choseSpecialized.push(skillsUpdate[k].id);
             }
         }
 
-        // console.log(choseSpecialized);
+        console.log(choseSpecialized);
 
         this.setState({
             updatedId: updatedId,
@@ -468,7 +475,7 @@ class Update_Job extends Component {
                                                                                 console.log('choseSpecialized[a]', choseSpecialized[a]);
                                                                                 console.log(choseSpecialized[a] === skill.id); */}
                                                                                 console.log('choseSpecialized[a]', choseSpecialized[a]);
-                                                                                {/* console.log('arraySkill', arraySkill); */}
+                                                                                {/* console.log('arraySkill', arraySkill); */ }
                                                                                 console.log('arraySkill[index]', arraySkill[index]);
                                                                                 console.log(choseSpecialized[a] === arraySkill[index]);
                                                                                 return (

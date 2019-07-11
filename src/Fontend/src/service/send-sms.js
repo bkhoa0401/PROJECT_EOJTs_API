@@ -1,7 +1,7 @@
 var https = require('https');
 
-const apiKeySid = 'SKljBkoFUsAeBmo2XO7Xmkepx7Qi3hyEz';
-const apiKeySecret = "TE5vYlpaZVJlVkVFMzdEdDIyb3J4V3pGMFBFaERnSg==";
+const apiKeySid = 'SKjTjLjc8CS4pltKkRlXKomi8MNv5dg9z';
+const apiKeySecret = "eEFjbnVNUEp6TjJSTXRUR3NhRDZuVjRjSXhSdTlScHA=";
 
 
 function getAccessToken() {
