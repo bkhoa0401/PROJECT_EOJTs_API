@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.Status;
 import com.example.demo.dto.Business_JobPostDTO;
 import com.example.demo.dto.Business_ListJobPostDTO;
 import com.example.demo.dto.DashboardDTO;
@@ -647,6 +648,25 @@ public class StudentController {
         boolean update = eventService.updateStatusIsRead(id);
         if (update) {
             return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/taskByStatus")
+    @ResponseBody
+    public ResponseEntity<List<Task>> getTaskListByStatus(@RequestParam int type) {
+        String email = getEmailFromToken();
+
+        List<Task> taskList = new ArrayList<>();
+        if (type == 1) {
+            taskList = taskService.findTasksOfStudentByStatus(email, Status.NOTSTART);
+        } else if (type == 2) {
+            taskList = taskService.findTasksOfStudentByStatus(email, Status.PENDING);
+        } else if (type == 3) {
+            taskList = taskService.findTasksOfStudentByStatus(email, Status.DONE);
+        }
+        if (taskList != null) {
+            return new ResponseEntity<List<Task>>(taskList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

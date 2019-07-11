@@ -28,6 +28,7 @@ public class StudentDTO {
     private Date dob;
     private List<Skill> skillList;
     private boolean isIntership;
+    private String businessName;
 
 
     public StudentDTO(String email, String name, String specialized, String phone, String address, String objective, String option1, String option2, boolean isAcceptedOption1, boolean isAcceptedOption2, String code, String token, String avatarLink, float gpa, String resumeLink) {
@@ -70,6 +71,14 @@ public class StudentDTO {
 
     public StudentDTO() {
         this.isIntership = false;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
     }
 
     public String getEmail() {

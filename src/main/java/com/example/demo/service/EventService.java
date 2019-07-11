@@ -50,6 +50,8 @@ public class EventService {
     public Event findEventById(int id) {
         Event event = eventRepository.findEventById(id);
         if (event != null) {
+            event.setRead(true);
+            eventRepository.save(event);
             return event;
         }
         return null;

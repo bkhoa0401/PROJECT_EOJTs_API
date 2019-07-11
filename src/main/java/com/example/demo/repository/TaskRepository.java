@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import com.example.demo.config.Status;
 import com.example.demo.entity.Ojt_Enrollment;
 import com.example.demo.entity.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,4 +30,6 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
     @Query(value = "select t from Task t where t.ojt_enrollment=?1 and t.status='DONE'")
     List<Task> findTasksByOjt_enrollmentAndStatusIsDone(Ojt_Enrollment ojt_enrollment);
 
+    @Query(value = "select t from Task t where t.ojt_enrollment=?1 and t.status=?2")
+    List<Task> findTasksByOjt_enrollmentAndStatus(Ojt_Enrollment ojt_enrollment, Status status);
 }
