@@ -69,6 +69,13 @@ public class SupervisorController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @GetMapping("/getEvaluation")
+    @ResponseBody
+    public ResponseEntity<Evaluation> getEvaluationById(@RequestParam int id) {
+        Evaluation evaluation = evaluationService.getEvaluationById(id);
+        return new ResponseEntity<Evaluation>(evaluation, HttpStatus.OK);
+    }
+
     @GetMapping("/evaluations")
     @ResponseBody
     public ResponseEntity<List<Evaluation>> getAllEvaluationBySupervisorEmail() {
@@ -81,12 +88,12 @@ public class SupervisorController {
         for (int i = 0; i < studentList.size(); i++) {
             flag = 0;
             for (int j = 0; j < evaluationList.size(); j++) {
-                if (studentList.get(i).getCode().equals(evaluationList.get(j).getStudent_code())) {
+                if (studentList.get(i).getCode().equals(evaluationList.get(j).getOjt_enrollment().getStudent().getCode())) {
                     overviewEvaluationList.add(evaluationList.get(j));
                     if (flag > 0) {
                         for (int k = 1; k <= flag ; k++) {
-                            Date date1 = overviewEvaluationList.get(overviewEvaluationList.size() - k).getTimeCreated();
-                            Date date2 = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k).getTimeCreated();
+                            Date date1 = overviewEvaluationList.get(overviewEvaluationList.size() - k).getTimeStart();
+                            Date date2 = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k).getTimeStart();
                             if (date1.before(date2)) {
                                 Evaluation tmpEvaluation = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k);
                                 overviewEvaluationList.set(overviewEvaluationList.size() - 1 - k, overviewEvaluationList.get(overviewEvaluationList.size() - k));

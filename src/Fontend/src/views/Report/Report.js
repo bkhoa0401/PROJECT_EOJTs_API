@@ -123,7 +123,7 @@ class Report extends Component {
                                                                     <p>N/A</p>
                                                             ) :
                                                             (
-                                                                <Button style={{fontWeight:'bold'}} outline color={reportColor[onScreenStatus[index * 4]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4].id}`)}>
+                                                                <Button style={{fontWeight:'bold'}} outline color={reportColor[onScreenStatus[index * 4]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4].id}~${student.email}`)}>
                                                                     {rate[onScreenStatus[index * 4]]}
                                                                 </Button>
                                                             )
@@ -139,7 +139,7 @@ class Report extends Component {
                                                                     <p>N/A</p>
                                                             ) :
                                                             (
-                                                                <Button style={{fontWeight:'bold'}} outline color={reportColor[onScreenStatus[index * 4 + 1]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4 + 1].id}`)}>
+                                                                <Button style={{fontWeight:'bold'}} outline color={reportColor[onScreenStatus[index * 4 + 1]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4 + 1].id}~${student.email}`)}>
                                                                     {rate[onScreenStatus[index * 4 + 1]]}
                                                                 </Button>
                                                             )
@@ -155,7 +155,7 @@ class Report extends Component {
                                                                     <p>N/A</p>
                                                             ) :
                                                             (
-                                                                <Button style={{fontWeight:'bold'}} outline color={reportColor[onScreenStatus[index * 4 + 2]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4 + 2].id}`)}>
+                                                                <Button style={{fontWeight:'bold'}} outline color={reportColor[onScreenStatus[index * 4 + 2]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4 + 2].id}~${student.email}`)}>
                                                                     {rate[onScreenStatus[index * 4 + 2]]}
                                                                 </Button>
                                                             )
@@ -171,7 +171,7 @@ class Report extends Component {
                                                                     <p>N/A</p>
                                                             ) :
                                                             (
-                                                                <Button style={{fontWeight:'bold'}} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4 + 3].id}`)}>
+                                                                <Button style={{fontWeight:'bold'}} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4 + 3].id}~${student.email}`)}>
                                                                     {rate[onScreenStatus[index * 4 + 3]]}
                                                                 </Button>
                                                             )
