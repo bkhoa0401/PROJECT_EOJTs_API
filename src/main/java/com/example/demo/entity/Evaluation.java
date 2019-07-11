@@ -57,6 +57,10 @@ public class Evaluation {
     @Column(name = "timeEnd")
     private Date timeEnd;
 
+    public int getId() {
+        return id;
+    }
+
     public String getProject_name() {
         return project_name;
     }
@@ -151,5 +155,13 @@ public class Evaluation {
 
     public void setTimeEnd(Date timeEnd) {
         this.timeEnd = timeEnd;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
