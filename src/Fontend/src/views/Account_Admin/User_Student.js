@@ -78,7 +78,11 @@ class User_Student extends Component {
                                                     <tr key={i}>
                                                         <td style={{ textAlign: "center" }}>{i + 1}</td>
                                                         <td style={{ textAlign: "center" }}>{student.email}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.roles[0].description}</td>
+                                                        <td style={{ textAlign: "center" }}>
+                                                            {
+                                                                student.roles[0].description === 'ROLE_STUDENT' ? ('Sinh viên') : ('')
+                                                            }
+                                                        </td>
                                                         <td style={{ textAlign: "center" }}>
                                                             {student.active.toString() == 'true' ? (
                                                                 <Badge color="success">TRUE</Badge>

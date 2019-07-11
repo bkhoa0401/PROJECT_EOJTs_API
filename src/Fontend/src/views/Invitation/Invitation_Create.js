@@ -243,14 +243,14 @@ class Invitation_Create extends Component {
         ]
 
 
-        // const invitation = {
-        //     description: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
-        //     state: 0,
-        //     timeCreated: "2019-09-09",
-        //     title: `Lời mời thực tập từ công ty ${business_name}`
-        // }
+        const invitation = {
+            description: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
+            state: 0,
+            timeCreated: "2019-09-09",
+            title: `Lời mời thực tập từ công ty ${business_name}`
+        }
 
-        // const result = await ApiServices.Post(`/business/createInvitation?emailStudent=${email}`, invitation);
+        const result = await ApiServices.Post(`/business/createInvitation?emailStudent=${email}`, invitation);
 
         const notificationDTO = {
             data: {
@@ -264,26 +264,26 @@ class Invitation_Create extends Component {
 
         const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
 
-        // if (result.status == 201) {
-        //     Toastify.actionSuccess('Gửi lời mời thành công');
-        //     if (isSend == null || isSend.status != 200) {
-        //         Toastify.actionWarning('Gửi thông báo thất bại');
-        //     }
-        // } else {
-        //     Toastify.actionFail('Gửi lời mời thất bại');
-        // }
+        if (result.status == 201) {
+            Toastify.actionSuccess('Gửi lời mời thành công');
+            if (isSend == null || isSend.status != 200) {
+                Toastify.actionWarning('Gửi thông báo thất bại');
+            }
+        } else {
+            Toastify.actionFail('Gửi lời mời thất bại');
+        }
 
-        // const students2nd = await ApiServices.Get('/student/getListStudentNotYetInvited');
-        // const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
-        // const business = await ApiServices.Get('/business/getBusiness');
-        // if (students2nd != null && suggestedStudents != null) {
-        //     this.setState({
-        //         students: students2nd,
-        //         suggestedStudents: suggestedStudents,
-        //         business_name: business.business_name
-        //     });
-        //     console.log("DONE");
-        // }
+        const students2nd = await ApiServices.Get('/student/getListStudentNotYetInvited');
+        const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
+        const business = await ApiServices.Get('/business/getBusiness');
+        if (students2nd != null && suggestedStudents != null) {
+            this.setState({
+                students: students2nd,
+                suggestedStudents: suggestedStudents,
+                business_name: business.business_name
+            });
+            console.log("DONE");
+        }
 
 
         setTimeout(

@@ -29,11 +29,13 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import SimpleReactValidator from '../../validator/simple-react-validator';
 
 class Hr_Task_Create extends Component {
 
     constructor(props) {
         super(props);
+        this.validator = new SimpleReactValidator();
         this.state = {
             title: '',
             description: '',
@@ -97,13 +99,16 @@ class Hr_Task_Create extends Component {
             state
         }
 
-        console.log('TASK', task);
-
-        const result = await ApiServices.Post(`/supervisor?emailStudent=${emailStudent}`, task);
-        if (result.status == 201) {
-            Toastify.actionSuccess("Tạo nhiệm vụ mới thành công!");
+        if (this.validator.allValid()) {
+            const result = await ApiServices.Post(`/supervisor?emailStudent=${emailStudent}`, task);
+            if (result.status == 201) {
+                Toastify.actionSuccess("Tạo nhiệm vụ mới thành công!");
+            } else {
+                Toastify.actionFail("Tạo nhiệm vụ mới thất bại!");
+            }
         } else {
-            Toastify.actionFail("Tạo nhiệm vụ mới thất bại!");
+            this.validator.showMessages();
+            this.forceUpdate();
         }
     }
 
@@ -126,6 +131,9 @@ class Hr_Task_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={title} onChange={this.handleInput} type="text" id="title" name="title" placeholder="Tên nhiệm vụ" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Tên nhiệm vụ', title, 'required|max:50')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -156,6 +164,9 @@ class Hr_Task_Create extends Component {
                                                     })
                                                 }}
                                             />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Mô tả', description, 'required|max:255')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -164,6 +175,9 @@ class Hr_Task_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={time_end} onChange={this.handleInput} type="date" id="time_end" name="time_end" placeholder="Thời hạn hoàn thành" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Thời hạn hoàn thành', description, 'required')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -172,6 +186,9 @@ class Hr_Task_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={level_task} onChange={this.handleInput} type="text" id="level_task" name="level_task" placeholder="Mức độ" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Mức độ', description, 'required')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -180,6 +197,10 @@ class Hr_Task_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={priority} onChange={this.handleInput} type="number" id="priority" name="priority" placeholder="Độ ưu tiên" />
+                                            <span className="form-error is-visible text-danger">
+                                                {/* <i class="fa fa-exclamation-circle" /> */}
+                                                {this.validator.message('Độ ưu tiên', description, 'required')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                 </Form>

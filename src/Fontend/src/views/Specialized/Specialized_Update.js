@@ -28,10 +28,14 @@ import {
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import SimpleReactValidator from '../../validator/simple-react-validator';
 
 class Specialized_Update extends Component {
     constructor(props) {
         super(props);
+        this.validator = new SimpleReactValidator();
         this.state = {
             id: '',
             name: '',
@@ -71,6 +75,27 @@ class Specialized_Update extends Component {
             name: '',
         })
     }
+
+    handleConfirm = () => {
+        if (this.validator.allValid()) {
+            confirmAlert({
+                title: 'Xác nhận',
+                message: 'Bạn đã chắc chắn với lựa chọn của mình?',
+                buttons: [
+                    {
+                        label: 'Xác nhận',
+                        onClick: () => this.handleSubmit()
+                    },
+                    {
+                        label: 'Hủy bỏ',
+                    }
+                ]
+            });
+        } else {
+            this.validator.showMessages();
+            this.forceUpdate();
+        }
+    };
 
     handleSubmit = async () => {
         const { id, name, status } = this.state;
@@ -112,6 +137,9 @@ class Specialized_Update extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={this.state.name} onChange={this.handleInput} type="text" id="name" name="name" placeholder="Nhập tên chuyên ngành" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Tên chuyên ngành', this.state.name, 'required|max:20')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                 </Form>
@@ -120,7 +148,7 @@ class Specialized_Update extends Component {
                             <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Cập nhật</Button>
+                                        <Button onClick={() => this.handleConfirm()} type="submit" color="primary" block>Cập nhật</Button>
                                     </Col>
                                     <Col xs="3" sm="3">
                                         <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
