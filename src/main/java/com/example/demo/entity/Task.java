@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
+import com.example.demo.config.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -8,6 +10,7 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
+@Check(constraints = "status IN ('NOT START' ,'PENDING', 'DONE')")
 @Table(name = "task")
 public class Task {
     @Id
@@ -15,7 +18,7 @@ public class Task {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "title",columnDefinition = "NVARCHAR(150)")
+    @Column(name = "title", columnDefinition = "NVARCHAR(150)")
     private String title;
 
     @Column(name = "level_task")
@@ -31,23 +34,24 @@ public class Task {
     @Column(name = "time_end")
     private java.sql.Date time_end;
 
-    @Column(name = "state")
-    private boolean state;
 
-    @Column(name = "description",columnDefinition = "NVARCHAR(255)")
+    @Enumerated(EnumType.STRING)
+    @Check(constraints = "status IN ('NOT START' ,'PENDING', 'DONE')")
+    @Column(name = "status")
+    private Status status = Status.NOTSTART;
+
+    @Column(name = "description", columnDefinition = "NVARCHAR(255)")
     private String description;
 
     @ManyToOne
-//    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "supervisor_email")
     private Supervisor supervisor;
 
     @ManyToOne
-//    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "ojt_enrollment_id")
-    private Ojt_Enrollment  ojt_enrollment;
+    private Ojt_Enrollment ojt_enrollment;
 
     public String getTitle() {
         return title;
@@ -89,12 +93,12 @@ public class Task {
         this.time_end = time_end;
     }
 
-    public boolean isState() {
-        return state;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setState(boolean state) {
-        this.state = state;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public Supervisor getSupervisor() {
