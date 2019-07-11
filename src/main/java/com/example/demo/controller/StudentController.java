@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -631,7 +632,7 @@ public class StudentController {
     @PutMapping("/information")
     public ResponseEntity<Void> updateInformationStudent(@RequestParam String name, @RequestParam String phone,
                                                          @RequestParam boolean gender, @RequestParam String address,
-                                                         @RequestParam String birthDate) {
+                                                         @RequestParam String birthDate) throws ParseException {
         String email = getEmailFromToken();
         boolean update = studentService.updateInformationStudent(email, name, phone, gender, address, birthDate);
         if (update == true) {

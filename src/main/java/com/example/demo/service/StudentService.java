@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.config.Status;
+
 import com.example.demo.entity.*;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.SupervisorRepository;
@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class StudentService {
@@ -271,14 +273,19 @@ public class StudentService {
     }
 
 
-    public boolean updateInformationStudent(String email, String name, String phone, boolean gender, String address, String birthDate) {
+    public boolean updateInformationStudent(String email, String name, String phone, boolean gender, String address, String birthDate) throws ParseException {
         Student student = studentRepository.findByEmail(email);
         if (student != null) {
             student.setName(name);
             student.setPhone(phone);
             student.setGender(gender);
             student.setAddress(address);
-            student.setDob(Date.valueOf(birthDate));
+
+            SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
+            java.util.Date date = sdf1.parse(birthDate);
+            java.sql.Date dob = new java.sql.Date(date.getTime());
+
+            student.setDob(dob);
             studentRepository.save(student);
             return true;
         }
