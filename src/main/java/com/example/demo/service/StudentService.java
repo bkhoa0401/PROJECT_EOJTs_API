@@ -283,7 +283,6 @@ public class StudentService {
             SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
             String dateFormat=simpleDateFormat.format(birthDate);
             student.setDob(new Date(Long.valueOf(dateFormat)));
-            
             studentRepository.save(student);
             return true;
         }

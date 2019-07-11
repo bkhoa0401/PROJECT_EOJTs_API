@@ -152,4 +152,12 @@ public class Evaluation {
     public void setTimeEnd(Date timeEnd) {
         this.timeEnd = timeEnd;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
