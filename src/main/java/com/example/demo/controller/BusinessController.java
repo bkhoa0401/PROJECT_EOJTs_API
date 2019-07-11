@@ -140,6 +140,17 @@ public class BusinessController {
         }
     }
 
+    @GetMapping("/business")
+    @ResponseBody
+    public ResponseEntity<Business> getBusinessByEmail(@RequestParam String email) {
+        Business business = businessService.getBusinessByEmail(email);
+        if (business != null) {
+            return new ResponseEntity<Business>(business, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
     //update business
     @PutMapping("/updateBusiness")
     public ResponseEntity<Void> updateBusinessByEmail(@RequestBody Business business) {

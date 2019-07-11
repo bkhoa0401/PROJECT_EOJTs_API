@@ -32,6 +32,10 @@ class business_list extends Component {
         })
     }
 
+    handleDirect = (uri) => {
+        this.props.history.push(uri);
+    }
+
     render() {
         const { businesses, searchValue } = this.state;
         let filteredListBusinesses;
@@ -85,9 +89,15 @@ class business_list extends Component {
                                                         SĐT: {business.business_phone}
                                                     </td>
                                                     <td style={{ textAlign: "center" }}>
-                                                        <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="primary">Chi tiết</Button>
-                                                        &nbsp;&nbsp;
-                                                        <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="danger">Xoá</Button>
+                                                        <Button 
+                                                            style={{ fontWeight: "bold", borderWidth: 0 }} 
+                                                            color="primary" 
+                                                            onClick={() => this.handleDirect(`/Company/Business_Detail/${business.email}`)}
+                                                        >
+                                                            Chi tiết
+                                                        </Button>
+                                                        {/* &nbsp;&nbsp;
+                                                        <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="danger">Xoá</Button> */}
                                                     </td>
                                                 </tr>
                                                 )
