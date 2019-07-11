@@ -33,7 +33,16 @@ class Create_InformMessage extends Component {
 
     async componentDidMount() {
         const token = localStorage.getItem('id_token');
-        const students = await ApiServices.Get(`/business/getStudentsByBusiness`);
+        let students = null;
+        if (token != null) {
+            const decoded = decode(token);
+            if (decoded.role == "ROLE_ADMIN") {
+                students = await ApiServices.Get(`/admin/students`);
+            }
+            if (decoded.role == "ROLE_HR") {
+                students = await ApiServices.Get(`/business/getStudentsByBusiness`);
+            }
+        }
         let informFromEmail = '';
         let today = new Date();
         let dd = today.getDate();
