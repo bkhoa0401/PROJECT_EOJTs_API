@@ -9,7 +9,7 @@ import java.sql.Date;
 
 @Entity
 @Table(name = "evaluation")
-public class Evaluation {
+public class Evaluation implements  Comparable<Evaluation> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -57,9 +57,6 @@ public class Evaluation {
     @Column(name = "timeEnd")
     private Date timeEnd;
 
-    public int getId() {
-        return id;
-    }
 
     public String getProject_name() {
         return project_name;
@@ -155,5 +152,18 @@ public class Evaluation {
 
     public void setTimeEnd(Date timeEnd) {
         this.timeEnd = timeEnd;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public int compareTo(Evaluation evaluation) {
+        return this.getTimeCreated().compareTo(evaluation.timeCreated);
     }
 }

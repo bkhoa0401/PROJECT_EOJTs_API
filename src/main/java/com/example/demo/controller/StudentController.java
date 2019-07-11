@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.Business_JobPostDTO;
-import com.example.demo.dto.Business_ListJobPostDTO;
-import com.example.demo.dto.DashboardDTO;
-import com.example.demo.dto.Job_PostDTO;
+import com.example.demo.config.Status;
+import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -651,6 +649,47 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/taskByStatus")
+    @ResponseBody
+    public ResponseEntity<List<Task>> getTaskListByStatus(@RequestParam int type) {
+        String email = getEmailFromToken();
+
+        List<Task> taskList = new ArrayList<>();
+        if (type == 1) {
+            taskList = taskService.findTasksOfStudentByStatus(email, Status.NOTSTART);
+        } else if (type == 2) {
+            taskList = taskService.findTasksOfStudentByStatus(email, Status.PENDING);
+        } else if (type == 3) {
+            taskList = taskService.findTasksOfStudentByStatus(email, Status.DONE);
+        }
+        if (taskList != null) {
+            return new ResponseEntity<List<Task>>(taskList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/studentsEvaluations")
+    @ResponseBody
+    public ResponseEntity<List<Student_EvaluationDTO>> getEvaluationsOfStudents() {
+        List<Student> studentList = studentService.getAllStudents();
+
+        List<Student_EvaluationDTO> student_evaluationDTOS = new ArrayList<>();
+
+        for (int i = 0; i < studentList.size(); i++) {
+            List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(studentList.get(i).getEmail());
+            Collections.sort(evaluationList);
+            Student_EvaluationDTO student_evaluationDTO = new Student_EvaluationDTO();
+            student_evaluationDTO.setEvaluationList(evaluationList);
+            student_evaluationDTO.setStudent(studentList.get(i));
+
+            student_evaluationDTOS.add(student_evaluationDTO);
+        }
+
+        if (student_evaluationDTOS != null) {
+            return new ResponseEntity<List<Student_EvaluationDTO>>(student_evaluationDTOS, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 
     //get email from token
     private String getEmailFromToken() {

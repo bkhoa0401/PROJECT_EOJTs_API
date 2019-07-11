@@ -102,4 +102,14 @@ public class TaskService {
 
         return (float) taskListDoneOfStudent.size() / (float) taskListOfStudent.size();
     }
+
+    public List<Task> findTasksOfStudentByStatus(String email, Status status) {
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+
+        List<Task> taskList = taskRepository.findTasksByOjt_enrollmentAndStatus(ojt_enrollment, status);
+        if (taskList != null) {
+            return taskList;
+        }
+        return null;
+    }
 }

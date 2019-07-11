@@ -64,6 +64,7 @@ public class WebController {
                         Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(studentDTO.getEmail());
                         if (ojt_enrollment.getBusiness() != null) {
                             studentDTO.setIntership(true);
+                            studentDTO.setBusinessName(ojt_enrollment.getBusiness().getBusiness_eng_name());
                         }
                         login.setStudent(studentDTO);
                     }

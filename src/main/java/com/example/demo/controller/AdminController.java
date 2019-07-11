@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.Business_ListJobPostDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,6 +117,17 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+
+    @GetMapping("/jobPostsBusinesses")
+    @ResponseBody
+    public ResponseEntity<List<Business_ListJobPostDTO>> getJobPostsOfBusiness(){
+        List<Business_ListJobPostDTO> business_listJobPostDTOS=adminService.getJobPostsOfBusinesses();
+
+        if(business_listJobPostDTOS!=null){
+            return new ResponseEntity<List<Business_ListJobPostDTO>>(business_listJobPostDTOS,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 
     //get email from token
     private String getEmailFromToken() {
