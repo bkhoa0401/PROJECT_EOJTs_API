@@ -69,13 +69,6 @@ public class StudentDTO {
         this.dob = dob;
     }
 
-    public String getBusinessName() {
-        return businessName;
-    }
-
-    public void setBusinessName(String businessName) {
-        this.businessName = businessName;
-    }
 
     public StudentDTO() {
         this.isIntership = false;
