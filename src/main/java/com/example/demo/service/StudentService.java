@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -278,7 +279,11 @@ public class StudentService {
             student.setPhone(phone);
             student.setGender(gender);
             student.setAddress(address);
-            student.setDob(Date.valueOf(birthDate));
+
+            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+            String dateFormat=simpleDateFormat.format(birthDate);
+            student.setDob(new Date(Long.valueOf(dateFormat)));
+            
             studentRepository.save(student);
             return true;
         }
