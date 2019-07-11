@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.entity.*;
 import com.example.demo.repository.BusinessRepository;
+import com.example.demo.repository.EvaluationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class BusinessService {
 
     @Autowired
     StudentService studentService;
+
+    @Autowired
+    EvaluationRepository evaluationRepository;
 
     public void saveBusiness(Business business) {
         businessRepository.save(business);
@@ -153,4 +157,6 @@ public class BusinessService {
 
         businessRepository.save(business);
     }
+
+
 }

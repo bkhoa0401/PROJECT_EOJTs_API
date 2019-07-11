@@ -47,6 +47,7 @@
     "react-router-dom": "^5.0.0",
     "react-test-renderer": "^16.8.6",
     "react-toastify": "^5.1.1",
+    "react-validation": "^3.0.7",
     "reactjs-popup": "^1.4.1",
     "reactstrap": "^7.1.0",
     "read-excel-file": "^4.0.1",

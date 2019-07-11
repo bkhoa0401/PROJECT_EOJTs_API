@@ -4,7 +4,10 @@ import com.example.demo.entity.Event;
 import com.example.demo.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Service
@@ -54,6 +57,19 @@ public class EventService {
 
     public boolean createEvent(Event event) {
         if (event != null) {
+            for (int i = 0; i < event.getStudents().size(); i++) {
+                System.out.println("id: " + event.getStudents().get(i).getEmail());
+            }
+            eventRepository.save(event);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateStatusIsRead(int id) {
+        Event event = findEventById(id);
+        if (event != null) {
+            event.setRead(true);
             eventRepository.save(event);
             return true;
         }

@@ -83,8 +83,9 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+
     @PostMapping("/event")
-    public ResponseEntity<Void> createEvent(@RequestParam List<String> listEmail, @RequestBody Event event) {
+    public ResponseEntity<Void> createEvent(@RequestParam List<String> listStudentEmail, @RequestBody Event event) {
         String email = getEmailFromToken();
         Users users = usersService.findUserByEmail(email);
 
@@ -100,8 +101,14 @@ public class AdminController {
                 event.setBusiness(business);
             }
         }
+        List<Student> studentList=new ArrayList<>();
+        for (int i = 0; i < listStudentEmail.size(); i++) {
+            Student student = studentService.getStudentByEmail(listStudentEmail.get(i));
+            studentList.add(student);
+        }
         Date date = new Date(Calendar.getInstance().getTime().getTime());
         event.setTime_created(date);
+        event.setStudents(studentList);
         boolean create = eventService.createEvent(event);
         if (create == true) {
             return new ResponseEntity<>(HttpStatus.OK);
