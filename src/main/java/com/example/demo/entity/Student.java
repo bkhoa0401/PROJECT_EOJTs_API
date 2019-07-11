@@ -54,7 +54,7 @@ public class Student implements Serializable {
     @Column(name = "code")
     private String code;
 
-    @Column(name = "avatarLink",columnDefinition = "varchar(MAX)")
+    @Column(name = "avatarLink", columnDefinition = "varchar(MAX)")
     private String avatarLink;
 
     @Column(name = "resumeLink")
@@ -79,7 +79,7 @@ public class Student implements Serializable {
     )
     private List<Skill> skills;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
             name = "student_event",
@@ -93,7 +93,7 @@ public class Student implements Serializable {
     private List<Event> events;
 
     @OneToMany(mappedBy = "student")
-//    @JsonIgnore
+    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Invitation> invitations;
 
@@ -113,17 +113,18 @@ public class Student implements Serializable {
 //    @JsonIgnore
     private Supervisor supervisor;
 
-    @Column(name="dob")
+    @Column(name = "dob")
     private Date dob;
 
-    @Column(name="gender")
+    @Column(name = "gender")
     private boolean gender;
 
-    @Column(name="status")
+    @Column(name = "status")
     private String status;
 
     public Student() {
     }
+
 
     public String getToken() {
         return token;
