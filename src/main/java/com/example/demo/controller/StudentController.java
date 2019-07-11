@@ -448,7 +448,7 @@ public class StudentController {
         List<Business_JobPostDTO> business_jobPostDTOList = new ArrayList<>();
 
         List<Job_Post> job_postList = studentService.getSuggestListJobPost(email);
-        for (int i = 0; i < job_postList.size(); i++) { 
+        for (int i = 0; i < job_postList.size(); i++) {
             Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
             business_jobPostDTO.setBusiness(job_postList.get(i).getOjt_enrollment().getBusiness());
 
@@ -640,6 +640,16 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 
     }
+
+    @PutMapping("/statusEvent")
+    public ResponseEntity<Void> updateStatusEvent(@RequestParam int id) {
+        boolean update = eventService.updateStatusIsRead(id);
+        if (update) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
 
     //get email from token
     private String getEmailFromToken() {

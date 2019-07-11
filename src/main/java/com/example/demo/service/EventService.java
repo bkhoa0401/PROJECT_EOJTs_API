@@ -55,13 +55,21 @@ public class EventService {
         return null;
     }
 
-
-
     public boolean createEvent(Event event) {
         if (event != null) {
-            for (int i=0;i<event.getStudents().size();i++){
-                System.out.println("id: "+event.getStudents().get(i).getEmail());
+            for (int i = 0; i < event.getStudents().size(); i++) {
+                System.out.println("id: " + event.getStudents().get(i).getEmail());
             }
+            eventRepository.save(event);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateStatusIsRead(int id) {
+        Event event = findEventById(id);
+        if (event != null) {
+            event.setRead(true);
             eventRepository.save(event);
             return true;
         }
