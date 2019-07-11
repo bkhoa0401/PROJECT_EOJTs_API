@@ -29,11 +29,12 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import Validators from '../../validator/validator';
+import SimpleReactValidator from '../../validator/simple-react-validator';
 class Skill_Create extends Component {
 
     constructor(props) {
         super(props);
+        this.validator = new SimpleReactValidator();
         this.state = {
             name: '',
             status: 'true',
@@ -92,26 +93,34 @@ class Skill_Create extends Component {
 
         const result = await ApiServices.Post('/skill', skill);
         if (result.status == 200) {
-            Toastify.actionSuccess("Tạo kỹ năng mới thành công!");            
+            Toastify.actionSuccess("Tạo kỹ năng mới thành công!");
         } else {
             Toastify.actionFail("Tạo kỹ năng mới thất bại!");
         }
     }
 
     handleConfirm = () => {
-        confirmAlert({
-            title: 'Xác nhận',
-            message: 'Bạn đã chắc chắn với lựa chọn của mình?',
-            buttons: [
-                {
-                    label: 'Xác nhận',
-                    onClick: () => this.handleSubmit()
-                },
-                {
-                    label: 'Hủy bỏ',
-                }
-            ]
-        });
+        const { name, specializedItem } = this.state;
+        console.log(name, specializedItem);
+
+        if (this.validator.allValid()) {
+            confirmAlert({
+                title: 'Xác nhận',
+                message: `Bạn chắc chắn muốn tạo kỹ năng ${name} thuộc ngành ${specializedItem.name}?`,
+                buttons: [
+                    {
+                        label: 'Đồng ý',
+                        onClick: () => this.handleSubmit()
+                    },
+                    {
+                        label: 'Hủy bỏ',
+                    }
+                ]
+            });
+        } else {
+            this.validator.showMessages();
+            this.forceUpdate();
+        }
     };
 
 
@@ -133,6 +142,9 @@ class Skill_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={this.state.name} onChange={this.handleInput} type="text" id="name" name="name" placeholder="Nhập tên kỹ năng" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Tên kỹ năng', this.state.name, 'required|max:20')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>

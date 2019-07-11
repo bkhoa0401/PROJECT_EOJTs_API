@@ -129,7 +129,7 @@ class Hr_Students_Detail extends Component {
                                 <Row>
                                     <Col xs="3" sm="3">
                                         {
-                                            role === 'ROLE_HR' ? (
+                                            role === 'ROLE_SUPERVISOR' ? (
                                                 <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr-student-list")} type="submit" color="primary" block>Trở về</Button>
                                             ) : (
                                                     <Button id="submitBusinesses" onClick={() => this.handleDirect("/list_management/student_list")} type="submit" color="primary" block>Trở về</Button>

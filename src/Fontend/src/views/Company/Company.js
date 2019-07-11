@@ -16,28 +16,13 @@ import {
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
-import SimpleReactValidator from 'simple-react-validator';
+import SimpleReactValidator from '../../validator/simple-react-validator';
 import firebase from 'firebase/app';
 import 'firebase/storage';
 import { async } from 'q';
 import { initializeApp } from '../Invitation/push-notification';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
-
-// // Your web app's Firebase configuration
-// var firebaseConfig = {
-//     apiKey: "AIzaSyBZRXJdcBsa3i0QXfFKsvNxWhn_1mKjmmc",
-//     authDomain: "eojts-ddc9e.firebaseapp.com",
-//     databaseURL: "https://eojts-ddc9e.firebaseio.com",
-//     projectId: "eojts-ddc9e",
-//     storageBucket: "gs://eojts-ddc9e.appspot.com",
-//     messagingSenderId: "365126484633",
-//     appId: "1:365126484633:web:623e362d3746d457"
-// };
-// // Initialize Firebase
-// firebase.initializeApp(firebaseConfig);
-
 
 const storage = firebase.storage();
 
@@ -195,9 +180,9 @@ class Company extends Component {
                                             <br /><br />
                                             <input onChange={this.handleChange} type="file" />
                                             <br /><br />
-                                            {/* <span className="form-error is-visible text-danger">
-                                                    {this.validator.message('logo', logo, 'required')}
-                                                </span> */}
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Logo', logo, 'required')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -218,7 +203,7 @@ class Company extends Component {
                                         <Col xs="12" md="10">
                                             <Input value={business_name} onChange={this.handleInput} type="text" id="business_name" name="business_name" />
                                             <span className="form-error is-visible text-danger">
-                                                {this.validator.message('business_name', business_name, 'required')}
+                                                {this.validator.message('Tên doanh nghiệp', business_name, 'required|min:7|max:50|alpha_num_space')}
                                             </span>
                                         </Col>
                                     </FormGroup>
@@ -229,7 +214,7 @@ class Company extends Component {
                                         <Col xs="12" md="10">
                                             <Input value={business_eng_name} onChange={this.handleInput} type="text" id="business_eng_name" name="business_eng_name" />
                                             <span className="form-error is-visible text-danger">
-                                                {this.validator.message('business_eng_name', business_eng_name, 'required')}
+                                                {this.validator.message('Tên tiếng Anh', business_eng_name, 'required|min:3|max:15|alpha_num_space')}
                                             </span>
                                         </Col>
                                     </FormGroup>
@@ -248,7 +233,7 @@ class Company extends Component {
                                                 }}
                                             />
                                             <span className="form-error is-visible text-danger">
-                                                {this.validator.message('business_overview', business_overview, 'required')}
+                                                {this.validator.message('Giới thiệu', business_overview, 'required|max:255')}
                                             </span>
                                         </Col>
                                     </FormGroup>
@@ -259,7 +244,7 @@ class Company extends Component {
                                         <Col xs="12" md="10">
                                             <Input value={business_address} onChange={this.handleInput} type="text" id="business_address" name="business_address" />
                                             <span className="form-error is-visible text-danger">
-                                                {this.validator.message('business_address', business_address, 'required')}
+                                                {this.validator.message('Địa chỉ', business_address, 'required|min:7|max:100|alpha_num_dot_splash')}
                                             </span>
                                         </Col>
                                     </FormGroup>
@@ -270,7 +255,7 @@ class Company extends Component {
                                         <Col xs="12" md="10">
                                             <Input value={business_phone} onChange={this.handleInput} type="number" id="business_phone" name="business_phone" />
                                             <span className="form-error is-visible text-danger">
-                                                {this.validator.message('business_phone', business_phone, 'required')}
+                                                {this.validator.message('Số điện thoại', business_phone, 'required|min:10|max:11|numeric')}
                                             </span>
                                         </Col>
                                     </FormGroup>
@@ -282,7 +267,7 @@ class Company extends Component {
                                         <Col xs="12" md="10">
                                             <Input value={business_website} onChange={this.handleInput} type="text" id="business_website" name="business_website" />
                                             <span className="form-error is-visible text-danger">
-                                                {this.validator.message('business_website', business_website, 'required')}
+                                                {this.validator.message('Website của doanh nghiệp', business_website, 'required|min:5|max:20')}
                                             </span>
                                         </Col>
                                     </FormGroup>
