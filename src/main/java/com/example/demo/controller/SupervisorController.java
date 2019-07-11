@@ -11,7 +11,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/supervisor")
@@ -83,14 +86,49 @@ public class SupervisorController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @GetMapping("/getEvaluation")
+    @ResponseBody
+    public ResponseEntity<Evaluation> getEvaluationById(@RequestParam int id) {
+        Evaluation evaluation = evaluationService.getEvaluationById(id);
+        return new ResponseEntity<Evaluation>(evaluation, HttpStatus.OK);
+    }
+
     @GetMapping("/evaluations")
     @ResponseBody
     public ResponseEntity<List<Evaluation>> getAllEvaluationBySupervisorEmail() {
         String email = getEmailFromToken();
 
         List<Evaluation> evaluationList = evaluationService.getEvaluationsBySupervisorEmail(email);
-        if (evaluationList != null) {
-            return new ResponseEntity<List<Evaluation>>(evaluationList, HttpStatus.OK);
+        List<Student> studentList = studentService.getAllStudentOfASupervisor(email);
+        List<Evaluation> overviewEvaluationList = new ArrayList<Evaluation>();
+        int flag = 0;
+        for (int i = 0; i < studentList.size(); i++) {
+            flag = 0;
+            for (int j = 0; j < evaluationList.size(); j++) {
+                if (studentList.get(i).getCode().equals(evaluationList.get(j).getOjt_enrollment().getStudent().getCode())) {
+                    overviewEvaluationList.add(evaluationList.get(j));
+                    if (flag > 0) {
+                        for (int k = 1; k <= flag ; k++) {
+                            Date date1 = overviewEvaluationList.get(overviewEvaluationList.size() - k).getTimeStart();
+                            Date date2 = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k).getTimeStart();
+                            if (date1.before(date2)) {
+                                Evaluation tmpEvaluation = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k);
+                                overviewEvaluationList.set(overviewEvaluationList.size() - 1 - k, overviewEvaluationList.get(overviewEvaluationList.size() - k));
+                                overviewEvaluationList.set(overviewEvaluationList.size() - k, tmpEvaluation);
+                            }
+                        }
+                    }
+                    flag++;
+                }
+            }
+            if (flag < 4) {
+                for (int l = flag; l < 4; l++) {
+                    overviewEvaluationList.add(null);
+                }
+            }
+        }
+        if (overviewEvaluationList != null) {
+            return new ResponseEntity<List<Evaluation>>(overviewEvaluationList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

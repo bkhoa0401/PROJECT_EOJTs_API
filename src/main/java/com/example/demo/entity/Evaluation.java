@@ -57,6 +57,10 @@ public class Evaluation {
     @Column(name = "timeEnd")
     private Date timeEnd;
 
+    public int getId() {
+        return id;
+    }
+
     public String getProject_name() {
         return project_name;
     }
