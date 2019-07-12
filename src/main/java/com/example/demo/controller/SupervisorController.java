@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
-import java.util.Date;
+import java.sql.Date;
 
 @RestController
 @RequestMapping("/api/supervisor")
@@ -81,6 +82,10 @@ public class SupervisorController {
 
         Supervisor supervisor = supervisorService.findByEmail(email);
         evaluation.setSupervisor(supervisor);
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(emailStudent);
+        evaluation.setOjt_enrollment(ojt_enrollment);
+        Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+        evaluation.setTimeCreated(date);
 
         evaluationService.createNewEvaluation(evaluation, emailStudent);
         return new ResponseEntity<>(HttpStatus.CREATED);

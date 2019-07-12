@@ -16,16 +16,16 @@ class Create_InformMessage extends Component {
         super(props);
         this.state = {
             open: false,
+            isSelect:null,
+            colorTextSelect: ['Black', 'White'],
+            colorBackSelect: ['White', 'DeepSkyBlue'],
             informFromEmail: '',
             students: null,
-            studentReceived: null,
+            listStudentEmail: [],
             informTo: '',
             
             description: '',
-            time_created: '',
             title: '',
-            admin_email: null,
-            business_email: null,
         };
         this.openPopupRegist = this.openPopupRegist.bind(this);
         this.closePopupRegist = this.closePopupRegist.bind(this);
@@ -33,7 +33,8 @@ class Create_InformMessage extends Component {
 
     async componentDidMount() {
         const token = localStorage.getItem('id_token');
-        let students = null;
+        let students = [];
+        let isSelect = [];
         if (token != null) {
             const decoded = decode(token);
             if (decoded.role == "ROLE_ADMIN") {
@@ -53,10 +54,14 @@ class Create_InformMessage extends Component {
             const decoded = decode(token);
             informFromEmail = decoded.email;
         }
+        for (let index = 0; index < students.length; index++) {
+            isSelect.push(0);
+        }
         this.setState({
             informFromEmail: informFromEmail,
             students: students,
             time_created: today,
+            isSelect: isSelect,
         });
     }
 
@@ -75,12 +80,82 @@ class Create_InformMessage extends Component {
         })
     }
 
+    handleSelect = (selectEmail) => {
+        let listStudentEmail = this.state.listStudentEmail;
+        let isSelect = this.state.isSelect;
+        let students = this.state.students;
+        let informTo = '';
+        if (listStudentEmail.includes(selectEmail)) {
+            for (let index = 0; index < listStudentEmail.length; index++) {
+                if (listStudentEmail[index] == selectEmail) {
+                    listStudentEmail.splice(index, 1);
+                }
+            }
+            for (let index = 0; index < students.length; index++) {
+                if (students[index].email == selectEmail) {
+                    isSelect[index] = 0;
+                }
+            }
+        } else {
+            listStudentEmail.push(selectEmail);
+            for (let i = 0; i < students.length; i++) {
+                // for (let j = 0; j < listStudentEmail.length; j++) {
+                //     if (students[i] = listStudentEmail[j]) {
+                //         isSelect[i] = 1;
+                //     }
+                // }
+                if (students[i].email == selectEmail) {
+                    isSelect[i] = 1;
+                }
+            }
+        }
+        for (let index = 0; index < listStudentEmail.length; index++) {
+            informTo += listStudentEmail[index] + "; ";
+            if (informTo.length > 100) {
+                informTo += "...";
+                break;
+            }
+        }
+        this.setState({
+            listStudentEmail: listStudentEmail,
+            isSelect: isSelect,
+            informTo: informTo,
+        })
+        console.log(this.state.isSelect);
+        console.log(this.state.listStudentEmail);
+    }
+
     handleDirect = (uri) => {
         this.props.history.push(uri);
     }
 
+    handleSubmit = async () => {
+        const { title } = this.state;
+        const listStudentEmail = this.state.listStudentEmail;
+        console.log(title);
+        console.log(description);
+        let descriptionNeedCut = this.state.description;
+        descriptionNeedCut = descriptionNeedCut.replace('<p>', '');
+        descriptionNeedCut = descriptionNeedCut.replace('</p>', '');
+        const description = descriptionNeedCut;
+        const event = {
+            description,
+            title,
+        }
+        const result = await ApiServices.Post(`/admin/event?listStudentEmail=${listStudentEmail}`, event);
+        console.log(result);
+        console.log(listStudentEmail);
+        console.log(event);
+        if (result.status == 201) {
+            Toastify.actionSuccess("Tạo thông báo thành công!");
+            this.props.history.push("/InformMessage/InformMessage");
+        } else {
+            Toastify.actionFail("Tạo thông báo thất bại!");
+        }
+    }
+
     render() {
-        const { informFromEmail, students, informTo, title, description } = this.state;
+        const { informFromEmail, students, informTo, title, description, colorTextSelect, colorBackSelect, isSelect } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -103,7 +178,7 @@ class Create_InformMessage extends Component {
                                         <h6>Đến:</h6>
                                     </Col>
                                     <Col xs="12" md="9">
-                                        <Input type="text" value={informTo} onChange={this.handleInput} id="informTo" name="informTo"></Input>
+                                        <Input type="text" value={informTo} id="informTo" name="informTo" readOnly style={{backgroundColor:"white"}}></Input>
                                     </Col>
                                     <Col xs="12" md="1">
                                         <Button block outline color="primary" onClick={this.openPopupRegist}>Thêm</Button>
@@ -150,7 +225,7 @@ class Create_InformMessage extends Component {
                     {students && students.map((student, index) =>
                         <div className="TabContent">
                             <ListGroup>
-                                <ListGroupItem action>
+                                <ListGroupItem action onClick={() => this.handleSelect(student.email)} style={{color: colorTextSelect[isSelect[index]], backgroundColor: colorBackSelect[isSelect[index]]}}>
                                     <ListGroupItemHeading style={{fontWeight:'bold'}}>{student.name}</ListGroupItemHeading>
                                     <ListGroupItemText>
                                         {student.email}
@@ -161,11 +236,11 @@ class Create_InformMessage extends Component {
                     )}
                 </Popup>
                 <div style={{ paddingLeft: '40%' }}>
-                    <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
+                    <Button style={{ width: '100px' }} outline color="primary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
                         Trở về
                     </Button>
                     &nbsp;&nbsp;&nbsp;
-                    <Button style={{ width: '100px' }} color="success" onClick={() => this.handleSubmit()}>
+                    <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleSubmit()}>
                         Tạo
                     </Button>
                 </div>

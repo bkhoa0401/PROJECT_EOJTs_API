@@ -146,7 +146,7 @@ class Report extends Component {
                                                         {onScreenStatus[index * 4] === null ?
                                                             (
                                                                 role && role === 'ROLE_SUPERVISOR' ?
-                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/`)}>
+                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/1~${student.email}`)}>
                                                                         Tạo
                                                                     </Button> :
                                                                     <p>N/A</p>
@@ -162,7 +162,7 @@ class Report extends Component {
                                                         {onScreenStatus[index * 4 + 1] === null ?
                                                             (
                                                                 role && role === 'ROLE_SUPERVISOR' ?
-                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/`)}>
+                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/2~${student.email}`)}>
                                                                         Tạo
                                                                     </Button> :
                                                                     <p>N/A</p>
@@ -178,7 +178,7 @@ class Report extends Component {
                                                         {onScreenStatus[index * 4 + 2] === null ?
                                                             (
                                                                 role && role === 'ROLE_SUPERVISOR' ?
-                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/`)}>
+                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/3~${student.email}`)}>
                                                                         Tạo
                                                                     </Button> :
                                                                     <p>N/A</p>
@@ -194,7 +194,7 @@ class Report extends Component {
                                                         {onScreenStatus[index * 4 + 3] === null ?
                                                             (
                                                                 role && role === 'ROLE_SUPERVISOR' ?
-                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/`)}>
+                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/4~${student.email}`)}>
                                                                         Tạo
                                                                     </Button> :
                                                                     <p>N/A</p>
