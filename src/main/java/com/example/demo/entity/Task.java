@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.config.Level;
 import com.example.demo.config.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Check;
@@ -10,7 +11,6 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Check(constraints = "status IN ('NOT START' ,'PENDING', 'DONE')")
 @Table(name = "task")
 public class Task {
     @Id
@@ -21,8 +21,11 @@ public class Task {
     @Column(name = "title", columnDefinition = "NVARCHAR(150)")
     private String title;
 
+
+    @Enumerated(EnumType.STRING)
+    @Check(constraints = "level_task IN ('EASY' ,'NORMAL', 'DIFFICULT')")
     @Column(name = "level_task")
-    private String level_task;
+    private Level level_task = Level.EASY;
 
     @Column(name = "priority")
     private int priority;
@@ -61,11 +64,11 @@ public class Task {
         this.title = title;
     }
 
-    public String getLevel_task() {
+    public Level getLevel_task() {
         return level_task;
     }
 
-    public void setLevel_task(String level_task) {
+    public void setLevel_task(Level level_task) {
         this.level_task = level_task;
     }
 
