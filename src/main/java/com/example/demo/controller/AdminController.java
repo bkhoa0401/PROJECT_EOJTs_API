@@ -112,7 +112,7 @@ public class AdminController {
         event.setStudents(studentList);
         boolean create = eventService.createEvent(event);
         if (create == true) {
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

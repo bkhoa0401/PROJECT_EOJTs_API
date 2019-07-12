@@ -40,9 +40,9 @@ class Hr_Task_Create extends Component {
             title: '',
             description: '',
             time_end: '',
-            level_task: '',
+            level_task: 'Easy',
             priority: '',
-            state: false,
+            state: 'NOTSTART',
             students: [],
             studentItem: {},
         }
@@ -65,7 +65,12 @@ class Hr_Task_Create extends Component {
             await this.setState({
                 studentItem: students[value]
             })
-        } else {
+        } else if (name.includes('level_task')) {
+            await this.setState({
+                level_task: value
+            })
+        }
+        else {
             await this.setState({
                 [name]: value
             })
@@ -81,7 +86,7 @@ class Hr_Task_Create extends Component {
             title: '',
             description: '',
             time_end: '',
-            level_task: '',
+            level_task: 'Easy',
             priority: '',
             studentItem: this.state.students[0],
         })
@@ -98,6 +103,7 @@ class Hr_Task_Create extends Component {
             priority,
             state
         }
+        console.log(task);
 
         if (this.validator.allValid()) {
             const result = await ApiServices.Post(`/supervisor?emailStudent=${emailStudent}`, task);
@@ -185,7 +191,12 @@ class Hr_Task_Create extends Component {
                                             <Label htmlFor="level_task">Mức độ</Label>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Input value={level_task} onChange={this.handleInput} type="text" id="level_task" name="level_task" placeholder="Mức độ" />
+                                            {/* <Input value={level_task} onChange={this.handleInput} type="text" id="level_task" name="level_task" placeholder="Mức độ" /> */}
+                                            <Input onChange={this.handleInput} type="select" name="level_task">
+                                                <option selected={level_task === 'Easy'} value='Easy'>Dễ</option>
+                                                <option selected={level_task === 'Normal'} value='Normal'>Bình thường</option>
+                                                <option selected={level_task === 'Difficult'} value='Difficult'>Khó</option>
+                                            </Input>
                                             <span className="form-error is-visible text-danger">
                                                 {this.validator.message('Mức độ', description, 'required')}
                                             </span>
@@ -199,7 +210,7 @@ class Hr_Task_Create extends Component {
                                             <Input value={priority} onChange={this.handleInput} type="number" id="priority" name="priority" placeholder="Độ ưu tiên" />
                                             <span className="form-error is-visible text-danger">
                                                 {/* <i class="fa fa-exclamation-circle" /> */}
-                                                {this.validator.message('Độ ưu tiên', description, 'required')}
+                                                {this.validator.message('Độ ưu tiên', description, 'required|numberic')}
                                             </span>
                                         </Col>
                                     </FormGroup>

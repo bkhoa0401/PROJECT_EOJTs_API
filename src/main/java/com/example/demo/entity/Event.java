@@ -48,7 +48,7 @@ public class Event implements Comparable<Event> {
             inverseJoinColumns = {
                     @JoinColumn(name = "student_email")}
     )
-    @JsonIgnore
+//    @JsonIgnore
     private List<Student> students;
 
     @Column(name = "isRead")
