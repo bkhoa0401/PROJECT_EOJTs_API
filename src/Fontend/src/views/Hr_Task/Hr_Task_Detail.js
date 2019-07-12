@@ -33,7 +33,7 @@ class Hr_Task_Detail extends Component {
             time_end: '',
             level_task: '',
             priority: '',
-            state: '',
+            status: '',
             supervisorName: '',
             studentName: ''
         }
@@ -53,7 +53,7 @@ class Hr_Task_Detail extends Component {
                 time_end: task.time_end,
                 level_task: task.level_task,
                 priority: task.priority,
-                state: task.state,
+                status: task.status,
                 supervisorName: task.supervisor.name,
                 studentName: task.ojt_enrollment.student.name
             });
@@ -65,7 +65,7 @@ class Hr_Task_Detail extends Component {
     }
 
     handleUpdateStatus = async (id, state) => {
-        const result = await ApiServices.Put(`/supervisor/stateTask?id=${id}&state=${state}`);
+        const result = await ApiServices.Put(`/supervisor/stateTask?id=${id}&typeTask=${state}`);
 
         if (result.status == 200) {
             Toastify.actionSuccess("Cập nhật trạng thái thành công!");
@@ -81,7 +81,7 @@ class Hr_Task_Detail extends Component {
                     time_end: task.time_end,
                     level_task: task.level_task,
                     priority: task.priority,
-                    state: task.state,
+                    status: task.status,
                     supervisorName: task.supervisor.name,
                     studentName: task.ojt_enrollment.student.name
                 });
@@ -91,8 +91,66 @@ class Hr_Task_Detail extends Component {
         }
     }
 
+    showTaskState(taskStatus) {
+        console.log(taskStatus);
+        if (taskStatus === 'NOTSTART') {
+            return (
+                <Badge color="danger">Chưa bắt đầu</Badge>
+            )
+        } else if (taskStatus === 'PENDING') {
+            return (
+                <Badge color="warning">Chưa hoàn thành</Badge>
+            )
+        } else if (taskStatus === 'DONE') {
+            return (
+                <Badge color="success">Hoàn Thành</Badge>
+            )
+        }
+    }
+
+    showButtonChangeStatus(taskStatus, id) {
+        if (taskStatus === 'NOTSTART') {
+            return (
+                <div>
+                    <Button style={{ marginLeft: "950px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/update/${id}`)}>Chỉnh sửa</Button>
+                </div>
+            )
+        } else if (taskStatus === 'PENDING') {
+            return (
+                <div>
+                    <Button style={{ marginLeft: "720px" }} type="submit" color="success" onClick={() => this.handleUpdateStatus(id, 3)}>Đánh dấu nhiệm vụ hoàn thành</Button>
+                    <Button style={{ marginLeft: "5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/update/${id}`)}>Chỉnh sửa</Button>
+                </div>
+            )
+        } else if (taskStatus === 'DONE') {
+            return (
+                <div>
+                    <Button style={{ marginLeft: "700px" }} type="submit" color="danger" onClick={() => this.handleUpdateStatus(id, 2)}>Đánh dấu nhiệm vụ chưa hoàn thành</Button>
+                    <Button disabled style={{ marginLeft: "5px" }} type="submit" color="primary" onClick={() => this.handleDirect('')}>Chỉnh sửa</Button>
+                </div>
+            )
+        }
+    }
+
+
+    showTaskLevel(taskLevel) {
+        if (taskLevel === 'Difficult') {
+            return (
+                <Badge color="danger">Khó</Badge>
+            )
+        } else if (taskLevel === 'Easy') {
+            return (
+                <Badge color="primary">Dễ</Badge>
+            )
+        } else if (taskLevel === 'Normal') {
+            return (
+                <Badge color="warning">Bình thường</Badge>
+            )
+        }
+    }
+
     render() {
-        const { id, title, description, time_created, time_end, level_task, priority, state, supervisorName,
+        const { id, title, description, time_created, time_end, level_task, priority, status, supervisorName,
             studentName } = this.state;
 
         return (
@@ -106,18 +164,7 @@ class Hr_Task_Detail extends Component {
                             <CardBody>
                                 <div>
                                     {
-                                        state.toString().toLowerCase() === 'true' ? (
-                                            <div>
-                                                <Button style={{ marginLeft: "700px" }} type="submit" color="danger" onClick={() => this.handleUpdateStatus(id, false)}>Đánh dấu nhiệm vụ chưa hoàn thành</Button>
-                                                <Button disabled style={{ marginLeft: "5px" }} type="submit" color="primary" onClick={() => this.handleDirect('')}>Chỉnh sửa</Button>
-                                            </div>
-
-                                        ) : (
-                                                <div>
-                                                    <Button style={{ marginLeft: "720px" }} type="submit" color="success" onClick={() => this.handleUpdateStatus(id, true)}>Đánh dấu nhiệm vụ hoàn thành</Button>
-                                                    <Button style={{ marginLeft: "5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/update/${id}`)}>Chỉnh sửa</Button>
-                                                </div>
-                                            )
+                                        this.showButtonChangeStatus(status, id)
                                     }
                                 </div>
                                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -133,17 +180,11 @@ class Hr_Task_Detail extends Component {
                                         <Col md="2">
                                             <h6>Trạng thái</h6>
                                         </Col>
-                                        {
-                                            state.toString().toLowerCase() === 'true' ?
-                                                (<Col xs="12" md="10">
-                                                    <Badge color="success">HOÀN THÀNH</Badge>
-                                                </Col>)
-                                                :
-                                                (
-                                                    <Col xs="12" md="10">
-                                                        <Badge color="danger">CHƯA HOÀN THÀNH</Badge>
-                                                    </Col>)
-                                        }
+                                        <Col xs="12" md="10">
+                                            {
+                                                this.showTaskState(status)
+                                            }
+                                        </Col>
                                     </FormGroup>
                                     <FormGroup row>
                                         <Col md="2">
@@ -190,7 +231,9 @@ class Hr_Task_Detail extends Component {
                                             <h6>Mức độ</h6>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Label id="level_task" name="level_task">{level_task}</Label>
+                                            {
+                                                this.showTaskLevel(level_task)
+                                            }
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -213,8 +256,8 @@ class Hr_Task_Detail extends Component {
                             </CardFooter>
                         </Card>
                     </Col>
-                </Row>
-            </div>
+                </Row >
+            </div >
         );
     }
 }

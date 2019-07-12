@@ -51,6 +51,39 @@ class Details_Task extends Component {
     this.props.history.push(uri);
   }
 
+  showTaskLevel(taskLevel) {
+    if (taskLevel === 'Difficult') {
+      return (
+        <Badge color="danger">Khó</Badge>
+      )
+    } else if (taskLevel === 'Easy') {
+      return (
+        <Badge color="primary">Dễ</Badge>
+      )
+    } else if (taskLevel === 'Normal') {
+      return (
+        <Badge color="warning">Bình thường</Badge>
+      )
+    }
+  }
+
+  showTaskState(taskStatus) {
+    console.log(taskStatus);
+    if (taskStatus === 'NOTSTART') {
+      return (
+        <Badge color="danger">Chưa bắt đầu</Badge>
+      )
+    } else if (taskStatus === 'PENDING') {
+      return (
+        <Badge color="warning">Chưa hoàn thành</Badge>
+      )
+    } else if (taskStatus === 'DONE') {
+      return (
+        <Badge color="success">Hoàn Thành</Badge>
+      )
+    }
+  }
+
   render() {
     return (
       <div className="animated fadeIn">
@@ -89,19 +122,17 @@ class Details_Task extends Component {
                             <td style={{ textAlign: "center" }}>{task.title}</td>
                             <td style={{ textAlign: "center" }}>
                               {
-                                task.state.toString() === 'true' ?
-                                  (
-                                    <Badge color="success">Hoàn Thành</Badge>
-                                  ) :
-                                  (
-                                    <Badge color="danger">Chưa hoàn thành</Badge>
-                                  )
+                                this.showTaskState(task.status)
                               }
                             </td>
                             <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
                             <td style={{ textAlign: "center" }}>{task.time_created}</td>
                             <td style={{ textAlign: "center" }}>{task.time_end}</td>
-                            <td style={{ textAlign: "center" }}>{task.level_task}</td>
+                            <td style={{ textAlign: "center" }}>
+                              {
+                                this.showTaskLevel(task.level_task)
+                              }
+                            </td>
                             <td style={{ textAlign: "center" }}>{task.priority}</td>
                           </tr>
                         )

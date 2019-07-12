@@ -39,7 +39,7 @@ class Hr_Task_Update extends Component {
             title: '',
             description: '',
             time_end: '',
-            level_task: '',
+            level_task: 'Easy',
             priority: '',
             state: '',
             students: [],
@@ -66,7 +66,7 @@ class Hr_Task_Update extends Component {
                 time_end: task.time_end,
                 level_task: task.level_task,
                 priority: task.priority,
-                state: task.state,
+                state: task.status,
                 studentItem: task.ojt_enrollment.student
             });
         }
@@ -96,7 +96,7 @@ class Hr_Task_Update extends Component {
             title: '',
             description: '',
             time_end: '',
-            level_task: '',
+            level_task: 'Easy',
             priority: '',
             studentItem: this.state.students[0],
         })
@@ -120,13 +120,6 @@ class Hr_Task_Update extends Component {
         const result = await ApiServices.Put(`/supervisor/task?emailStudent=${emailStudent}`, task);
         if (result.status == 200) {
             Toastify.actionSuccess("Chỉnh sửa nhiệm vụ thành công!");
-            setTimeout(
-                function () {
-                    this.props.history.push(`/hr-task/details/${id}`);
-                }
-                    .bind(this),
-                2000
-            );
         } else {
             Toastify.actionFail("Chỉnh sửa nhiệm vụ thất bại!");
         }
@@ -134,7 +127,7 @@ class Hr_Task_Update extends Component {
 
 
     render() {
-        const { title, description, time_end, level_task, priority, students, studentItem } = this.state;
+        const { id, title, description, time_end, level_task, priority, students, studentItem } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -196,7 +189,12 @@ class Hr_Task_Update extends Component {
                                             <Label htmlFor="level_task">Mức độ</Label>
                                         </Col>
                                         <Col xs="12" md="10">
-                                            <Input value={level_task} onChange={this.handleInput} type="text" id="level_task" name="level_task" placeholder="Mức độ" />
+                                            {/* <Input value={level_task} onChange={this.handleInput} type="text" id="level_task" name="level_task" placeholder="Mức độ" /> */}
+                                            <Input onChange={this.handleInput} type="select" name="level_task">
+                                                <option selected={level_task === 'Easy'} value='Easy'>Dễ</option>
+                                                <option selected={level_task === 'Normal'} value='Normal'>Bình thường</option>
+                                                <option selected={level_task === 'Difficult'} value='Difficult'>Khó</option>
+                                            </Input>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -219,7 +217,7 @@ class Hr_Task_Update extends Component {
                                         <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
                                     </Col>
                                     <Col xs="3" sm="3">
-                                        <Button color="success" block onClick={() => this.handleDirect('/hr-task')}>Trở về</Button>
+                                        <Button color="success" block onClick={() => this.handleDirect(`/hr-task/details/${id}`)}>Trở về</Button>
                                     </Col>
                                 </Row>
                             </CardFooter>
