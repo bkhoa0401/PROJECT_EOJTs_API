@@ -39,7 +39,6 @@ class Hr_Task extends Component {
                 tasks: tasks
             });
         }
-        console.log(tasks);
     }
 
     handleDirect = (uri) => {
@@ -61,6 +60,23 @@ class Hr_Task extends Component {
             Toastify.actionFail("Xóa nhiệm vụ thất bại!");
         }
 
+    }
+
+    showTaskState(taskStatus) {
+        console.log(taskStatus);
+        if (taskStatus === 'NOTSTART') {
+            return (
+                <Badge color="danger">Chưa bắt đầu</Badge>
+            )
+        } else if (taskStatus === 'PENDING') {
+            return (
+                <Badge color="warning">Chưa hoàn thành</Badge>
+            )
+        } else if (taskStatus === 'DONE') {
+            return (
+                <Badge color="success">Hoàn Thành</Badge>
+            )
+        }
     }
 
     render() {
@@ -108,13 +124,7 @@ class Hr_Task extends Component {
                                                         <td style={{ textAlign: "center" }}>{task.ojt_enrollment.student.name}</td>
                                                         <td style={{ textAlign: "center" }}>
                                                             {
-                                                                task.state.toString() === 'true' ?
-                                                                    (
-                                                                        <Badge color="success">Hoàn Thành</Badge>
-                                                                    ) :
-                                                                    (
-                                                                        <Badge color="danger">Chưa hoàn thành</Badge>
-                                                                    )
+                                                                this.showTaskState(task.status)
                                                             }
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>
