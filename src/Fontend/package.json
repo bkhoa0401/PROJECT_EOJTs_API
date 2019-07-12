@@ -42,6 +42,7 @@
     "react-download-link": "^2.2.0",
     "react-dropzone": "^10.1.5",
     "react-excel-renderer": "^1.1.0",
+    "react-loading-screen": "0.0.17",
     "react-radio-buttons": "^1.2.2",
     "react-router-config": "^5.0.0",
     "react-router-dom": "^5.0.0",
