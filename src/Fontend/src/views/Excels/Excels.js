@@ -181,13 +181,14 @@ class Excels extends Component {
                         business_name: business[1],
                         business_website: business[6],
                         business_phone: business[4],
-                        "logo": business[14],
+                        logo: business[14],
                         contact: business[10],
                         description: business[11],
                         interest: business[13],
                         interview_process: business[9],
-                        time_post: '2019-09-06',
+                        time_post: '',
                         views: 1,
+                        nameSemester: business[15],
                         skillDTOList: result
                     };
 
@@ -282,7 +283,7 @@ class Excels extends Component {
             });
 
         } else {
-            Toastify.actionWarning("Please import the excel file!");
+            Toastify.actionWarning("Xin hãy nhập file excel!");
             document.getElementById("file_excel_students").value = "";
         }
     }
@@ -295,7 +296,7 @@ class Excels extends Component {
 
         let flag = true;
         var titles = ["STT", "Doanh Nghiệp", "Tên Tiếng Anh", "Email", "SĐT", "Địa chỉ Công ty", "Website", "Địa chỉ nơi SV sẽ thực tập", "Vị trí - Số lượng",
-            "Quy trình tuyển", "Liên hệ", "Mô tả", "Giới thiệu công ty", "Chính sách ưu đãi", "Logo"];
+            "Quy trình tuyển", "Liên hệ", "Mô tả", "Giới thiệu công ty", "Chính sách ưu đãi", "Logo", "Tên kì"];
 
         if (fileType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 
@@ -306,7 +307,7 @@ class Excels extends Component {
                 else {
                     let titlesExcel = resp.rows[0];
 
-                    if (titlesExcel.length != 15) {
+                    if (titlesExcel.length != 16) {
                         flag = false;
                     } else {
                         for (let i = 0; i < titles.length; i++) {
@@ -338,35 +339,35 @@ class Excels extends Component {
             });
 
         } else {
-            Toastify.actionWarning("Please import the excel file!");
+            Toastify.actionWarning("Xin hãy nhập file excel");
             document.getElementById("file_excel_businesses").value = "";
         }
     }
 
-    rowStudentEdited = async (event) => {
-        let rowId = event.target.id;
-        let tmp = event.target.id.split("-");
-        let dataChanged = await document.getElementById(rowId).innerHTML;
-        let rowNumber = tmp[1];
-        let colNumber = tmp[2];
+    // rowStudentEdited = async (event) => {
+    //     let rowId = event.target.id;
+    //     let tmp = event.target.id.split("-");
+    //     let dataChanged = await document.getElementById(rowId).innerHTML;
+    //     let rowNumber = tmp[1];
+    //     let colNumber = tmp[2];
 
-        var { rows_Students } = this.state;
+    //     var { rows_Students } = this.state;
 
-        rows_Students[rowNumber][colNumber] = dataChanged;
-    }
+    //     rows_Students[rowNumber][colNumber] = dataChanged;
+    // }
 
-    rowBusinessEdited = async (event) => {
-        let rowId = event.target.id;
-        let tmp = event.target.id.split("-");
-        let dataChanged = await document.getElementById(rowId).innerHTML;
-        let rowNumber = tmp[1];
-        let colNumber = tmp[2];
+    // rowBusinessEdited = async (event) => {
+    //     let rowId = event.target.id;
+    //     let tmp = event.target.id.split("-");
+    //     let dataChanged = await document.getElementById(rowId).innerHTML;
+    //     let rowNumber = tmp[1];
+    //     let colNumber = tmp[2];
 
-        var { rows_Businesses } = this.state;
+    //     var { rows_Businesses } = this.state;
 
-        rows_Businesses[rowNumber][colNumber] = dataChanged;
+    //     rows_Businesses[rowNumber][colNumber] = dataChanged;
 
-    }
+    // }
 
     render() {
         const { files_Students, rows_Students, files_Businesses, rows_Businesses } = this.state;
@@ -492,6 +493,7 @@ class Excels extends Component {
                                                         <th style={{ whiteSpace: "nowrap" }}>Giới thiệu công ty</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Chính sách ưu đãi</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Logo</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Tên kì</th>
                                                     </thead>
                                                     <tbody>
                                                         {
@@ -513,6 +515,7 @@ class Excels extends Component {
                                                                         <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-12"} onKeyUp={this.rowBusinessEdited}>{business[12]}</td>
                                                                         <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-13"} onKeyUp={this.rowBusinessEdited}>{business[13]}</td>
                                                                         <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-14"} onKeyUp={this.rowBusinessEdited}>{business[14]}</td>
+                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-15"} onKeyUp={this.rowBusinessEdited}>{business[15]}</td>
                                                                     </tr>
                                                                 )
                                                             })
