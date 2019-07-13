@@ -187,7 +187,7 @@ class Excels extends Component {
                         interest: business[13],
                         interview_process: business[9],
                         time_post: '',
-                        views: 1,
+                        views: 0,
                         nameSemester: business[15],
                         skillDTOList: result
                     };
@@ -197,13 +197,13 @@ class Excels extends Component {
 
                 console.log("LIST BUSINESSES", listBusinesses);
 
-                const result = await ApiServices.Post('/business', listBusinesses);
-                if (result.status == 201) {
-                    Toastify.actionSuccess("Thêm tệp thành công!");
+                // const result = await ApiServices.Post('/business', listBusinesses);
+                // if (result.status == 201) {
+                //     Toastify.actionSuccess("Thêm tệp thành công!");
 
-                } else {
-                    Toastify.actionFail("Thêm tệp thất bại!");
-                }
+                // } else {
+                //     Toastify.actionFail("Thêm tệp thất bại!");
+                // }
             }
         } else if (buttonName === 'Businesses') {
             Toastify.actionFail("Không tệp nào được chọn!");
@@ -296,7 +296,7 @@ class Excels extends Component {
 
         let flag = true;
         var titles = ["STT", "Doanh Nghiệp", "Tên Tiếng Anh", "Email", "SĐT", "Địa chỉ Công ty", "Website", "Địa chỉ nơi SV sẽ thực tập", "Vị trí - Số lượng",
-            "Quy trình tuyển", "Liên hệ", "Mô tả", "Giới thiệu công ty", "Chính sách ưu đãi", "Logo", "Tên kì"];
+            "Quy trình tuyển", "Liên hệ", "Mô tả", "Giới thiệu công ty", "Chính sách ưu đãi", "Logo", "Kì"];
 
         if (fileType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 
@@ -493,7 +493,7 @@ class Excels extends Component {
                                                         <th style={{ whiteSpace: "nowrap" }}>Giới thiệu công ty</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Chính sách ưu đãi</th>
                                                         <th style={{ whiteSpace: "nowrap" }}>Logo</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>Tên kì</th>
+                                                        <th style={{ whiteSpace: "nowrap" }}>Kì</th>
                                                     </thead>
                                                     <tbody>
                                                         {
