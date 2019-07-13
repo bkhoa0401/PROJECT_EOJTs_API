@@ -18,7 +18,7 @@ class Invitation extends Component {
         super(props);
         this.state = {
             students: null,
-            business_name: '',
+            business_eng_name: '',
             searchValue: '',
             columnToSort: '',
             sortDirection: 'desc'
@@ -32,7 +32,7 @@ class Invitation extends Component {
         if (students != null) {
             this.setState({
                 students,
-                business_name: business.business_eng_name
+                business_eng_name: business.business_eng_name
             });
         }
     }
@@ -58,7 +58,7 @@ class Invitation extends Component {
     // }
 
     render() {
-        const { students, business_name, searchValue, columnToSort, sortDirection } = this.state;
+        const { students, business_eng_name, searchValue, columnToSort, sortDirection } = this.state;
         let filteredListStudents = orderBy(students, columnToSort, sortDirection);
 
         if (students != null) {
@@ -113,8 +113,8 @@ class Invitation extends Component {
                                                 var invitationDetail = null;
 
                                                 invitations && invitations.map((invitation, index) => {
-                                                    const business_name_invitation = student.invitations[index].business.business_eng_name;
-                                                    if (business_name === business_name_invitation) {
+                                                    const business_eng_name_invitation = student.invitations[index].business.business_eng_name;
+                                                    if (business_eng_name === business_eng_name_invitation) {
                                                         invitationDetail = student.invitations[index];
                                                     }
                                                 })
@@ -126,10 +126,10 @@ class Invitation extends Component {
 
                                                 let tmp = 'N/A';
                                                 if (invitationDetail != null && invitationDetail.state != 'false') {
-                                                    if (student.option1 == business_name) {
+                                                    if (student.option1 == business_eng_name) {
                                                         tmp = 1;
                                                     }
-                                                    if (student.option2 == business_name) {
+                                                    if (student.option2 == business_eng_name) {
                                                         tmp = 2;
                                                     }
                                                 }

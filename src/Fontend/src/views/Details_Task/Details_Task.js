@@ -52,15 +52,15 @@ class Details_Task extends Component {
   }
 
   showTaskLevel(taskLevel) {
-    if (taskLevel === 'Difficult') {
+    if (taskLevel === 'DIFFICULT') {
       return (
         <Badge color="danger">Khó</Badge>
       )
-    } else if (taskLevel === 'Easy') {
+    } else if (taskLevel === 'EASY') {
       return (
         <Badge color="primary">Dễ</Badge>
       )
-    } else if (taskLevel === 'Normal') {
+    } else if (taskLevel === 'NORMAL') {
       return (
         <Badge color="warning">Bình thường</Badge>
       )

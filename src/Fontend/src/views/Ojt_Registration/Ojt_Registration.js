@@ -43,10 +43,13 @@ class Ojt_Registration extends Component {
         })
     }
 
-    handleIsAcceptedOption = async (email, numberOfOption, statusOfOption, btnApprove, btnReject) => {
+    handleIsAcceptedOption = async (email, numberOfOption, statusOfOption) => {
 
-        // document.getElementById(btnApprove).setAttribute("disabled", "disabled");
-        // document.getElementById(btnReject).setAttribute("disabled", "disabled");
+        if (numberOfOption == '1, 2') {
+            var numberOfOption = [];
+            numberOfOption.push(1);
+            numberOfOption.push(2);
+        }
 
         const result = await ApiServices.Put(`/business/updateStatusOfStudent?numberOfOption=${numberOfOption}&statusOfOption=${statusOfOption}&emailOfStudent=${email}`);
 
@@ -114,11 +117,13 @@ class Ojt_Registration extends Component {
                                                 let email = student.email;
                                                 let numberOfOption = 'N/A';
 
-                                                if (student.option1 == business_name) {
-                                                    numberOfOption = 1;
-                                                }
-                                                if (student.option2 == business_name) {
-                                                    numberOfOption = 2;
+                                                if (student.option1 == business_name && student.option2 != business_name) {
+                                                    numberOfOption = "1";
+                                                } else if (student.option2 == business_name && student.option1 != business_name) {
+                                                    numberOfOption = "2";
+                                                } else {
+                                                    numberOfOption = "1, 2";
+                                                    filteredListStudents.splice(index, 1);
                                                 }
 
 
@@ -133,8 +138,8 @@ class Ojt_Registration extends Component {
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>
                                                             <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect(`/student/${student.email}`)}>Chi tiết</Button>
-                                                            <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleIsAcceptedOption(email, numberOfOption, true, 'a' + index, 'r' + index)}>Duyệt</Button>
-                                                            <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleIsAcceptedOption(email, numberOfOption, false, 'a' + index, 'r' + index)}>Từ chối</Button>
+                                                            <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleIsAcceptedOption(email, numberOfOption, true)}>Duyệt</Button>
+                                                            <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleIsAcceptedOption(email, numberOfOption, false)}>Từ chối</Button>
                                                         </td>
                                                     </tr>
                                                 )

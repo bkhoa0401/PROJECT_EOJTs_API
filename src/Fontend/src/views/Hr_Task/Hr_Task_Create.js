@@ -40,7 +40,7 @@ class Hr_Task_Create extends Component {
             title: '',
             description: '',
             time_end: '',
-            level_task: 'Easy',
+            level_task: 'EASY',
             priority: '',
             state: 'NOTSTART',
             students: [],
@@ -86,7 +86,7 @@ class Hr_Task_Create extends Component {
             title: '',
             description: '',
             time_end: '',
-            level_task: 'Easy',
+            level_task: 'EASY',
             priority: '',
             studentItem: this.state.students[0],
         })
@@ -193,9 +193,9 @@ class Hr_Task_Create extends Component {
                                         <Col xs="12" md="10">
                                             {/* <Input value={level_task} onChange={this.handleInput} type="text" id="level_task" name="level_task" placeholder="Mức độ" /> */}
                                             <Input onChange={this.handleInput} type="select" name="level_task">
-                                                <option selected={level_task === 'Easy'} value='Easy'>Dễ</option>
-                                                <option selected={level_task === 'Normal'} value='Normal'>Bình thường</option>
-                                                <option selected={level_task === 'Difficult'} value='Difficult'>Khó</option>
+                                                <option selected={level_task === 'EASY'} value='EASY'>Dễ</option>
+                                                <option selected={level_task === 'NORMAL'} value='NORMAL'>Bình thường</option>
+                                                <option selected={level_task === 'DIFFICULT'} value='DIFFICULT'>Khó</option>
                                             </Input>
                                             <span className="form-error is-visible text-danger">
                                                 {this.validator.message('Mức độ', description, 'required')}
