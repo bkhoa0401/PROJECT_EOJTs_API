@@ -313,7 +313,7 @@ class Invitation_Create extends Component {
                         if (type === 'offline') {
                             const result = SmsServices.sendSMS(sms);
                         } else if (type === 'online') {
-                            if (seconds > 10) {
+                            if (seconds > 12) {
                                 const result = SmsServices.sendSMS(sms);
                             }
                         }
