@@ -42,7 +42,7 @@ class Hr_Task_Create extends Component {
             time_end: '',
             level_task: 'EASY',
             priority: '',
-            state: 'NOTSTART',
+            status: 'NOTSTART',
             students: [],
             studentItem: {},
         }
@@ -93,7 +93,7 @@ class Hr_Task_Create extends Component {
     }
 
     handleSubmit = async () => {
-        const { title, description, time_end, level_task, priority, state, studentItem } = this.state;
+        const { title, description, time_end, level_task, priority, status, studentItem } = this.state;
         const emailStudent = studentItem.email;
         const task = {
             title,
@@ -101,7 +101,7 @@ class Hr_Task_Create extends Component {
             time_end,
             level_task,
             priority,
-            state
+            status
         }
         console.log(task);
 
@@ -182,7 +182,7 @@ class Hr_Task_Create extends Component {
                                         <Col xs="12" md="10">
                                             <Input value={time_end} onChange={this.handleInput} type="date" id="time_end" name="time_end" placeholder="Thời hạn hoàn thành" />
                                             <span className="form-error is-visible text-danger">
-                                                {this.validator.message('Thời hạn hoàn thành', description, 'required')}
+                                                {this.validator.message('Thời hạn hoàn thành', time_end, 'required')}
                                             </span>
                                         </Col>
                                     </FormGroup>
@@ -197,9 +197,6 @@ class Hr_Task_Create extends Component {
                                                 <option selected={level_task === 'NORMAL'} value='NORMAL'>Bình thường</option>
                                                 <option selected={level_task === 'DIFFICULT'} value='DIFFICULT'>Khó</option>
                                             </Input>
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('Mức độ', description, 'required')}
-                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -210,7 +207,7 @@ class Hr_Task_Create extends Component {
                                             <Input value={priority} onChange={this.handleInput} type="number" id="priority" name="priority" placeholder="Độ ưu tiên" />
                                             <span className="form-error is-visible text-danger">
                                                 {/* <i class="fa fa-exclamation-circle" /> */}
-                                                {this.validator.message('Độ ưu tiên', description, 'required|numberic')}
+                                                {this.validator.message('Độ ưu tiên', priority, 'required|numberic')}
                                             </span>
                                         </Col>
                                     </FormGroup>

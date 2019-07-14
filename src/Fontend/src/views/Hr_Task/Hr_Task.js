@@ -20,6 +20,8 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 class Hr_Task extends Component {
 
@@ -79,6 +81,23 @@ class Hr_Task extends Component {
         }
     }
 
+
+    handleConfirm = (task) => {
+        confirmAlert({
+            title: 'Xác nhận',
+            message: `Bạn chắc chắn muốn xóa nhiệm vụ '${task.title}' của sinh viên ${task.ojt_enrollment.student.name}?`,
+            buttons: [
+                {
+                    label: 'Xác nhận',
+                    onClick: () => this.handleDelete(task.id)
+                },
+                {
+                    label: 'Hủy bỏ',
+                }
+            ]
+        });
+    };
+
     render() {
         const { tasks } = this.state;
 
@@ -129,7 +148,13 @@ class Hr_Task extends Component {
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>
                                                             <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/details/${task.id}`)}>Chi tiết</Button>
-                                                            <Button style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleDelete(`${task.id}`)}>Xóa</Button>
+                                                            {
+                                                                task.status === 'DONE' ? (
+                                                                    <Button disabled style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task)}>Xóa</Button>
+                                                                ) : (
+                                                                        <Button style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task)}>Xóa</Button>
+                                                                    )
+                                                            }
                                                         </td>
                                                     </tr>
                                                 )

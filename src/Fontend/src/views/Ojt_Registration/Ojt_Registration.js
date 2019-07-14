@@ -56,7 +56,7 @@ class Ojt_Registration extends Component {
 
         confirmAlert({
             title: 'Xác nhận',
-            message: `Bạn có chắc chắn muốn ${messageStatus} sinh viên ${student.name} ?`,
+            message: `Bạn có chắc chắn muốn ${messageStatus} sinh viên '${student.name}' ?`,
             buttons: [
                 {
                     label: 'Đồng ý',

@@ -223,7 +223,7 @@ class Invitation_Create extends Component {
 
         confirmAlert({
             title: 'Xác nhận',
-            message: `Bạn có chắc chắn muốn gửi lời mời thực tập đến sinh viên ${student.name} ?`,
+            message: `Bạn có chắc chắn muốn gửi lời mời thực tập đến sinh viên '${student.name}' ?`,
             buttons: [
                 {
                     label: 'Đồng ý',

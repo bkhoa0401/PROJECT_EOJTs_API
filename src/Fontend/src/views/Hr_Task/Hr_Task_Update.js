@@ -29,11 +29,13 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import SimpleReactValidator from '../../validator/simple-react-validator';
 
 class Hr_Task_Update extends Component {
 
     constructor(props) {
         super(props);
+        this.validator = new SimpleReactValidator();
         this.state = {
             id: '',
             title: '',
@@ -41,7 +43,7 @@ class Hr_Task_Update extends Component {
             time_end: '',
             level_task: 'EASY',
             priority: '',
-            state: '',
+            status: '',
             students: [],
             studentItem: {},
         }
@@ -66,7 +68,7 @@ class Hr_Task_Update extends Component {
                 time_end: task.time_end,
                 level_task: task.level_task,
                 priority: task.priority,
-                state: task.status,
+                status: task.status,
                 studentItem: task.ojt_enrollment.student
             });
         }
@@ -103,7 +105,7 @@ class Hr_Task_Update extends Component {
     }
 
     handleSubmit = async () => {
-        const { id, title, description, time_end, level_task, priority, state, studentItem } = this.state;
+        const { id, title, description, time_end, level_task, priority, status, studentItem } = this.state;
         const emailStudent = studentItem.email;
         const task = {
             id,
@@ -112,16 +114,21 @@ class Hr_Task_Update extends Component {
             time_end,
             level_task,
             priority,
-            state,
+            status,
         }
 
         console.log('TASK', task);
 
-        const result = await ApiServices.Put(`/supervisor/task?emailStudent=${emailStudent}`, task);
-        if (result.status == 200) {
-            Toastify.actionSuccess("Chỉnh sửa nhiệm vụ thành công!");
+        if (this.validator.allValid()) {
+            const result = await ApiServices.Put(`/supervisor/task?emailStudent=${emailStudent}`, task);
+            if (result.status == 200) {
+                Toastify.actionSuccess("Chỉnh sửa nhiệm vụ thành công!");
+            } else {
+                Toastify.actionFail("Chỉnh sửa nhiệm vụ thất bại!");
+            }
         } else {
-            Toastify.actionFail("Chỉnh sửa nhiệm vụ thất bại!");
+            this.validator.showMessages();
+            this.forceUpdate();
         }
     }
 
@@ -144,6 +151,9 @@ class Hr_Task_Update extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={title} onChange={this.handleInput} type="text" id="title" name="title" placeholder="Tên nhiệm vụ" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Tên nhiệm vụ', title, 'required|max:50')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -174,6 +184,9 @@ class Hr_Task_Update extends Component {
                                                     })
                                                 }}
                                             />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Mô tả', description, 'required|max:255')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -182,6 +195,9 @@ class Hr_Task_Update extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={time_end} onChange={this.handleInput} type="date" id="time_end" name="time_end" placeholder="Thời hạn hoàn thành" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Thời hạn hoàn thành', time_end, 'required')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -203,6 +219,10 @@ class Hr_Task_Update extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={priority} onChange={this.handleInput} type="number" id="priority" name="priority" placeholder="Độ ưu tiên" />
+                                            <span className="form-error is-visible text-danger">
+                                                {/* <i class="fa fa-exclamation-circle" /> */}
+                                                {this.validator.message('Độ ưu tiên', priority, 'required|numberic')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                 </Form>

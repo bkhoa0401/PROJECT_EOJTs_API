@@ -5,7 +5,8 @@ import ApiServices from '../../service/api-service';
 import moment from 'moment';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
-
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 class Specialized extends Component {
 
@@ -19,6 +20,30 @@ class Specialized extends Component {
     handleDirect = (uri) => {
         this.props.history.push(uri);
     }
+
+    handleConfirm = (specialized, status) => {
+
+        var messageStatus = '';
+        if (status) {
+            messageStatus = 'kích hoạt';
+        } else {
+            messageStatus = 'vô hiệu';
+        }
+
+        confirmAlert({
+            title: 'Xác nhận',
+            message: `Bạn có chắc chắn muốn ${messageStatus} chuyên ngành '${specialized.name}' ?`,
+            buttons: [
+                {
+                    label: 'Đồng ý',
+                    onClick: () => this.handleUpdateStatus(specialized.id, status)
+                },
+                {
+                    label: 'Hủy bỏ',
+                }
+            ]
+        });
+    };
 
     handleUpdateStatus = async (id, status) => {
         const result = await ApiServices.Put(`/specialized/status?id=${id}&status=${status}`);
@@ -86,11 +111,11 @@ class Specialized extends Component {
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>
                                                             {specialized.status.toString() == 'true' ? (
-                                                                <Button style={{ marginRight: "1.5px" }} color="warning" onClick={() => this.handleUpdateStatus(specialized.id, false)} type="submit">Disabled</Button>
+                                                                <Button style={{ marginRight: "1.5px" }} color="warning" onClick={() => this.handleConfirm(specialized, false)} type="submit">Vô hiệu</Button>
                                                             ) : (
-                                                                    <Button style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleUpdateStatus(specialized.id, true)} type="submit">Active</Button>
+                                                                    <Button style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleConfirm(specialized, true)} type="submit">Kích hoạt</Button>
                                                                 )}
-                                                            <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/specialized/update/${specialized.id}`)}>Update</Button>
+                                                            <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/specialized/update/${specialized.id}`)}>Chỉnh sửa</Button>
 
                                                         </td>
                                                     </tr>

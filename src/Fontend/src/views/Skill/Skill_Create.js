@@ -106,7 +106,7 @@ class Skill_Create extends Component {
         if (this.validator.allValid()) {
             confirmAlert({
                 title: 'Xác nhận',
-                message: `Bạn chắc chắn muốn tạo kỹ năng ${name} thuộc ngành ${specializedItem.name}?`,
+                message: `Bạn chắc chắn muốn tạo kỹ năng '${name}' thuộc ngành '${specializedItem.name}' ?`,
                 buttons: [
                     {
                         label: 'Đồng ý',

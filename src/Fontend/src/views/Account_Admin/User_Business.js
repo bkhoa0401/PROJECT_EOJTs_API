@@ -32,7 +32,7 @@ class User_Business extends Component {
 
         confirmAlert({
             title: 'Xác nhận',
-            message: `Bạn có chắc chắn muốn ${messageStatus} tài khoản ${businessEmail} ?`,
+            message: `Bạn có chắc chắn muốn ${messageStatus} tài khoản '${businessEmail}' ?`,
             buttons: [
                 {
                     label: 'Đồng ý',

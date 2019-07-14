@@ -33,7 +33,7 @@ class User_Student extends Component {
 
         confirmAlert({
             title: 'Xác nhận',
-            message: `Bạn có chắc chắn muốn ${messageStatus} tài khoản ${studentEmail} ?`,
+            message: `Bạn có chắc chắn muốn ${messageStatus} tài khoản '${studentEmail}' ?`,
             buttons: [
                 {
                     label: 'Đồng ý',

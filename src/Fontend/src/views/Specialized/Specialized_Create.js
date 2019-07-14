@@ -63,10 +63,11 @@ class Specialized_Create extends Component {
     }
 
     handleConfirm = () => {
+        const { name } = this.state;
         if (this.validator.allValid()) {
             confirmAlert({
                 title: 'Xác nhận',
-                message: 'Bạn đã chắc chắn với lựa chọn của mình?',
+                message: `Bạn chắc chắn muốn tạo chuyên ngành '${name}' ?`,
                 buttons: [
                     {
                         label: 'Xác nhận',

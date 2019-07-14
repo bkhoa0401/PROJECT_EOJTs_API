@@ -4,6 +4,8 @@ import { Button } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 
 class Skill extends Component {
@@ -18,6 +20,30 @@ class Skill extends Component {
     handleDirect = (uri) => {
         this.props.history.push(uri);
     }
+
+    handleConfirm = (skill, status) => {
+
+        var messageStatus = '';
+        if (status) {
+            messageStatus = 'kích hoạt';
+        } else {
+            messageStatus = 'vô hiệu';
+        }
+
+        confirmAlert({
+            title: 'Xác nhận',
+            message: `Bạn có chắc chắn muốn '${messageStatus}' kỹ năng '${skill.name}' ?`,
+            buttons: [
+                {
+                    label: 'Đồng ý',
+                    onClick: () => this.handleUpdateStatus(skill.id, status)
+                },
+                {
+                    label: 'Hủy bỏ',
+                }
+            ]
+        });
+    };
 
     handleUpdateStatus = async (id, status) => {
         const result = await ApiServices.Put(`/skill/status?id=${id}&status=${status}`);
@@ -87,12 +113,11 @@ class Skill extends Component {
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>
                                                             {skill.status.toString() == 'true' ? (
-                                                                <Button style={{ marginRight: "1.5px" }} color="warning" onClick={() => this.handleUpdateStatus(skill.id, false)} type="submit">Disabled</Button>
+                                                                <Button style={{ marginRight: "1.5px" }} color="warning" onClick={() => this.handleConfirm(skill, false)} type="submit">Vô hiệu</Button>
                                                             ) : (
-                                                                    <Button style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleUpdateStatus(skill.id, true)} type="submit">Active</Button>
+                                                                    <Button style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleConfirm(skill, true)} type="submit">Kích hoạt</Button>
                                                                 )}
-                                                            <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/skill/update/${skill.id}`)}>Update</Button>
-
+                                                            <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/skill/update/${skill.id}`)}>Chỉnh sửa</Button>
                                                         </td>
                                                     </tr>
                                                 )

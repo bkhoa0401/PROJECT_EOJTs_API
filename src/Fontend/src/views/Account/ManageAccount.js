@@ -58,7 +58,7 @@ class ManageAccount extends Component {
 
         confirmAlert({
             title: 'Xác nhận',
-            message: `Bạn có chắc chắn muốn ${messageStatus} tài khoản ${supervisorEmail} ?`,
+            message: `Bạn có chắc chắn muốn ${messageStatus} tài khoản '${supervisorEmail}' ?`,
             buttons: [
                 {
                     label: 'Đồng ý',

@@ -20,6 +20,8 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 class Hr_Task_Detail extends Component {
 
@@ -64,8 +66,32 @@ class Hr_Task_Detail extends Component {
         this.props.history.push(uri);
     }
 
-    handleUpdateStatus = async (id, state) => {
-        const result = await ApiServices.Put(`/supervisor/stateTask?id=${id}&typeTask=${state}`);
+    handleConfirm = (id, status) => {
+
+        var messageStatus = '';
+        if (status == 3) {
+            messageStatus = 'hoàn thành';
+        } else {
+            messageStatus = 'chưa hoàn thành';
+        }
+
+        confirmAlert({
+            title: 'Xác nhận',
+            message: `Bạn có chắc chắn muốn chuyển trạng thái nhiệm vụ '${this.state.title}' thành '${messageStatus}' ?`,
+            buttons: [
+                {
+                    label: 'Đồng ý',
+                    onClick: () => this.handleUpdateStatus(id, status)
+                },
+                {
+                    label: 'Hủy bỏ',
+                }
+            ]
+        });
+    };
+
+    handleUpdateStatus = async (id, status) => {
+        const result = await ApiServices.Put(`/supervisor/stateTask?id=${id}&typeTask=${status}`);
 
         if (result.status == 200) {
             Toastify.actionSuccess("Cập nhật trạng thái thành công!");
@@ -118,14 +144,14 @@ class Hr_Task_Detail extends Component {
         } else if (taskStatus === 'PENDING') {
             return (
                 <div>
-                    <Button style={{ marginLeft: "720px" }} type="submit" color="success" onClick={() => this.handleUpdateStatus(id, 3)}>Đánh dấu nhiệm vụ hoàn thành</Button>
+                    <Button style={{ marginLeft: "720px" }} type="submit" color="success" onClick={() => this.handleConfirm(id, 3)}>Đánh dấu nhiệm vụ hoàn thành</Button>
                     <Button style={{ marginLeft: "5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/update/${id}`)}>Chỉnh sửa</Button>
                 </div>
             )
         } else if (taskStatus === 'DONE') {
             return (
                 <div>
-                    <Button style={{ marginLeft: "700px" }} type="submit" color="danger" onClick={() => this.handleUpdateStatus(id, 2)}>Đánh dấu nhiệm vụ chưa hoàn thành</Button>
+                    <Button style={{ marginLeft: "700px" }} type="submit" color="danger" onClick={() => this.handleConfirm(id, 2)}>Đánh dấu nhiệm vụ chưa hoàn thành</Button>
                     <Button disabled style={{ marginLeft: "5px" }} type="submit" color="primary" onClick={() => this.handleDirect('')}>Chỉnh sửa</Button>
                 </div>
             )
