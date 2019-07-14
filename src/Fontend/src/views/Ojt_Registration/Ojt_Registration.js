@@ -7,6 +7,8 @@ import Toastify from '../Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
 import { async } from 'q';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 
 class Ojt_Registration extends Component {
@@ -42,6 +44,30 @@ class Ojt_Registration extends Component {
             [name]: value.substr(0, 20),
         })
     }
+
+    handleConfirm = (student, numberOfOption, statusOfOption) => {
+
+        var messageStatus = '';
+        if (statusOfOption) {
+            messageStatus = 'duyệt';
+        } else {
+            messageStatus = 'từ chối';
+        }
+
+        confirmAlert({
+            title: 'Xác nhận',
+            message: `Bạn có chắc chắn muốn ${messageStatus} sinh viên ${student.name} ?`,
+            buttons: [
+                {
+                    label: 'Đồng ý',
+                    onClick: () => this.handleSubmit(student.email, numberOfOption, statusOfOption)
+                },
+                {
+                    label: 'Hủy bỏ',
+                }
+            ]
+        });
+    };
 
     handleIsAcceptedOption = async (email, numberOfOption, statusOfOption) => {
 
@@ -138,8 +164,8 @@ class Ojt_Registration extends Component {
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>
                                                             <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect(`/student/${student.email}`)}>Chi tiết</Button>
-                                                            <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleIsAcceptedOption(email, numberOfOption, true)}>Duyệt</Button>
-                                                            <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleIsAcceptedOption(email, numberOfOption, false)}>Từ chối</Button>
+                                                            <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleConfirm(student, numberOfOption, true)}>Duyệt</Button>
+                                                            <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(student, numberOfOption, false)}>Từ chối</Button>
                                                         </td>
                                                     </tr>
                                                 )

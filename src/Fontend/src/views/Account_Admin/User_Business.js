@@ -5,7 +5,8 @@ import ApiServices from '../../service/api-service';
 import moment from 'moment';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
-
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 class User_Business extends Component {
 
@@ -19,6 +20,30 @@ class User_Business extends Component {
     handleDirect = (uri) => {
         this.props.history.push(uri);
     }
+
+    handleConfirm = (businessEmail, status) => {
+
+        var messageStatus = '';
+        if (status) {
+            messageStatus = 'kích hoạt';
+        } else {
+            messageStatus = 'vô hiệu';
+        }
+
+        confirmAlert({
+            title: 'Xác nhận',
+            message: `Bạn có chắc chắn muốn ${messageStatus} tài khoản ${businessEmail} ?`,
+            buttons: [
+                {
+                    label: 'Đồng ý',
+                    onClick: () => this.handleUpdateStatus(businessEmail, status)
+                },
+                {
+                    label: 'Hủy bỏ',
+                }
+            ]
+        });
+    };
 
     handleUpdateStatus = async (email, status) => {
         const result = await ApiServices.Put(`/user/updateStatus?email=${email}&isActive=${status}`);
@@ -78,7 +103,11 @@ class User_Business extends Component {
                                                     <tr key={i}>
                                                         <td style={{ textAlign: "center" }}>{i + 1}</td>
                                                         <td style={{ textAlign: "center" }}>{student.email}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.roles[0].description}</td>
+                                                        <td style={{ textAlign: "center" }}>
+                                                        {
+                                                            student.roles[0].description === 'ROLE_HR' ? ('HR') : ('')
+                                                        }
+                                                        </td>
                                                         <td style={{ textAlign: "center" }}>
                                                             {student.active.toString() == 'true' ? (
                                                                 <Badge color="success">TRUE</Badge>
@@ -88,9 +117,9 @@ class User_Business extends Component {
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>
                                                             {student.active.toString() == 'true' ? (
-                                                                <Button style={{ marginRight: "1.5px" }} color="warning" onClick={() => this.handleUpdateStatus(student.email, false)} type="submit">Disabled</Button>
+                                                                <Button style={{ marginRight: "1.5px" }} color="warning" onClick={() => this.handleConfirm(student.email, false)} type="submit">Vô hiệu</Button>
                                                             ) : (
-                                                                    <Button style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleUpdateStatus(student.email, true)} type="submit">Active</Button>
+                                                                    <Button style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleConfirm(student.email, true)} type="submit">Kích hoạt</Button>
                                                                 )}
                                                             {/* <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/student/update/${student.id}`)}>Update</Button> */}
                                                         </td>

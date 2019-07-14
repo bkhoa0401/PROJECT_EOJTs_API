@@ -12,6 +12,8 @@ import {
 } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
 import { async } from 'q';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const invertDirection = {
   asc: 'desc',
@@ -74,7 +76,6 @@ class Official_List extends Component {
   handleInputSupervisor = async (event, student) => {
     const { name, value } = event.target;
     const { supervisors, supervisors_FirstBlank, listDataEdited } = this.state;
-
     if (name === 'supervisor') {
       await this.setState({
         supervisorItem: supervisors[value]
@@ -98,19 +99,37 @@ class Official_List extends Component {
     }
   }
 
-  handleSubmit = async () => {
+  handleConfirm = () => {
     const { listDataEdited } = this.state;
-    console.log(listDataEdited);
+
     if (listDataEdited.length == 0) {
       Toastify.actionWarning("Không có sự thay đổi!");
     } else {
-      const result = await ApiServices.Put('/business/assignSupervisor', listDataEdited);
-      if (result.status == 200) {
-        Toastify.actionSuccess("Thao tác thành công!");
+      confirmAlert({
+        title: 'Xác nhận',
+        message: 'Bạn đã chắc chắn với những sự lựa chọn của mình?',
+        buttons: [
+          {
+            label: 'Đồng ý',
+            onClick: () => this.handleSubmit()
+          },
+          {
+            label: 'Hủy bỏ',
+          }
+        ]
+      });
+    }
+  };
 
-      } else {
-        Toastify.actionFail("Thao tác thất bại!");
-      }
+  handleSubmit = async () => {
+    const { listDataEdited } = this.state;
+    const result = await ApiServices.Put('/business/assignSupervisor', listDataEdited);
+
+    if (result.status == 200) {
+      Toastify.actionSuccess("Thao tác thành công!");
+
+    } else {
+      Toastify.actionFail("Thao tác thất bại!");
     }
   }
 
@@ -217,7 +236,7 @@ class Official_List extends Component {
 
                             </td>
                             <td style={{ textAlign: "center" }}>
-                            <Button style={{ width: '100px', marginRight: '2px' }} color="success" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}>Chi tiết</Button>
+                              <Button style={{ width: '100px', marginRight: '2px' }} color="success" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}>Chi tiết</Button>
                               <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect(`/details_task/${student.email}`)}>Nhiệm vụ</Button>
                             </td>
                           </tr>
@@ -232,7 +251,7 @@ class Official_List extends Component {
             </Card>
           </Col>
         </Row>
-        <div style={rowSave}><Button onClick={() => this.handleSubmit()} style={{ width: '100px' }} color="primary" type="submit" id="btnSave">Lưu</Button></div>
+        <div style={rowSave}><Button onClick={() => this.handleConfirm()} style={{ width: '100px' }} color="primary" type="submit" id="btnSave">Lưu</Button></div>
       </div>
     );
   }

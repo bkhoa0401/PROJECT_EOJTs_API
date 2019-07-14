@@ -21,12 +21,14 @@ import Toastify from '../../views/Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
 import { async } from 'q';
+import SimpleReactValidator from '../../validator/simple-react-validator';
 
 
 class Update_Job extends Component {
 
     constructor(props) {
         super(props);
+        this.validator = new SimpleReactValidator();
         this.state = {
             startupArraySkill: [],
             startupArrayQuantity: [],
@@ -225,7 +227,14 @@ class Update_Job extends Component {
             // console.log(`cb${selectSpecialized}`);
             if (document.getElementById(`cb${this.state.specializeds[l].id}`).checked) {
                 isChecked = true;
+                this.setState({
+                    isChecked: true
+                })
                 break;
+            } else {
+                this.setState({
+                    isChecked: false
+                })
             }
         }
 
@@ -345,18 +354,24 @@ class Update_Job extends Component {
         }
 
         console.log(job_post);
-        const result = await ApiServices.Post('/business/createJobPost', job_post);
-        if (result.status == 201) {
-            Toastify.actionSuccess("Tạo bài đăng thành công!");
-            setTimeout(
-                function () {
-                    this.props.history.push('/job_post_list_hr');
-                }
-                    .bind(this),
-                2000
-            );
+
+        if (this.validator.allValid()) {
+            const result = await ApiServices.Post('/business/createJobPost', job_post);
+            if (result.status == 201) {
+                Toastify.actionSuccess("Tạo bài đăng thành công!");
+                setTimeout(
+                    function () {
+                        this.props.history.push('/job_post_list_hr');
+                    }
+                        .bind(this),
+                    2000
+                );
+            } else {
+                Toastify.actionFail("Tạo bài đăng thất bại!");
+            }
         } else {
-            Toastify.actionFail("Tạo bài đăng thất bại!");
+            this.validator.showMessages();
+            this.forceUpdate();
         }
     }
 
@@ -378,6 +393,9 @@ class Update_Job extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={description} onChange={this.handleInput} type="text" id="description" name="description" placeholder="Mô tả công việc" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Mô tả công việc', description, 'required|max:100')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -386,6 +404,9 @@ class Update_Job extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={interview_process} onChange={this.handleInput} type="text" id="interview_process" name="interview_process" placeholder="Quy trình tuyển" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Quy trình tuyển', interview_process, 'required|max:100')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -394,6 +415,9 @@ class Update_Job extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={interest} onChange={this.handleInput} type="text" id="interest" name="interest" placeholder="Phúc lợi" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Phúc lợi', interest, 'required|max:100')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -402,6 +426,9 @@ class Update_Job extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={contact} onChange={this.handleInput} type="text" id="contact" name="contact" placeholder="Thông tin liên hệ" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Thông tin liên hệ', contact, 'required|max:100')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -441,9 +468,10 @@ class Update_Job extends Component {
                                                 }
                                                 // <option selected={specializedItem.id == i + 1} value={i}>{specialized.name}</option>
 
-                                            })}
-                                            {/* </Input>
-                                        </Col> */}
+                                            })}<br></br>
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Ngành tuyển', this.state.isChecked, 'required|accepted')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>

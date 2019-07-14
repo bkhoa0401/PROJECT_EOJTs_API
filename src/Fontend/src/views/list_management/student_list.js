@@ -120,7 +120,7 @@ class student_list extends Component {
                                                     &nbsp;
                                                     <Button style={{ width: "90px" }} color="primary" onClick={() => this.handleDirect(`/hr-student-list/details/${student.email}`)}>Nhiệm vụ</Button>
                                                     &nbsp;
-                                                    <Button style={{ width: "70px" }} color="danger">Xoá</Button>
+                                                    {/* <Button style={{ width: "70px" }} color="danger">Xoá</Button> */}
                                                 </td>
                                             </tr>
                                         )

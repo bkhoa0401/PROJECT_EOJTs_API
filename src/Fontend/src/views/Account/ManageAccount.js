@@ -5,6 +5,8 @@ import ApiServices from '../../service/api-service';
 import moment from 'moment';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 
 class ManageAccount extends Component {
@@ -44,6 +46,30 @@ class ManageAccount extends Component {
             });
         }
     }
+
+    handleConfirm = (supervisorEmail, status) => {
+
+        var messageStatus = '';
+        if (status) {
+            messageStatus = 'kích hoạt';
+        } else {
+            messageStatus = 'vô hiệu';
+        }
+
+        confirmAlert({
+            title: 'Xác nhận',
+            message: `Bạn có chắc chắn muốn ${messageStatus} tài khoản ${supervisorEmail} ?`,
+            buttons: [
+                {
+                    label: 'Đồng ý',
+                    onClick: () => this.handleUpdateStatus(supervisorEmail, status)
+                },
+                {
+                    label: 'Hủy bỏ',
+                }
+            ]
+        });
+    };
 
     render() {
         const { supervisors } = this.state;
@@ -92,9 +118,9 @@ class ManageAccount extends Component {
                                                         </td>
                                                         <td style={{ textAlign: "center" }}>
                                                             {supervisor.active.toString() == 'true' ? (
-                                                                <Button style={{ marginRight: "1.5px" }} color="warning" onClick={() => this.handleUpdateStatus(supervisor.email, false)} type="submit">Disabled</Button>
+                                                                <Button style={{ marginRight: "1.5px" }} color="warning" onClick={() => this.handleConfirm(supervisor.email, false)} type="submit">Vô hiệu</Button>
                                                             ) : (
-                                                                    <Button style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleUpdateStatus(supervisor.email, true)} type="submit">Active</Button>
+                                                                    <Button style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleConfirm(supervisor.email, true)} type="submit">Kích hoạt</Button>
                                                                 )}
                                                             {/* <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/supervisor/update/${supervisor.id}`)}>Update</Button> */}
                                                         </td>

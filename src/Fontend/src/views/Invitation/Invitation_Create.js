@@ -10,6 +10,8 @@ import PaginationComponent from '../Paginations/pagination';
 import { askForPermissioToReceiveNotifications } from './push-notification';
 import { initializeApp } from '../Invitation/push-notification';
 import firebase from 'firebase';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 class Invitation_Create extends Component {
     constructor(props) {
@@ -134,7 +136,7 @@ class Invitation_Create extends Component {
                                                         }
                                                     </td>
                                                     <td style={{ textAlign: "center" }}>
-                                                        <Button onClick={() => this.handleSubmit(student)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+                                                        <Button onClick={() => this.handleConfirm(student)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                     </td>
                                                 </tr>
                                             )
@@ -201,7 +203,7 @@ class Invitation_Create extends Component {
                                                         }
                                                     </td>
                                                     <td style={{ textAlign: "center" }}>
-                                                        <Button onClick={() => this.handleSubmit(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+                                                        <Button onClick={() => this.handleConfirm(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                     </td>
                                                 </tr>
                                             )
@@ -215,6 +217,24 @@ class Invitation_Create extends Component {
             </>
         );
     }
+
+
+    handleConfirm = (student) => {
+
+        confirmAlert({
+            title: 'Xác nhận',
+            message: `Bạn có chắc chắn muốn gửi lời mời thực tập đến sinh viên ${student.name} ?`,
+            buttons: [
+                {
+                    label: 'Đồng ý',
+                    onClick: () => this.handleSubmit(student)
+                },
+                {
+                    label: 'Hủy bỏ',
+                }
+            ]
+        });
+    };
 
     handleSubmit = async (student) => {
         const { business_name } = this.state;
@@ -243,47 +263,47 @@ class Invitation_Create extends Component {
         ]
 
 
-        const invitation = {
-            description: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
-            state: 0,
-            timeCreated: "2019-09-09",
-            title: `Lời mời thực tập từ công ty ${business_name}`
-        }
+        // const invitation = {
+        //     description: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
+        //     state: 0,
+        //     timeCreated: "2019-09-09",
+        //     title: `Lời mời thực tập từ công ty ${business_name}`
+        // }
 
-        const result = await ApiServices.Post(`/business/createInvitation?emailStudent=${email}`, invitation);
+        // const result = await ApiServices.Post(`/business/createInvitation?emailStudent=${email}`, invitation);
 
-        const notificationDTO = {
-            data: {
-                title: `Lời mời thực tập từ công ty ${business_name}`,
-                body: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
-                click_action: "http://localhost:3000/#/invitation/new",
-                icon: "http://url-to-an-icon/icon.png"
-            },
-            to: `${deviceToken}`
-        }
+        // const notificationDTO = {
+        //     data: {
+        //         title: `Lời mời thực tập từ công ty ${business_name}`,
+        //         body: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
+        //         click_action: "http://localhost:3000/#/invitation/new",
+        //         icon: "http://url-to-an-icon/icon.png"
+        //     },
+        //     to: `${deviceToken}`
+        // }
 
-        const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
+        // const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
 
-        if (result.status == 201) {
-            Toastify.actionSuccess('Gửi lời mời thành công');
-            if (isSend == null || isSend.status != 200) {
-                Toastify.actionWarning('Gửi thông báo thất bại');
-            }
-        } else {
-            Toastify.actionFail('Gửi lời mời thất bại');
-        }
+        // if (result.status == 201) {
+        //     Toastify.actionSuccess('Gửi lời mời thành công');
+        //     if (isSend == null || isSend.status != 200) {
+        //         Toastify.actionWarning('Gửi thông báo thất bại');
+        //     }
+        // } else {
+        //     Toastify.actionFail('Gửi lời mời thất bại');
+        // }
 
-        const students2nd = await ApiServices.Get('/student/getListStudentNotYetInvited');
-        const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
-        const business = await ApiServices.Get('/business/getBusiness');
-        if (students2nd != null && suggestedStudents != null) {
-            this.setState({
-                students: students2nd,
-                suggestedStudents: suggestedStudents,
-                business_name: business.business_name
-            });
-            console.log("DONE");
-        }
+        // const students2nd = await ApiServices.Get('/student/getListStudentNotYetInvited');
+        // const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
+        // const business = await ApiServices.Get('/business/getBusiness');
+        // if (students2nd != null && suggestedStudents != null) {
+        //     this.setState({
+        //         students: students2nd,
+        //         suggestedStudents: suggestedStudents,
+        //         business_name: business.business_name
+        //     });
+        //     console.log("DONE");
+        // }
 
 
         setTimeout(

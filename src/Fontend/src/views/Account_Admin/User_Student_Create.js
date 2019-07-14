@@ -27,11 +27,13 @@ import {
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
+import SimpleReactValidator from '../../validator/simple-react-validator';
 
 class User_Student_Create extends Component {
 
     constructor(props) {
         super(props);
+        this.validator = new SimpleReactValidator();
         this.state = {
             email: '',
             name: '',
@@ -110,18 +112,23 @@ class User_Student_Create extends Component {
 
         console.log(student);
 
-        const result = await ApiServices.Post('/student/new', student);
-        if (result.status == 201) {
-            Toastify.actionSuccess("Tạo tài khoản mới thành công!");
-            setTimeout(
-                function () {
-                    this.props.history.push('/admin_account/studentList');
-                }
-                    .bind(this),
-                2000
-            );
+        if (this.validator.allValid()) {
+            const result = await ApiServices.Post('/student/new', student);
+            if (result.status == 201) {
+                Toastify.actionSuccess("Tạo tài khoản mới thành công!");
+                setTimeout(
+                    function () {
+                        this.props.history.push('/admin_account/studentList');
+                    }
+                        .bind(this),
+                    2000
+                );
+            } else {
+                Toastify.actionFail("Tạo tài khoản mới thất bại!");
+            }
         } else {
-            Toastify.actionFail("Tạo tài khoản mới thất bại!");
+            this.validator.showMessages();
+            this.forceUpdate();
         }
     }
 
@@ -144,6 +151,9 @@ class User_Student_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={this.state.email} onChange={this.handleInput} type="text" name="email" placeholder="Email" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Email', this.state.email, 'required|email')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -152,6 +162,9 @@ class User_Student_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={this.state.name} onChange={this.handleInput} type="text" name="name" placeholder="Họ và tên" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Họ và tên', this.state.name, 'required|min:5|alpha_space')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -160,6 +173,9 @@ class User_Student_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={this.state.code} onChange={this.handleInput} type="text" name="code" placeholder="Mã số sinh viên" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Mã số sinh viên', this.state.code, 'required|min:8|alpha_num')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -168,6 +184,9 @@ class User_Student_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={this.state.phone} onChange={this.handleInput} type="number" name="phone" placeholder="Số điện thoại" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Số điện thoại', this.state.phone, 'required|min:10|max:11|numeric')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -176,6 +195,9 @@ class User_Student_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={this.state.address} onChange={this.handleInput} type="text" name="address" placeholder="Địa chỉ" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Địa chỉ', this.state.address, 'required|min:7|max:100|alpha_num_dot_splash')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -184,6 +206,9 @@ class User_Student_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={this.state.dob} onChange={this.handleInput} type="date" name="dob" placeholder="Ngày sinh" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Ngày sinh', this.state.dob, 'required')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -217,6 +242,9 @@ class User_Student_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={this.state.semester} onChange={this.handleInput} type="number" name="semester" placeholder="Học kì" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Học kì', this.state.address, 'required|numberic')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                 </Form>

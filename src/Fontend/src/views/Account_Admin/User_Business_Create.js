@@ -29,11 +29,13 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../Toastify/Toastify';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import SimpleReactValidator from '../../validator/simple-react-validator';
 
 class User_Business_Create extends Component {
 
     constructor(props) {
         super(props);
+        this.validator = new SimpleReactValidator();
         this.state = {
             email: '',
             business_address: '',
@@ -84,18 +86,23 @@ class User_Business_Create extends Component {
 
         console.log(business);
 
-        const result = await ApiServices.Post('/business/new', business);
-        if (result.status == 201) {
-            Toastify.actionSuccess("Tạo tài khoản mới thành công!");
-            setTimeout(
-                function () {
-                    this.props.history.push('/admin_account/businessList');
-                }
-                    .bind(this),
-                2000
-            );
+        if (this.validator.allValid()) {
+            const result = await ApiServices.Post('/business/new', business);
+            if (result.status == 201) {
+                Toastify.actionSuccess("Tạo tài khoản mới thành công!");
+                setTimeout(
+                    function () {
+                        this.props.history.push('/admin_account/businessList');
+                    }
+                        .bind(this),
+                    2000
+                );
+            } else {
+                Toastify.actionFail("Tạo tài khoản mới thất bại!");
+            }
         } else {
-            Toastify.actionFail("Tạo tài khoản mới thất bại!");
+            this.validator.showMessages();
+            this.forceUpdate();
         }
     }
 
@@ -119,6 +126,9 @@ class User_Business_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={email} onChange={this.handleInput} type="text" name="email" placeholder="Email" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('email', email, 'required')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -127,6 +137,9 @@ class User_Business_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={business_name} onChange={this.handleInput} type="text" name="business_name" placeholder="Tên doanh nghiệp" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Tên doanh nghiệp', business_name, 'required|min:7|max:50|alpha_num_space')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -135,6 +148,9 @@ class User_Business_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={business_eng_name} onChange={this.handleInput} type="text" name="business_eng_name" placeholder="Tên tiếng anh" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Tên tiếng Anh', business_eng_name, 'required|min:3|max:15|alpha_num_space')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -151,6 +167,9 @@ class User_Business_Create extends Component {
                                                     })
                                                 }}
                                             />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Giới thiệu', business_overview, 'required|max:255')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -159,6 +178,9 @@ class User_Business_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={business_website} onChange={this.handleInput} type="text" name="business_website" placeholder="Website" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Website của doanh nghiệp', business_website, 'required|min:5|max:20')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -167,6 +189,9 @@ class User_Business_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={business_phone} onChange={this.handleInput} type="number" name="business_phone" placeholder="Số điện thoại" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Số điện thoại', business_phone, 'required|min:10|max:11|numeric')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -175,6 +200,9 @@ class User_Business_Create extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={business_address} onChange={this.handleInput} type="text" name="business_address" placeholder="Địa chỉ" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Địa chỉ', business_address, 'required|min:7|max:100|alpha_num_dot_splash')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                 </Form>
