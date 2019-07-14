@@ -10,6 +10,7 @@ import Toastify from '../../views/Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
 import { async } from 'q';
+import firebase from 'firebase';
 
 class Excels extends Component {
 
@@ -140,6 +141,20 @@ class Excels extends Component {
                 } else {
                     Toastify.actionFail("Thêm tệp thất bại!");
                 }
+
+                var database = firebase.database();
+                var ref = database.ref('Users');
+
+                for (let i = 0; i < listStudents.length; i++) {
+                    var usersRef = ref.child(`${listStudents[i].code}`);
+                    usersRef.set({
+                        userState: {
+                            date: '',
+                            time: '',
+                            type: ''
+                        }
+                    });
+                }
             }
         } else if (buttonName === 'Students') {
             Toastify.actionFail("Không tệp nào được chọn!");
@@ -197,13 +212,13 @@ class Excels extends Component {
 
                 console.log("LIST BUSINESSES", listBusinesses);
 
-                // const result = await ApiServices.Post('/business', listBusinesses);
-                // if (result.status == 201) {
-                //     Toastify.actionSuccess("Thêm tệp thành công!");
+                const result = await ApiServices.Post('/business', listBusinesses);
+                if (result.status == 201) {
+                    Toastify.actionSuccess("Thêm tệp thành công!");
 
-                // } else {
-                //     Toastify.actionFail("Thêm tệp thất bại!");
-                // }
+                } else {
+                    Toastify.actionFail("Thêm tệp thất bại!");
+                }
             }
         } else if (buttonName === 'Businesses') {
             Toastify.actionFail("Không tệp nào được chọn!");
