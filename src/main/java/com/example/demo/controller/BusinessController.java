@@ -255,7 +255,7 @@ public class BusinessController {
 
     // update status of option student when interview
     @PutMapping("/updateStatusOfStudent")
-    public ResponseEntity<Void> updateStatusOfOptionStudent(@RequestParam int numberOfOption, @RequestParam boolean statusOfOption
+    public ResponseEntity<Void> updateStatusOfOptionStudent(@RequestParam List<Integer> numberOfOption, @RequestParam boolean statusOfOption
             , @RequestParam String emailOfStudent) {
         boolean updateStatus = studentService.updateStatusOptionOfStudent(numberOfOption, statusOfOption, emailOfStudent);
         if (updateStatus == true) {

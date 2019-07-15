@@ -7,6 +7,7 @@ import orderBy from "lodash/orderBy";
 import Toastify from '../../views/Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 const invertDirection = {
     asc: 'desc',
@@ -18,10 +19,11 @@ class Invitation extends Component {
         super(props);
         this.state = {
             students: null,
-            business_name: '',
+            business_eng_name: '',
             searchValue: '',
             columnToSort: '',
-            sortDirection: 'desc'
+            sortDirection: 'desc',
+            loading: true
         }
     }
 
@@ -32,7 +34,8 @@ class Invitation extends Component {
         if (students != null) {
             this.setState({
                 students,
-                business_name: business.business_eng_name
+                business_eng_name: business.business_eng_name,
+                loading: false
             });
         }
     }
@@ -58,7 +61,7 @@ class Invitation extends Component {
     // }
 
     render() {
-        const { students, business_name, searchValue, columnToSort, sortDirection } = this.state;
+        const { students, business_eng_name, searchValue, columnToSort, sortDirection, loading } = this.state;
         let filteredListStudents = orderBy(students, columnToSort, sortDirection);
 
         if (students != null) {
@@ -73,118 +76,122 @@ class Invitation extends Component {
 
 
         return (
-            <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" lg="12">
-                        <Card>
-                            <CardHeader>
-                                <i className="fa fa-align-justify"></i> Danh sách các lời mời đã gửi hiện tại
+            loading.toString() === 'true' ? (
+                SpinnerLoading.showHashLoader(loading)
+            ) : (
+                    <div className="animated fadeIn">
+                        <Row>
+                            <Col xs="12" lg="12">
+                                <Card>
+                                    <CardHeader>
+                                        <i className="fa fa-align-justify"></i> Danh sách các lời mời đã gửi hiện tại
                             </CardHeader>
-                            <CardBody>
-                                <Button color="primary" onClick={() => this.handleDirect('/invitation/new')}>Gửi lời mời cho sinh viên</Button>
-                                <br />
-                                <br />
-                                <br />
-                                <nav className="navbar navbar-light bg-light justify-content-between">
-                                    <form className="form-inline">
-                                        <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
-                                    </form>
+                                    <CardBody>
+                                        <Button color="primary" onClick={() => this.handleDirect('/invitation/new')}>Gửi lời mời cho sinh viên</Button>
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <nav className="navbar navbar-light bg-light justify-content-between">
+                                            <form className="form-inline">
+                                                <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
+                                            </form>
 
-                                </nav>
-                                <Table responsive striped>
-                                    <thead>
-                                        <tr>
-                                            <th style={{ textAlign: "center" }}>STT</th>
-                                            <th style={{ textAlign: "center" }}>MSSV</th>
-                                            <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                            <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                            {/* <th style={{ textAlign: "center" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
-                                            <th style={{ textAlign: "center" }}>Kỹ năng</th>
-                                            <th style={{ textAlign: "center" }}>GPA</th>
-                                            <th style={{ textAlign: "center" }}>Trạng thái lời mời</th>
-                                            <th style={{ textAlign: "center" }}>Nguyện vọng của sinh viên</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            filteredListStudents && filteredListStudents.map((student, index) => {
+                                        </nav>
+                                        <Table responsive striped>
+                                            <thead>
+                                                <tr>
+                                                    <th style={{ textAlign: "center" }}>STT</th>
+                                                    <th style={{ textAlign: "center" }}>MSSV</th>
+                                                    <th style={{ textAlign: "center" }}>Họ và Tên</th>
+                                                    <th style={{ textAlign: "center" }}>Chuyên ngành</th>
+                                                    {/* <th style={{ textAlign: "center" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
+                                                    <th style={{ textAlign: "center" }}>Kỹ năng</th>
+                                                    <th style={{ textAlign: "center" }}>GPA</th>
+                                                    <th style={{ textAlign: "center" }}>Trạng thái lời mời</th>
+                                                    <th style={{ textAlign: "center" }}>Nguyện vọng của sinh viên</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    filteredListStudents && filteredListStudents.map((student, index) => {
 
-                                                const invitations = student.invitations;
-                                                var invitationDetail = null;
+                                                        const invitations = student.invitations;
+                                                        var invitationDetail = null;
 
-                                                invitations && invitations.map((invitation, index) => {
-                                                    const business_name_invitation = student.invitations[index].business.business_eng_name;
-                                                    if (business_name === business_name_invitation) {
-                                                        invitationDetail = student.invitations[index];
-                                                    }
-                                                })
-
-
-
-
-                                                const skills = student.skills;
-
-                                                let tmp = 'N/A';
-                                                if (invitationDetail != null && invitationDetail.state != 'false') {
-                                                    if (student.option1 == business_name) {
-                                                        tmp = 1;
-                                                    }
-                                                    if (student.option2 == business_name) {
-                                                        tmp = 2;
-                                                    }
-                                                }
-
-                                                return (
-                                                    <tr key={index}>
-                                                        <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.code}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.name}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            {
-                                                                skills && skills.map((skill, index) => {
-                                                                    return (
-                                                                        <div>
-                                                                            {
-                                                                                <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
-                                                                            }
-                                                                        </div>
-                                                                    )
-                                                                })
+                                                        invitations && invitations.map((invitation, index) => {
+                                                            const business_eng_name_invitation = student.invitations[index].business.business_eng_name;
+                                                            if (business_eng_name === business_eng_name_invitation) {
+                                                                invitationDetail = student.invitations[index];
                                                             }
-                                                        </td>
-                                                        <td style={{ textAlign: "center" }}>{student.gpa}</td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            {
-                                                                invitationDetail && (
-                                                                    invitationDetail.state.toString() == 'true' ? (
-                                                                        <Badge color="success">Accepted</Badge>
-                                                                    ) : (
-                                                                            <Badge color="danger">Pending</Badge>
+                                                        })
+
+
+
+
+                                                        const skills = student.skills;
+
+                                                        let tmp = 'N/A';
+                                                        if (invitationDetail != null && invitationDetail.state != 'false') {
+                                                            if (student.option1 == business_eng_name) {
+                                                                tmp = 1;
+                                                            }
+                                                            if (student.option2 == business_eng_name) {
+                                                                tmp = 2;
+                                                            }
+                                                        }
+
+                                                        return (
+                                                            <tr key={index}>
+                                                                <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {
+                                                                        skills && skills.map((skill, index) => {
+                                                                            return (
+                                                                                <div>
+                                                                                    {
+                                                                                        <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                                    }
+                                                                                </div>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {
+                                                                        invitationDetail && (
+                                                                            invitationDetail.state.toString() == 'true' ? (
+                                                                                <Badge color="success">Accepted</Badge>
+                                                                            ) : (
+                                                                                    <Badge color="danger">Pending</Badge>
+                                                                                )
                                                                         )
-                                                                )
-                                                            }
-                                                        </td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <strong>
-                                                                {tmp}
-                                                            </strong>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })
-                                        }
-                                    </tbody>
-                                </Table>
-                                <ToastContainer />
-                                <Pagination>
-                                    {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
-                                </Pagination>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
+                                                                    }
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    <strong>
+                                                                        {tmp}
+                                                                    </strong>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </tbody>
+                                        </Table>
+                                        <ToastContainer />
+                                        <Pagination>
+                                            {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                                        </Pagination>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                )
         );
     }
 }

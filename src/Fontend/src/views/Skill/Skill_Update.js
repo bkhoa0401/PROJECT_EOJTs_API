@@ -87,13 +87,16 @@ class Skill_Update extends Component {
     }
 
     handleConfirm = () => {
+        const { name, specializedItem } = this.state;
+        console.log(name, specializedItem);
+
         if (this.validator.allValid()) {
             confirmAlert({
                 title: 'Xác nhận',
-                message: 'Bạn đã chắc chắn với lựa chọn của mình?',
+                message: `Bạn chắc chắn muốn cập nhật kỹ năng '${name}' thuộc ngành '${specializedItem.name}' ?`,
                 buttons: [
                     {
-                        label: 'Xác nhận',
+                        label: 'Đồng ý',
                         onClick: () => this.handleSubmit()
                     },
                     {
@@ -122,13 +125,6 @@ class Skill_Update extends Component {
         const result = await ApiServices.Put('/skill', skill);
         if (result.status == 200) {
             Toastify.actionSuccess("Cập nhật kỹ năng thành công!");
-            setTimeout(
-                function () {
-                    this.props.history.push('/skill');
-                }
-                    .bind(this),
-                2000
-            );
         } else {
             Toastify.actionFail("Cập nhật kỹ năng thất bại!");
         }

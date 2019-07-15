@@ -77,10 +77,11 @@ class Specialized_Update extends Component {
     }
 
     handleConfirm = () => {
+        const { name } = this.state;
         if (this.validator.allValid()) {
             confirmAlert({
                 title: 'Xác nhận',
-                message: 'Bạn đã chắc chắn với lựa chọn của mình?',
+                message: `Bạn chắc chắn muốn cập nhật chuyên ngành '${name}' ?`,
                 buttons: [
                     {
                         label: 'Xác nhận',
@@ -107,13 +108,6 @@ class Specialized_Update extends Component {
         const result = await ApiServices.Put('/specialized', specialized);
         if (result) {
             Toastify.actionSuccess("Cập nhật chuyên ngành thành công");
-            setTimeout(
-                function () {
-                    this.props.history.push('/specialized');
-                }
-                    .bind(this),
-                2000
-            );
         } else {
             Toastify.actionFail("Cập nhật chuyên ngành thất bại!");
         }

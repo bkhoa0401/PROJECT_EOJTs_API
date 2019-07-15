@@ -142,7 +142,7 @@ const routes = [
   { path: '/student-detail/:email', exact: true, name: 'Thông tin chi tiết sinh viên', component: Student_Detail },
   { path: '/details_task/:email', exact: true, name: 'Nhiệm vụ', component: Details_Task },
   { path: '/job-post/:id', exact: true, name: 'Thông tin tuyển dụng', component: Job_Post },
-  { path: '/job_post/update_job/:id', exact: true, name: 'Chi tiết công việc', component: Update_Job },
+  { path: '/job_post/update_job/:id', exact: true, name: 'Chi tiết bài đăng tuyển dụng', component: Update_Job },
   { path: '/job_post_list_hr/add_job_post', exact: true, name: 'Tạo bài đăng tuyển dụng mới', component: Add_Job },
   { path: '/admin', exact: true, name: 'Admin', component: Dashboard },
   { path: '/hr', exact: true, name: 'Hr', component: Dashboard },

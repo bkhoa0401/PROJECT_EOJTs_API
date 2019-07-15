@@ -15,6 +15,7 @@ import {
   getPaginationCurrentPageNumber
 } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 const table = {
   textAlign: "left",
@@ -28,6 +29,7 @@ class Job_Post extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: true,
       arrayJob: ['Kỹ thuật phần mềm', 'Kinh tế', 'Đồ hoạ', 'Ngôn ngữ Anh', 'Ngôn ngữ Nhật'],
       arrayJobPost: [],
       arraySkill: [],
@@ -46,28 +48,14 @@ class Job_Post extends Component {
       job_post_skills: [],
       updatedId: ''
     }
-    // this.chooseNewSpecialized = this.chooseNewSpecialized.bind(this);
-    // this.setNewSpecialized = this.setNewSpecialized.bind(this);
-    // this.addRow = this.addRow.bind(this);
   }
-
-  // addRow = (sIndex) => {
-  //   let tmpArraySkill = this.state.arraySkill[sIndex].push('');
-  //   let tmpArrayQuantity = this.state.arrayQuantity[sIndex].push('');
-  //   this.setState({
-  //     tmpArraySkill: [...this.state.tmpArraySkill,''],
-  //     tmpArrayQuantity: [...this.state.tmpArrayQuantity,''],
-  //     arraySkill: this.state.arraySkill,
-  //     arrayQuantity: this.state.arrayQuantity,
-  //   })
-  // }
-
 
   async componentDidMount() {
     const updatedId = window.location.href.split("/").pop();
     const data = await ApiServices.Get(`/business/getJobPost?id=${updatedId}`);
     if (data != null) {
       this.setState({
+        loading: false,
         updatedId,
         job_posts: data.job_post,
         description: data.job_post.description,
@@ -78,76 +66,14 @@ class Job_Post extends Component {
         job_post_skills: data.job_post.job_post_skills
       });
     }
-
-    console.log(this.state);
   }
-
-  // chooseNewSpecialized(event) {
-  //   this.setState({
-  //     selectedSpecialized: event.target.value,
-  //   })
-  // }
-
-  // setNewSpecialized = () => {
-  //   this.setState({
-  //     arrayJobPost: [...this.state.arrayJobPost, this.state.selectedSpecialized],
-  //     arraySkill: [...this.state.arraySkill, []],
-  //     arrayQuantity: [...this.state.arrayQuantity, []]
-  //   })
-  // }
-
-  // deleteSpecialized = (indexSelected) => {
-  //   for (let index = 0; index < this.state.arrayJobPost.length; index++) {
-  //     if (index === indexSelected) {
-  //       this.state.arrayJobPost.splice(index, 1);
-  //       this.setState({
-  //         arrayJobPost: this.state.arrayJobPost,
-  //       })
-  //       break;
-  //     }
-  //   }
-  // }
-
-  // confirmDelete = (indexSelected) => {
-  //   confirmAlert({
-  //     title: 'Xác nhận lại',
-  //     message: 'Bạn có chắc muốn xoá thông tin tuyển dụng ngành ' + this.state.arrayJobPost[indexSelected] + '?',
-  //     buttons: [
-  //       {
-  //         label: 'Có',
-  //         onClick: () => this.deleteSpecialized(indexSelected)
-  //       },
-  //       {
-  //         label: 'Không',
-  //         onClick: () => alert('Không')
-  //       }
-  //     ]
-  //   });
-  // }
-
-  // confirmAdd = () => {
-  //   confirmAlert({
-  //     title: 'Xác nhận lại',
-  //     message: 'Bạn có chắc muốn thêm ngành ' + this.state.selectedSpecialized + ' vào thông tin tuyển dụng?',
-  //     buttons: [
-  //       {
-  //         label: 'Có',
-  //         onClick: () => this.setNewSpecialized()
-  //       },
-  //       {
-  //         label: 'Không',
-  //         onClick: () => alert('Không')
-  //       }
-  //     ]
-  //   });
-  // }
 
   handleDirect = (uri) => {
     this.props.history.push(uri);
   }
 
   render() {
-    const { arrayJobPost, arraySkill, arrayQuantity } = this.state;
+    const { arrayJobPost, arraySkill, arrayQuantity, loading } = this.state;
     const { description, views,
       contact, interview_process, interest, job_post_skills, updatedId } = this.state;
 
@@ -198,68 +124,67 @@ class Job_Post extends Component {
         tmpSkills.push(job_post_skills[i].skill.name);
         tmpNumber.push(job_post_skills[i].number);
       }
-
-      console.log('jobpost', arrayJobPost);
-      console.log('skill', arraySkill);
-      console.log('number', arrayQuantity);
     }
 
     return (
-      <div className="animated fadeIn">
-        <Row>
-          <Col xs="12" lg="12">
-            <Card>
-              <CardHeader style={{ fontWeight: "bold" }}>
-                <i className="fa fa-align-justify"></i>Thông tin tuyển dụng
+      loading.toString() === 'true' ? (
+        SpinnerLoading.showHashLoader(loading)
+      ) : (
+          <div className="animated fadeIn">
+            <Row>
+              <Col xs="12" lg="12">
+                <Card>
+                  <CardHeader style={{ fontWeight: "bold" }}>
+                    <i className="fa fa-align-justify"></i>Thông tin tuyển dụng
                 <Button style={{ marginLeft: "950px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/job_post/update_job/${updatedId}`)}>Chỉnh sửa</Button>
-              </CardHeader>
-              <CardBody>
-                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                  <FormGroup row>
-                    <Col md="2">
-                      <h6>Mô tả công việc</h6>
-                    </Col>
-                    <Col xs="12" md="10">
-                      <label type="text" id="description" name="description" placeholder="Mô tả công việc">{description}</label>
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="2">
-                      <h6>Quy trình tuyển</h6>
-                    </Col>
-                    <Col xs="12" md="10">
-                      <label type="text" id="interview_process" name="interview_process" placeholder="Quy trình tuyển">{interview_process}</label>
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="2">
-                      <h6>Phúc lợi:</h6>
-                    </Col>
-                    <Col xs="12" md="10">
-                      <label type="text" id="interest" name="interest" placeholder="Phúc lợi">{interest}</label>
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="2">
-                      <h6>Thông tin liên hệ</h6>
-                    </Col>
-                    <Col xs="12" md="10">
-                      <label type="text" id="contact" name="contact" placeholder="Thông tin liên hệ">{contact}</label>
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="2">
-                      <h6>Lượt xem</h6>
-                    </Col>
-                    <Col xs="12" md="10">
-                      <label type="text" id="views" name="views" placeholder="Lượt xem">{views}</label>
-                    </Col>
-                  </FormGroup>
-                </Form>
+                  </CardHeader>
+                  <CardBody>
+                    <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                      <FormGroup row>
+                        <Col md="2">
+                          <h6>Mô tả công việc</h6>
+                        </Col>
+                        <Col xs="12" md="10">
+                          <label type="text" id="description" name="description" placeholder="Mô tả công việc">{description}</label>
+                        </Col>
+                      </FormGroup>
+                      <FormGroup row>
+                        <Col md="2">
+                          <h6>Quy trình tuyển</h6>
+                        </Col>
+                        <Col xs="12" md="10">
+                          <label type="text" id="interview_process" name="interview_process" placeholder="Quy trình tuyển">{interview_process}</label>
+                        </Col>
+                      </FormGroup>
+                      <FormGroup row>
+                        <Col md="2">
+                          <h6>Phúc lợi:</h6>
+                        </Col>
+                        <Col xs="12" md="10">
+                          <label type="text" id="interest" name="interest" placeholder="Phúc lợi">{interest}</label>
+                        </Col>
+                      </FormGroup>
+                      <FormGroup row>
+                        <Col md="2">
+                          <h6>Thông tin liên hệ</h6>
+                        </Col>
+                        <Col xs="12" md="10">
+                          <label type="text" id="contact" name="contact" placeholder="Thông tin liên hệ">{contact}</label>
+                        </Col>
+                      </FormGroup>
+                      <FormGroup row>
+                        <Col md="2">
+                          <h6>Lượt xem</h6>
+                        </Col>
+                        <Col xs="12" md="10">
+                          <label type="text" id="views" name="views" placeholder="Lượt xem">{views}</label>
+                        </Col>
+                      </FormGroup>
+                    </Form>
 
-                {/* <br/><br/> */}
+                    {/* <br/><br/> */}
 
-                {/* <div className="position-relative row form-group" style={{ paddingLeft: '400px' }}>
+                    {/* <div className="position-relative row form-group" style={{ paddingLeft: '400px' }}>
                   <Input type="select" name="specialized" id="specialized" style={{ width: '400px' }} onChange={event => this.chooseNewSpecialized(event)}>
                     <option value="0">Ngành tuyển dụng</option>
                     {arrayJob.map((specialized, index) =>
@@ -273,29 +198,29 @@ class Job_Post extends Component {
                     Thêm
                   </Button>
                 </div> */}
-                <Row>
-                  {arrayJobPost.map((job, index1) =>
-                    <>
-                      <table style={table}>
-                        <thead
-                          style={{ backgroundColor: '#20a8d8', color: 'white', textAlign: "center", fontWeight: "bold", height: "40px", fontSize: "16px" }}
-                          specialized={job}
-                        >
-                          {job}
-                        </thead>
-                        <tbody style={{ textAlign: "center", fontSize: "14px" }}>
-                          {
-                            arraySkill[index1].map((skill, index2) =>
-                              <>
-                                <tr>
-                                  <td>{index2 + 1}. {skill !== '' ? skill : <input style={{ width: '40px' }}></input>}:
+                    <Row>
+                      {arrayJobPost.map((job, index1) =>
+                        <>
+                          <table style={table}>
+                            <thead
+                              style={{ backgroundColor: '#20a8d8', color: 'white', textAlign: "center", fontWeight: "bold", height: "40px", fontSize: "16px" }}
+                              specialized={job}
+                            >
+                              {job}
+                            </thead>
+                            <tbody style={{ textAlign: "center", fontSize: "14px" }}>
+                              {
+                                arraySkill[index1].map((skill, index2) =>
+                                  <>
+                                    <tr>
+                                      <td>{index2 + 1}. {skill !== '' ? skill : <input style={{ width: '40px' }}></input>}:
                                     &nbsp;{arrayQuantity[index1][index2] !== '' ? arrayQuantity[index1][index2] : <input></input>}
-                                  </td>
-                                </tr>
-                              </>
-                            )
-                          }
-                          {/* <tr style={{ textAlign: "center", height: "40px" }}>
+                                      </td>
+                                    </tr>
+                                  </>
+                                )
+                              }
+                              {/* <tr style={{ textAlign: "center", height: "40px" }}>
                             <Button style={{ fontWeight: "bold" }} color="danger"
                               onClick={() => this.confirmDelete(index1)}
                             >
@@ -308,28 +233,29 @@ class Job_Post extends Component {
                               Sửa
                             </Button>
                           </tr> */}
-                          <tr></tr>
-                        </tbody>
-                      </table>
-                    </>
-                  )}
-                </Row>
-                <Pagination>
-                  {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
-                </Pagination>
-              </CardBody>
-              <CardFooter className="p-4">
-                <Row>
-                  <Col xs="3" sm="3">
-                    <Button id="submitBusinesses" onClick={() => this.handleDirect("/job_post_list_hr")} type="submit" color="success" block>Trở về</Button>
-                  </Col>
-                </Row>
-              </CardFooter>
-            </Card>
-          </Col>
-        </Row>
-        {/* <div style={{ paddingLeft: "49%" }}><Button style={{ fontWeight: "bold" }} color="primary" onClick={{}}>Lưu</Button></div> */}
-      </div>
+                              <tr></tr>
+                            </tbody>
+                          </table>
+                        </>
+                      )}
+                    </Row>
+                    <Pagination>
+                      {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                    </Pagination>
+                  </CardBody>
+                  <CardFooter className="p-4">
+                    <Row>
+                      <Col xs="3" sm="3">
+                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/job_post_list_hr")} type="submit" color="success" block>Trở về</Button>
+                      </Col>
+                    </Row>
+                  </CardFooter>
+                </Card>
+              </Col>
+            </Row>
+            {/* <div style={{ paddingLeft: "49%" }}><Button style={{ fontWeight: "bold" }} color="primary" onClick={{}}>Lưu</Button></div> */}
+          </div>
+        )
     );
   }
 }
