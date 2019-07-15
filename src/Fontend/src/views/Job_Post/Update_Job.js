@@ -22,6 +22,7 @@ import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurr
 import PaginationComponent from '../Paginations/pagination';
 import { async } from 'q';
 import SimpleReactValidator from '../../validator/simple-react-validator';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 
 class Update_Job extends Component {
@@ -30,6 +31,7 @@ class Update_Job extends Component {
         super(props);
         this.validator = new SimpleReactValidator();
         this.state = {
+            loading: true,
             startupArraySkill: [],
             startupArrayQuantity: [],
             arraySkill: [],
@@ -120,6 +122,7 @@ class Update_Job extends Component {
         console.log(choseSpecialized);
 
         this.setState({
+            loading: false,
             updatedId: updatedId,
             description: data.job_post.description,
             contact: data.job_post.contact,
@@ -356,11 +359,21 @@ class Update_Job extends Component {
         console.log(job_post);
 
         if (this.validator.allValid()) {
+            this.setState({
+                loading: true
+            })
+
             const result = await ApiServices.Post('/business/createJobPost', job_post);
             if (result.status == 201) {
-                Toastify.actionSuccess("Tạo bài đăng thành công!");
+                Toastify.actionSuccess("Cập nhật bài đăng thành công!");
+                this.setState({
+                    loading: false
+                })
             } else {
-                Toastify.actionFail("Tạo bài đăng thất bại!");
+                Toastify.actionFail("Cập nhật bài đăng thất bại!");
+                this.setState({
+                    loading: false
+                })
             }
         } else {
             this.validator.showMessages();
@@ -370,179 +383,183 @@ class Update_Job extends Component {
 
 
     render() {
-        const { skillsForSave, numbersForSave, specializedUpdate, arraySkill, arrayQuantity, description, contact, updatedId, interview_process, interest, specializeds, specializedItem, skills, choseSpecialized } = this.state;
+        const { skillsForSave, numbersForSave, specializedUpdate, arraySkill, arrayQuantity, description, contact, updatedId, interview_process, interest, specializeds, specializedItem, skills, choseSpecialized, loading } = this.state;
         // console.log(description, interview_process, interest, contact, specializedUpdate, arraySkill, arrayQuantity);
         // console.log(this.state.choseSpecialized);
         return (
-            <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" lg="12">
-                        <Card>
-                            <CardBody>
-                                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Mô tả công việc</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value={description} onChange={this.handleInput} type="text" id="description" name="description" placeholder="Mô tả công việc" />
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('Mô tả công việc', description, 'required|max:100')}
-                                            </span>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Quy trình tuyển</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value={interview_process} onChange={this.handleInput} type="text" id="interview_process" name="interview_process" placeholder="Quy trình tuyển" />
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('Quy trình tuyển', interview_process, 'required|max:100')}
-                                            </span>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Phúc lợi:</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value={interest} onChange={this.handleInput} type="text" id="interest" name="interest" placeholder="Phúc lợi" />
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('Phúc lợi', interest, 'required|max:100')}
-                                            </span>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Thông tin liên hệ</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value={contact} onChange={this.handleInput} type="text" id="contact" name="contact" placeholder="Thông tin liên hệ" />
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('Thông tin liên hệ', contact, 'required|max:100')}
-                                            </span>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Ngành tuyển</h6>
-                                        </Col>
-                                        <Col md="9">
-                                            {/* <Col xs="12" md="4">
+            loading.toString() === 'true' ? (
+                SpinnerLoading.showHashLoader(loading)
+            ) : (
+                    <div className="animated fadeIn">
+                        <Row>
+                            <Col xs="12" lg="12">
+                                <Card>
+                                    <CardBody>
+                                        <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Mô tả công việc</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={description} onChange={this.handleInput} type="text" id="description" name="description" placeholder="Mô tả công việc" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Mô tả công việc', description, 'required|max:100')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Quy trình tuyển</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={interview_process} onChange={this.handleInput} type="text" id="interview_process" name="interview_process" placeholder="Quy trình tuyển" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Quy trình tuyển', interview_process, 'required|max:100')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Phúc lợi:</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={interest} onChange={this.handleInput} type="text" id="interest" name="interest" placeholder="Phúc lợi" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Phúc lợi', interest, 'required|max:100')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Thông tin liên hệ</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={contact} onChange={this.handleInput} type="text" id="contact" name="contact" placeholder="Thông tin liên hệ" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Thông tin liên hệ', contact, 'required|max:100')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Ngành tuyển</h6>
+                                                </Col>
+                                                <Col md="9">
+                                                    {/* <Col xs="12" md="4">
                                             <Input onChange={this.handleInput} type="select" name="specialized"> */}
-                                            {specializeds && specializeds.map((specialized, i) => {
-                                                if (specializedUpdate.includes(specialized.id)) {
-                                                    return (
-                                                        <FormGroup check inline>
-                                                            <Input
-                                                                id={'cb' + specialized.id}
-                                                                className="form-check-input"
-                                                                type="checkbox"
-                                                                checked="true"
-                                                                onChange={() => this.handleSelect(specialized.id)}
-                                                            />
-                                                            <Label className="form-check-label" check htmlFor="inline-checkbox1">{specialized.name}</Label>
-                                                        </FormGroup>
-                                                    )
+                                                    {specializeds && specializeds.map((specialized, i) => {
+                                                        if (specializedUpdate.includes(specialized.id)) {
+                                                            return (
+                                                                <FormGroup check inline>
+                                                                    <Input
+                                                                        id={'cb' + specialized.id}
+                                                                        className="form-check-input"
+                                                                        type="checkbox"
+                                                                        checked="true"
+                                                                        onChange={() => this.handleSelect(specialized.id)}
+                                                                    />
+                                                                    <Label className="form-check-label" check htmlFor="inline-checkbox1">{specialized.name}</Label>
+                                                                </FormGroup>
+                                                            )
 
-                                                } else {
-                                                    return (
-                                                        <FormGroup check inline>
-                                                            <Input
-                                                                id={'cb' + specialized.id}
-                                                                className="form-check-input"
-                                                                type="checkbox"
-                                                                onChange={() => this.handleSelect(specialized.id)}
-                                                            />
-                                                            <Label className="form-check-label" check htmlFor="inline-checkbox1">{specialized.name}</Label>
-                                                        </FormGroup>
-                                                    )
-                                                }
-                                                // <option selected={specializedItem.id == i + 1} value={i}>{specialized.name}</option>
+                                                        } else {
+                                                            return (
+                                                                <FormGroup check inline>
+                                                                    <Input
+                                                                        id={'cb' + specialized.id}
+                                                                        className="form-check-input"
+                                                                        type="checkbox"
+                                                                        onChange={() => this.handleSelect(specialized.id)}
+                                                                    />
+                                                                    <Label className="form-check-label" check htmlFor="inline-checkbox1">{specialized.name}</Label>
+                                                                </FormGroup>
+                                                            )
+                                                        }
+                                                        // <option selected={specializedItem.id == i + 1} value={i}>{specialized.name}</option>
 
-                                            })}<br></br>
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('Ngành tuyển', this.state.isChecked, 'required|accepted')}
-                                            </span>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Kỹ năng - Số lượng:</h6></Col>
-                                        <Col xs="12" md="10">
-                                            <Button color="primary" id="btnAddRow" outline onClick={this.addRow}>Thêm</Button>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="11">
-                                            {
-                                                arraySkill && arraySkill.map((element, index) =>
-                                                    <>
-                                                        <tr>
-                                                            <td>{index + 1}.</td>
-                                                            <td style={{ width: "350px" }}>
-                                                                {
-                                                                    <Input autoFocus="true" id="selectSkill" onChange={this.handleInput} type="select" name="skill" onBlur={e => { this.handleOnBlur(e, index) }}>
-                                                                        {skills && skills.map((skill, i) => {
+                                                    })}<br></br>
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Ngành tuyển', this.state.isChecked, 'required|accepted')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Kỹ năng - Số lượng:</h6></Col>
+                                                <Col xs="12" md="10">
+                                                    <Button color="primary" id="btnAddRow" outline onClick={this.addRow}>Thêm</Button>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="11">
+                                                    {
+                                                        arraySkill && arraySkill.map((element, index) =>
+                                                            <>
+                                                                <tr>
+                                                                    <td>{index + 1}.</td>
+                                                                    <td style={{ width: "350px" }}>
+                                                                        {
+                                                                            <Input autoFocus="true" id="selectSkill" onChange={this.handleInput} type="select" name="skill" onBlur={e => { this.handleOnBlur(e, index) }}>
+                                                                                {skills && skills.map((skill, i) => {
 
-                                                                            let a = choseSpecialized.indexOf(skill.id);
-                                                                            {/* console.log(a); */ }
+                                                                                    let a = choseSpecialized.indexOf(skill.id);
+                                                                                    {/* console.log(a); */ }
 
-                                                                            if (a != -1) {
-                                                                                {/* console.log('all', choseSpecialized);
+                                                                                    if (a != -1) {
+                                                                                        {/* console.log('all', choseSpecialized);
                                                                                 console.log('skill.id', skill.id);
                                                                                 console.log('a', a);
                                                                                 console.log('choseSpecialized[a]', choseSpecialized[a]);
                                                                                 console.log(choseSpecialized[a] === skill.id); */}
-                                                                                console.log('choseSpecialized[a]', choseSpecialized[a]);
-                                                                                {/* console.log('arraySkill', arraySkill); */ }
-                                                                                console.log('arraySkill[index]', arraySkill[index]);
-                                                                                console.log(choseSpecialized[a] === arraySkill[index]);
-                                                                                return (
-                                                                                    <option selected={choseSpecialized[a] === arraySkill[index]} id={'op' + i} value={i}>{skill.name}</option>
-                                                                                )
-                                                                            } else {
-                                                                                return (
-                                                                                    <option id={'op' + i} value={i} hidden disabled>{skill.name}</option>
-                                                                                )
-                                                                            }
-                                                                        })}
-                                                                    </Input>
-                                                                }
-                                                            </td>
-                                                            <td>:</td>
-                                                            <td><Input value={numbersForSave[index]} onBlur={e => { this.handleOnBlur(e, index) }} onChange={e => { this.handleInput(e, index) }} type="number" name="number" style={{ width: "170px" }}></Input></td>
-                                                            <td><Button color="danger" onClick={() => this.deleteSkill(index)}>Xoá</Button></td>
-                                                        </tr>
-                                                    </>
-                                                )
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                </Form>
-                                <ToastContainer />
-                                <Pagination>
-                                    {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
-                                </Pagination>
-                            </CardBody>
-                            <CardFooter className="p-4">
-                                <Row>
-                                    <Col xs="3" sm="3">
-                                        <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Tạo bài đăng</Button>
-                                    </Col>
-                                    <Col xs="3" sm="3">
-                                        <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
-                                    </Col>
-                                    <Col xs="3" sm="3">
-                                        <Button color="success" block onClick={() => this.handleDirect(`/job-post/${updatedId}`)}>Trở về</Button>
-                                    </Col>
-                                </Row>
-                            </CardFooter>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
+                                                                                        console.log('choseSpecialized[a]', choseSpecialized[a]);
+                                                                                        {/* console.log('arraySkill', arraySkill); */ }
+                                                                                        console.log('arraySkill[index]', arraySkill[index]);
+                                                                                        console.log(choseSpecialized[a] === arraySkill[index]);
+                                                                                        return (
+                                                                                            <option selected={choseSpecialized[a] === arraySkill[index]} id={'op' + i} value={i}>{skill.name}</option>
+                                                                                        )
+                                                                                    } else {
+                                                                                        return (
+                                                                                            <option id={'op' + i} value={i} hidden disabled>{skill.name}</option>
+                                                                                        )
+                                                                                    }
+                                                                                })}
+                                                                            </Input>
+                                                                        }
+                                                                    </td>
+                                                                    <td>:</td>
+                                                                    <td><Input value={numbersForSave[index]} onBlur={e => { this.handleOnBlur(e, index) }} onChange={e => { this.handleInput(e, index) }} type="number" name="number" style={{ width: "170px" }}></Input></td>
+                                                                    <td><Button color="danger" onClick={() => this.deleteSkill(index)}>Xoá</Button></td>
+                                                                </tr>
+                                                            </>
+                                                        )
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                        </Form>
+                                        <ToastContainer />
+                                        <Pagination>
+                                            {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                                        </Pagination>
+                                    </CardBody>
+                                    <CardFooter className="p-4">
+                                        <Row>
+                                            <Col xs="3" sm="3">
+                                                <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Cập nhật bài đăng</Button>
+                                            </Col>
+                                            <Col xs="3" sm="3">
+                                                <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
+                                            </Col>
+                                            <Col xs="3" sm="3">
+                                                <Button color="success" block onClick={() => this.handleDirect(`/job-post/${updatedId}`)}>Trở về</Button>
+                                            </Col>
+                                        </Row>
+                                    </CardFooter>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                )
         );
     }
 }

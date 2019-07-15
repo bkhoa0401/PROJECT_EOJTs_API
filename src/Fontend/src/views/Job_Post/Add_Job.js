@@ -22,6 +22,7 @@ import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurr
 import PaginationComponent from '../Paginations/pagination';
 import { async } from 'q';
 import SimpleReactValidator from '../../validator/simple-react-validator';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 
 class Add_Job extends Component {
@@ -30,6 +31,7 @@ class Add_Job extends Component {
         super(props);
         this.validator = new SimpleReactValidator();
         this.state = {
+            loading: true,
             startupArraySkill: [],
             startupArrayQuantity: [],
             arraySkill: [],
@@ -82,6 +84,7 @@ class Add_Job extends Component {
                 // specializedItem: specializeds[0],
                 skills,
                 // skillItem: skills[0]
+                loading: false
             });
         }
         document.getElementById('btnAddRow').setAttribute("disabled", "disabled");
@@ -316,11 +319,21 @@ class Add_Job extends Component {
         console.log(job_post);
 
         if (this.validator.allValid()) {
+            this.setState({
+                loading: true
+            })
+
             const result = await ApiServices.Post('/business/createJobPost', job_post);
             if (result.status == 201) {
-                Toastify.actionSuccess("Tạo bài đăng thành công!");                
+                Toastify.actionSuccess("Tạo bài đăng thành công!");
+                this.setState({
+                    loading: false
+                })
             } else {
                 Toastify.actionFail("Tạo bài đăng thất bại!");
+                this.setState({
+                    loading: false
+                })
             }
         } else {
             this.validator.showMessages();
@@ -330,152 +343,156 @@ class Add_Job extends Component {
 
 
     render() {
-        const { arraySkill, arrayQuantity, description, contact, interview_process, interest, specializeds, specializedItem, skills, choseSpecialized } = this.state;
+        const { arraySkill, arrayQuantity, description, contact, interview_process, interest, specializeds, specializedItem, skills, choseSpecialized, loading } = this.state;
         return (
-            <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" lg="12">
-                        <Card>
-                            <CardBody>
-                                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Mô tả công việc</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value={description} onChange={this.handleInput} type="text" id="description" name="description" placeholder="Mô tả công việc" />
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('Mô tả công việc', description, 'required|max:100')}
-                                            </span>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Quy trình tuyển</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value={interview_process} onChange={this.handleInput} type="text" id="interview_process" name="interview_process" placeholder="Quy trình tuyển" />
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('Quy trình tuyển', interview_process, 'required|max:100')}
-                                            </span>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Phúc lợi:</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value={interest} onChange={this.handleInput} type="text" id="interest" name="interest" placeholder="Phúc lợi" />
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('Phúc lợi', interest, 'required|max:100')}
-                                            </span>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Thông tin liên hệ</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value={contact} onChange={this.handleInput} type="text" id="contact" name="contact" placeholder="Thông tin liên hệ" />
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('Thông tin liên hệ', contact, 'required|max:100')}
-                                            </span>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Ngành tuyển</h6>
-                                        </Col>
-                                        <Col md="9">
-                                            {/* <Col xs="12" md="4">
+            loading.toString() === 'true' ? (
+                SpinnerLoading.showHashLoader(loading)
+            ) : (
+                    <div className="animated fadeIn">
+                        <Row>
+                            <Col xs="12" lg="12">
+                                <Card>
+                                    <CardBody>
+                                        <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Mô tả công việc</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={description} onChange={this.handleInput} type="text" id="description" name="description" placeholder="Mô tả công việc" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Mô tả công việc', description, 'required|max:100')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Quy trình tuyển</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={interview_process} onChange={this.handleInput} type="text" id="interview_process" name="interview_process" placeholder="Quy trình tuyển" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Quy trình tuyển', interview_process, 'required|max:100')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Phúc lợi:</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={interest} onChange={this.handleInput} type="text" id="interest" name="interest" placeholder="Phúc lợi" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Phúc lợi', interest, 'required|max:100')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Thông tin liên hệ</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={contact} onChange={this.handleInput} type="text" id="contact" name="contact" placeholder="Thông tin liên hệ" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Thông tin liên hệ', contact, 'required|max:100')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Ngành tuyển</h6>
+                                                </Col>
+                                                <Col md="9">
+                                                    {/* <Col xs="12" md="4">
                                             <Input onChange={this.handleInput} type="select" name="specialized"> */}
-                                            {specializeds && specializeds.map((specialized, i) =>
-                                                // <option selected={specializedItem.id == i + 1} value={i}>{specialized.name}</option>
-                                                <>
-                                                    <FormGroup check inline>
-                                                        <Input
-                                                            id={'cb' + specialized.id}
-                                                            className="form-check-input"
-                                                            type="checkbox"
-                                                            onChange={() => this.handleSelect(specialized.id)}
-                                                        />
-                                                        <Label className="form-check-label" check htmlFor="inline-checkbox1">{specialized.name}</Label>
-                                                    </FormGroup>
-                                                </>
-                                            )
-                                            } <br></br>
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('Ngành tuyển', this.state.isChecked, 'required|accepted')}
-                                            </span>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Kỹ năng - Số lượng:</h6></Col>
-                                        <Col xs="12" md="10">
-                                            <Button color="primary" id="btnAddRow" outline onClick={this.addRow}>Thêm</Button><br></br>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="11">
-                                            {
-                                                arraySkill && arraySkill.map((element, index) =>
-                                                    <>
-                                                        <tr>
-                                                            <td>{index + 1}.</td>
-                                                            <td style={{ width: "350px" }}>
-                                                                {
-                                                                    <Input autoFocus="true" id="selectSkill" onChange={this.handleInput} type="select" name="skill" onBlur={e => { this.handleOnBlur(e, index) }}>
-                                                                        {/* {skills && skills.map((skill, i) => { this.showHideOption(skill.name, skill.id, i) }
+                                                    {specializeds && specializeds.map((specialized, i) =>
+                                                        // <option selected={specializedItem.id == i + 1} value={i}>{specialized.name}</option>
+                                                        <>
+                                                            <FormGroup check inline>
+                                                                <Input
+                                                                    id={'cb' + specialized.id}
+                                                                    className="form-check-input"
+                                                                    type="checkbox"
+                                                                    onChange={() => this.handleSelect(specialized.id)}
+                                                                />
+                                                                <Label className="form-check-label" check htmlFor="inline-checkbox1">{specialized.name}</Label>
+                                                            </FormGroup>
+                                                        </>
+                                                    )
+                                                    } <br></br>
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Ngành tuyển', this.state.isChecked, 'required|accepted')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Kỹ năng - Số lượng:</h6></Col>
+                                                <Col xs="12" md="10">
+                                                    <Button color="primary" id="btnAddRow" outline onClick={this.addRow}>Thêm</Button><br></br>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="11">
+                                                    {
+                                                        arraySkill && arraySkill.map((element, index) =>
+                                                            <>
+                                                                <tr>
+                                                                    <td>{index + 1}.</td>
+                                                                    <td style={{ width: "350px" }}>
+                                                                        {
+                                                                            <Input autoFocus="true" id="selectSkill" onChange={this.handleInput} type="select" name="skill" onBlur={e => { this.handleOnBlur(e, index) }}>
+                                                                                {/* {skills && skills.map((skill, i) => { this.showHideOption(skill.name, skill.id, i) }
                                                                         )
                                                                         } */}
 
-                                                                        {skills && skills.map((skill, i) => {
-                                                                            if (this.state.choseSpecialized.includes(skill.id)) {
-                                                                                return (
-                                                                                    <option id={'op' + i} value={i}>{skill.name}</option>
-                                                                                )
-                                                                            } else {
-                                                                                return (
-                                                                                    <option id={'op' + i} value={i} hidden disabled>{skill.name}</option>
-                                                                                )
-                                                                            }
-                                                                        })}
-                                                                    </Input>
-                                                                }
-                                                            </td>
-                                                            <td>:</td>
-                                                            <td><Input onBlur={e => { this.handleOnBlur(e, index) }} onChange={this.handleInput} type="number" name="number" style={{ width: "170px" }}></Input></td>
-                                                            <td><Button color="danger" onClick={() => this.deleteSkill(index)}>Xoá</Button></td>
-                                                        </tr>
-                                                    </>
-                                                )
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                </Form>
-                                <ToastContainer />
-                                <Pagination>
-                                    {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
-                                </Pagination>
-                            </CardBody>
-                            <CardFooter className="p-4">
-                                <Row>
-                                    <Col xs="3" sm="3">
-                                        <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Tạo bài đăng</Button>
-                                    </Col>
-                                    <Col xs="3" sm="3">
-                                        <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
-                                    </Col>
-                                    <Col xs="3" sm="3">
-                                        <Button color="success" block onClick={() => this.handleDirect('/job_post_list_hr')}>Trở về</Button>
-                                    </Col>
-                                </Row>
-                            </CardFooter>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
+                                                                                {skills && skills.map((skill, i) => {
+                                                                                    if (this.state.choseSpecialized.includes(skill.id)) {
+                                                                                        return (
+                                                                                            <option id={'op' + i} value={i}>{skill.name}</option>
+                                                                                        )
+                                                                                    } else {
+                                                                                        return (
+                                                                                            <option id={'op' + i} value={i} hidden disabled>{skill.name}</option>
+                                                                                        )
+                                                                                    }
+                                                                                })}
+                                                                            </Input>
+                                                                        }
+                                                                    </td>
+                                                                    <td>:</td>
+                                                                    <td><Input onBlur={e => { this.handleOnBlur(e, index) }} onChange={this.handleInput} type="number" name="number" style={{ width: "170px" }}></Input></td>
+                                                                    <td><Button color="danger" onClick={() => this.deleteSkill(index)}>Xoá</Button></td>
+                                                                </tr>
+                                                            </>
+                                                        )
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                        </Form>
+                                        <ToastContainer />
+                                        <Pagination>
+                                            {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                                        </Pagination>
+                                    </CardBody>
+                                    <CardFooter className="p-4">
+                                        <Row>
+                                            <Col xs="3" sm="3">
+                                                <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Tạo bài đăng</Button>
+                                            </Col>
+                                            <Col xs="3" sm="3">
+                                                <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
+                                            </Col>
+                                            <Col xs="3" sm="3">
+                                                <Button color="success" block onClick={() => this.handleDirect('/job_post_list_hr')}>Trở về</Button>
+                                            </Col>
+                                        </Row>
+                                    </CardFooter>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                )
         );
     }
 }
