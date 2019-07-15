@@ -22,12 +22,14 @@ import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurr
 import PaginationComponent from '../Paginations/pagination';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 class Hr_Task_Detail extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            loading: true,
             id: '',
             title: '',
             description: '',
@@ -48,6 +50,7 @@ class Hr_Task_Detail extends Component {
 
         if (task != null) {
             this.setState({
+                loading: false,
                 id: task.id,
                 title: task.title,
                 description: task.description,
@@ -91,10 +94,17 @@ class Hr_Task_Detail extends Component {
     };
 
     handleUpdateStatus = async (id, status) => {
+        this.setState({
+            loading: true
+        })
         const result = await ApiServices.Put(`/supervisor/stateTask?id=${id}&typeTask=${status}`);
 
         if (result.status == 200) {
             Toastify.actionSuccess("Cập nhật trạng thái thành công!");
+
+            this.setState({
+                loading: false
+            })
 
             const task = await ApiServices.Get(`/supervisor/task?id=${id}`);
 
@@ -114,6 +124,9 @@ class Hr_Task_Detail extends Component {
             }
         } else {
             Toastify.actionFail("Cập nhật trạng thái thất bại!");
+            this.setState({
+                loading: false
+            })
         }
     }
 
@@ -177,113 +190,117 @@ class Hr_Task_Detail extends Component {
 
     render() {
         const { id, title, description, time_created, time_end, level_task, priority, status, supervisorName,
-            studentName } = this.state;
+            studentName, loading } = this.state;
 
         return (
-            <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" lg="12">
-                        <Card>
-                            <CardHeader>
-                                <i className="fa fa-align-justify"></i> Chi tiết nhiệm vụ
+            loading.toString() === 'true' ? (
+                SpinnerLoading.showHashLoader(loading)
+            ) : (
+                    <div className="animated fadeIn">
+                        <Row>
+                            <Col xs="12" lg="12">
+                                <Card>
+                                    <CardHeader>
+                                        <i className="fa fa-align-justify"></i> Chi tiết nhiệm vụ
                             </CardHeader>
-                            <CardBody>
-                                <div>
-                                    {
-                                        this.showButtonChangeStatus(status, id)
-                                    }
-                                </div>
-                                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Tên nhiệm vụ</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Label id="title" name="title">{title}</Label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Trạng thái</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
+                                    <CardBody>
+                                        <div>
                                             {
-                                                this.showTaskState(status)
+                                                this.showButtonChangeStatus(status, id)
                                             }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Ngày tạo</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Label id="time_created" name="time_created">{time_created}</Label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Người giao</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Label id="supervisorName" name="supervisorName">{supervisorName}</Label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Sinh viên</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Label id="studentName" name="studentName">{studentName}</Label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Mô tả</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <label dangerouslySetInnerHTML={{ __html: description }} id="description" name="description" />
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Ngày hết hạn</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Label id="time_end" name="time_end">{time_end}</Label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Mức độ</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            {
-                                                this.showTaskLevel(level_task)
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Độ ưu tiên</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Label id="priority" name="priority">{priority}</Label>
-                                        </Col>
-                                    </FormGroup>
-                                </Form>
-                                <ToastContainer />
-                            </CardBody>
-                            <CardFooter className="p-4">
-                                <Row>
-                                    <Col xs="3" sm="3">
-                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr-task")} type="submit" color="primary" block>Trở về</Button>
-                                    </Col>
-                                </Row>
-                            </CardFooter>
-                        </Card>
-                    </Col>
-                </Row >
-            </div >
+                                        </div>
+                                        <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Tên nhiệm vụ</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Label id="title" name="title">{title}</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Trạng thái</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    {
+                                                        this.showTaskState(status)
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Ngày tạo</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Label id="time_created" name="time_created">{time_created}</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Người giao</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Label id="supervisorName" name="supervisorName">{supervisorName}</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Sinh viên</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Label id="studentName" name="studentName">{studentName}</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Mô tả</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <label dangerouslySetInnerHTML={{ __html: description }} id="description" name="description" />
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Ngày hết hạn</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Label id="time_end" name="time_end">{time_end}</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Mức độ</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    {
+                                                        this.showTaskLevel(level_task)
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Độ ưu tiên</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Label id="priority" name="priority">{priority}</Label>
+                                                </Col>
+                                            </FormGroup>
+                                        </Form>
+                                        <ToastContainer />
+                                    </CardBody>
+                                    <CardFooter className="p-4">
+                                        <Row>
+                                            <Col xs="3" sm="3">
+                                                <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr-task")} type="submit" color="primary" block>Trở về</Button>
+                                            </Col>
+                                        </Row>
+                                    </CardFooter>
+                                </Card>
+                            </Col>
+                        </Row >
+                    </div >
+                )
         );
     }
 }

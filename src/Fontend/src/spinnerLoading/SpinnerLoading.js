@@ -13,7 +13,7 @@ const showHashLoader = function (loading) {
             <HashLoader
                 css={override}
                 sizeUnit={"px"}
-                size={50}
+                size={70}
                 color={'#0099FF'}
                 loading={loading}
             />
