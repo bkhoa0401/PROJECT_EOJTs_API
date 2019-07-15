@@ -359,13 +359,6 @@ class Update_Job extends Component {
             const result = await ApiServices.Post('/business/createJobPost', job_post);
             if (result.status == 201) {
                 Toastify.actionSuccess("Tạo bài đăng thành công!");
-                setTimeout(
-                    function () {
-                        this.props.history.push('/job_post_list_hr');
-                    }
-                        .bind(this),
-                    2000
-                );
             } else {
                 Toastify.actionFail("Tạo bài đăng thất bại!");
             }

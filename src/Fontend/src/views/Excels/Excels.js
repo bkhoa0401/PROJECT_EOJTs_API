@@ -11,6 +11,7 @@ import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurr
 import PaginationComponent from '../Paginations/pagination';
 import { async } from 'q';
 import firebase from 'firebase';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 class Excels extends Component {
 
@@ -18,6 +19,7 @@ class Excels extends Component {
         super(props);
 
         this.state = {
+            loading: false,
             files_Students: null,
             cols_Students: [],
             rows_Students: [],
@@ -107,6 +109,9 @@ class Excels extends Component {
         const listBusinesses = [];
 
         if (rows_Students.length != 0) {
+            this.setState({
+                loading: true
+            })
             if (buttonName === 'Students') {
 
                 rows_Students && rows_Students.map((student, index) => {
@@ -137,8 +142,14 @@ class Excels extends Component {
 
                 const resultStudents = await ApiServices.Post('/student', listStudents);
                 if (resultStudents.status == 201) {
+                    this.setState({
+                        loading: false
+                    })
                     Toastify.actionSuccess("Thêm tệp thành công!");
                 } else {
+                    this.setState({
+                        loading: false
+                    })
                     Toastify.actionFail("Thêm tệp thất bại!");
                 }
 
@@ -161,6 +172,9 @@ class Excels extends Component {
         }
 
         if (rows_Businesses.length != 0) {
+            this.setState({
+                loading: true
+            })
             if (buttonName === 'Businesses') {
                 rows_Businesses && rows_Businesses.map((business, index) => {
                     let data = business[8];
@@ -214,11 +228,28 @@ class Excels extends Component {
 
                 const result = await ApiServices.Post('/business', listBusinesses);
                 if (result.status == 201) {
+                    this.setState({
+                        loading: false
+                    })
                     Toastify.actionSuccess("Thêm tệp thành công!");
 
                 } else {
+                    this.setState({
+                        loading: false
+                    })
                     Toastify.actionFail("Thêm tệp thất bại!");
                 }
+
+                // setTimeout(
+                //     function () {
+                //         this.setState({
+                //             loading: false
+                //         })
+                //         Toastify.actionSuccess("Thêm tệp thành công!");
+                //     }
+                //         .bind(this),
+                //     5000
+                // );
             }
         } else if (buttonName === 'Businesses') {
             Toastify.actionFail("Không tệp nào được chọn!");
@@ -385,178 +416,183 @@ class Excels extends Component {
     // }
 
     render() {
-        const { files_Students, rows_Students, files_Businesses, rows_Businesses } = this.state;
+        const { files_Students, rows_Students, files_Businesses, rows_Businesses, loading } = this.state;
         const { studentsPagination, pageNumber, currentPage } = this.state;
         const { businessesPagination, pageNumberBus, currentPageBus } = this.state;
 
         return (
-
-            <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" sm="12">
-                        <Card>
-                            <CardHeader>
-                                <strong>Thêm danh sách sinh viên</strong>
-                                <a style={{ marginLeft: "650px" }} href="https://docs.google.com/spreadsheets/d/1KHfCbg-Rr6Qii8gtJSLNWwBR3VWGN6OY/export?format=xlsx" download>Tải bản mẫu danh sách sinh viên</a>
-                            </CardHeader>
-                            <CardBody>
-                                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                                    <FormGroup row>
-                                        <Col xs="10" md="10">
-                                            <form encType="multipart/form-data" method="post" action="">
-                                                <input type="file" multiple id="file_excel_students" name="fileName" onChange={this.fileStudentHandler.bind(this)}></input>
+            loading.toString() === 'true' ? (
+                SpinnerLoading.showHashLoader(loading)
+            ) : (
+                    // return (
+                    <div className="animated fadeIn">
+                        <Row>
+                            <Col xs="12" sm="12">
+                                <Card>
+                                    <CardHeader>
+                                        <strong>Thêm danh sách sinh viên</strong>
+                                        <a style={{ marginLeft: "650px" }} href="https://docs.google.com/spreadsheets/d/1KHfCbg-Rr6Qii8gtJSLNWwBR3VWGN6OY/export?format=xlsx" download>Tải bản mẫu danh sách sinh viên</a>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                            <FormGroup row>
+                                                <Col xs="10" md="10">
+                                                    <form encType="multipart/form-data" method="post" action="">
+                                                        <input type="file" multiple id="file_excel_students" name="fileName" onChange={this.fileStudentHandler.bind(this)}></input>
+                                                        {files_Students && (
+                                                            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                                                                <button onClick={this.removeFileStudents}>Xóa file</button>
+                                                                <br />
+                                                            </div>
+                                                        )}
+                                                    </form>
+                                                </Col>
                                                 {files_Students && (
-                                                    <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                                                        <button onClick={this.removeFileStudents}>Xóa file</button>
-                                                        <br />
-                                                    </div>
+
+                                                    <table class="table table-bordered table-hover" style={{ textAlign: "center" }}>
+                                                        <thead>
+                                                            <th>STT</th>
+                                                            <th>MSSV</th>
+                                                            <th>Họ Tên</th>
+                                                            <th>Ngày sinh</th>
+                                                            <th>Giới tính</th>
+                                                            <th>SĐT</th>
+                                                            <th>Email</th>
+                                                            <th>Địa chỉ</th>
+                                                            <th>Ngành học</th>
+                                                            <th>Kì</th>
+                                                        </thead>
+                                                        <tbody>
+                                                            {
+                                                                studentsPagination && studentsPagination.map((student, index) => {
+                                                                    return (
+                                                                        <tr key={index}>
+                                                                            <td>{student[0]}</td>
+                                                                            <td id={"s-" + index + "-1"} onKeyUp={this.rowStudentEdited}>{student[1]}</td>
+                                                                            <td id={"s-" + index + "-2"} onKeyUp={this.rowStudentEdited}>{student[2]}</td>
+                                                                            <td id={"s-" + index + "-3"} onKeyUp={this.rowStudentEdited}>{student[3]}</td>
+                                                                            <td id={"s-" + index + "-4"} onKeyUp={this.rowStudentEdited}>{student[4]}</td>
+                                                                            <td id={"s-" + index + "-5"} onKeyUp={this.rowStudentEdited}>{student[5]}</td>
+                                                                            <td id={"s-" + index + "-6"} onKeyUp={this.rowStudentEdited}>{student[6]}</td>
+                                                                            <td id={"s-" + index + "-7"} onKeyUp={this.rowStudentEdited}>{student[7]}</td>
+                                                                            <td id={"s-" + index + "-8"} onKeyUp={this.rowStudentEdited}>{student[8]}</td>
+                                                                            <td id={"s-" + index + "-9"} onKeyUp={this.rowStudentEdited}>{student[9]}</td>
+                                                                        </tr>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </tbody>
+                                                    </table>
                                                 )}
-                                            </form>
-                                        </Col>
-                                        {files_Students && (
+                                            </FormGroup>
+                                        </Form>
+                                        <ToastContainer />
+                                        <Pagination>
+                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                        </Pagination>
+                                    </CardBody>
+                                    <CardFooter className="p-4">
+                                        <Row>
+                                            <Col xs="3" sm="3">
+                                                <Button id="submitStudents" onClick={() => this.handleSubmit('Students')} type="submit" color="primary" block>Xác nhận</Button>
+                                            </Col>
+                                        </Row>
+                                    </CardFooter>
+                                </Card>
+                            </Col>
+                        </Row>
 
-                                            <table class="table table-bordered table-hover" style={{ textAlign: "center" }}>
-                                                <thead>
-                                                    <th>STT</th>
-                                                    <th>MSSV</th>
-                                                    <th>Họ Tên</th>
-                                                    <th>Ngày sinh</th>
-                                                    <th>Giới tính</th>
-                                                    <th>SĐT</th>
-                                                    <th>Email</th>
-                                                    <th>Địa chỉ</th>
-                                                    <th>Ngành học</th>
-                                                    <th>Kì</th>
-                                                </thead>
-                                                <tbody>
-                                                    {
-                                                        studentsPagination && studentsPagination.map((student, index) => {
-                                                            return (
-                                                                <tr key={index}>
-                                                                    <td>{student[0]}</td>
-                                                                    <td id={"s-" + index + "-1"} onKeyUp={this.rowStudentEdited}>{student[1]}</td>
-                                                                    <td id={"s-" + index + "-2"} onKeyUp={this.rowStudentEdited}>{student[2]}</td>
-                                                                    <td id={"s-" + index + "-3"} onKeyUp={this.rowStudentEdited}>{student[3]}</td>
-                                                                    <td id={"s-" + index + "-4"} onKeyUp={this.rowStudentEdited}>{student[4]}</td>
-                                                                    <td id={"s-" + index + "-5"} onKeyUp={this.rowStudentEdited}>{student[5]}</td>
-                                                                    <td id={"s-" + index + "-6"} onKeyUp={this.rowStudentEdited}>{student[6]}</td>
-                                                                    <td id={"s-" + index + "-7"} onKeyUp={this.rowStudentEdited}>{student[7]}</td>
-                                                                    <td id={"s-" + index + "-8"} onKeyUp={this.rowStudentEdited}>{student[8]}</td>
-                                                                    <td id={"s-" + index + "-9"} onKeyUp={this.rowStudentEdited}>{student[9]}</td>
-                                                                </tr>
-                                                            )
-                                                        })
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        )}
-                                    </FormGroup>
-                                </Form>
-                                <ToastContainer />
-                                <Pagination>
-                                    <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                </Pagination>
-                            </CardBody>
-                            <CardFooter className="p-4">
-                                <Row>
-                                    <Col xs="3" sm="3">
-                                        <Button id="submitStudents" onClick={() => this.handleSubmit('Students')} type="submit" color="primary" block>Xác nhận</Button>
-                                    </Col>
-                                </Row>
-                            </CardFooter>
-                        </Card>
-                    </Col>
-                </Row>
+                        <Row>
+                            <Col xs="12" sm="12">
+                                <Card>
+                                    <CardHeader>
+                                        <strong>Thêm danh sách doanh nghiệp</strong>
+                                        <a style={{ marginLeft: "590px" }} href="https://docs.google.com/spreadsheets/d/174pKjfX-eboXL_78sGueXhOyYYjkN5oH/export?format=xlsx" download>Tải bản mẫu danh sách doanh nghiệp</a>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                            <FormGroup row>
+                                                <Col xs="10" md="10">
+                                                    <form encType="multipart/form-data" method="post" action="">
+                                                        <input type="file" multiple id="file_excel_businesses" name="fileName" onChange={this.fileBusinessHandler.bind(this)}></input>
+                                                        {files_Businesses && (
+                                                            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                                                                <button onClick={this.removeFileBusinesses}>Xóa file</button>
+                                                            </div>
+                                                        )}
+                                                    </form>
+                                                </Col>
 
-                <Row>
-                    <Col xs="12" sm="12">
-                        <Card>
-                            <CardHeader>
-                                <strong>Thêm danh sách doanh nghiệp</strong>
-                                <a style={{ marginLeft: "590px" }} href="https://docs.google.com/spreadsheets/d/174pKjfX-eboXL_78sGueXhOyYYjkN5oH/export?format=xlsx" download>Tải bản mẫu danh sách doanh nghiệp</a>
-                            </CardHeader>
-                            <CardBody>
-                                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                                    <FormGroup row>
-                                        <Col xs="10" md="10">
-                                            <form encType="multipart/form-data" method="post" action="">
-                                                <input type="file" multiple id="file_excel_businesses" name="fileName" onChange={this.fileBusinessHandler.bind(this)}></input>
                                                 {files_Businesses && (
-                                                    <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                                                        <button onClick={this.removeFileBusinesses}>Xóa file</button>
+                                                    <div style={{ overflowX: "auto" }}>
+                                                        <table class="table table-bordered table-hover" style={{ textAlign: "center" }}>
+                                                            <thead>
+                                                                <th style={{ whiteSpace: "nowrap" }}>STT</th>
+                                                                <th style={{ whiteSpace: "nowrap" }}>Doanh nghiệp</th>
+                                                                <th style={{ whiteSpace: "nowrap" }}>Tên tiếng Anh</th>
+                                                                <th style={{ whiteSpace: "nowrap" }}>Email</th>
+                                                                <th style={{ whiteSpace: "nowrap" }}>SĐT</th>
+                                                                <th style={{ whiteSpace: "nowrap" }}>Địa chỉ công ty</th>
+                                                                <th style={{ whiteSpace: "nowrap" }}>Website</th>
+                                                                <th style={{ whiteSpace: "nowrap" }}>Địa chỉ SV sẽ thực tập</th>
+                                                                <th style={{ whiteSpace: "nowrap" }}>Vị trí - Số lượng</th>
+                                                                <th style={{ whiteSpace: "nowrap" }}>Quy trình tuyển</th>
+                                                                <th style={{ whiteSpace: "nowrap" }}>Liên hệ</th>
+                                                                <th style={{ whiteSpace: "nowrap" }}>Mô tả</th>
+                                                                <th style={{ whiteSpace: "nowrap" }}>Giới thiệu công ty</th>
+                                                                <th style={{ whiteSpace: "nowrap" }}>Chính sách ưu đãi</th>
+                                                                <th style={{ whiteSpace: "nowrap" }}>Logo</th>
+                                                                <th style={{ whiteSpace: "nowrap" }}>Kì</th>
+                                                            </thead>
+                                                            <tbody>
+                                                                {
+                                                                    businessesPagination && businessesPagination.map((business, index) => {
+                                                                        return (
+                                                                            <tr key={index}>
+                                                                                <td style={{ whiteSpace: "nowrap" }}>{business[0]}</td>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-1"} onKeyUp={this.rowBusinessEdited}>{business[1]}</td>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-2"} onKeyUp={this.rowBusinessEdited}>{business[2]}</td>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-3"} onKeyUp={this.rowBusinessEdited}>{business[3]}</td>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-4"} onKeyUp={this.rowBusinessEdited}>{business[4]}</td>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-5"} onKeyUp={this.rowBusinessEdited}>{business[5]}</td>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-6"} onKeyUp={this.rowBusinessEdited}>{business[6]}</td>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-7"} onKeyUp={this.rowBusinessEdited}>{business[7]}</td>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-8"} onKeyUp={this.rowBusinessEdited}>{business[8]}</td>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-9"} onKeyUp={this.rowBusinessEdited}>{business[9]}</td>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-10"} onKeyUp={this.rowBusinessEdited}>{business[10]}</td>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-11"} onKeyUp={this.rowBusinessEdited}>{business[11]}</td>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-12"} onKeyUp={this.rowBusinessEdited}>{business[12]}</td>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-13"} onKeyUp={this.rowBusinessEdited}>{business[13]}</td>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-14"} onKeyUp={this.rowBusinessEdited}>{business[14]}</td>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-15"} onKeyUp={this.rowBusinessEdited}>{business[15]}</td>
+                                                                            </tr>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 )}
-                                            </form>
-                                        </Col>
-
-                                        {files_Businesses && (
-                                            <div style={{ overflowX: "auto" }}>
-                                                <table class="table table-bordered table-hover" style={{ textAlign: "center" }}>
-                                                    <thead>
-                                                        <th style={{ whiteSpace: "nowrap" }}>STT</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>Doanh nghiệp</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>Tên tiếng Anh</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>Email</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>SĐT</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>Địa chỉ công ty</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>Website</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>Địa chỉ SV sẽ thực tập</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>Vị trí - Số lượng</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>Quy trình tuyển</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>Liên hệ</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>Mô tả</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>Giới thiệu công ty</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>Chính sách ưu đãi</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>Logo</th>
-                                                        <th style={{ whiteSpace: "nowrap" }}>Kì</th>
-                                                    </thead>
-                                                    <tbody>
-                                                        {
-                                                            businessesPagination && businessesPagination.map((business, index) => {
-                                                                return (
-                                                                    <tr key={index}>
-                                                                        <td style={{ whiteSpace: "nowrap" }}>{business[0]}</td>
-                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-1"} onKeyUp={this.rowBusinessEdited}>{business[1]}</td>
-                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-2"} onKeyUp={this.rowBusinessEdited}>{business[2]}</td>
-                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-3"} onKeyUp={this.rowBusinessEdited}>{business[3]}</td>
-                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-4"} onKeyUp={this.rowBusinessEdited}>{business[4]}</td>
-                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-5"} onKeyUp={this.rowBusinessEdited}>{business[5]}</td>
-                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-6"} onKeyUp={this.rowBusinessEdited}>{business[6]}</td>
-                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-7"} onKeyUp={this.rowBusinessEdited}>{business[7]}</td>
-                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-8"} onKeyUp={this.rowBusinessEdited}>{business[8]}</td>
-                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-9"} onKeyUp={this.rowBusinessEdited}>{business[9]}</td>
-                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-10"} onKeyUp={this.rowBusinessEdited}>{business[10]}</td>
-                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-11"} onKeyUp={this.rowBusinessEdited}>{business[11]}</td>
-                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-12"} onKeyUp={this.rowBusinessEdited}>{business[12]}</td>
-                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-13"} onKeyUp={this.rowBusinessEdited}>{business[13]}</td>
-                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-14"} onKeyUp={this.rowBusinessEdited}>{business[14]}</td>
-                                                                        <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-15"} onKeyUp={this.rowBusinessEdited}>{business[15]}</td>
-                                                                    </tr>
-                                                                )
-                                                            })
-                                                        }
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        )}
-                                    </FormGroup>
-                                </Form>
-                                <Pagination>
-                                    <PaginationComponent pageNumber={pageNumberBus} handlePageNumber={this.handlePageNumberBus} handlePageNext={this.handlePageNextBus} handlePagePrevious={this.handlePagePreviousBus} currentPage={currentPageBus} />
-                                </Pagination>
-                            </CardBody>
-                            <CardFooter className="p-4">
-                                <Row>
-                                    <Col xs="3" sm="3">
-                                        <Button id="submitBusinesses" onClick={() => this.handleSubmit('Businesses')} type="submit" color="primary" block>Xác nhận</Button>
-                                    </Col>
-                                </Row>
-                            </CardFooter>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
-        );
+                                            </FormGroup>
+                                        </Form>
+                                        <Pagination>
+                                            <PaginationComponent pageNumber={pageNumberBus} handlePageNumber={this.handlePageNumberBus} handlePageNext={this.handlePageNextBus} handlePagePrevious={this.handlePagePreviousBus} currentPage={currentPageBus} />
+                                        </Pagination>
+                                    </CardBody>
+                                    <CardFooter className="p-4">
+                                        <Row>
+                                            <Col xs="3" sm="3">
+                                                <Button id="submitBusinesses" onClick={() => this.handleSubmit('Businesses')} type="submit" color="primary" block>Xác nhận</Button>
+                                            </Col>
+                                        </Row>
+                                    </CardFooter>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                )
+            // )
+        )
     }
 }
 

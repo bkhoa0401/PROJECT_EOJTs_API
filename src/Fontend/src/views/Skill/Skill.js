@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 
 class Skill extends Component {
@@ -14,6 +15,7 @@ class Skill extends Component {
         super(props);
         this.state = {
             skills: null,
+            loading: true
         }
     }
 
@@ -66,74 +68,79 @@ class Skill extends Component {
         if (skills != null) {
             this.setState({
                 skills,
+                loading: false
             });
         }
     }
 
     render() {
-        const { skills } = this.state;
+        const { skills, loading } = this.state;
 
         return (
-            <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" lg="15">
-                        <Card>
-                            <CardHeader>
-                                <i className="fa fa-align-justify"></i> Danh sách kỹ năng
+            loading.toString() === 'true' ? (
+                SpinnerLoading.showHashLoader(loading)
+            ) : (
+                    <div className="animated fadeIn">
+                        <Row>
+                            <Col xs="12" lg="15">
+                                <Card>
+                                    <CardHeader>
+                                        <i className="fa fa-align-justify"></i> Danh sách kỹ năng
                             </CardHeader>
-                            <CardBody>
-                                <Button color="primary" onClick={() => this.handleDirect('/skill/create')}>Tạo kỹ năng mới</Button>
-                                <br />
-                                <br />
-                                <br />
-                                <Table responsive striped>
-                                    <thead>
-                                        <tr>
-                                            <th style={{ textAlign: "center" }}>STT</th>
-                                            <th style={{ textAlign: "center" }}>Tên kỹ năng</th>
-                                            <th style={{ textAlign: "center" }}>Ngành</th>
-                                            <th style={{ textAlign: "center" }}>Trạng thái</th>
-                                            <th style={{ textAlign: "center" }}>Thao tác</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            skills && skills.map((skill, i) => {
-                                                return (
-                                                    <tr key={i}>
-                                                        <td style={{ textAlign: "center" }}>{i + 1}</td>
-                                                        <td style={{ textAlign: "center" }}>{skill.name}</td>
-                                                        <td style={{ textAlign: "center" }}>{skill.specialized.name}</td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            {skill.status.toString() == 'true' ? (
-                                                                <Badge color="success">TRUE</Badge>
-                                                            ) : (
-                                                                    <Badge color="danger">FALSE</Badge>
-                                                                )}
-                                                        </td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            {skill.status.toString() == 'true' ? (
-                                                                <Button style={{ marginRight: "1.5px" }} color="warning" onClick={() => this.handleConfirm(skill, false)} type="submit">Vô hiệu</Button>
-                                                            ) : (
-                                                                    <Button style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleConfirm(skill, true)} type="submit">Kích hoạt</Button>
-                                                                )}
-                                                            <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/skill/update/${skill.id}`)}>Chỉnh sửa</Button>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })
-                                        }
-                                    </tbody>
-                                </Table>
-                                <ToastContainer />
-                                {/* <Pagination>
+                                    <CardBody>
+                                        <Button color="primary" onClick={() => this.handleDirect('/skill/create')}>Tạo kỹ năng mới</Button>
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <Table responsive striped>
+                                            <thead>
+                                                <tr>
+                                                    <th style={{ textAlign: "center" }}>STT</th>
+                                                    <th style={{ textAlign: "center" }}>Tên kỹ năng</th>
+                                                    <th style={{ textAlign: "center" }}>Ngành</th>
+                                                    <th style={{ textAlign: "center" }}>Trạng thái</th>
+                                                    <th style={{ textAlign: "center" }}>Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    skills && skills.map((skill, i) => {
+                                                        return (
+                                                            <tr key={i}>
+                                                                <td style={{ textAlign: "center" }}>{i + 1}</td>
+                                                                <td style={{ textAlign: "center" }}>{skill.name}</td>
+                                                                <td style={{ textAlign: "center" }}>{skill.specialized.name}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {skill.status.toString() == 'true' ? (
+                                                                        <Badge color="success">TRUE</Badge>
+                                                                    ) : (
+                                                                            <Badge color="danger">FALSE</Badge>
+                                                                        )}
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {skill.status.toString() == 'true' ? (
+                                                                        <Button style={{ marginRight: "1.5px" }} color="warning" onClick={() => this.handleConfirm(skill, false)} type="submit">Vô hiệu</Button>
+                                                                    ) : (
+                                                                            <Button style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleConfirm(skill, true)} type="submit">Kích hoạt</Button>
+                                                                        )}
+                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/skill/update/${skill.id}`)}>Chỉnh sửa</Button>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </tbody>
+                                        </Table>
+                                        <ToastContainer />
+                                        {/* <Pagination>
                                         <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
                                     </Pagination> */}
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                )
         );
     }
 }

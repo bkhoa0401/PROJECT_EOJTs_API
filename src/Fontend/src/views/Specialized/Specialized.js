@@ -7,6 +7,7 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 class Specialized extends Component {
 
@@ -14,6 +15,7 @@ class Specialized extends Component {
         super(props);
         this.state = {
             specializeds: null,
+            loading: true
         }
     }
 
@@ -66,73 +68,78 @@ class Specialized extends Component {
         if (specializeds != null) {
             this.setState({
                 specializeds,
+                loading: false
             });
         }
     }
 
     render() {
-        const { specializeds } = this.state;
+        const { specializeds, loading } = this.state;
 
         return (
-            <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" lg="15">
-                        <Card>
-                            <CardHeader>
-                                <i className="fa fa-align-justify"></i> Danh sách chuyên ngành
+            loading.toString() === 'true' ? (
+                SpinnerLoading.showHashLoader(loading)
+            ) : (
+                    <div className="animated fadeIn">
+                        <Row>
+                            <Col xs="12" lg="15">
+                                <Card>
+                                    <CardHeader>
+                                        <i className="fa fa-align-justify"></i> Danh sách chuyên ngành
                             </CardHeader>
-                            <CardBody>
-                                <Button color="primary" onClick={() => this.handleDirect('/specialized/create')}>Tạo chuyên ngành mới</Button>
-                                <br />
-                                <br />
-                                <br />
-                                <Table responsive striped>
-                                    <thead>
-                                        <tr>
-                                            <th style={{ textAlign: "center" }}>STT</th>
-                                            <th style={{ textAlign: "center" }}>Tên Ngành</th>
-                                            <th style={{ textAlign: "center" }}>Trạng thái</th>
-                                            <th style={{ textAlign: "center" }}>Thao tác</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            specializeds && specializeds.map((specialized, i) => {
-                                                return (
-                                                    <tr key={i}>
-                                                        <td style={{ textAlign: "center" }}>{i + 1}</td>
-                                                        <td style={{ textAlign: "center" }}>{specialized.name}</td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            {specialized.status.toString() == 'true' ? (
-                                                                <Badge color="success">TRUE</Badge>
-                                                            ) : (
-                                                                    <Badge color="danger">FALSE</Badge>
-                                                                )}
-                                                        </td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            {specialized.status.toString() == 'true' ? (
-                                                                <Button style={{ marginRight: "1.5px" }} color="warning" onClick={() => this.handleConfirm(specialized, false)} type="submit">Vô hiệu</Button>
-                                                            ) : (
-                                                                    <Button style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleConfirm(specialized, true)} type="submit">Kích hoạt</Button>
-                                                                )}
-                                                            <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/specialized/update/${specialized.id}`)}>Chỉnh sửa</Button>
+                                    <CardBody>
+                                        <Button color="primary" onClick={() => this.handleDirect('/specialized/create')}>Tạo chuyên ngành mới</Button>
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <Table responsive striped>
+                                            <thead>
+                                                <tr>
+                                                    <th style={{ textAlign: "center" }}>STT</th>
+                                                    <th style={{ textAlign: "center" }}>Tên Ngành</th>
+                                                    <th style={{ textAlign: "center" }}>Trạng thái</th>
+                                                    <th style={{ textAlign: "center" }}>Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    specializeds && specializeds.map((specialized, i) => {
+                                                        return (
+                                                            <tr key={i}>
+                                                                <td style={{ textAlign: "center" }}>{i + 1}</td>
+                                                                <td style={{ textAlign: "center" }}>{specialized.name}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {specialized.status.toString() == 'true' ? (
+                                                                        <Badge color="success">TRUE</Badge>
+                                                                    ) : (
+                                                                            <Badge color="danger">FALSE</Badge>
+                                                                        )}
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {specialized.status.toString() == 'true' ? (
+                                                                        <Button style={{ marginRight: "1.5px" }} color="warning" onClick={() => this.handleConfirm(specialized, false)} type="submit">Vô hiệu</Button>
+                                                                    ) : (
+                                                                            <Button style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleConfirm(specialized, true)} type="submit">Kích hoạt</Button>
+                                                                        )}
+                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/specialized/update/${specialized.id}`)}>Chỉnh sửa</Button>
 
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })
-                                        }
-                                    </tbody>
-                                </Table>
-                                <ToastContainer />
-                                {/* <Pagination>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </tbody>
+                                        </Table>
+                                        <ToastContainer />
+                                        {/* <Pagination>
                                         <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
                                     </Pagination> */}
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                )
         );
     }
 }
