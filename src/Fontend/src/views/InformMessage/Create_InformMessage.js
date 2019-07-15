@@ -16,14 +16,14 @@ class Create_InformMessage extends Component {
         super(props);
         this.state = {
             open: false,
-            isSelect:null,
+            isSelect: null,
             colorTextSelect: ['Black', 'White'],
             colorBackSelect: ['White', 'DeepSkyBlue'],
             informFromEmail: '',
             students: null,
             listStudentEmail: [],
             informTo: '',
-            
+
             description: '',
             title: '',
         };
@@ -111,6 +111,41 @@ class Create_InformMessage extends Component {
         }
         for (let index = 0; index < listStudentEmail.length; index++) {
             informTo += listStudentEmail[index] + "; ";
+            if (informTo.length > 75) {
+                informTo += "...";
+                break;
+            }
+        }
+        this.setState({
+            listStudentEmail: listStudentEmail,
+            isSelect: isSelect,
+            informTo: informTo,
+        })
+        console.log(this.state.isSelect);
+        console.log(this.state.listStudentEmail);
+    }
+
+    handleSelectAll = () => {
+        let students = this.state.students;
+        let listStudentEmail = this.state.listStudentEmail;
+        let isSelect = this.state.isSelect;
+        let informTo = '';
+        let isSelected = false;
+        for (let index = 0; index < students.length; index++) {
+            isSelect[index] = 1;
+            for (let index1 = 0; index1 < listStudentEmail.length; index1++) {
+                if (listStudentEmail[index1] == students[index].email) {
+                    isSelected = true;
+                }
+            }
+            if (isSelected == false) {
+                listStudentEmail.push(students[index].email);
+            }
+            isSelected = false;
+        }
+        // console.log(listStudentEmail);
+        for (let index = 0; index < listStudentEmail.length; index++) {
+            informTo += listStudentEmail[index] + "; ";
             if (informTo.length > 100) {
                 informTo += "...";
                 break;
@@ -123,6 +158,18 @@ class Create_InformMessage extends Component {
         })
         console.log(this.state.isSelect);
         console.log(this.state.listStudentEmail);
+    }
+
+    handleDeSelect = () => {
+        let isSelect = this.state.isSelect;
+        for (let index = 0; index < isSelect.length; index++) {
+            isSelect[index] = 0;
+        }
+        this.setState({
+            listStudentEmail: [],
+            informTo: '',
+            isSelect: isSelect,
+        })
     }
 
     handleDirect = (uri) => {
@@ -178,7 +225,7 @@ class Create_InformMessage extends Component {
                                         <h6>Đến:</h6>
                                     </Col>
                                     <Col xs="12" md="9">
-                                        <Input type="text" value={informTo} id="informTo" name="informTo" readOnly style={{backgroundColor:"white"}}></Input>
+                                        <Input type="text" value={informTo} id="informTo" name="informTo" readOnly style={{ backgroundColor: "white" }}></Input>
                                     </Col>
                                     <Col xs="12" md="1">
                                         <Button block outline color="primary" onClick={this.openPopupRegist}>Thêm</Button>
@@ -189,7 +236,7 @@ class Create_InformMessage extends Component {
                                         <h6>Chủ đề:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Input type="text" value={title} onChange={this.handleInput} id="title" name="title"/>
+                                        <Input type="text" value={title} onChange={this.handleInput} id="title" name="title" />
                                     </Col>
                                 </FormGroup>
                                 <hr />
@@ -222,18 +269,30 @@ class Create_InformMessage extends Component {
                     closeOnDocumentClick
                     onClose={this.closePopupRegist}
                 >
-                    {students && students.map((student, index) =>
-                        <div className="TabContent">
-                            <ListGroup>
-                                <ListGroupItem action onClick={() => this.handleSelect(student.email)} style={{color: colorTextSelect[isSelect[index]], backgroundColor: colorBackSelect[isSelect[index]]}}>
-                                    <ListGroupItemHeading style={{fontWeight:'bold'}}>{student.name}</ListGroupItemHeading>
-                                    <ListGroupItemText>
-                                        {student.email}
-                                    </ListGroupItemText>
-                                </ListGroupItem>
-                            </ListGroup>
-                        </div>
-                    )}
+                    <div className="TabContent">
+                        <row>
+                            <Button color="primary" onClick={() => this.handleSelectAll()}>Chọn tất cả</Button>
+                            &nbsp;&nbsp;
+                            <Button color="primary" onClick={() => this.handleDeSelect()}>Huỷ chọn</Button>
+                            <Button className="close" onClick={this.closePopupRegist} >
+                                &times;
+                            </Button>
+                        </row>
+                        <br />
+                        <hr />
+                        <ListGroup>
+                            <div style={{ height: '400px', overflowY: 'scroll' }}>
+                                {students && students.map((student, index) =>
+                                    <ListGroupItem action onClick={() => this.handleSelect(student.email)} style={{ color: colorTextSelect[isSelect[index]], backgroundColor: colorBackSelect[isSelect[index]] }}>
+                                        <ListGroupItemHeading style={{ fontWeight: 'bold' }}>{student.name}</ListGroupItemHeading>
+                                        <ListGroupItemText>
+                                            {student.email}
+                                        </ListGroupItemText>
+                                    </ListGroupItem>
+                                )}
+                            </div>
+                        </ListGroup>
+                    </div>
                 </Popup>
                 <div style={{ paddingLeft: '40%' }}>
                     <Button style={{ width: '100px' }} outline color="primary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>

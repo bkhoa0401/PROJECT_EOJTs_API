@@ -80,7 +80,7 @@ class InformMessage extends Component {
                                     <ListGroup>
                                         {filteredListInforms && filteredListInforms.map((inform, index) => {
                                             return (
-                                                <ListGroupItem action onClick={() => this.handleDirect(`/InformMessage/InformMessage_Detail/${inform.id}`)}>
+                                                <ListGroupItem tag="a" action onClick={() => this.handleDirect(`/InformMessage/InformMessage_Detail/${inform.id}`)}>
                                                     <ListGroupItemHeading style={{fontWeight:'bold'}}>{inform.title}</ListGroupItemHeading>
                                                     <ListGroupItemText>
                                                         {inform.description}

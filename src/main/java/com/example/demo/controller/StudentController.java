@@ -678,6 +678,11 @@ public class StudentController {
         for (int i = 0; i < studentList.size(); i++) {
             List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(studentList.get(i).getEmail());
             Collections.sort(evaluationList);
+            if (evaluationList.size() < 4) {
+                for (int j = evaluationList.size(); j < 4; j++) {
+                    evaluationList.add(null);
+                }
+            }
             Student_EvaluationDTO student_evaluationDTO = new Student_EvaluationDTO();
             student_evaluationDTO.setEvaluationList(evaluationList);
             student_evaluationDTO.setStudent(studentList.get(i));

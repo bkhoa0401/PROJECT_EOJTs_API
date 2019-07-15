@@ -5,6 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
+import { taggedTemplateExpression } from '@babel/types';
 
 
 class Job_Post_List extends Component {
@@ -14,15 +15,39 @@ class Job_Post_List extends Component {
         this.state = {
             businesses: null,
             searchValue: '',
+            // countJobPostList: [],
+            // countJobPostSkillList: [],
+            // businessList:[],
+            // jobPostList:[],
+            // skillList:[],
         };
     }
 
     async componentDidMount() {
-        const businesses = await ApiServices.Get('/business/getAllBusiness');
+        const businesses = await ApiServices.Get('/admin/jobPostsBusinesses');
+        // const businessList = businesses.business;
+        // const jobPostList = businesses.job_postList;
+        // const skillList = jobPostList.job_post_skills;
+        // let countJobPostList = [];
+        // let countJobPostSkillList = [];
         if (businesses != null) {
+            // for (let i = 0; i < businesses.length; i++) {
+            //     countJobPostList.push(businesses[i].job_postList.length);
+            //     for (let j = 0; j < businesses[i].job_postList.length; j++) {
+            //         countJobPostSkillList.push(businesses[i].job_postList[j].job_post_skills.length);
+            //     }
+            // }
             this.setState({
-                businesses,
+                businesses: businesses,
+                // jobPostList: jobPostList,
+                // skillList: skillList,
+                // countJobPostList: countJobPostList,
+                // countJobPostSkillList: countJobPostSkillList,
+                // businessList: businessList,
+                // jobPostList: jobPostList,
             });
+            console.log(this.state.countJobPostList);
+            console.log(this.state.countJobPostSkillList);
         }
     }
 
@@ -39,7 +64,9 @@ class Job_Post_List extends Component {
         if (businesses != null) {
             filteredListBusinesses = businesses.filter(
                 (business) => {
-                    if (business.business_name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+                    if (business.business.business_name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+                        // filteredJobPostList.push(business.job_postList);
+                        // filteredSkillList.push(business.job_postList.job_post_skills);
                         return business;
                     }
                 }
@@ -60,46 +87,51 @@ class Job_Post_List extends Component {
                                             <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
                                         </form>
                                     </nav>
-                                    <Table responsive striped>
-                                        <thead>
-                                            <tr>
-                                                <th style={{ textAlign: "center" }}>STT</th>
-                                                <th style={{ textAlign: "center" }}>Doanh nghiệp</th>
-                                                <th style={{ textAlign: "center" }}>Ngành</th>
-                                                <th style={{ textAlign: "center" }}>Vị trí - Số lượng</th>
-                                                <th style={{ textAlign: "center" }}>Quy trình tuyển</th>
-                                                <th style={{ textAlign: "center" }}>Chính sách</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {/* {filteredListBusinesses && filteredListBusinesses.map((business, index) => {
-                                                return( */}
-                                                <tr>
-                                                    <td style={{ textAlign: "center" }}>1</td>
-                                                    <td style={{ textAlign: "center" }}>TP Bank</td>
-                                                    <td style={{ textAlign: "center" }}>
-                                                        IS<br/>
-                                                        JS<br/>
-                                                        GD
-                                                    </td>
-                                                    <td style={{ textAlign: "center" }}>
-                                                        Java: 30<br/>
-                                                        C#:20<br/>
-                                                    </td>
-                                                    <td style={{ textAlign: "center" }}>
-                                                        1. Phỏng vấn tại bàn nhận hồ sơ<br/>
-                                                        2. Liên hệ phỏng vấn qua điện thoại, gửi thư mời tham gia phỏng vấn<br/>
-                                                        3. Phỏng vấn và làm bài test tại công ty
-                                                    </td>
-                                                    <td style={{ textAlign: "center" }}>
-                                                        Lương tháng 13<br/>
-                                                        Không OT
-                                                    </td>
-                                                </tr>
-                                                {/* )
-                                            })} */}
-                                        </tbody>
-                                    </Table>
+                                    <br />
+                                    {filteredListBusinesses && filteredListBusinesses.map((business, index) => {
+                                        // let tmpJobPost;
+                                        // tmpJobPost = business.job_postList;
+                                        // for (let index = 0; index < business.job_postList.length; index++) {
+                                        //     tmpJobPost.push(business.job_postList[index]);
+                                        // }
+                                        return (
+                                            <Table responsive bordered>
+                                                <thead style={{color:"white", backgroundColor:"DeepSkyBlue"}}>
+                                                    <tr>
+                                                        <th style={{ textAlign: "center" }}>{business.business.business_name}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {business.job_postList.map((job_post, index1) => {
+                                                        {/* {tmpJobPost && tmpJobPost.map((job_post, index1) => {
+                                                        let tmpSkill;
+                                                        tmpSkill = job_post.job_post_skills; */}
+                                                        // for (let index = 0; index < job_post.job_post_skills.length; index++) {
+                                                        //     tmpSkill.push(job_post.job_post_skills[index]);
+                                                        // }
+                                                        return (
+                                                            <tr>
+                                                                <td>
+                                                                    <p> - Quy trình tuyển: {job_post.interview_process}</p>
+                                                                    <p> - Chính sách công ty: {job_post.interest}</p>
+                                                                    <p> - Liên hệ: {job_post.contact}</p>
+                                                                    <p> - Vị trí - Số lượng:</p>
+                                                                    {job_post.job_post_skills.map((skill, index2) => {
+                                                                        return (<p>&nbsp;&nbsp;&nbsp;&nbsp;+ {skill.skill.name} ({skill.skill.specialized.name}): {skill.number}</p>)
+                                                                    })}
+                                                                    <p> - Mô tả công việc: {job_post.description}</p>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                        // }
+                                                        // )}
+                                                    }
+                                                    )}
+                                                    <tr></tr>
+                                                </tbody>
+                                            </Table>
+                                        )
+                                    })}
                                 </div>
                                 <ToastContainer />
                                 <Pagination>

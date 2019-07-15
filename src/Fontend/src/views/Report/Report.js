@@ -31,6 +31,7 @@ class Report extends Component {
         let students = [];
         let overviewReports = [];
         let finalOnScreenStatus = [];
+        let listStudentAndReport = null;
         if (token != null) {
             const decoded = decode(token);
             role = decoded.role;
@@ -41,7 +42,17 @@ class Report extends Component {
         } else if (role == 'ROLE_HR') {
             students = await ApiServices.Get('/business/getStudentsByBusiness');
             overviewReports = await ApiServices.Get('/business/evaluations');
+        } else if (role == 'ROLE_ADMIN') {
+            listStudentAndReport = await ApiServices.Get('/student/studentsEvaluations');
+            for (let index = 0; index < listStudentAndReport.length; index++) {
+                students.push(listStudentAndReport[index].student);
+                for (let index1 = 0; index1 < listStudentAndReport[index].evaluationList.length; index1++) {
+                    overviewReports.push(listStudentAndReport[index].evaluationList[index1]);
+                }
+            }
         }
+        console.log(students);
+        console.log(overviewReports);
         for (let index = 0; index < overviewReports.length; index++) {
             if (overviewReports[index] != null) {
                 overviewReportsRate.push((overviewReports[index].score_discipline + overviewReports[index].score_work + overviewReports[index].score_activity) / 3);
