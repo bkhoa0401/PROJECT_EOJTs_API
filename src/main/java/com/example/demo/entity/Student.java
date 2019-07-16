@@ -93,7 +93,7 @@ public class Student implements Serializable {
     private List<Event> events;
 
     @OneToMany(mappedBy = "student")
-//    @JsonIgnore
+    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Invitation> invitations;
 
