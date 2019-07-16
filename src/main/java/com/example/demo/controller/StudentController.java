@@ -296,18 +296,26 @@ public class StudentController {
     //da fix
     @GetMapping("/getListStudentIsInvited")
     @ResponseBody
-    public ResponseEntity<List<Student>> getListStudentOfBusiness() {
+    public ResponseEntity<List<Student_InvitationDTO>> getListStudentOfBusiness() {
         String email = getEmailFromToken();
         List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);
+        List<Student> studentListIsInvitedInFunc = new ArrayList<>();
+        List<Student_InvitationDTO> studentList = new ArrayList<>();
 
-        List<Student> studentList = new ArrayList<>();
         for (int i = 0; i < invitationList.size(); i++) {
+            Student_InvitationDTO student_invitationDTO = new Student_InvitationDTO();
             Student student = studentService.getStudentIsInvited(invitationList.get(i).getStudent().getEmail());
-            studentList.add(student);
+            List<Invitation> invitations = invitationService.getListInvitationByStudentEmail(student.getEmail());
+            student_invitationDTO.setInvitations(invitations);
+            student_invitationDTO.setStudent(student);
+            studentList.add(student_invitationDTO);
+
+
+            studentListIsInvitedInFunc.add(student);
         }
         if (studentList != null) {
-            studentListIsInvited = studentList;
-            return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
+            studentListIsInvited = studentListIsInvitedInFunc;
+            return new ResponseEntity<List<Student_InvitationDTO>>(studentList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -534,7 +542,7 @@ public class StudentController {
         for (int i = 0; i < studentList.size(); i++) {
             Student student = studentList.get(i);
             for (int j = 0; j < studentListIsInvited.size(); j++) {
-                Student studentIsInvited = studentListIsInvited.get(j);
+                    Student studentIsInvited = studentListIsInvited.get(j);
                 if (student.getEmail().equals(studentIsInvited.getEmail())) {
                     studentList.remove(student); // xoa dua da duoc moi ra khoi list suggest
                 }
