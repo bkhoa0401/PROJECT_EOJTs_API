@@ -255,23 +255,16 @@ class Invitation_Create extends Component {
 
         var studentNumber = student.phone;
 
-        while (studentNumber.charAt(0) === '0') {
-            studentNumber = studentNumber.substr(1);
+        // while (studentNumber.charAt(0) === '0') {
+        //     studentNumber = studentNumber.substr(1);
+        // }
+
+        // studentNumber = '84' + studentNumber;
+
+        var sms = {
+            receiverNumber: `${studentNumber}`,
+            content: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`
         }
-
-        studentNumber = '84' + studentNumber;
-
-        var sms = [
-            {
-                "from": "Notify-GSMS-VSMS",
-                "to": `${studentNumber}`,
-                "text": {
-                    "template": 5689,
-                    "params": [`Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`]
-                }
-            }
-        ]
-
 
         const invitation = {
             description: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
@@ -347,10 +340,10 @@ class Invitation_Create extends Component {
                         console.log(seconds);
 
                         if (type === 'offline') {
-                            const result = SmsServices.sendSMS(sms);
+                            const result = ApiServices.Post('/business/sms', sms)
                         } else if (type === 'online') {
                             if (seconds > 12) {
-                                const result = SmsServices.sendSMS(sms);
+                                const result = ApiServices.Post('/business/sms', sms)
                             }
                         }
                     }
