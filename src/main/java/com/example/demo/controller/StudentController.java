@@ -498,6 +498,16 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/business")
+    @ResponseBody
+    public ResponseEntity<Business> getBusinessOfSutdent(@RequestParam String email) {
+        Business business = studentService.getBusinessOfStudent(email);
+        if (business != null) {
+            return new ResponseEntity<Business>(business, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     @GetMapping("/businesses")
     @ResponseBody
     public ResponseEntity<List<Business>> getBusinessesOfStudent() {

@@ -21,6 +21,7 @@ class Report_Detail extends Component {
             student: null,
             onScreenRate: 5,
             busniessName: '',
+            supervisorName: '',
             role:'',
         };
     }
@@ -29,22 +30,27 @@ class Report_Detail extends Component {
         const token = localStorage.getItem('id_token');
         var param = window.location.href.split("/").pop();
         var needId = param.split('~');
+        const report = await ApiServices.Get(`/supervisor/getEvaluation?id=${needId[0]}`);
+        const student = await ApiServices.Get(`/student/student/${needId[1]}`);
         let role = '';
-        let actor = null;
-        let businessName = '';
+        let owner = await ApiServices.Get(`/supervisor/business?email=${report.supervisor_email}`);
+        let businessName = owner.business_name;
+        let actor = await ApiServices.Get(`/supervisor/supervisor?email=${report.supervisor_email}`);
+        let supervisorName = actor.name;
         if (token != null) {
             const decoded = decode(token);
             role = decoded.role;
         }
-        if (role == 'ROLE_SUPERVISOR') {
-            actor = await ApiServices.Get(`/supervisor`);
-            businessName = actor.business.business_name;
-        } else if (role == 'ROLE_HR') {
-            actor = await ApiServices.Get(`/business/getBusiness`);
-            businessName = actor.business_name;
-        }
-        const report = await ApiServices.Get(`/supervisor/getEvaluation?id=${needId[0]}`);
-        const student = await ApiServices.Get(`/student/student/${needId[1]}`);
+        // if (role == 'ROLE_SUPERVISOR') {
+        //     owner = await ApiServices.Get(`/supervisor`);
+        //     businessName = owner.business.business_name;
+        // } else if (role == 'ROLE_HR') {
+        //     owner = await ApiServices.Get(`/business/getBusiness`);
+        //     businessName = owner.business_name;
+        // } else if (role == 'ROLE_ADMIN') {
+        //     owner = await ApiServices.Get(`/student/business?email=${needId[1]}`);
+        //     businessName = owner.business_name;
+        // }
         let onScreenRate = 5;
         if (((report.score_work + report.score_activity + report.score_discipline)/3) > 9) {
             onScreenRate = 0;
@@ -62,12 +68,13 @@ class Report_Detail extends Component {
             report: report,
             student: student,
             onScreenRate: onScreenRate,
-            actor: actor,
             role: role,
             businessName: businessName,
+            supervisorName: supervisorName,
           });
         }
         console.log(businessName);
+        console.log(supervisorName);
     }
 
     handleDirect = (uri) => {
@@ -75,7 +82,7 @@ class Report_Detail extends Component {
     }
 
     render() {
-        const { searchValue, reportColor, rate, report, student, onScreenRate, businessName } = this.state;
+        const { searchValue, reportColor, rate, report, student, onScreenRate, businessName, supervisorName } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -87,7 +94,15 @@ class Report_Detail extends Component {
                             <CardBody>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Doanh nghiệp:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Người tạo:</h6>
+                                    </Col>
+                                    <Col xs="12" md="10">
+                                        <Label>{supervisorName}</Label>
+                                    </Col>
+                                </FormGroup>
+                                <FormGroup row>
+                                    <Col md="2">
+                                        <h6 style={{ fontWeight: "bold" }}>Doanh nghiệp:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
                                         <Label>{businessName}</Label>
@@ -95,7 +110,7 @@ class Report_Detail extends Component {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Sinh viên:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Sinh viên:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
                                         <Label>{student === null ? "" : student.name}</Label>
@@ -103,7 +118,7 @@ class Report_Detail extends Component {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>MSSV:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>MSSV:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
                                         <Label>{student === null ? "" : student.code}</Label>
@@ -111,13 +126,13 @@ class Report_Detail extends Component {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Ngày bắt đầu:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Ngày bắt đầu:</h6>
                                     </Col>
                                     <Col xs="12" md="4">
                                         <Label>{report === null ? "" : report.timeStart}</Label>
                                     </Col>
                                     <Col md="2">
-                                        <h6>Ngày kết thúc:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Ngày kết thúc:</h6>
                                     </Col>
                                     <Col xs="12" md="4">
                                         <Label>{report === null ? "" : report.timeEnd}</Label>
@@ -125,7 +140,7 @@ class Report_Detail extends Component {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Tên dự án</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Tên dự án</h6>
                                     </Col>
                                     <Col xs="12" md="10">
                                         <Label>{report === null ? "" : report.project_name}</Label>
@@ -133,7 +148,7 @@ class Report_Detail extends Component {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Điểm hiệu quả công việc:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Điểm hiệu quả công việc:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
                                         <Label>{report === null ? "" : report.score_work}</Label>
@@ -141,7 +156,7 @@ class Report_Detail extends Component {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Điểm thái độ làm việc:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Điểm thái độ làm việc:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
                                         <Label>{report === null ? "" : report.score_activity}</Label>
@@ -149,7 +164,7 @@ class Report_Detail extends Component {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Điểm kỷ luật:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Điểm kỷ luật:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
                                         <Label>{report === null ? "" : report.score_discipline}</Label>
@@ -157,7 +172,7 @@ class Report_Detail extends Component {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Xếp loại:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Xếp loại:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
                                         <Label style={{fontWeight:'bold', color:reportColor[onScreenRate]}}>{rate[onScreenRate]}</Label>
@@ -165,7 +180,7 @@ class Report_Detail extends Component {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Nhận xét:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Nhận xét:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
                                         <Label>{report === null ? "" : report.remark}</Label>

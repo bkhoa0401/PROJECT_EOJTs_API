@@ -98,6 +98,27 @@ public class SupervisorController {
         return new ResponseEntity<Evaluation>(evaluation, HttpStatus.OK);
     }
 
+    @GetMapping("/business")
+    @ResponseBody
+    public ResponseEntity<Business> getBusinessOfEvaluation(@RequestParam String email) {
+        Supervisor supervisor = supervisorService.findByEmail(email);
+        Business business = supervisor.getOjt_enrollment().getBusiness();
+        if (business != null) {
+            return new ResponseEntity<Business>(business, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/supervisor")
+    @ResponseBody
+    public ResponseEntity<Supervisor> getSupervisorOfEvaluation(@RequestParam String email) {
+        Supervisor supervisor = supervisorService.findByEmail(email);
+        if (supervisor != null) {
+            return new ResponseEntity<Supervisor>(supervisor, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     @GetMapping("/evaluations")
     @ResponseBody
     public ResponseEntity<List<Evaluation>> getAllEvaluationBySupervisorEmail() {
