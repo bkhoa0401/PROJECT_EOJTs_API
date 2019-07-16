@@ -98,6 +98,10 @@ public class Evaluation implements  Comparable<Evaluation> {
         this.remark = remark;
     }
 
+    public String getSupervisor_email() {
+        return supervisor.getEmail();
+    }
+
 //    public String getStudent_code() {
 //        return student_code;
 //    }

@@ -29,6 +29,7 @@ class Login extends Component {
       this.handleLogin();
     }
   }
+  
   handleLogin = async () => {
     const { email, password } = this.state;
     const result = await AuthService.login(email, password);
@@ -80,7 +81,7 @@ class Login extends Component {
                             <i className="icon-user"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input onChange={this.handleInput} value={email} type="email" placeholder="Email" autoComplete="email" name='email' />
+                        <Input onChange={this.handleInput} onKeyDown={this.handleKeyDown} value={email} type="email" placeholder="Email" autoComplete="email" name='email' />
                       </InputGroup>
                       <InputGroup className="mb-4">
                         <InputGroupAddon addonType="prepend">

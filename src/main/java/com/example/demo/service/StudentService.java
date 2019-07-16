@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.config.Status;
 import com.example.demo.entity.*;
+import com.example.demo.repository.Ojt_EnrollmentRepository;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.SupervisorRepository;
 import com.example.demo.repository.TaskRepository;
@@ -40,6 +41,9 @@ public class StudentService {
 
     @Autowired
     TaskRepository taskRepository;
+
+    @Autowired
+    Ojt_EnrollmentService ojt_enrollmentService;
 
     public Student getStudentByEmail(String email) {
         Student student = studentRepository.findByEmail(email);
@@ -253,6 +257,15 @@ public class StudentService {
             return true;
         }
         return false;
+    }
+
+    public Business getBusinessOfStudent(String studentEmail) {
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(studentEmail);
+        Business business = ojt_enrollment.getBusiness();
+        if (business != null) {
+            return business;
+        }
+        return null;
     }
 
     public List<Business> getBusinessByOptionStudent(String studentEmail) {
