@@ -53,6 +53,10 @@ public class Ojt_Enrollment implements Serializable{
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Supervisor> supervisors;
 
+    @OneToMany(mappedBy = "ojt_enrollments", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Feedback> feedbacks;
+
 
     public Ojt_Enrollment() {
     }
@@ -119,5 +123,13 @@ public class Ojt_Enrollment implements Serializable{
 
     public void setSupervisors(List<Supervisor> supervisors) {
         this.supervisors = supervisors;
+    }
+
+    public List<Feedback> getFeedbacks() {
+        return feedbacks;
+    }
+
+    public void setFeedbacks(List<Feedback> feedbacks) {
+        this.feedbacks = feedbacks;
     }
 }
