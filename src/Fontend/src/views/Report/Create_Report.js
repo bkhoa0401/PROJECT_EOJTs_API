@@ -15,15 +15,16 @@ class Create_Report extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            reportColor:['lime', 'DeepSkyBlue', 'gold', 'red', 'black'],
-            rate:['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu'],
+            reportColor:['lime', 'DeepSkyBlue', 'gold', 'red', 'black', 'black'],
+            rate:['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu', 'N/A'],
+            onScore: 5,
             title:'',
             timeStart: '',
             timeEnd: '',
             remark:'',
-            score_discipline:'',
-            score_work:'',
-            score_activity:'',
+            score_discipline:'0',
+            score_work:'0',
+            score_activity:'0',
             project_name:'',
 
             emailStudent:'',
@@ -71,6 +72,51 @@ class Create_Report extends Component {
         })
     }
 
+    handleInputScore = async (event) => {
+        const { name, value } = event.target;
+        let score_discipline = this.state.score_discipline;
+        if (event.target.name == "score_discipline") {
+            score_discipline = value;
+        }
+        // console.log("score_discipline " + score_discipline);
+        let score_work = this.state.score_work;
+        if (event.target.name == "score_work") {
+            score_work = value;
+        }
+        // console.log("score_discipline " + score_work);
+        let score_activity = this.state.score_activity;
+        if (event.target.name == "score_activity") {
+            score_activity = value;
+        }
+        // console.log("score_discipline " + score_activity);
+        let onScore = this.state.onScore;
+        if (score_discipline == "" || score_work == "" || score_activity=="") {
+            onScore = 5;
+        } else {
+            let tmpScore = parseFloat((parseFloat(score_discipline) + parseFloat(score_activity) + parseFloat(score_activity)) / 3);
+            // console.log("score_discipline " + tmpScore);
+            if ( tmpScore > 9) {
+                onScore = 0;
+            } else if (tmpScore > 8) {
+                onScore = 1;
+            } else if (tmpScore > 7) {
+                onScore = 2;
+            } else if (tmpScore >= 5) {
+                onScore = 3;
+            } else if (tmpScore < 5) {
+                onScore = 4;
+            }
+        }
+        await this.setState({
+            [name]: value,
+            onScore: onScore,
+        })
+        // console.log(this.state.onScore);
+        // console.log("score_discipline " + score_discipline);
+        // console.log("score_discipline " + score_work);
+        // console.log("score_discipline " + score_activity);
+    }
+
     handleDirect = (uri) => {
         this.props.history.push(uri);
     }
@@ -101,7 +147,7 @@ class Create_Report extends Component {
     }
 
     render() {
-        const { reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, remark, project_name, timeStart, timeEnd } = this.state;
+        const { reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, remark, project_name, timeStart, timeEnd, onScore } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -113,7 +159,7 @@ class Create_Report extends Component {
                             <CardBody>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Doanh nghiệp:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Doanh nghiệp:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
                                         <Label>{businessName}</Label>
@@ -121,7 +167,7 @@ class Create_Report extends Component {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Sinh viên:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Sinh viên:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
                                         <Label>{student === null ? "" : student.name}</Label>
@@ -129,7 +175,7 @@ class Create_Report extends Component {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>MSSV:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>MSSV:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
                                         <Label>{student === null ? "" : student.code}</Label>
@@ -137,13 +183,13 @@ class Create_Report extends Component {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Ngày bắt đầu:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Ngày bắt đầu:</h6>
                                     </Col>
                                     <Col xs="12" md="4">
                                         <Input value={timeStart} type="date" onChange={this.handleInput} id="timeStart" name="timeStart"></Input>
                                     </Col>
                                     <Col md="2">
-                                        <h6>Ngày kết thúc:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Ngày kết thúc:</h6>
                                     </Col>
                                     <Col xs="12" md="4">
                                         <Input value={timeEnd} type="date" onChange={this.handleInput} id="timeEnd" name="timeEnd"></Input>
@@ -151,7 +197,7 @@ class Create_Report extends Component {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Tên dự án</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Tên dự án</h6>
                                     </Col>
                                     <Col xs="12" md="10">
                                         <Input value={project_name} type="text" onChange={this.handleInput} id="project_name" name="project_name"></Input>
@@ -159,39 +205,39 @@ class Create_Report extends Component {
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Điểm hiệu quả công việc:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Điểm hiệu quả công việc:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Input value={score_work} type='number' style={{width:'70px'}} onChange={this.handleInput} id="score_work" name="score_work"></Input>
+                                        <Input value={score_work} type='number' style={{width:'70px'}} onChange={this.handleInputScore} id="score_work" name="score_work"></Input>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Điểm thái độ làm việc:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Điểm thái độ làm việc:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Input value={score_activity} type='number' style={{width:'70px'}} onChange={this.handleInput} id="score_activity" name="score_activity"></Input>
+                                        <Input value={score_activity} type='number' style={{width:'70px'}} onChange={this.handleInputScore} id="score_activity" name="score_activity"></Input>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Điểm kỷ luật:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Điểm kỷ luật:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Input value={score_discipline} type='number' style={{width:'70px'}} onChange={this.handleInput} id="score_discipline" name="score_discipline"></Input>
+                                        <Input value={score_discipline} type='number' style={{width:'70px'}} onChange={this.handleInputScore} id="score_discipline" name="score_discipline"></Input>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Xếp loại:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Xếp loại:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
-                                        <Label style={{fontWeight:'bold', color:reportColor[0]}}>{rate[0]}</Label>
+                                        <Label style={{fontWeight:'bold', color:reportColor[onScore]}}>{rate[onScore]}</Label>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
                                     <Col md="2">
-                                        <h6>Nhận xét:</h6>
+                                        <h6 style={{ fontWeight: "bold" }}>Nhận xét:</h6>
                                     </Col>
                                     <Col xs="12" md="10">
                                     <Input value={remark} type="textarea" rows="9" placeholder="Nhập nhận xét..." onChange={this.handleInput} id="remark" name="remark"/>

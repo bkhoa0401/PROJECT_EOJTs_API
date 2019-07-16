@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.BusinessDTO;
-import com.example.demo.dto.Business_JobPostDTO;
-import com.example.demo.dto.Business_ListJobPostDTO;
-import com.example.demo.dto.Job_PostDTO;
+import com.example.demo.config.Sms;
+import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -415,22 +414,22 @@ public class BusinessController {
     //get all events of business
     @GetMapping("/events")
     @ResponseBody
-    public ResponseEntity<List<Event>> getAllEventOfBusiness(){
-        String email=getEmailFromToken();
-        List<Event> events=eventService.getEventListOfBusiness(email);
-        if(events!=null){
+    public ResponseEntity<List<Event>> getAllEventOfBusiness() {
+        String email = getEmailFromToken();
+        List<Event> events = eventService.getEventListOfBusiness(email);
+        if (events != null) {
             Collections.sort(events);
-            return new ResponseEntity<List<Event>>(events,HttpStatus.OK);
+            return new ResponseEntity<List<Event>>(events, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
     @GetMapping("/evaluations")
     @ResponseBody
-    public ResponseEntity<List<Evaluation>> getAllEvaluationOfBusiness(){
-        String email=getEmailFromToken();
+    public ResponseEntity<List<Evaluation>> getAllEvaluationOfBusiness() {
+        String email = getEmailFromToken();
 
-        List<Evaluation> evaluationList=evaluationService.getListEvaluationOfBusiness(email);
+        List<Evaluation> evaluationList = evaluationService.getListEvaluationOfBusiness(email);
         List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(email);
         List<Evaluation> overviewEvaluationList = new ArrayList<Evaluation>();
         int flag = 0;
@@ -440,7 +439,7 @@ public class BusinessController {
                 if (studentList.get(i).getCode().equals(evaluationList.get(j).getOjt_enrollment().getStudent().getCode())) {
                     overviewEvaluationList.add(evaluationList.get(j));
                     if (flag > 0) {
-                        for (int k = 1; k <= flag ; k++) {
+                        for (int k = 1; k <= flag; k++) {
                             Date date1 = overviewEvaluationList.get(overviewEvaluationList.size() - k).getTimeStart();
                             Date date2 = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k).getTimeStart();
                             if (date1.before(date2)) {
@@ -463,6 +462,21 @@ public class BusinessController {
             return new ResponseEntity<List<Evaluation>>(overviewEvaluationList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+
+    @PostMapping("/sms")
+    @ResponseBody
+    public ResponseEntity<String> sendSms(@RequestBody SmsDTO smsDTO) {
+        Sms sms = new Sms();
+
+        try {
+            sms.sendSMS(smsDTO.getReceiverNumber(), smsDTO.getContent(), 2, "EOJTs");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     //get email from token

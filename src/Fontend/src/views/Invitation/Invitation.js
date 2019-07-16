@@ -38,6 +38,8 @@ class Invitation extends Component {
                 loading: false
             });
         }
+
+        console.log(this.state.students);
     }
 
     handleDirect = (uri) => {
@@ -66,9 +68,9 @@ class Invitation extends Component {
 
         if (students != null) {
             filteredListStudents = students.filter(
-                (student) => {
-                    if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
-                        return student;
+                (studentList) => {
+                    if (studentList.student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+                        return studentList.student;
                     }
                 }
             );
@@ -119,23 +121,20 @@ class Invitation extends Component {
                                                         var invitationDetail = null;
 
                                                         invitations && invitations.map((invitation, index) => {
-                                                            const business_eng_name_invitation = student.invitations[index].business.business_eng_name;
+                                                            const business_eng_name_invitation = invitation.business.business_eng_name;
                                                             if (business_eng_name === business_eng_name_invitation) {
-                                                                invitationDetail = student.invitations[index];
+                                                                invitationDetail = invitation;
                                                             }
                                                         })
 
-
-
-
-                                                        const skills = student.skills;
+                                                        const skills = student.student.skills;
 
                                                         let tmp = 'N/A';
                                                         if (invitationDetail != null && invitationDetail.state != 'false') {
-                                                            if (student.option1 == business_eng_name) {
+                                                            if (student.student.option1 == business_eng_name) {
                                                                 tmp = 1;
                                                             }
-                                                            if (student.option2 == business_eng_name) {
+                                                            if (student.student.option2 == business_eng_name) {
                                                                 tmp = 2;
                                                             }
                                                         }
@@ -143,9 +142,9 @@ class Invitation extends Component {
                                                         return (
                                                             <tr key={index}>
                                                                 <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                                <td style={{ textAlign: "center" }}>{student.code}</td>
-                                                                <td style={{ textAlign: "center" }}>{student.name}</td>
-                                                                <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.student.code}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.student.name}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {
                                                                         skills && skills.map((skill, index) => {
@@ -159,14 +158,14 @@ class Invitation extends Component {
                                                                         })
                                                                     }
                                                                 </td>
-                                                                <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.student.gpa}</td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {
                                                                         invitationDetail && (
                                                                             invitationDetail.state.toString() == 'true' ? (
-                                                                                <Badge color="success">Accepted</Badge>
+                                                                                <Badge color="success">Đã chấp nhận</Badge>
                                                                             ) : (
-                                                                                    <Badge color="danger">Pending</Badge>
+                                                                                    <Badge color="danger">Đang chờ</Badge>
                                                                                 )
                                                                         )
                                                                     }

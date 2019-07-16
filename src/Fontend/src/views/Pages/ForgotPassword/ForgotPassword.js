@@ -3,6 +3,13 @@ import { Button, Card, CardBody, CardFooter, Col, Container, Form, Input, InputG
 
 class FotgotPassword extends Component {
 
+  handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      // this.handleLogin();
+      alert('Enter pressed');
+    }
+  }
+
   handleBack = async () => {
     this.props.history.push('/login');
   }
@@ -24,7 +31,7 @@ class FotgotPassword extends Component {
                           <i className="icon-user"></i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input type="text" placeholder="Email" autoComplete="Email" />
+                      <Input type="text" onKeyDown={this.handleKeyDown} placeholder="Email" autoComplete="Email" />
                     </InputGroup>
                     {/* <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">
