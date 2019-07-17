@@ -5,16 +5,20 @@ import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import decode from 'jwt-decode';
 import Toastify from '../Toastify/Toastify';
+import SimpleReactValidator from '../../validator/simple-react-validator';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 class Create_InformMessage extends Component {
 
     constructor(props) {
         super(props);
+        this.validator = new SimpleReactValidator();
         this.state = {
+            loading: true,
             open: false,
             isSelect: null,
             preIsSelect: null,
@@ -63,6 +67,7 @@ class Create_InformMessage extends Component {
             preIsSelect.push(0);
         }
         this.setState({
+            loading: false,
             informFromEmail: informFromEmail,
             students: students,
             time_created: today,
@@ -82,8 +87,8 @@ class Create_InformMessage extends Component {
         for (let index = 0; index < listStudentEmail.length; index++) {
             preListStudentEmail.push(listStudentEmail[index]);
         }
-        this.setState({ 
-            open: true, 
+        this.setState({
+            open: true,
             preListStudentEmail: preListStudentEmail,
             preIsSelect: preIsSelect,
         })
@@ -99,7 +104,7 @@ class Create_InformMessage extends Component {
                 break;
             }
         }
-        this.setState({ 
+        this.setState({
             open: false,
             informTo: informTo,
             preListStudentEmail: listStudentEmail,
@@ -237,134 +242,159 @@ class Create_InformMessage extends Component {
     }
 
     handleSubmit = async () => {
-        const { title } = this.state;
-        const listStudentEmail = this.state.listStudentEmail;
-        console.log(title);
-        console.log(description);
-        let descriptionNeedCut = this.state.description;
-        descriptionNeedCut = descriptionNeedCut.replace('<p>', '');
-        descriptionNeedCut = descriptionNeedCut.replace('</p>', '');
-        const description = descriptionNeedCut;
-        const event = {
-            description,
-            title,
+        // console.log(title);
+        // console.log(description);
+        let descriptionNeedFix = this.state.description;
+        descriptionNeedFix = descriptionNeedFix.replace('<p>', '');
+        descriptionNeedFix = descriptionNeedFix.replace('</p>', '');
+        if (descriptionNeedFix == "") {
+            descriptionNeedFix = "(No content)";
         }
-        const result = await ApiServices.Post(`/admin/event?listStudentEmail=${listStudentEmail}`, event);
-        console.log(result);
-        console.log(listStudentEmail);
-        console.log(event);
-        if (result.status == 201) {
-            Toastify.actionSuccess("Tạo thông báo thành công!");
-            this.props.history.push("/InformMessage/InformMessage");
+        let titleNeedFix = this.state.title;
+        if (titleNeedFix == "") {
+            titleNeedFix = "(No Title)";
+        }
+        const description = descriptionNeedFix;
+        const title = titleNeedFix;
+        if (this.validator.allValid()) {
+            this.setState({
+                loading: true
+            })
+            const event = {
+                description,
+                title,
+            }
+            const listStudentEmail = this.state.listStudentEmail;
+            const result = await ApiServices.Post(`/admin/event?listStudentEmail=${listStudentEmail}`, event);
+            // console.log(result);
+            // console.log(listStudentEmail);
+            // console.log(event);
+            if (result.status == 201) {
+                Toastify.actionSuccess("Tạo thông báo thành công!");
+                this.props.history.push("/InformMessage/InformMessage");
+            } else {
+                Toastify.actionFail("Tạo thông báo thất bại!");
+                this.setState({
+                    loading: false
+                })
+            }
         } else {
-            Toastify.actionFail("Tạo thông báo thất bại!");
+            this.validator.showMessages();
+            this.forceUpdate();
         }
     }
 
     render() {
-        const { informFromEmail, students, informTo, title, description, colorTextSelect, colorBackSelect, preIsSelect } = this.state;
+        const { loading, informFromEmail, students, informTo, title, description, colorTextSelect, colorBackSelect, preIsSelect } = this.state;
         return (
-            <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" lg="12">
-                        <Card>
-                            <CardHeader style={{ fontWeight: "bold" }}>
-                                <i className="fa fa-align-justify"></i>Soạn thông báo
+            loading.toString() === 'true' ? (
+                SpinnerLoading.showHashLoader(loading)
+            ) : (
+                    <div className="animated fadeIn">
+                        <Row>
+                            <Col xs="12" lg="12">
+                                <Card>
+                                    <CardHeader style={{ fontWeight: "bold" }}>
+                                        <i className="fa fa-align-justify"></i>Soạn thông báo
                             </CardHeader>
-                            <CardBody>
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Từ:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <Input type="text" disabled defaultValue={informFromEmail} />
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Đến:</h6>
-                                    </Col>
-                                    <Col xs="12" md="9">
-                                        <Input type="text" value={informTo} id="informTo" name="informTo" readOnly style={{ backgroundColor: "white" }}></Input>
-                                    </Col>
-                                    <Col xs="12" md="1">
-                                        <Button block outline color="primary" onClick={this.openPopupRegist}>Thêm</Button>
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Chủ đề:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <Input type="text" value={title} onChange={this.handleInput} id="title" name="title" />
-                                    </Col>
-                                </FormGroup>
-                                <hr />
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Nội dung:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <CKEditor
-                                            editor={ClassicEditor}
-                                            data={description}
-                                            onChange={(event, editor) => {
-                                                this.setState({
-                                                    description: editor.getData(),
-                                                })
-                                            }}
-                                        />
-                                    </Col>
-                                </FormGroup>
-                                <ToastContainer />
-                                <Pagination>
-                                    {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
-                                </Pagination>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-                <Popup
-                    open={this.state.open}
-                    // closeOnDocumentClick
-                    onClose={this.closePopupRegist}
-                >
-                    <div className="TabContent">
-                        <row>
-                            <Button color="primary" onClick={() => this.handleSelectAll()}>Chọn tất cả</Button>
-                            &nbsp;&nbsp;
+                                    <CardBody>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6>Từ:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Input type="text" disabled defaultValue={informFromEmail} />
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6>Đến:</h6>
+                                            </Col>
+                                            <Col xs="12" md="9">
+                                                <Input type="text" value={informTo} id="informTo" name="informTo" readOnly style={{ backgroundColor: "white" }}></Input>
+                                                <span className="form-error is-visible text-danger">
+                                                    {this.validator.message('Email nhận', informTo, 'required')}
+                                                </span>
+                                            </Col>
+                                            <Col xs="12" md="1">
+                                                <Button block outline color="primary" onClick={this.openPopupRegist}>Thêm</Button>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6>Chủ đề:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Input type="text" value={title} onChange={this.handleInput} id="title" name="title" />
+                                            </Col>
+                                        </FormGroup>
+                                        <hr />
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6>Nội dung:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <CKEditor
+                                                    editor={ClassicEditor}
+                                                    data={description}
+                                                    onChange={(event, editor) => {
+                                                        this.setState({
+                                                            description: editor.getData(),
+                                                        })
+                                                    }}
+                                                />
+                                            </Col>
+                                        </FormGroup>
+                                        <ToastContainer />
+                                        <Pagination>
+                                            {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                                        </Pagination>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                        <Popup
+                            open={this.state.open}
+                            // closeOnDocumentClick
+                            onClose={this.closePopupRegist}
+                        >
+                            <div className="TabContent">
+                                <row>
+                                    <Button color="primary" onClick={() => this.handleSelectAll()}>Chọn tất cả</Button>
+                                    &nbsp;&nbsp;
                             <Button color="primary" onClick={() => this.handleDeSelect()}>Huỷ chọn</Button>
-                        </row>
-                        <br />
-                        <hr />
-                        <ListGroup>
-                            <div style={{ height: '400px', overflowY: 'scroll' }}>
-                                {students && students.map((student, index) =>
-                                    <ListGroupItem action onClick={() => this.handleSelect(student.email)} style={{ color: colorTextSelect[preIsSelect[index]], backgroundColor: colorBackSelect[preIsSelect[index]] }}>
-                                        <ListGroupItemHeading style={{ fontWeight: 'bold' }}>{student.name}</ListGroupItemHeading>
-                                        <ListGroupItemText>
-                                            {student.email}
-                                        </ListGroupItemText>
-                                    </ListGroupItem>
-                                )}
+                                </row>
+                                <br />
+                                <hr />
+                                <ListGroup>
+                                    <div style={{ height: '400px', overflowY: 'scroll' }}>
+                                        {students && students.map((student, index) =>
+                                            <ListGroupItem action onClick={() => this.handleSelect(student.email)} style={{ color: colorTextSelect[preIsSelect[index]], backgroundColor: colorBackSelect[preIsSelect[index]] }}>
+                                                <ListGroupItemHeading style={{ fontWeight: 'bold' }}>{student.name}</ListGroupItemHeading>
+                                                <ListGroupItemText>
+                                                    {student.email}
+                                                </ListGroupItemText>
+                                            </ListGroupItem>
+                                        )}
+                                    </div>
+                                </ListGroup>
+                                <hr />
+                                <div style={{ paddingLeft: '45%' }}>
+                                    <Button color="primary" onClick={this.closePopupWithConfirm} >Xác nhận</Button>
+                                </div>
                             </div>
-                        </ListGroup>
-                        <hr/>
-                        <div style={{ paddingLeft: '45%' }}>
-                            <Button color="primary" onClick={this.closePopupWithConfirm} >Xác nhận</Button>
+                        </Popup>
+                        <div style={{ paddingLeft: '40%' }}>
+                            <Button style={{ width: '100px' }} outline color="primary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
+                                Trở về
+                            </Button>
+                            &nbsp;&nbsp;&nbsp;
+                            <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleSubmit()}>
+                                Tạo
+                            </Button>
                         </div>
                     </div>
-                </Popup>
-                <div style={{ paddingLeft: '40%' }}>
-                    <Button style={{ width: '100px' }} outline color="primary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
-                        Trở về
-                    </Button>
-                    &nbsp;&nbsp;&nbsp;
-                    <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleSubmit()}>
-                        Tạo
-                    </Button>
-                </div>
-            </div>
+                )
         );
     }
 }

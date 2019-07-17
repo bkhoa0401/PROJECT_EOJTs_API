@@ -5,6 +5,7 @@ import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import decode from 'jwt-decode';
 import Toastify from '../Toastify/Toastify';
+import SimpleReactValidator from '../../validator/simple-react-validator';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
 import CKEditor from '@ckeditor/ckeditor5-react';
@@ -14,6 +15,7 @@ class Create_Report extends Component {
 
     constructor(props) {
         super(props);
+        this.validator = new SimpleReactValidator();
         this.state = {
             reportColor:['lime', 'DeepSkyBlue', 'gold', 'red', 'black', 'black'],
             rate:['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu', 'N/A'],
