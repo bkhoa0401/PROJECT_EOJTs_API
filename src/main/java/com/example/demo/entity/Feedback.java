@@ -49,7 +49,7 @@ public class Feedback {
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "feedback_id")
-    private List<Ojt_Enrollment> ojt_enrollments;
+    private Ojt_Enrollment ojt_enrollment;
 
     public Feedback() {
     }
@@ -142,11 +142,11 @@ public class Feedback {
         this.others = others;
     }
 
-    public List<Ojt_Enrollment> getOjt_enrollments() {
-        return ojt_enrollments;
+    public Ojt_Enrollment getOjt_enrollment() {
+        return ojt_enrollment;
     }
 
-    public void setOjt_enrollments(List<Ojt_Enrollment> ojt_enrollments) {
-        this.ojt_enrollments = ojt_enrollments;
+    public void setOjt_enrollment(Ojt_Enrollment ojt_enrollment) {
+        this.ojt_enrollment = ojt_enrollment;
     }
 }
