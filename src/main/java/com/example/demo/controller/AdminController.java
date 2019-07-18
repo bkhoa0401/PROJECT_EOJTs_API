@@ -63,15 +63,19 @@ public class AdminController {
     }
 
     //get all student to send inform message
+    //check semester //ok
     @GetMapping("/students")
     @ResponseBody
     public ResponseEntity<List<Student>> getAllStudentToSendInform() {
-        List<Student> studentList = studentService.getAllStudents();
+       // List<Student> studentList = studentService.getAllStudents();
+        List<Student> studentList =studentService.getAllStudentsBySemesterId();
         if (studentList != null) {
             return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
+
+
 
     //get all events of admin
     @GetMapping("/events")

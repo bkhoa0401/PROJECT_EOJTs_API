@@ -59,9 +59,6 @@ public class EventService {
 
     public boolean createEvent(Event event) {
         if (event != null) {
-            for (int i = 0; i < event.getStudents().size(); i++) {
-                System.out.println("id: " + event.getStudents().get(i).getEmail());
-            }
             eventRepository.save(event);
             return true;
         }

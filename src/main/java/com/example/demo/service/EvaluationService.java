@@ -1,9 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Business;
-import com.example.demo.entity.Evaluation;
-import com.example.demo.entity.Ojt_Enrollment;
-import com.example.demo.entity.Supervisor;
+import com.example.demo.entity.*;
 import com.example.demo.repository.BusinessRepository;
 import com.example.demo.repository.EvaluationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +25,14 @@ public class EvaluationService {
     @Autowired
     SupervisorService supervisorService;
 
-    public void createNewEvaluation(Evaluation evaluation, String studentEmail) {
+    @Autowired
+    SemesterService semesterService;
 
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(studentEmail);
+    //check semester //ok
+    public void createNewEvaluation(Evaluation evaluation, String studentEmail) {
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
+        Ojt_Enrollment ojt_enrollment =
+                ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(studentEmail, semesterCurrent.getId());
 
         Date date = new Date(Calendar.getInstance().getTime().getTime());
         evaluation.setOjt_enrollment(ojt_enrollment);
@@ -38,16 +40,26 @@ public class EvaluationService {
         evaluationRepository.save(evaluation);
     }
 
+    //check semester // ok
     public List<Evaluation> getEvaluationsBySupervisorEmail(String email) {
         List<Evaluation> evaluationList = evaluationRepository.findEvaluationsBySupervisorEmail(email);
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
+        for (int i = 0; i < evaluationList.size(); i++) {
+            if (evaluationList.get(i).getOjt_enrollment().getSemester().getId() != semesterCurrent.getId()) {
+                evaluationList.remove(evaluationList.get(i));
+            }
+        }
         if (evaluationList != null) {
             return evaluationList;
         }
         return null;
     }
 
+    //check semester // ok
     public List<Evaluation> getEvaluationsByStudentEmail(String email) {
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
+        Ojt_Enrollment ojt_enrollment =
+                ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email, semesterCurrent.getId());
 
         List<Evaluation> evaluationList = evaluationRepository.findEvaluationsByOjt_enrollment(ojt_enrollment);
         if (evaluationList != null) {
@@ -56,8 +68,11 @@ public class EvaluationService {
         return null;
     }
 
+    //check semester // ok
     public int countEvaluation(String email) {
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
+        Ojt_Enrollment ojt_enrollment =
+                ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email, semesterCurrent.getId());
 
         int count = evaluationRepository.countEvaluationByOjt_enrollment(ojt_enrollment);
 
@@ -72,17 +87,33 @@ public class EvaluationService {
         return null;
     }
 
+    //check semester // ok
     public List<Evaluation> getListEvaluationOfBusiness(String email) {
-        List<Supervisor> supervisorList = supervisorService.getAllSupervisorOfABusiness(email);
+        List<Supervisor> supervisorList = supervisorService.getAllSupervisorOfABusiness(email);//get all supervisor at this semester
 
-        List<Evaluation> evaluationList = new ArrayList<>();
+        Semester semester = semesterService.getSemesterCurrent();
+
+        List<Evaluation> evaluations = new ArrayList<>();
         for (int i = 0; i < supervisorList.size(); i++) {
             List<Evaluation> list = evaluationRepository.findEvaluationsBySupervisorEmail(supervisorList.get(i).getEmail());
-            evaluationList.addAll(list);
+            evaluations.addAll(list);// get all evaluation of a supervisor
         }
-        
-        if (evaluationList != null) {
-            return evaluationList;
+        evaluations = checkSemesterOfEvaluation(evaluations, semester.getId());
+
+        if (evaluations != null) {
+            return evaluations;
+        }
+        return null;
+    }
+
+    public List<Evaluation> checkSemesterOfEvaluation(List<Evaluation> evaluations, int semesterId) {
+        for (int i = 0; i < evaluations.size(); i++) {
+            if (evaluations.get(i).getOjt_enrollment().getSemester().getId() != semesterId) {
+                evaluations.remove(evaluations.get(i));
+            }
+        }
+        if (evaluations != null) {
+            return evaluations;
         }
         return null;
     }

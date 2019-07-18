@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Business;
 import com.example.demo.entity.Ojt_Enrollment;
+import com.example.demo.entity.Semester;
 import com.example.demo.entity.Student;
 import com.example.demo.repository.Ojt_EnrollmentRepository;
 import com.example.demo.repository.StudentRepository;
@@ -9,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -20,6 +23,9 @@ public class Ojt_EnrollmentService {
 
     @Autowired
     BusinessService businessService;
+
+    @Autowired
+    SemesterService semesterService;
 
     public boolean saveListOjtEnrollment(List<Ojt_Enrollment> ojtEnrollmentList) {
         ojtEnrollmentRepository.saveAll(ojtEnrollmentList);
@@ -80,8 +86,10 @@ public class Ojt_EnrollmentService {
     }
 
     public List<Student> getListStudentByBusiness(String email) {
-        List<Ojt_Enrollment> ojt_enrollmentList = ojtEnrollmentRepository.getOjt_EnrollmentsByBusiness_Email(email);
-
+        Semester semester=semesterService.getSemesterCurrent();
+        //List<Ojt_Enrollment> ojt_enrollmentList = ojtEnrollmentRepository.getOjt_EnrollmentsByBusiness_Email(email);
+        List<Ojt_Enrollment> ojt_enrollmentList =
+                getOjt_EnrollmentsBySemesterIdAndBusinessNotNullAndStudentNotNull(semester.getId(),email);
         List<Student> studentList = new ArrayList<>();
         for (int i = 0; i < ojt_enrollmentList.size(); i++) {
             if (ojt_enrollmentList.get(i).getStudent() != null) {
@@ -102,13 +110,59 @@ public class Ojt_EnrollmentService {
         return null;
     }
 
-    public void updateBusinessForStudent(String emailBusiness,String emailStudent) {
+    public void updateBusinessForStudent(String emailBusiness, String emailStudent) {
         Business business = businessService.getBusinessByEmail(emailBusiness);
+        Date date = new Date(Calendar.getInstance().getTime().getTime());
 
-        Ojt_Enrollment ojt_enrollment = getOjt_EnrollmentByStudentEmail(emailStudent);
+        Semester semester=semesterService.getSemesterCurrent();
 
+        //Ojt_Enrollment ojt_enrollment = getOjt_EnrollmentByStudentEmail(emailStudent);
+        Ojt_Enrollment ojt_enrollment=getOjtEnrollmentByStudentEmailAndSemesterId(emailStudent,semester.getId());
+
+        ojt_enrollment.setTimeEnroll(date);
         ojt_enrollment.setBusiness(business);
 
         ojtEnrollmentRepository.save(ojt_enrollment);
+    }
+
+    public Ojt_Enrollment getOjtEnrollmentByBusinessEmailAndSemesterId(String email, int id) {
+        Ojt_Enrollment ojt_enrollment = ojtEnrollmentRepository.getOjt_EnrollmentByBusiness_EmailAndSemesterIdAndStudentIsNull(email, id);
+        if (ojt_enrollment != null) {
+            return ojt_enrollment;
+        }
+        return null;
+    }
+
+    public Ojt_Enrollment getOjtEnrollmentByStudentEmailAndSemesterId(String email, int id) {
+        Ojt_Enrollment ojt_enrollment = ojtEnrollmentRepository.getOjt_EnrollmentByStudentEmailAndSemesterId(email, id);
+        if (ojt_enrollment != null) {
+            return ojt_enrollment;
+        }
+        return null;
+    }
+
+    public List<Ojt_Enrollment> getOjt_EnrollmentsBySemesterIdAndStudentEmailNotNull(int id) {
+        List<Ojt_Enrollment> ojt_enrollmentList = ojtEnrollmentRepository.getOjt_EnrollmentsBySemesterIdAndStudentEmailNotNull(id);
+        if ((ojt_enrollmentList != null)) {
+            return ojt_enrollmentList;
+        }
+        return null;
+    }
+
+    public List<Ojt_Enrollment> getOjt_EnrollmentsBySemesterIdAndBusinessEmailNotNull(int id) {
+        List<Ojt_Enrollment> ojt_enrollmentList = ojtEnrollmentRepository.getOjt_EnrollmentsBySemesterIdAndBusinessEmailIsNotNull(id);
+        if ((ojt_enrollmentList != null)) {
+            return ojt_enrollmentList;
+        }
+        return null;
+    }
+
+    public List<Ojt_Enrollment> getOjt_EnrollmentsBySemesterIdAndBusinessNotNullAndStudentNotNull(int id,String email) {
+        List<Ojt_Enrollment> ojt_enrollmentList =
+                ojtEnrollmentRepository.getOjt_EnrollmentsBySemesterIdAndBusinessNotNullAndStudentNotNull(id,email);
+        if ((ojt_enrollmentList != null)) {
+            return ojt_enrollmentList;
+        }
+        return null;
     }
 }

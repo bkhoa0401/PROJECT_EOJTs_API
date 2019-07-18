@@ -8,11 +8,12 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Date;
 
 @Entity
 @Table(name = "task")
-public class Task {
+public class Task implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -33,15 +34,14 @@ public class Task {
     @Column(name = "time_created")
     private java.sql.Date time_created;
 
-
     @Column(name = "time_end")
     private java.sql.Date time_end;
 
 
     @Enumerated(EnumType.STRING)
-    @Check(constraints = "status IN ('NOT START' ,'PENDING', 'DONE')")
+    @Check(constraints = "status IN ('NOT_START' ,'PENDING', 'DONE')")
     @Column(name = "status")
-    private Status status = Status.NOTSTART;
+    private Status status = Status.NOT_START;
 
     @Column(name = "description", columnDefinition = "NVARCHAR(255)")
     private String description;
@@ -53,6 +53,7 @@ public class Task {
 
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
     @JoinColumn(name = "ojt_enrollment_id")
     private Ojt_Enrollment ojt_enrollment;
 

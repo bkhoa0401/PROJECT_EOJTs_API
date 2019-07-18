@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.config.Status;
 import com.example.demo.entity.Ojt_Enrollment;
+import com.example.demo.entity.Semester;
 import com.example.demo.entity.Task;
 import com.example.demo.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,13 @@ public class TaskService {
     @Autowired
     Ojt_EnrollmentService ojt_enrollmentService;
 
+    @Autowired
+    SemesterService semesterService;
+
     public void createTaskForStudent(Task task) {
         Date date = new Date(Calendar.getInstance().getTime().getTime());
         task.setTime_created(date);
-        task.setStatus(Status.NOTSTART);
+        task.setStatus(Status.NOT_START);
         taskRepository.save(task);
     }
 
@@ -35,8 +39,13 @@ public class TaskService {
         return null;
     }
 
+    //check semester //ok
     public List<Task> findTaskByStudentEmail(String email) {
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+       // Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        Semester semesterCurrent=semesterService.getSemesterCurrent();
+
+        Ojt_Enrollment ojt_enrollment=
+                ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email,semesterCurrent.getId());
         List<Task> taskList = taskRepository.findTasksByOjt_enrollment(ojt_enrollment);
         if (taskList != null) {
             return taskList;
@@ -88,7 +97,10 @@ public class TaskService {
     }
 
     public List<Task> findTaskDoneByStudentEmail(String email) {
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+       // Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        Semester semester=semesterService.getSemesterCurrent();
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email,semester.getId());
+
         List<Task> taskList = taskRepository.findTasksByOjt_enrollmentAndStatusIsDone(ojt_enrollment);
         if (taskList != null) {
             return taskList;
@@ -104,7 +116,9 @@ public class TaskService {
     }
 
     public List<Task> findTasksOfStudentByStatus(String email, Status status) {
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        Semester semester=semesterService.getSemesterCurrent();
+        //Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email,semester.getId());
 
         List<Task> taskList = taskRepository.findTasksByOjt_enrollmentAndStatus(ojt_enrollment, status);
         if (taskList != null) {

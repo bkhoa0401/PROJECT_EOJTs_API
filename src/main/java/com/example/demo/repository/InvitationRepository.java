@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.entity.Invitation;
+import com.example.demo.entity.Semester;
 import com.example.demo.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,5 +17,5 @@ public interface InvitationRepository extends JpaRepository<Invitation, Integer>
 
     Invitation findInvitationById(int id);
 
-    Invitation findInvitationByBusinessEmailAndStudentEmail(String businessEmail,String studentEmail);
+    Invitation findInvitationByBusinessEmailAndStudentEmailAndSemester(String businessEmail, String studentEmail, Semester semester);
 }

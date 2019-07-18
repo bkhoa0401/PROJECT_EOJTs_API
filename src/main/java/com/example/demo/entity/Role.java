@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "Role")
-public class Role {
+public class Role implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)

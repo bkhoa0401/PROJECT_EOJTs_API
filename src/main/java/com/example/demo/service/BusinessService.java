@@ -1,13 +1,16 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.Business_JobPostDTO;
 import com.example.demo.entity.*;
 import com.example.demo.repository.BusinessRepository;
 import com.example.demo.repository.EvaluationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -24,12 +27,33 @@ public class BusinessService {
     @Autowired
     EvaluationRepository evaluationRepository;
 
+    @Autowired
+    SemesterService semesterService;
+
     public void saveBusiness(Business business) {
         businessRepository.save(business);
     }
 
     public List<Business> getAllBusiness() {
         List<Business> businessList = businessRepository.findAll();
+        if (businessList != null) {
+            return businessList;
+        }
+        return null;
+    }
+
+    public List<Business> getAllBusinessBySemester() {
+        Semester semester = semesterService.getSemesterCurrent();
+
+        List<Ojt_Enrollment> ojt_enrollmentList =
+                ojt_enrollmentService.getOjt_EnrollmentsBySemesterIdAndBusinessEmailNotNull(semester.getId());
+        List<Business> businessList = new ArrayList<>();
+
+        for (int i = 0; i < ojt_enrollmentList.size(); i++) {
+            Business business = ojt_enrollmentList.get(i).getBusiness();
+            businessList.add(business);
+        }
+
         if (businessList != null) {
             return businessList;
         }
@@ -67,10 +91,21 @@ public class BusinessService {
         List<Business> businessList = businessRepository.findTop5OrderByRateAverageDesc();
         List<Business> businessListTop5 = new ArrayList<>();
 
-        if (businessList != null) {
-            for (int i = 0; i < businessList.size(); i++) {
+        Semester semester = semesterService.getSemesterCurrent();
+        List<Ojt_Enrollment> ojt_enrollmentBusinessCurrent = new ArrayList<>();
+
+        for (int i = 0; i < businessList.size(); i++) {
+            Ojt_Enrollment ojt_enrollment =
+                    ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(businessList.get(i).getEmail(), semester.getId());
+            if (ojt_enrollment != null) {
+                ojt_enrollmentBusinessCurrent.add(ojt_enrollment);
+            }
+        }
+
+        if (ojt_enrollmentBusinessCurrent != null) {
+            for (int i = 0; i < ojt_enrollmentBusinessCurrent.size(); i++) {
                 if (i < 5) {
-                    businessListTop5.add(businessList.get(i));
+                    businessListTop5.add(ojt_enrollmentBusinessCurrent.get(i).getBusiness());
                 } else {
                     break;
                 }
@@ -80,10 +115,15 @@ public class BusinessService {
         return null;
     }
 
+    // check semester // ok
     public List<Student> getSuggestListStudent(String emailBusiness) {
-        Business business = businessRepository.findBusinessByEmail(emailBusiness);
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(business);
 
+//        Business business = businessRepository.findBusinessByEmail(emailBusiness);
+//        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(business);
+
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
+        Ojt_Enrollment ojt_enrollment =
+                ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(emailBusiness, semesterCurrent.getId());
         List<Student> studentListSuggest = new ArrayList<>();
 
         //lay duoc list skill cua doanh nghiep
@@ -93,17 +133,13 @@ public class BusinessService {
         List<Job_Post> job_postListOfBusiness = new ArrayList<>();
         for (int i = 0; i < ojt_enrollment.getJob_posts().size(); i++) {
             job_postListOfBusiness.add(ojt_enrollment.getJob_posts().get(i)); // lay duoc list job post
-//            for (int j = 0; j < ojt_enrollment.getJob_posts().get(i).getJob_post_skills().size(); j++) {
-//                Skill skill = ojt_enrollment.getJob_posts().get(i).getJob_post_skills().get(j).getSkill();
-//                skillListBusiness.add(skill);
-//            }
         }
 
-        List<Student> studentList = studentService.getAllStudents();
+        //List<Student> studentList = studentService.getAllStudents();
+        List<Student> studentList = studentService.getAllStudentsBySemesterId();
 
         for (int i = 0; i < studentList.size(); i++) {
             List<Skill> skillListOfAStudent = studentList.get(i).getSkills();
-
 
             for (int j = 0; j < job_postListOfBusiness.size(); j++) {
                 Job_Post job_post = job_postListOfBusiness.get(j);
@@ -158,5 +194,34 @@ public class BusinessService {
         businessRepository.save(business);
     }
 
+    //@Cacheable(value = "jobposts",unless= "#result.size() == 0")
+    //check semester //ok
+    public List<Business_JobPostDTO> getAllJobPostOfBusinesses() {
+        // List<Business> businessList = getAllBusiness();
+        List<Business> businessList = getAllBusinessBySemester();
+        List<Business_JobPostDTO> business_jobPostDTOList = new ArrayList<>();
+
+        for (int i = 0; i < businessList.size(); i++) {
+            Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
+            business_jobPostDTO.setBusiness(businessList.get(i));
+
+            //get instance ojt_enrollments
+
+            Semester semesterCurrent = semesterService.getSemesterCurrent();
+            Ojt_Enrollment ojt_enrollment =
+                    ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(businessList.get(i).getEmail(), semesterCurrent.getId());
+            for (int j = 0; j < ojt_enrollment.getJob_posts().size(); j++) {
+                Job_Post job_post = ojt_enrollment.getJob_posts().get(j);
+                business_jobPostDTO.setJob_post(job_post);
+                business_jobPostDTOList.add(business_jobPostDTO);
+
+                business_jobPostDTO = new Business_JobPostDTO();
+                business_jobPostDTO.setBusiness(businessList.get(i));
+            }
+        }
+
+        Collections.sort(business_jobPostDTOList);
+        return business_jobPostDTOList;
+    }
 
 }

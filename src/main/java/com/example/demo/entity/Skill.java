@@ -9,12 +9,13 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.TermVector;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "skill")
 @Indexed
-public class Skill {
+public class Skill implements Serializable {
 
     @Id
     @Column(name = "id")

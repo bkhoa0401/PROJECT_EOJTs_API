@@ -14,6 +14,8 @@ import java.util.List;
 @Table(name = "Student")
 public class Student implements Serializable {
 
+    private static final long serialVersionUID = 7156526077883281623L;
+
     @Id
     @Column(name = "email", nullable = false, unique = true)
     private String email;
@@ -122,6 +124,9 @@ public class Student implements Serializable {
 
     @Column(name = "status")
     private String status;
+
+    @Column(name = "semester")
+    private String semester;
 
     public Student() {
     }
@@ -335,5 +340,13 @@ public class Student implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
     }
 }
