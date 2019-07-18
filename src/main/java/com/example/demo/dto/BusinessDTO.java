@@ -23,6 +23,7 @@ public class BusinessDTO {
     private Date time_post;
     private int views;
     private List<SkillDTO> skillDTOList;
+    private String nameSemester;
 
 
     public String getEmail() {
@@ -143,5 +144,13 @@ public class BusinessDTO {
 
     public void setSkillDTOList(List<SkillDTO> skillDTOList) {
         this.skillDTOList = skillDTOList;
+    }
+
+    public String getNameSemester() {
+        return nameSemester;
+    }
+
+    public void setNameSemester(String nameSemester) {
+        this.nameSemester = nameSemester;
     }
 }

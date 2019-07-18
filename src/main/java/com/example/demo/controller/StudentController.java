@@ -4,7 +4,11 @@ import com.example.demo.config.Status;
 import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,11 +16,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
+import java.sql.Date;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api/student")
@@ -55,6 +62,12 @@ public class StudentController {
     @Autowired
     EventService eventService;
 
+    @Autowired
+    SemesterService semesterService;
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
+
+    //check semester //ok
     @PostMapping
     public ResponseEntity<Void> addListStudent(@RequestBody List<Student> studentList) throws Exception {
 
@@ -86,8 +99,11 @@ public class StudentController {
 
             usersList.add(users);
 
+            Semester semester = semesterService.getSemesterByName(studentList.get(i).getSemester());
+
             Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
             ojt_enrollment.setStudent(studentList.get(i));
+            ojt_enrollment.setSemester(semester);
 
             ojtEnrollmentList.add(ojt_enrollment);
         }
@@ -113,6 +129,7 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    //check semester //ok
     @PostMapping("/new")
     public ResponseEntity<Void> createNewStudent(@RequestBody Student student) throws Exception {
 
@@ -129,8 +146,10 @@ public class StudentController {
         users.setPassword(password);
         users.setActive(true);
 
-        ojt_enrollment.setStudent(student);
+        Semester semester = semesterService.getSemesterCurrent();
 
+        ojt_enrollment.setStudent(student);
+        ojt_enrollment.setSemester(semester);
         try {
             studentService.saveStudent(student);
             usersService.saveUser(users);
@@ -150,14 +169,17 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    //check semester //ok
     @GetMapping("/getAllStudent")
+    @ResponseBody
     public ResponseEntity<List<Student>> getAllStudents() throws Exception {
+        LOG.info("Getting all student");
         List<Student> studentList = new ArrayList<>();
         try {
-            studentList = studentService.getAllStudents();
+            studentList = studentService.getAllStudentsBySemesterId();
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.info(ex.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(studentList, HttpStatus.OK);
@@ -300,9 +322,17 @@ public class StudentController {
         String email = getEmailFromToken();
         List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);
 
+        Semester semester = semesterService.getSemesterCurrent();
+
+        for (int i = 0; i < invitationList.size(); i++) {
+            if (invitationList.get(i).getSemester().getId() != semester.getId()) {
+                invitationList.remove(invitationList.get(i));
+            }
+        }
+
         List<Student> studentList = new ArrayList<>();
         for (int i = 0; i < invitationList.size(); i++) {
-            Student student = studentService.getStudentIsInvited(invitationList.get(i).getStudent().getEmail());
+            Student student = studentService.getStudentIsInvited(invitationList.get(i).getStudent().getEmail()); //find student by email
             studentList.add(student);
         }
         if (studentList != null) {
@@ -313,6 +343,7 @@ public class StudentController {
     }
 
     //danh sach nhung dua set cong ty vao nguyen vong
+    //check semester ok
     @GetMapping("/getListStudentByOption")
     @ResponseBody
     public ResponseEntity<List<Student>> getListStudentByOptionNameBusiness() {
@@ -320,13 +351,17 @@ public class StudentController {
 
         Business business = businessService.getBusinessByEmail(email);
 
-        List<Student> studentList = studentService.findStudentByBusinessNameOption(business.getBusiness_name(), business.getBusiness_name());
+        //confirm o day
+        List<Student> studentList =
+                studentService.findStudentByBusinessNameOption(business.getBusiness_eng_name(), business.getBusiness_eng_name());
         if (studentList != null) {
             return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+
+    //check semester ok
     //danh sach nhung dua set cong ty vao nguyen vong va trang thai cua nv đó
     @GetMapping("/getListStudentByOptionAndStatusOption")
     @ResponseBody
@@ -383,6 +418,7 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester // chua test
     // lay list student chua duoc moi boi cong ty
     @GetMapping("/getListStudentNotYetInvited")
     @ResponseBody
@@ -390,9 +426,8 @@ public class StudentController {
         getListStudentOfBusiness();
 
         List<Student> listStudentIsInvited = studentListIsInvited;
-        System.out.println(listStudentIsInvited.size());
 
-        List<Student> listAllStudent = studentService.getAllStudents();
+        List<Student> listAllStudent = studentService.getAllStudentsBySemesterId();
 
         for (int i = 0; i < listStudentIsInvited.size(); i++) {
             String emailStudentIsInvited = listStudentIsInvited.get(i).getEmail();
@@ -417,10 +452,12 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester //ok
     //student get all job post time post desc
     @GetMapping("/getAllJobPost")
     @ResponseBody
     public ResponseEntity<List<Job_Post>> getAllJobPost() {
+        LOG.info("Getting all job post");
         List<Job_Post> job_postList = job_postService.getAllJobPost();
         if (job_postList != null) {
             return new ResponseEntity<List<Job_Post>>(job_postList, HttpStatus.OK);
@@ -428,6 +465,8 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+
+    //check semester ok
     //  get Invitation By Business Email And StudentEmail
     @GetMapping("/getInvitationByBusinessEmailAndStudentEmail")
     @ResponseBody
@@ -440,13 +479,14 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester // chua test
     @GetMapping("/getJobPostsSuggest")
     @ResponseBody
     public ResponseEntity<List<Business_JobPostDTO>> getJobPostsSuggest() {
         String email = getEmailFromToken();
         List<Business_JobPostDTO> business_jobPostDTOList = new ArrayList<>();
 
-        List<Job_Post> job_postList = studentService.getSuggestListJobPost(email);
+        List<Job_Post> job_postList = studentService.getSuggestListJobPost(email); // tra ve list job post suggest theo ky
         for (int i = 0; i < job_postList.size(); i++) {
             Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
             business_jobPostDTO.setBusiness(job_postList.get(i).getOjt_enrollment().getBusiness());
@@ -474,6 +514,7 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester //ok
     @GetMapping("/tasks")
     @ResponseBody
     public ResponseEntity<List<Task>> getTasksOfStudent() {
@@ -486,6 +527,7 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester ok
     @GetMapping("/evaluations")
     @ResponseBody
     public ResponseEntity<List<Evaluation>> getEvaluationsOfStudent() {
@@ -523,6 +565,7 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester //chua test
     @GetMapping("/studentsSuggest")
     @ResponseBody
     public ResponseEntity<List<Student>> getListSuggestStudent() {
@@ -566,6 +609,7 @@ public class StudentController {
     }
 
     //set doanh nghiep thuc tap cho student
+    //check semester //ok
     @PutMapping("/businessInternship")
     public ResponseEntity<Void> setBusinessInternshipForStudent(@RequestParam String emailBusiness) {
         String emailStudent = getEmailFromToken();
@@ -574,11 +618,15 @@ public class StudentController {
 
     }
 
+    //check semester chua test
     @GetMapping("/dashboard")
     public ResponseEntity<DashboardDTO> getDashboardOfStudent() {
         String email = getEmailFromToken();
 
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        Semester semester=semesterService.getSemesterCurrent();
+
+        //Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email,semester.getId());
 
         DashboardDTO dashboardDTO = new DashboardDTO();
 
@@ -656,7 +704,7 @@ public class StudentController {
 
         List<Task> taskList = new ArrayList<>();
         if (type == 1) {
-            taskList = taskService.findTasksOfStudentByStatus(email, Status.NOTSTART);
+            taskList = taskService.findTasksOfStudentByStatus(email, Status.NOT_START);
         } else if (type == 2) {
             taskList = taskService.findTasksOfStudentByStatus(email, Status.PENDING);
         } else if (type == 3) {
@@ -671,7 +719,7 @@ public class StudentController {
     @GetMapping("/studentsEvaluations")
     @ResponseBody
     public ResponseEntity<List<Student_EvaluationDTO>> getEvaluationsOfStudents() {
-        List<Student> studentList = studentService.getAllStudents();
+        List<Student> studentList = studentService.getAllStudentsBySemesterId();
 
         List<Student_EvaluationDTO> student_evaluationDTOS = new ArrayList<>();
 

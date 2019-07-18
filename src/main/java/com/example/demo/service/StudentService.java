@@ -6,6 +6,7 @@ import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.SupervisorRepository;
 import com.example.demo.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -41,6 +42,12 @@ public class StudentService {
     @Autowired
     TaskRepository taskRepository;
 
+    @Autowired
+    Ojt_EnrollmentService ojt_enrollmentService;
+
+    @Autowired
+    SemesterService semesterService;
+
     public Student getStudentByEmail(String email) {
         Student student = studentRepository.findByEmail(email);
         return student;
@@ -56,8 +63,26 @@ public class StudentService {
         return true;
     }
 
+    //@Cacheable(value = "students")
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
+    }
+
+    //check semester //ok
+    //@Cacheable("students")
+    public List<Student> getAllStudentsBySemesterId() {
+        List<Student> studentList = new ArrayList<>();
+        Semester semester = semesterService.getSemesterCurrent();
+        List<Ojt_Enrollment> ojt_enrollmentList =
+                ojt_enrollmentService.getOjt_EnrollmentsBySemesterIdAndStudentEmailNotNull(semester.getId());
+        for (int i = 0; i < ojt_enrollmentList.size(); i++) {
+            Student student = ojt_enrollmentList.get(i).getStudent();
+            studentList.add(student);
+        }
+        if (studentList != null) {
+            return studentList;
+        }
+        return null;
     }
 
     public int getSpecializedIdByEmail(String email) {
@@ -111,10 +136,31 @@ public class StudentService {
         return null;
     }
 
+
+    //check semester ok
     public List<Student> findStudentByBusinessNameOption(String option1, String option2) {
         List<Student> studentList = studentRepository.findStudentByOption1OrOption2(option1, option2);
-        if (studentList != null) {
-            return studentList;
+
+        Semester semester = semesterService.getSemesterCurrent();
+
+        List<Ojt_Enrollment> ojt_enrollmentList = new ArrayList<>();
+        for (int i = 0; i < studentList.size(); i++) {
+            Ojt_Enrollment ojt_enrollment =
+                    ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(studentList.get(i).getEmail(), semester.getId());
+            if (ojt_enrollment != null) {
+                ojt_enrollmentList.add(ojt_enrollment);
+            }
+        }
+
+        List<Student> studentListCurrent = new ArrayList<>();
+        for (int i = 0; i < ojt_enrollmentList.size(); i++) {
+            Student student = ojt_enrollmentList.get(i).getStudent();
+            if (student != null) {
+                studentListCurrent.add(student);
+            }
+        }
+        if (studentListCurrent != null) {
+            return studentListCurrent;
         }
         return null;
     }
@@ -192,6 +238,7 @@ public class StudentService {
         return false;
     }
 
+    //check semester //chua test
     public List<Job_Post> getSuggestListJobPost(String emailStudent) {
         Student student = studentRepository.findByEmail(emailStudent);
         List<Job_Post> job_postListSuggest = new ArrayList<>();
@@ -212,7 +259,18 @@ public class StudentService {
                 job_postListSuggest.add(job_postList.get(i));
             }
         }
-        return job_postListSuggest;
+        Semester semester = semesterService.getSemesterCurrent();
+
+        List<Job_Post> job_postListSuggestCurrentSemester=new ArrayList<>();
+
+        for (int i = 0; i < job_postListSuggest.size(); i++) {
+            Job_Post job_post = job_postListSuggest.get(i);
+            if(semester.getId()==job_post.getOjt_enrollment().getSemester().getId()){
+                job_postListSuggestCurrentSemester.add(job_post);
+            }
+        }
+        return job_postListSuggestCurrentSemester;
+        //return job_postListSuggest;
     }
 
     public float compareSkillsStudentAndSkillsJobPost(List<Skill> skillListStudent, List<Skill> skillListJobPost) {
@@ -266,10 +324,32 @@ public class StudentService {
         return businessList;
     }
 
+    //check semester //ok
     public List<Student> getAllStudentOfASupervisor(String email) {
         List<Student> studentList = studentRepository.findStudentsBySupervisorEmail(email);
-        if (studentList != null) {
-            return studentList;
+
+        Semester semester = semesterService.getSemesterCurrent();
+
+        List<Ojt_Enrollment> ojt_enrollmentListStudentAtSemester = new ArrayList<>();
+
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            Ojt_Enrollment ojt_enrollment =
+                    ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(student.getEmail(), semester.getId());
+            if (ojt_enrollment != null) {
+                ojt_enrollmentListStudentAtSemester.add(ojt_enrollment);
+            }
+        }
+        List<Student> studentsBySemester = new ArrayList<>();
+
+        for (int i = 0; i < ojt_enrollmentListStudentAtSemester.size(); i++) {
+            Student student = ojt_enrollmentListStudentAtSemester.get(i).getStudent();
+            if (student != null) {
+                studentsBySemester.add(student);
+            }
+        }
+        if (studentsBySemester != null) {
+            return studentsBySemester;
         }
         return null;
     }

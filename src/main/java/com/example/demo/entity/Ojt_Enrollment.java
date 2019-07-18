@@ -5,6 +5,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.List;
 
 @Entity
@@ -29,7 +30,7 @@ public class Ojt_Enrollment implements Serializable{
     @JoinColumn(name = "business_email")
     private Business business;
 
-    @OneToMany(mappedBy = "ojt_enrollment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ojt_enrollment")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Job_Post> job_posts;
 
@@ -52,6 +53,9 @@ public class Ojt_Enrollment implements Serializable{
     @OneToMany(mappedBy = "ojt_enrollment", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Supervisor> supervisors;
+
+    @Column(name = "timeEnroll")
+    private Date timeEnroll;
 
 
     public Ojt_Enrollment() {
@@ -119,5 +123,13 @@ public class Ojt_Enrollment implements Serializable{
 
     public void setSupervisors(List<Supervisor> supervisors) {
         this.supervisors = supervisors;
+    }
+
+    public Date getTimeEnroll() {
+        return timeEnroll;
+    }
+
+    public void setTimeEnroll(Date timeEnroll) {
+        this.timeEnroll = timeEnroll;
     }
 }

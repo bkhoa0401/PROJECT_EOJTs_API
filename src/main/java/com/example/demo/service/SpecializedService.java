@@ -7,6 +7,7 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,7 @@ public class SpecializedService {
     }
 
     public List<Specialized> getAllSpecialized() {
-        List<Specialized> list = new ArrayList<>();
+        List<Specialized> list ;
         list = specializedRepository.findAll();
         if (list != null) {
             return list;

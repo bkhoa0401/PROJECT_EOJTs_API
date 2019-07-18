@@ -11,8 +11,11 @@ import java.util.List;
 @Repository
 public interface SupervisorRepository extends JpaRepository<Supervisor,String> {
 
-    @Query(value = "select s from Supervisor s where s.ojt_enrollment=?1")
-    List<Supervisor> findSupervisorsByOjt_enrollment(Ojt_Enrollment ojt_enrollment);
+    @Query(value = "select s from Supervisor s where s.ojt_enrollment=?1 and s.isActive='true'")
+    List<Supervisor> findSupervisorsByOjt_enrollmentAndActiveIsTrue(Ojt_Enrollment ojt_enrollment);
 
     Supervisor findByEmail(String email);
+
+    @Query(value = "select s from Supervisor s where s.email=?1 and s.ojt_enrollment=?2")
+    Supervisor findSupervisorByEmailAndOjt_enrollment(String email,Ojt_Enrollment ojt_enrollment);
 }

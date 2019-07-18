@@ -6,7 +6,11 @@ import com.example.demo.dto.Business_ListJobPostDTO;
 import com.example.demo.dto.Job_PostDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -58,6 +62,11 @@ public class BusinessController {
     @Autowired
     EvaluationService evaluationService;
 
+    @Autowired
+    SemesterService semesterService;
+
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
+
     @PostMapping("")
     public ResponseEntity<Void> saveBusiness(@RequestBody List<BusinessDTO> listBusinessDTO) throws Exception {
         for (int i = 0; i < listBusinessDTO.size(); i++) {
@@ -78,6 +87,7 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    //check semester //ok
     @PostMapping("/new")
     public ResponseEntity<Void> createNewBusiness(@RequestBody Business business) throws Exception {
 
@@ -95,7 +105,10 @@ public class BusinessController {
         users.setPassword(password);
         users.setActive(true);
 
+        Semester semester = semesterService.getSemesterCurrent();
+
         ojt_enrollment.setBusiness(business);
+        ojt_enrollment.setSemester(semester);
         ojtEnrollmentList.add(ojt_enrollment);
         business.setOjt_enrollments(ojtEnrollmentList);
 
@@ -117,10 +130,12 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    //check semester //ok
     @GetMapping("/getAllBusiness")
     @ResponseBody
     public ResponseEntity<List<Business>> getAllBusiness() {
-        List<Business> businessList = businessService.getAllBusiness();
+        //List<Business> businessList = businessService.getAllBusiness();
+        List<Business> businessList = businessService.getAllBusinessBySemester();
         if (businessList != null) {
             return new ResponseEntity<List<Business>>(businessList, HttpStatus.OK);
         } else {
@@ -209,34 +224,19 @@ public class BusinessController {
     }
 
     //get all post of all business
+    //check semester //ok
     @GetMapping("/getAllJobPostOfBusiness")
     @ResponseBody
     public ResponseEntity<List<Business_JobPostDTO>> getAllJobPostBusiness() {
-        List<Business> businessList = businessService.getAllBusiness();
-        List<Business_JobPostDTO> business_jobPostDTOList = new ArrayList<>();
-
-        for (int i = 0; i < businessList.size(); i++) {
-            Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
-            business_jobPostDTO.setBusiness(businessList.get(i));
-
-            //get instance ojt_enrollments
-            Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(businessList.get(i));
-            // business_jobPostDTO.setJob_postList(ojt_enrollment.getJob_posts());
-            for (int j = 0; j < ojt_enrollment.getJob_posts().size(); j++) {
-                Job_Post job_post = ojt_enrollment.getJob_posts().get(j);
-                business_jobPostDTO.setJob_post(job_post);
-                business_jobPostDTOList.add(business_jobPostDTO);
-
-                business_jobPostDTO = new Business_JobPostDTO();
-                business_jobPostDTO.setBusiness(businessList.get(i));
-            }
+        LOG.info("Getting all job post");
+        List<Business_JobPostDTO> business_jobPostDTOList = businessService.getAllJobPostOfBusinesses();
+        if (business_jobPostDTOList == null) {
+            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
-
-        Collections.sort(business_jobPostDTOList);
-
         return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOList, HttpStatus.OK);
     }
 
+    //check semester ok
     // create an invitation
     @PostMapping("/createInvitation")
     public ResponseEntity<Void> createInvitationForStudent(@RequestBody Invitation invitation
@@ -245,7 +245,6 @@ public class BusinessController {
         Business business = businessService.getBusinessByEmail(emailBusiness);
 
         Student student = studentService.getStudentByEmail(emailStudent);
-
 
         invitation.setStudent(student);
         invitation.setBusiness(business);
@@ -265,11 +264,14 @@ public class BusinessController {
     }
 
     //update info job post
+    //check semester //ok
     @PutMapping("/updateJobPost")
     public ResponseEntity<Void> updateJobPostOfBusiness(@RequestBody Job_Post job_post) {
         String businessEmail = getEmailFromToken();
-        Business business = businessService.getBusinessByEmail(businessEmail);
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(business);
+
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
+        Ojt_Enrollment ojt_enrollment =
+                ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(businessEmail, semesterCurrent.getId());
         job_post.setOjt_enrollment(ojt_enrollment);
 
 
@@ -287,12 +289,12 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester //ok
     //get ds chinh thuc cua cong ty
     @GetMapping("/getStudentsByBusiness")
     @ResponseBody
     public ResponseEntity<List<Student>> getListStudentByBusiness() {
         String emailBusiness = getEmailFromToken();
-
         List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
 
         if (studentList != null) {
@@ -322,6 +324,7 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester //ok
     //get all job post of a business for student
     @GetMapping("/getAllJobPostABusiness")
     @ResponseBody
@@ -330,7 +333,9 @@ public class BusinessController {
 
         Business business = businessService.getBusinessByEmail(businessEmail);
 
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(business);
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
+        Ojt_Enrollment ojt_enrollment =
+                ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(businessEmail, semesterCurrent.getId());
 
         List<Business_JobPostDTO> business_jobPostDTOList = new ArrayList<>();
 
@@ -351,6 +356,7 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester // ok
     //get all supervisor of business
     @GetMapping("/getAllSupervisorABusiness")
     @ResponseBody
@@ -364,6 +370,7 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester //ok
     // create a supervisor
     @PostMapping("/createSupervisor")
     public ResponseEntity<Void> createSupervisor(@RequestBody Supervisor supervisor) {
@@ -371,10 +378,6 @@ public class BusinessController {
         boolean result = false;
 
         result = supervisorService.createSupervisor(supervisor, email);
-
-        String password = usersService.getAlphaNumericString();
-
-        usersService.saveUser(new Users(supervisor.getEmail(), password));
         if (result) {
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
@@ -401,6 +404,7 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester ok
     //create job post
     @PostMapping("/createJobPost")
     public ResponseEntity<Void> createJobPost(@RequestBody Job_Post job_post) {
@@ -415,22 +419,23 @@ public class BusinessController {
     //get all events of business
     @GetMapping("/events")
     @ResponseBody
-    public ResponseEntity<List<Event>> getAllEventOfBusiness(){
-        String email=getEmailFromToken();
-        List<Event> events=eventService.getEventListOfBusiness(email);
-        if(events!=null){
+    public ResponseEntity<List<Event>> getAllEventOfBusiness() {
+        String email = getEmailFromToken();
+        List<Event> events = eventService.getEventListOfBusiness(email);
+        if (events != null) {
             Collections.sort(events);
-            return new ResponseEntity<List<Event>>(events,HttpStatus.OK);
+            return new ResponseEntity<List<Event>>(events, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester ok
     @GetMapping("/evaluations")
     @ResponseBody
-    public ResponseEntity<List<Evaluation>> getAllEvaluationOfBusiness(){
-        String email=getEmailFromToken();
+    public ResponseEntity<List<Evaluation>> getAllEvaluationOfBusiness() {
+        String email = getEmailFromToken();
 
-        List<Evaluation> evaluationList=evaluationService.getListEvaluationOfBusiness(email);
+        List<Evaluation> evaluationList = evaluationService.getListEvaluationOfBusiness(email);
         List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(email);
         List<Evaluation> overviewEvaluationList = new ArrayList<Evaluation>();
         int flag = 0;
@@ -440,7 +445,7 @@ public class BusinessController {
                 if (studentList.get(i).getCode().equals(evaluationList.get(j).getOjt_enrollment().getStudent().getCode())) {
                     overviewEvaluationList.add(evaluationList.get(j));
                     if (flag > 0) {
-                        for (int k = 1; k <= flag ; k++) {
+                        for (int k = 1; k <= flag; k++) {
                             Date date1 = overviewEvaluationList.get(overviewEvaluationList.size() - k).getTimeStart();
                             Date date2 = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k).getTimeStart();
                             if (date1.before(date2)) {

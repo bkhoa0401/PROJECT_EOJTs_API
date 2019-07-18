@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
 @Table(name = "Users")
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property  = "email")
 
-public class Users {
+public class Users implements Serializable {
 
     @Id
     @Column(name = "email", nullable = false, unique = true)

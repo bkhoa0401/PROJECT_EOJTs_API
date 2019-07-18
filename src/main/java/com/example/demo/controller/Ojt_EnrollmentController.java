@@ -1,12 +1,15 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Ojt_Enrollment;
+import com.example.demo.entity.Semester;
 import com.example.demo.service.Ojt_EnrollmentService;
+import com.example.demo.service.SemesterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +19,9 @@ public class Ojt_EnrollmentController {
 
     @Autowired
     Ojt_EnrollmentService ojt_enrollmentService;
+
+    @Autowired
+    SemesterService semesterService;
 
     @GetMapping
     public ResponseEntity<List<Ojt_Enrollment>> getAllOjt_Enrollment() throws Exception {
@@ -30,9 +36,17 @@ public class Ojt_EnrollmentController {
         return new ResponseEntity<>(ojtEnrollmentList, HttpStatus.OK);
     }
 
+    //check semester ok
     @GetMapping("/{email}")
-    public ResponseEntity<Integer> getIdOjt_Enrollment(@PathVariable String email){
-        return new ResponseEntity<Integer>(ojt_enrollmentService.getOjt_EnrollmentIdByBusinessEmail(email), HttpStatus.OK);
+    public ResponseEntity<Integer> getIdOjt_Enrollment(@PathVariable String email) {
+        Semester semester = semesterService.getSemesterCurrent();
+
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(email, semester.getId());
+        //return new ResponseEntity<Integer>(ojt_enrollmentService.getOjt_EnrollmentIdByBusinessEmail(email), HttpStatus.OK);
+        if (ojt_enrollment != null) {
+            return new ResponseEntity<Integer>(ojt_enrollment.getId(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
 }
