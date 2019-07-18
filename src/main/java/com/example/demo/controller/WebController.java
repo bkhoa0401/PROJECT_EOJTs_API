@@ -3,12 +3,10 @@ package com.example.demo.controller;
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.dto.StudentDTO;
 import com.example.demo.entity.Ojt_Enrollment;
+import com.example.demo.entity.Semester;
 import com.example.demo.entity.Student;
 import com.example.demo.entity.Users;
-import com.example.demo.service.JwtService;
-import com.example.demo.service.Ojt_EnrollmentService;
-import com.example.demo.service.StudentService;
-import com.example.demo.service.UsersService;
+import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +30,9 @@ public class WebController {
 
     @Autowired
     private Ojt_EnrollmentService ojt_enrollmentService;
+
+    @Autowired
+    private SemesterService semesterService;
 
 
     @GetMapping("")
@@ -61,7 +62,9 @@ public class WebController {
                         Student student = studentService.getStudentByEmail(users.getEmail());
                         StudentDTO studentDTO = new StudentDTO();
                         studentDTO.convertFromStudentEntity(student);
-                        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(studentDTO.getEmail());
+                        Semester semester = semesterService.getSemesterCurrent();
+
+                        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(studentDTO.getEmail(), semester.getId());
                         if (ojt_enrollment.getBusiness() != null) {
                             studentDTO.setIntership(true);
                             studentDTO.setBusinessName(ojt_enrollment.getBusiness().getBusiness_eng_name());

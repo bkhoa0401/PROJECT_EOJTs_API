@@ -91,10 +91,21 @@ public class BusinessService {
         List<Business> businessList = businessRepository.findTop5OrderByRateAverageDesc();
         List<Business> businessListTop5 = new ArrayList<>();
 
-        if (businessList != null) {
-            for (int i = 0; i < businessList.size(); i++) {
+        Semester semester = semesterService.getSemesterCurrent();
+        List<Ojt_Enrollment> ojt_enrollmentBusinessCurrent = new ArrayList<>();
+
+        for (int i = 0; i < businessList.size(); i++) {
+            Ojt_Enrollment ojt_enrollment =
+                    ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(businessList.get(i).getEmail(), semester.getId());
+            if (ojt_enrollment != null) {
+                ojt_enrollmentBusinessCurrent.add(ojt_enrollment);
+            }
+        }
+
+        if (ojt_enrollmentBusinessCurrent != null) {
+            for (int i = 0; i < ojt_enrollmentBusinessCurrent.size(); i++) {
                 if (i < 5) {
-                    businessListTop5.add(businessList.get(i));
+                    businessListTop5.add(ojt_enrollmentBusinessCurrent.get(i).getBusiness());
                 } else {
                     break;
                 }
