@@ -130,6 +130,7 @@ public class Student implements Serializable {
 
     @OneToMany(mappedBy = "student_proposed")
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
     private List<Business_Proposed> business_proposeds;
 
     public Student() {
