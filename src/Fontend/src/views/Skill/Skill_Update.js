@@ -27,11 +27,15 @@ import {
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import SimpleReactValidator from '../../validator/simple-react-validator';
 
 class Skill_Update extends Component {
 
     constructor(props) {
         super(props);
+        this.validator = new SimpleReactValidator();
         this.state = {
             id: '',
             name: '',
@@ -82,6 +86,30 @@ class Skill_Update extends Component {
         })
     }
 
+    handleConfirm = () => {
+        const { name, specializedItem } = this.state;
+        console.log(name, specializedItem);
+
+        if (this.validator.allValid()) {
+            confirmAlert({
+                title: 'Xác nhận',
+                message: `Bạn chắc chắn muốn cập nhật kỹ năng '${name}' thuộc ngành '${specializedItem.name}' ?`,
+                buttons: [
+                    {
+                        label: 'Đồng ý',
+                        onClick: () => this.handleSubmit()
+                    },
+                    {
+                        label: 'Hủy bỏ',
+                    }
+                ]
+            });
+        } else {
+            this.validator.showMessages();
+            this.forceUpdate();
+        }
+    };
+
     handleSubmit = async () => {
         const { id, name, status, specializedItem } = this.state;
         const specialized = {
@@ -97,13 +125,6 @@ class Skill_Update extends Component {
         const result = await ApiServices.Put('/skill', skill);
         if (result.status == 200) {
             Toastify.actionSuccess("Cập nhật kỹ năng thành công!");
-            setTimeout(
-                function () {
-                    this.props.history.push('/skill');
-                }
-                    .bind(this),
-                2000
-            );
         } else {
             Toastify.actionFail("Cập nhật kỹ năng thất bại!");
         }
@@ -129,6 +150,9 @@ class Skill_Update extends Component {
                                         </Col>
                                         <Col xs="12" md="10">
                                             <Input value={this.state.name} onChange={this.handleInput} type="text" id="name" name="name" placeholder="Nhập tên kỹ năng" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Tên kỹ năng', this.state.name, 'required|max:20')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -151,7 +175,7 @@ class Skill_Update extends Component {
                             <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Cập nhật</Button>
+                                        <Button onClick={() => this.handleConfirm()} type="submit" color="primary" block>Cập nhật</Button>
                                     </Col>
                                     <Col xs="3" sm="3">
                                         <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>

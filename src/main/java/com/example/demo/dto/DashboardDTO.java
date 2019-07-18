@@ -1,58 +1,46 @@
 package com.example.demo.dto;
 
 import com.example.demo.entity.Business;
+import com.example.demo.entity.Evaluation;
+import com.example.demo.entity.Task;
+
+import java.util.List;
 
 public class DashboardDTO {
-    private float percentTaskDone;
-    private int countEvaluation;
-    private int informMessageIsNotRead;
-    private Business business;
-
-    public float getPercentTaskDone() {
-        return percentTaskDone;
-    }
-
-    public void setPercentTaskDone(float percentTaskDone) {
-        this.percentTaskDone = percentTaskDone;
-    }
-
-    public int getCountEvaluation() {
-        return countEvaluation;
-    }
-
-    public void setCountEvaluation(int countEvaluation) {
-        this.countEvaluation = countEvaluation;
-    }
-
-    public int getInformMessageIsNotRead() {
-        return informMessageIsNotRead;
-    }
-
-    public void setInformMessageIsNotRead(int informMessageIsNotRead) {
-        this.informMessageIsNotRead = informMessageIsNotRead;
-    }
-
-    public DashboardDTO(float percentTaskDone, int countEvaluation, int informMessageIsNotRead) {
-        this.percentTaskDone = percentTaskDone;
-        this.countEvaluation = countEvaluation;
-        this.informMessageIsNotRead = informMessageIsNotRead;
-    }
+    private List<Task> taskList;
+    private List<Evaluation> evaluationList;
+    private int unReadInformessage;
 
     public DashboardDTO() {
     }
 
-    public DashboardDTO(float percentTaskDone, int countEvaluation, int informMessageIsNotRead, Business business) {
-        this.percentTaskDone = percentTaskDone;
-        this.countEvaluation = countEvaluation;
-        this.informMessageIsNotRead = informMessageIsNotRead;
-        this.business = business;
+    public DashboardDTO(List<Task> taskList, List<Evaluation> evaluationList, int unReadInformessage) {
+        this.taskList = taskList;
+        this.evaluationList = evaluationList;
+        this.unReadInformessage = unReadInformessage;
     }
 
-    public Business getBusiness() {
-        return business;
+    public List<Task> getTaskList() {
+        return taskList;
     }
 
-    public void setBusiness(Business business) {
-        this.business = business;
+    public void setTaskList(List<Task> taskList) {
+        this.taskList = taskList;
+    }
+
+    public List<Evaluation> getEvaluationList() {
+        return evaluationList;
+    }
+
+    public void setEvaluationList(List<Evaluation> evaluationList) {
+        this.evaluationList = evaluationList;
+    }
+
+    public int getUnReadInformessage() {
+        return unReadInformessage;
+    }
+
+    public void setUnReadInformessage(int unReadInformessage) {
+        this.unReadInformessage = unReadInformessage;
     }
 }

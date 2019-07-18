@@ -29,18 +29,22 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import SimpleReactValidator from '../../validator/simple-react-validator';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 class Hr_Task_Create extends Component {
 
     constructor(props) {
         super(props);
+        this.validator = new SimpleReactValidator();
         this.state = {
+            loading: true,
             title: '',
             description: '',
             time_end: '',
-            level_task: '',
+            level_task: 'EASY',
             priority: '',
-            state: false,
+            status: 'NOTSTART',
             students: [],
             studentItem: {},
         }
@@ -52,6 +56,7 @@ class Hr_Task_Create extends Component {
             this.setState({
                 students,
                 studentItem: students[0],
+                loading: false
             });
         }
     }
@@ -63,7 +68,12 @@ class Hr_Task_Create extends Component {
             await this.setState({
                 studentItem: students[value]
             })
-        } else {
+        } else if (name.includes('level_task')) {
+            await this.setState({
+                level_task: value
+            })
+        }
+        else {
             await this.setState({
                 [name]: value
             })
@@ -79,14 +89,14 @@ class Hr_Task_Create extends Component {
             title: '',
             description: '',
             time_end: '',
-            level_task: '',
+            level_task: 'EASY',
             priority: '',
             studentItem: this.state.students[0],
         })
     }
 
     handleSubmit = async () => {
-        const { title, description, time_end, level_task, priority, state, studentItem } = this.state;
+        const { title, description, time_end, level_task, priority, status, studentItem } = this.state;
         const emailStudent = studentItem.email;
         const task = {
             title,
@@ -94,114 +104,149 @@ class Hr_Task_Create extends Component {
             time_end,
             level_task,
             priority,
-            state
+            status
         }
+        console.log(task);
 
-        console.log('TASK', task);
-
-        const result = await ApiServices.Post(`/supervisor?emailStudent=${emailStudent}`, task);
-        if (result.status == 201) {
-            Toastify.actionSuccess("Tạo nhiệm vụ mới thành công!");
+        if (this.validator.allValid()) {
+            this.setState({
+                loading: true
+            })
+            const result = await ApiServices.Post(`/supervisor?emailStudent=${emailStudent}`, task);
+            if (result.status == 201) {
+                Toastify.actionSuccess("Tạo nhiệm vụ mới thành công!");
+                this.setState({
+                    loading: false
+                })
+            } else {
+                Toastify.actionFail("Tạo nhiệm vụ mới thất bại!");
+                this.setState({
+                    loading: false
+                })
+            }
         } else {
-            Toastify.actionFail("Tạo nhiệm vụ mới thất bại!");
+            this.validator.showMessages();
+            this.forceUpdate();
         }
     }
 
 
     render() {
-        const { title, description, time_end, level_task, priority, students, studentItem } = this.state;
+        const { title, description, time_end, level_task, priority, students, studentItem, loading } = this.state;
         return (
-            <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" sm="12">
-                        <Card>
-                            <CardHeader>
-                                <strong>Tạo nhiệm vụ mới</strong>
-                            </CardHeader>
-                            <CardBody>
-                                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <Label htmlFor="title">Tên nhiệm vụ</Label>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value={title} onChange={this.handleInput} type="text" id="title" name="title" placeholder="Tên nhiệm vụ" />
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <Label htmlFor="student">Giao cho</Label>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input onChange={this.handleInput} type="select" name="student">
-                                                {students && students.map((student, i) => {
-                                                    return (
-                                                        <option value={i} selected={studentItem.email === students[i].email}>{student.name}</option>
-                                                    )
-                                                })}
-                                            </Input>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <Label htmlFor="description">Mô tả</Label>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <CKEditor
-                                                editor={ClassicEditor}
-                                                data={description}
-                                                onChange={(event, editor) => {
-                                                    this.setState({
-                                                        description: editor.getData(),
-                                                    })
-                                                }}
-                                            />
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <Label htmlFor="time_end">Thời hạn hoàn thành</Label>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value={time_end} onChange={this.handleInput} type="date" id="time_end" name="time_end" placeholder="Thời hạn hoàn thành" />
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <Label htmlFor="level_task">Mức độ</Label>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value={level_task} onChange={this.handleInput} type="text" id="level_task" name="level_task" placeholder="Mức độ" />
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <Label htmlFor="priority">Độ ưu tiên</Label>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value={priority} onChange={this.handleInput} type="number" id="priority" name="priority" placeholder="Độ ưu tiên" />
-                                        </Col>
-                                    </FormGroup>
-                                </Form>
-                                <ToastContainer />
-                            </CardBody>
-                            <CardFooter className="p-4">
-                                <Row>
-                                    <Col xs="3" sm="3">
-                                        <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Tạo nhiệm vụ</Button>
-                                    </Col>
-                                    <Col xs="3" sm="3">
-                                        <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
-                                    </Col>
-                                    <Col xs="3" sm="3">
-                                        <Button color="success" block onClick={() => this.handleDirect('/hr-task')}>Trở về</Button>
-                                    </Col>
-                                </Row>
-                            </CardFooter>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
+            loading.toString() === 'true' ? (
+                SpinnerLoading.showHashLoader(loading)
+            ) : (
+                    <div className="animated fadeIn">
+                        <Row>
+                            <Col xs="12" sm="12">
+                                <Card>
+                                    <CardHeader>
+                                        <strong>Tạo nhiệm vụ mới</strong>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <Label htmlFor="title">Tên nhiệm vụ</Label>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={title} onChange={this.handleInput} type="text" id="title" name="title" placeholder="Tên nhiệm vụ" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Tên nhiệm vụ', title, 'required|max:50')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <Label htmlFor="student">Giao cho</Label>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input onChange={this.handleInput} type="select" name="student">
+                                                        {students && students.map((student, i) => {
+                                                            return (
+                                                                <option value={i} selected={studentItem.email === students[i].email}>{student.name}</option>
+                                                            )
+                                                        })}
+                                                    </Input>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <Label htmlFor="description">Mô tả</Label>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <CKEditor
+                                                        editor={ClassicEditor}
+                                                        data={description}
+                                                        onChange={(event, editor) => {
+                                                            this.setState({
+                                                                description: editor.getData(),
+                                                            })
+                                                        }}
+                                                    />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Mô tả', description, 'required|max:255')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <Label htmlFor="time_end">Thời hạn hoàn thành</Label>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={time_end} onChange={this.handleInput} type="date" id="time_end" name="time_end" placeholder="Thời hạn hoàn thành" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Thời hạn hoàn thành', time_end, 'required')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <Label htmlFor="level_task">Mức độ</Label>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    {/* <Input value={level_task} onChange={this.handleInput} type="text" id="level_task" name="level_task" placeholder="Mức độ" /> */}
+                                                    <Input onChange={this.handleInput} type="select" name="level_task">
+                                                        <option selected={level_task === 'EASY'} value='EASY'>Dễ</option>
+                                                        <option selected={level_task === 'NORMAL'} value='NORMAL'>Bình thường</option>
+                                                        <option selected={level_task === 'DIFFICULT'} value='DIFFICULT'>Khó</option>
+                                                    </Input>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <Label htmlFor="priority">Độ ưu tiên</Label>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={priority} onChange={this.handleInput} type="number" id="priority" name="priority" placeholder="Độ ưu tiên" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {/* <i class="fa fa-exclamation-circle" /> */}
+                                                        {this.validator.message('Độ ưu tiên', priority, 'required|numberic')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                        </Form>
+                                        <ToastContainer />
+                                    </CardBody>
+                                    <CardFooter className="p-4">
+                                        <Row>
+                                            <Col xs="3" sm="3">
+                                                <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Tạo nhiệm vụ</Button>
+                                            </Col>
+                                            <Col xs="3" sm="3">
+                                                <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
+                                            </Col>
+                                            <Col xs="3" sm="3">
+                                                <Button color="success" block onClick={() => this.handleDirect('/hr-task')}>Trở về</Button>
+                                            </Col>
+                                        </Row>
+                                    </CardFooter>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                )
         );
     }
 }

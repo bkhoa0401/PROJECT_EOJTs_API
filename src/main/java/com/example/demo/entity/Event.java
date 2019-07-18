@@ -1,6 +1,5 @@
 package com.example.demo.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -40,14 +39,20 @@ public class Event implements Comparable<Event> {
     @JsonIgnore
     private Business business;
 
-    @ManyToMany(mappedBy = "events")
+    //@ManyToMany(mappedBy = "events")
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "student_event",
+            joinColumns = {
+                    @JoinColumn(name = "event_id")},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "student_email")}
+    )
 //    @JsonIgnore
-//    @JsonBackReference
     private List<Student> students;
 
     @Column(name = "isRead")
     private boolean isRead;
-
 
     public String getTitle() {
         return title;
@@ -111,6 +116,9 @@ public class Event implements Comparable<Event> {
 
     public void setRead(boolean read) {
         isRead = read;
+    }
+
+    public Event() {
     }
 
     @Override

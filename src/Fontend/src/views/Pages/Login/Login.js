@@ -25,15 +25,16 @@ class Login extends Component {
   }
 
   handleKeyDown = (event) => {
-    if(event.key === 'Enter') {
+    if (event.key === 'Enter') {
       this.handleLogin();
     }
   }
+  
   handleLogin = async () => {
     const { email, password } = this.state;
     const result = await AuthService.login(email, password);
 
-    if (result) {
+    if (result === 'true') {
       const token = localStorage.getItem('id_token');
       const decoded = decode(token);
       const role = decoded.role;
@@ -45,9 +46,10 @@ class Login extends Component {
       } else if (role === 'ROLE_SUPERVISOR') {
         this.props.history.push('/supervisor');
       }
-
-    } else {
+    } else if (result === 'false') {
       Toastify.actionFail("Thông tin chưa chính xác! Vui lòng thử lại!");
+    } else if (result === 'disabled') {
+      Toastify.actionFail("Tài khoản của bạn đã bị vô hiệu hóa!");
     }
   }
 
@@ -79,7 +81,7 @@ class Login extends Component {
                             <i className="icon-user"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input onChange={this.handleInput} value={email} type="email" placeholder="Email" autoComplete="email" name='email' />
+                        <Input onChange={this.handleInput} onKeyDown={this.handleKeyDown} value={email} type="email" placeholder="Email" autoComplete="email" name='email' />
                       </InputGroup>
                       <InputGroup className="mb-4">
                         <InputGroupAddon addonType="prepend">
@@ -105,7 +107,7 @@ class Login extends Component {
                   <CardBody className="text-center">
                     <div>
                       <h2>Hệ thống quản lí OJT</h2>
-                      <img style={{width: '300px', height:'110px'}} src="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410"/>
+                      <img style={{ width: '300px', height: '110px' }} src="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410" />
                     </div>
                   </CardBody>
                 </Card>

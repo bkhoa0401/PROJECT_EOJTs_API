@@ -1,15 +1,23 @@
 package com.example.demo.service;
 
+import com.example.demo.config.Status;
 import com.example.demo.entity.*;
+import com.example.demo.repository.Ojt_EnrollmentRepository;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.SupervisorRepository;
+import com.example.demo.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class StudentService {
@@ -27,6 +35,15 @@ public class StudentService {
 
     @Autowired
     BusinessService businessService;
+
+    @Autowired
+    TaskService taskService;
+
+    @Autowired
+    TaskRepository taskRepository;
+
+    @Autowired
+    Ojt_EnrollmentService ojt_enrollmentService;
 
     public Student getStudentByEmail(String email) {
         Student student = studentRepository.findByEmail(email);
@@ -118,23 +135,32 @@ public class StudentService {
         return false;
     }
 
-    public boolean updateStatusOptionOfStudent(int numberOfOption, boolean statusOfOption, String emailStudent) {
+    public boolean updateStatusOptionOfStudent(List<Integer> numberOfOption, boolean statusOfOption, String emailStudent) {
         Student student = getStudentByEmail(emailStudent);
+        boolean flag = false;
+
         if (student != null) {
-            if (numberOfOption == 1) {
-                student.setAcceptedOption1(statusOfOption);
-                student.setInterviewed1(true);
-                studentRepository.save(student);
-                return true;
-            }
-            if (numberOfOption == 2) {
-                student.setAcceptedOption2(statusOfOption);
-                student.setInterviewed2(true);
-                studentRepository.save(student);
-                return true;
+            for(int i = 0; i < numberOfOption.size(); i++) {
+                if(numberOfOption.get(i) == 1) {
+                    student.setAcceptedOption1(statusOfOption);
+                    student.setInterviewed1(true);
+                    studentRepository.save(student);
+                    flag = true;
+                }
+                if (numberOfOption.get(i) == 2) {
+                    student.setAcceptedOption2(statusOfOption);
+                    student.setInterviewed2(true);
+                    studentRepository.save(student);
+                    flag = true;
+                }
             }
         }
-        return false;
+
+        if (flag) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
@@ -233,6 +259,15 @@ public class StudentService {
         return false;
     }
 
+    public Business getBusinessOfStudent(String studentEmail) {
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(studentEmail);
+        Business business = ojt_enrollment.getBusiness();
+        if (business != null) {
+            return business;
+        }
+        return null;
+    }
+
     public List<Business> getBusinessByOptionStudent(String studentEmail) {
 
         Student student = studentRepository.findByEmail(studentEmail);
@@ -261,5 +296,24 @@ public class StudentService {
         return null;
     }
 
+
+    public boolean updateInformationStudent(String email, String name, String phone, boolean gender, String address, String birthDate) throws ParseException {
+        Student student = studentRepository.findByEmail(email);
+        if (student != null) {
+            student.setName(name);
+            student.setPhone(phone);
+            student.setGender(gender);
+            student.setAddress(address);
+
+            SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
+            java.util.Date date = sdf1.parse(birthDate);
+            java.sql.Date dob = new java.sql.Date(date.getTime());
+
+            student.setDob(dob);
+            studentRepository.save(student);
+            return true;
+        }
+        return false;
+    }
 
 }

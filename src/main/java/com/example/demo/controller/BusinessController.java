@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.BusinessDTO;
-import com.example.demo.dto.Business_JobPostDTO;
-import com.example.demo.dto.Business_ListJobPostDTO;
-import com.example.demo.dto.Job_PostDTO;
+import com.example.demo.config.Sms;
+import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -53,6 +53,9 @@ public class BusinessController {
 
     @Autowired
     EventService eventService;
+
+    @Autowired
+    EvaluationService evaluationService;
 
     @PostMapping("")
     public ResponseEntity<Void> saveBusiness(@RequestBody List<BusinessDTO> listBusinessDTO) throws Exception {
@@ -128,6 +131,17 @@ public class BusinessController {
     @ResponseBody
     public ResponseEntity<Business> getBusinessByEmail() {
         String email = getEmailFromToken();
+        Business business = businessService.getBusinessByEmail(email);
+        if (business != null) {
+            return new ResponseEntity<Business>(business, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/business")
+    @ResponseBody
+    public ResponseEntity<Business> getBusinessByEmail(@RequestParam String email) {
         Business business = businessService.getBusinessByEmail(email);
         if (business != null) {
             return new ResponseEntity<Business>(business, HttpStatus.OK);
@@ -240,7 +254,7 @@ public class BusinessController {
 
     // update status of option student when interview
     @PutMapping("/updateStatusOfStudent")
-    public ResponseEntity<Void> updateStatusOfOptionStudent(@RequestParam int numberOfOption, @RequestParam boolean statusOfOption
+    public ResponseEntity<Void> updateStatusOfOptionStudent(@RequestParam List<Integer> numberOfOption, @RequestParam boolean statusOfOption
             , @RequestParam String emailOfStudent) {
         boolean updateStatus = studentService.updateStatusOptionOfStudent(numberOfOption, statusOfOption, emailOfStudent);
         if (updateStatus == true) {
@@ -400,14 +414,69 @@ public class BusinessController {
     //get all events of business
     @GetMapping("/events")
     @ResponseBody
-    public ResponseEntity<List<Event>> getAllEventOfBusiness(){
-        String email=getEmailFromToken();
-        List<Event> events=eventService.getEventListOfBusiness(email);
-        if(events!=null){
+    public ResponseEntity<List<Event>> getAllEventOfBusiness() {
+        String email = getEmailFromToken();
+        List<Event> events = eventService.getEventListOfBusiness(email);
+        if (events != null) {
             Collections.sort(events);
-            return new ResponseEntity<List<Event>>(events,HttpStatus.OK);
+            return new ResponseEntity<List<Event>>(events, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/evaluations")
+    @ResponseBody
+    public ResponseEntity<List<Evaluation>> getAllEvaluationOfBusiness() {
+        String email = getEmailFromToken();
+
+        List<Evaluation> evaluationList = evaluationService.getListEvaluationOfBusiness(email);
+        List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(email);
+        List<Evaluation> overviewEvaluationList = new ArrayList<Evaluation>();
+        int flag = 0;
+        for (int i = 0; i < studentList.size(); i++) {
+            flag = 0;
+            for (int j = 0; j < evaluationList.size(); j++) {
+                if (studentList.get(i).getCode().equals(evaluationList.get(j).getOjt_enrollment().getStudent().getCode())) {
+                    overviewEvaluationList.add(evaluationList.get(j));
+                    if (flag > 0) {
+                        for (int k = 1; k <= flag; k++) {
+                            Date date1 = overviewEvaluationList.get(overviewEvaluationList.size() - k).getTimeStart();
+                            Date date2 = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k).getTimeStart();
+                            if (date1.before(date2)) {
+                                Evaluation tmpEvaluation = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k);
+                                overviewEvaluationList.set(overviewEvaluationList.size() - 1 - k, overviewEvaluationList.get(overviewEvaluationList.size() - k));
+                                overviewEvaluationList.set(overviewEvaluationList.size() - k, tmpEvaluation);
+                            }
+                        }
+                    }
+                    flag++;
+                }
+            }
+            if (flag < 4) {
+                for (int l = flag; l < 4; l++) {
+                    overviewEvaluationList.add(null);
+                }
+            }
+        }
+        if (overviewEvaluationList != null) {
+            return new ResponseEntity<List<Evaluation>>(overviewEvaluationList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+
+    @PostMapping("/sms")
+    @ResponseBody
+    public ResponseEntity<String> sendSms(@RequestBody SmsDTO smsDTO) {
+        Sms sms = new Sms();
+
+        try {
+            sms.sendSMS(smsDTO.getReceiverNumber(), smsDTO.getContent(), 2, "EOJTs");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     //get email from token

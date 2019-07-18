@@ -9,7 +9,7 @@ import java.sql.Date;
 
 @Entity
 @Table(name = "evaluation")
-public class Evaluation {
+public class Evaluation implements  Comparable<Evaluation> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -30,15 +30,14 @@ public class Evaluation {
     @Column(name = "remark", columnDefinition = "NVARCHAR(MAX)")
     private String remark;
 
-    @Column(name = "student_code")
-    private String student_code;
+//    @Column(name = "student_code")
+//    private String student_code;
 
     @Column(name = "title", columnDefinition = "NVARCHAR(255)")
     private String title;
 
     @Column(name = "timeCreated")
     private Date timeCreated;
-
 
     @ManyToOne
     @JsonIgnore
@@ -51,6 +50,13 @@ public class Evaluation {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "ojt_enrollment_id")
     private Ojt_Enrollment  ojt_enrollment;
+
+    @Column(name = "timeStart")
+    private Date timeStart;
+
+    @Column(name = "timeEnd")
+    private Date timeEnd;
+
 
     public String getProject_name() {
         return project_name;
@@ -92,13 +98,17 @@ public class Evaluation {
         this.remark = remark;
     }
 
-    public String getStudent_code() {
-        return student_code;
+    public String getSupervisor_email() {
+        return supervisor.getEmail();
     }
 
-    public void setStudent_code(String student_code) {
-        this.student_code = student_code;
-    }
+//    public String getStudent_code() {
+//        return student_code;
+//    }
+//
+//    public void setStudent_code(String student_code) {
+//        this.student_code = student_code;
+//    }
 
     public String getTitle() {
         return title;
@@ -130,5 +140,34 @@ public class Evaluation {
 
     public void setOjt_enrollment(Ojt_Enrollment ojt_enrollment) {
         this.ojt_enrollment = ojt_enrollment;
+    }
+
+    public Date getTimeStart() {
+        return timeStart;
+    }
+
+    public void setTimeStart(Date timeStart) {
+        this.timeStart = timeStart;
+    }
+
+    public Date getTimeEnd() {
+        return timeEnd;
+    }
+
+    public void setTimeEnd(Date timeEnd) {
+        this.timeEnd = timeEnd;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public int compareTo(Evaluation evaluation) {
+        return this.getTimeCreated().compareTo(evaluation.timeCreated);
     }
 }

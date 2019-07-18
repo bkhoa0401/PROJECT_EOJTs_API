@@ -27,16 +27,22 @@ import {
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import SimpleReactValidator from '../../validator/simple-react-validator';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 class Skill_Create extends Component {
 
     constructor(props) {
         super(props);
+        this.validator = new SimpleReactValidator();
         this.state = {
             name: '',
             status: 'true',
             specializeds: [],
             specializedItem: {},
+            loading: true
         }
     }
 
@@ -46,6 +52,7 @@ class Skill_Create extends Component {
             this.setState({
                 specializeds,
                 specializedItem: specializeds[0],
+                loading: false
             });
         }
     }
@@ -78,6 +85,9 @@ class Skill_Create extends Component {
     }
 
     handleSubmit = async () => {
+        this.setState({
+            loading: true
+        })
         const { name, status, specializedItem } = this.state;
         const specialized = {
             id: specializedItem.id
@@ -91,73 +101,103 @@ class Skill_Create extends Component {
         const result = await ApiServices.Post('/skill', skill);
         if (result.status == 200) {
             Toastify.actionSuccess("Tạo kỹ năng mới thành công!");
-            setTimeout(
-                function () {
-                    this.props.history.push('/skill');
-                }
-                    .bind(this),
-                2000
-            );
+            this.setState({
+                loading: false
+            })
         } else {
             Toastify.actionFail("Tạo kỹ năng mới thất bại!");
+            this.setState({
+                loading: false
+            })
         }
     }
 
+    handleConfirm = () => {
+        const { name, specializedItem } = this.state;
+        console.log(name, specializedItem);
+
+        if (this.validator.allValid()) {
+            confirmAlert({
+                title: 'Xác nhận',
+                message: `Bạn chắc chắn muốn tạo kỹ năng '${name}' thuộc ngành '${specializedItem.name}' ?`,
+                buttons: [
+                    {
+                        label: 'Đồng ý',
+                        onClick: () => this.handleSubmit()
+                    },
+                    {
+                        label: 'Hủy bỏ',
+                    }
+                ]
+            });
+        } else {
+            this.validator.showMessages();
+            this.forceUpdate();
+        }
+    };
+
 
     render() {
-        const { specializeds, specializedItem } = this.state;
+        const { specializeds, specializedItem, loading } = this.state;
         return (
-            <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" sm="12">
-                        <Card>
-                            <CardHeader>
-                                <strong>Tạo kỹ năng mới</strong>
-                            </CardHeader>
-                            <CardBody>
-                                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <Label htmlFor="name">Tên kỹ năng</Label>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value={this.state.name} onChange={this.handleInput} type="text" id="name" name="name" placeholder="Nhập tên kỹ năng" />
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <Label htmlFor="specialized">Ngành</Label>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input onChange={this.handleInput} type="select" name="specialized">
-                                                {specializeds && specializeds.map((specialized, i) => {
-                                                    return (
-                                                        <option value={i} selected={specializedItem.id == i + 1}>{specialized.name}</option>
-                                                    )
-                                                })}
-                                            </Input>
-                                        </Col>
-                                    </FormGroup>
-                                </Form>
-                                <ToastContainer />
-                            </CardBody>
-                            <CardFooter className="p-4">
-                                <Row>
-                                    <Col xs="3" sm="3">
-                                        <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Tạo kỹ năng</Button>
-                                    </Col>
-                                    <Col xs="3" sm="3">
-                                        <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
-                                    </Col>
-                                    <Col xs="3" sm="3">
-                                        <Button color="success" block onClick={() => this.handleDirect('/skill')}>Trở về</Button>
-                                    </Col>
-                                </Row>
-                            </CardFooter>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
+            loading.toString() === 'true' ? (
+                SpinnerLoading.showHashLoader(loading)
+            ) : (
+                    <div className="animated fadeIn">
+                        <Row>
+                            <Col xs="12" sm="12">
+                                <Card>
+                                    <CardHeader>
+                                        <strong>Tạo kỹ năng mới</strong>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <Label htmlFor="name">Tên kỹ năng</Label>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={this.state.name} onChange={this.handleInput} type="text" id="name" name="name" placeholder="Nhập tên kỹ năng" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Tên kỹ năng', this.state.name, 'required|max:20')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <Label htmlFor="specialized">Ngành</Label>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input onChange={this.handleInput} type="select" name="specialized">
+                                                        {specializeds && specializeds.map((specialized, i) => {
+                                                            return (
+                                                                <option value={i} selected={specializedItem.id == i + 1}>{specialized.name}</option>
+                                                            )
+                                                        })}
+                                                    </Input>
+                                                </Col>
+                                            </FormGroup>
+                                        </Form>
+                                        <ToastContainer />
+                                    </CardBody>
+                                    <CardFooter className="p-4">
+                                        <Row>
+                                            <Col xs="3" sm="3">
+                                                <Button onClick={() => this.handleConfirm()} type="submit" color="primary" block>Tạo kỹ năng</Button>
+                                            </Col>
+                                            <Col xs="3" sm="3">
+                                                <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
+                                            </Col>
+                                            <Col xs="3" sm="3">
+                                                <Button color="success" block onClick={() => this.handleDirect('/skill')}>Trở về</Button>
+                                            </Col>
+                                        </Row>
+                                    </CardFooter>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                )
         );
     }
 }

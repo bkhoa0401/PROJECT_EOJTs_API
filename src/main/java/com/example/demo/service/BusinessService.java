@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.entity.*;
 import com.example.demo.repository.BusinessRepository;
+import com.example.demo.repository.EvaluationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class BusinessService {
 
     @Autowired
     StudentService studentService;
+
+    @Autowired
+    EvaluationRepository evaluationRepository;
 
     public void saveBusiness(Business business) {
         businessRepository.save(business);
@@ -113,11 +117,11 @@ public class BusinessService {
                 float result = studentService.compareSkillsStudentAndSkillsJobPost(skillListOfAStudent, skills);
 
                 if (result >= 0.5) {
-                    if(!studentListSuggest.contains(studentList.get(i))){
+                    if (!studentListSuggest.contains(studentList.get(i))) {
                         studentListSuggest.add(studentList.get(i));
                     }
                 }
-                skillListOfAJobPost=new ArrayList<>();
+                skillListOfAJobPost = new ArrayList<>();
             }
 
         }
@@ -133,5 +137,26 @@ public class BusinessService {
         }
         return list;
     }
+
+    public void updateRateNumber(String email, int rate) {
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        Business business = ojt_enrollment.getBusiness();
+
+        int countRate = business.getRateCount();
+        float currentRate = business.getRateAverage();
+        if (currentRate == 0) {
+
+        }
+        float average = (currentRate + (float) rate) / 2;
+        if (currentRate == 0) {
+            business.setRateAverage(rate);
+        } else {
+            business.setRateAverage(average);
+        }
+        business.setRateCount(++countRate);
+
+        businessRepository.save(business);
+    }
+
 
 }

@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.Business_JobPostDTO;
-import com.example.demo.dto.Business_ListJobPostDTO;
-import com.example.demo.dto.DashboardDTO;
-import com.example.demo.dto.Job_PostDTO;
+import com.example.demo.config.Status;
+import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -297,18 +296,26 @@ public class StudentController {
     //da fix
     @GetMapping("/getListStudentIsInvited")
     @ResponseBody
-    public ResponseEntity<List<Student>> getListStudentOfBusiness() {
+    public ResponseEntity<List<Student_InvitationDTO>> getListStudentOfBusiness() {
         String email = getEmailFromToken();
         List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);
+        List<Student> studentListIsInvitedInFunc = new ArrayList<>();
+        List<Student_InvitationDTO> studentList = new ArrayList<>();
 
-        List<Student> studentList = new ArrayList<>();
         for (int i = 0; i < invitationList.size(); i++) {
+            Student_InvitationDTO student_invitationDTO = new Student_InvitationDTO();
             Student student = studentService.getStudentIsInvited(invitationList.get(i).getStudent().getEmail());
-            studentList.add(student);
+            List<Invitation> invitations = invitationService.getListInvitationByStudentEmail(student.getEmail());
+            student_invitationDTO.setInvitations(invitations);
+            student_invitationDTO.setStudent(student);
+            studentList.add(student_invitationDTO);
+
+
+            studentListIsInvitedInFunc.add(student);
         }
         if (studentList != null) {
-            studentListIsInvited = studentList;
-            return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
+            studentListIsInvited = studentListIsInvitedInFunc;
+            return new ResponseEntity<List<Student_InvitationDTO>>(studentList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -448,7 +455,7 @@ public class StudentController {
         List<Business_JobPostDTO> business_jobPostDTOList = new ArrayList<>();
 
         List<Job_Post> job_postList = studentService.getSuggestListJobPost(email);
-        for (int i = 0; i < job_postList.size(); i++) { 
+        for (int i = 0; i < job_postList.size(); i++) {
             Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
             business_jobPostDTO.setBusiness(job_postList.get(i).getOjt_enrollment().getBusiness());
 
@@ -499,6 +506,16 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/business")
+    @ResponseBody
+    public ResponseEntity<Business> getBusinessOfSutdent(@RequestParam String email) {
+        Business business = studentService.getBusinessOfStudent(email);
+        if (business != null) {
+            return new ResponseEntity<Business>(business, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     @GetMapping("/businesses")
     @ResponseBody
     public ResponseEntity<List<Business>> getBusinessesOfStudent() {
@@ -535,7 +552,7 @@ public class StudentController {
         for (int i = 0; i < studentList.size(); i++) {
             Student student = studentList.get(i);
             for (int j = 0; j < studentListIsInvited.size(); j++) {
-                Student studentIsInvited = studentListIsInvited.get(j);
+                    Student studentIsInvited = studentListIsInvited.get(j);
                 if (student.getEmail().equals(studentIsInvited.getEmail())) {
                     studentList.remove(student); // xoa dua da duoc moi ra khoi list suggest
                 }
@@ -579,27 +596,122 @@ public class StudentController {
     public ResponseEntity<DashboardDTO> getDashboardOfStudent() {
         String email = getEmailFromToken();
 
-        Ojt_Enrollment ojt_enrollment=ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
 
         DashboardDTO dashboardDTO = new DashboardDTO();
 
-        float percentTaskDoneOfStudent = taskService.getPercentTaskDoneOfStudent(email);
-        if(!Float.isNaN(percentTaskDoneOfStudent)){
-            dashboardDTO.setPercentTaskDone(percentTaskDoneOfStudent*100);
-        }else{
-            dashboardDTO.setPercentTaskDone(0);
+        List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(email);
+        if (evaluationList == null) {
+            evaluationList = new ArrayList<>();
+        }
+        dashboardDTO.setEvaluationList(evaluationList);
+        
+        int countEventIsNotRead = eventService.countEventIsNotRead(email);
+        dashboardDTO.setUnReadInformessage(countEventIsNotRead);
+
+        List<Task> taskList = taskService.findTaskByStudentEmail(email);
+        if (taskList == null) {
+            taskList = new ArrayList<>();
+        }
+        dashboardDTO.setTaskList(taskList);
+
+        return new ResponseEntity<DashboardDTO>(dashboardDTO, HttpStatus.OK);
+    }
+
+    @PutMapping("/rate")
+    public ResponseEntity<Void> updateRateForBusinessByStudent(@RequestParam int rate) {
+        String email = getEmailFromToken();
+        businessService.updateRateNumber(email, rate);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/event")
+    @ResponseBody
+    public ResponseEntity<Event> getDetailsEvent(@RequestParam int id) {
+        Event event = eventService.findEventById(id);
+        return new ResponseEntity<Event>(event, HttpStatus.OK);
+    }
+
+    @PutMapping("/taskStatus")
+    public ResponseEntity<Void> updateTaskStatus(@RequestParam int id, @RequestParam int typeStatus) {
+        taskService.updateStatusTask(id, typeStatus);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/evaluation")
+    @ResponseBody
+    public ResponseEntity<Evaluation> getEvaluationById(@RequestParam int id) {
+        Evaluation evaluation = evaluationService.getEvaluationById(id);
+        return new ResponseEntity<Evaluation>(evaluation, HttpStatus.OK);
+    }
+
+    @PutMapping("/information")
+    public ResponseEntity<Void> updateInformationStudent(@RequestParam String name, @RequestParam String phone,
+                                                         @RequestParam boolean gender, @RequestParam String address,
+                                                         @RequestParam String birthDate) throws ParseException {
+        String email = getEmailFromToken();
+        boolean update = studentService.updateInformationStudent(email, name, phone, gender, address, birthDate);
+        if (update == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+
+    }
+
+    @PutMapping("/statusEvent")
+    public ResponseEntity<Void> updateStatusEvent(@RequestParam int id) {
+        boolean update = eventService.updateStatusIsRead(id);
+        if (update) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/taskByStatus")
+    @ResponseBody
+    public ResponseEntity<List<Task>> getTaskListByStatus(@RequestParam int type) {
+        String email = getEmailFromToken();
+
+        List<Task> taskList = new ArrayList<>();
+        if (type == 1) {
+            taskList = taskService.findTasksOfStudentByStatus(email, Status.NOTSTART);
+        } else if (type == 2) {
+            taskList = taskService.findTasksOfStudentByStatus(email, Status.PENDING);
+        } else if (type == 3) {
+            taskList = taskService.findTasksOfStudentByStatus(email, Status.DONE);
+        }
+        if (taskList != null) {
+            return new ResponseEntity<List<Task>>(taskList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/studentsEvaluations")
+    @ResponseBody
+    public ResponseEntity<List<Student_EvaluationDTO>> getEvaluationsOfStudents() {
+        List<Student> studentList = studentService.getAllStudents();
+
+        List<Student_EvaluationDTO> student_evaluationDTOS = new ArrayList<>();
+
+        for (int i = 0; i < studentList.size(); i++) {
+            List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(studentList.get(i).getEmail());
+            Collections.sort(evaluationList);
+            if (evaluationList.size() < 4) {
+                for (int j = evaluationList.size(); j < 4; j++) {
+                    evaluationList.add(null);
+                }
+            }
+            Student_EvaluationDTO student_evaluationDTO = new Student_EvaluationDTO();
+            student_evaluationDTO.setEvaluationList(evaluationList);
+            student_evaluationDTO.setStudent(studentList.get(i));
+
+            student_evaluationDTOS.add(student_evaluationDTO);
         }
 
-        int countEvaluation=evaluationService.countEvaluation(email);
-        dashboardDTO.setCountEvaluation(countEvaluation);
-
-        int countEventIsNotRead=eventService.countEventIsNotRead(email);
-        dashboardDTO.setInformMessageIsNotRead(countEventIsNotRead);
-
-        dashboardDTO.setBusiness(ojt_enrollment.getBusiness());
-
-        return new ResponseEntity<DashboardDTO>(dashboardDTO,HttpStatus.OK);
-
+        if (student_evaluationDTOS != null) {
+            return new ResponseEntity<List<Student_EvaluationDTO>>(student_evaluationDTOS, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
     //get email from token

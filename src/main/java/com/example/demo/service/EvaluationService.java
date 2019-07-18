@@ -1,12 +1,16 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Business;
 import com.example.demo.entity.Evaluation;
 import com.example.demo.entity.Ojt_Enrollment;
+import com.example.demo.entity.Supervisor;
+import com.example.demo.repository.BusinessRepository;
 import com.example.demo.repository.EvaluationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -17,6 +21,12 @@ public class EvaluationService {
 
     @Autowired
     Ojt_EnrollmentService ojt_enrollmentService;
+
+    @Autowired
+    BusinessRepository businessRepository;
+
+    @Autowired
+    SupervisorService supervisorService;
 
     public void createNewEvaluation(Evaluation evaluation, String studentEmail) {
 
@@ -45,11 +55,51 @@ public class EvaluationService {
         }
         return null;
     }
-    public int countEvaluation(String email){
+
+    public int countEvaluation(String email) {
         Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
 
-        int count=evaluationRepository.countEvaluationByOjt_enrollment(ojt_enrollment);
+        int count = evaluationRepository.countEvaluationByOjt_enrollment(ojt_enrollment);
 
         return count;
     }
+
+    public Evaluation getEvaluationById(int id) {
+        Evaluation evaluation = evaluationRepository.findById(id);
+        if (evaluation != null) {
+            return evaluation;
+        }
+        return null;
+    }
+
+    public List<Evaluation> getListEvaluationOfBusiness(String email) {
+        List<Supervisor> supervisorList = supervisorService.getAllSupervisorOfABusiness(email);
+
+        List<Evaluation> evaluationList = new ArrayList<>();
+        for (int i = 0; i < supervisorList.size(); i++) {
+            List<Evaluation> list = evaluationRepository.findEvaluationsBySupervisorEmail(supervisorList.get(i).getEmail());
+            evaluationList.addAll(list);
+        }
+        
+        if (evaluationList != null) {
+            return evaluationList;
+        }
+        return null;
+    }
+
+    public boolean updateEvaluation(int id, Evaluation evaluation) {
+        Evaluation evaluationFindById = evaluationRepository.findById(id);
+        evaluation.setOjt_enrollment(evaluationFindById.getOjt_enrollment());
+        evaluation.setSupervisor(evaluationFindById.getSupervisor());
+        Date date = new Date(Calendar.getInstance().getTime().getTime());
+        evaluation.setTimeCreated(date);
+        if (evaluationFindById != null) {
+            if (id == evaluation.getId()) {
+                evaluationRepository.save(evaluation);
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

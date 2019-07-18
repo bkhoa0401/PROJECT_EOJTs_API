@@ -31,6 +31,7 @@ public class Supervisor {
     private List<Task> tasks;
 
     @OneToMany(mappedBy = "supervisor")
+//    @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Evaluation> evaluations;
 

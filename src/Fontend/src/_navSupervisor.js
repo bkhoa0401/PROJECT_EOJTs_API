@@ -6,10 +6,11 @@ export default {
       icon: 'icon-star',
     },
     {
-      name: 'Báo cáo',
+      name: 'Đánh giá',
       url: '/Report/Report',
       icon: 'icon-star',
     },
+    {
       name: 'Danh sách sinh viên',
       url: '/hr-student-list',
       icon: 'icon-star',

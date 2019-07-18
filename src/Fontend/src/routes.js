@@ -73,13 +73,17 @@ const InformMessage_Detail = React.lazy(() => import('./views/InformMessage/Info
 const Create_InformMessage = React.lazy(() => import('./views/InformMessage/Create_InformMessage.js'));
 const Report = React.lazy(() => import('./views/Report/Report.js'));
 const Report_Detail = React.lazy(() => import('./views/Report/Report_Detail.js'));
-const Create_Report = React.lazy(() => import('./views/Report/Create_Report.js'))
+const Create_Report = React.lazy(() => import('./views/Report/Create_Report.js'));
+const Update_Report = React.lazy(() => import('./views/Report/Update_Report.js'));
 const Hr_Students = React.lazy(() => import('./views/Hr_Students/Hr_Students.js'));
 const Hr_Student_Detail = React.lazy(() => import('./views/Hr_Students/Hr_Student_Detail.js'));
 const Hr_Task = React.lazy(() => import('./views/Hr_Task/Hr_Task.js'));
 const Hr_Task_Create = React.lazy(() => import('./views/Hr_Task/Hr_Task_Create.js'));
 const Hr_Task_Detail = React.lazy(() => import('./views/Hr_Task/Hr_Task_Detail.js'));
 const Hr_Task_Update = React.lazy(() => import('./views/Hr_Task/Hr_Task_Update.js'));
+const Business_Detail = React.lazy(() => import('./views/Company/Business_Detail.js'));
+const Feedback = React.lazy(() => import('./views/Feedback/Feedback.js'));
+const Feedback_Detail = React.lazy(() => import('./views/Feedback/Feedback_Detail.js'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -141,7 +145,7 @@ const routes = [
   { path: '/student-detail/:email', exact: true, name: 'Thông tin chi tiết sinh viên', component: Student_Detail },
   { path: '/details_task/:email', exact: true, name: 'Nhiệm vụ', component: Details_Task },
   { path: '/job-post/:id', exact: true, name: 'Thông tin tuyển dụng', component: Job_Post },
-  { path: '/job_post/update_job/:id', exact: true, name: 'Chi tiết công việc', component: Update_Job },
+  { path: '/job_post/update_job/:id', exact: true, name: 'Chi tiết bài đăng tuyển dụng', component: Update_Job },
   { path: '/job_post_list_hr/add_job_post', exact: true, name: 'Tạo bài đăng tuyển dụng mới', component: Add_Job },
   { path: '/admin', exact: true, name: 'Admin', component: Dashboard },
   { path: '/hr', exact: true, name: 'Hr', component: Dashboard },
@@ -163,15 +167,19 @@ const routes = [
   { path: '/informmessage/informmessage', exact: true, name: 'Thông báo', component: InformMessage },
   { path: '/informmessage/informmessage_detail/:id', exact: true, name: 'Chi tiết thông báo', component: InformMessage_Detail },
   { path: '/informmessage/create_informmessage', exact: true, name: 'Soạn thông báo', component: Create_InformMessage },
-  { path: '/report/report', exact: true, name: 'Báo cáo', component: Report },
-  { path: '/report/report_detail/:id', exact: true, name: 'Chi tiết báo cáo', component: Report_Detail },
-  { path: '/report/create_report/:id', exact: true, name: 'Tạo báo cáo', component: Create_Report }
+  { path: '/report/report', exact: true, name: 'Đánh giá', component: Report },
+  { path: '/report/report_detail/:id', exact: true, name: 'Chi tiết Đánh giá', component: Report_Detail },
+  { path: '/report/create_report/:id', exact: true, name: 'Tạo Đánh giá', component: Create_Report },
+  { path: '/report/update_report/:id', exact: true, name: 'Chỉnh sửa Đánh giá', component: Update_Report },
   { path: '/hr-student-list', exact: true, name: 'Danh sách sinh viên', component: Hr_Students },
   { path: '/hr-student-list/details/:email', exact: true, name: 'Chi tiết sinh viên', component: Hr_Student_Detail },
   { path: '/hr-task', exact: true, name: 'Danh sách nhiệm vụ', component: Hr_Task },
   { path: '/hr-task/create', exact: true, name: 'Tạo nhiệm vụ mới', component: Hr_Task_Create },
   { path: '/hr-task/details/:id', exact: true, name: 'Chi tiết nhiệm vụ', component: Hr_Task_Detail },
   { path: '/hr-task/update/:id', exact: true, name: 'Chỉnh sửa nhiệm vụ', component: Hr_Task_Update },
+  { path: '/Company/Business_Detail/:email', exact: true, name: 'Chi tiết doanh nghiệp', component: Business_Detail },
+  { path: '/feedback/feedback', exact: true, name: 'Phản hồi', component: Feedback },
+  { path: '/feedback/feedback_detail/:id', exact: true, name: 'Chi tiết phản hồi', component: Feedback_Detail },
 ];
 
 export default routes;

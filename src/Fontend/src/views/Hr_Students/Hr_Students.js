@@ -7,6 +7,7 @@ import Toastify from '../Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
 import { forEach } from '@firebase/util';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 
 class Hr_Students extends Component {
@@ -16,6 +17,7 @@ class Hr_Students extends Component {
         this.state = {
             students: null,
             searchValue: '',
+            loading: true
         };
     }
 
@@ -24,6 +26,7 @@ class Hr_Students extends Component {
         if (students != null) {
             this.setState({
                 students,
+                loading: false
             });
         }
     }
@@ -47,7 +50,7 @@ class Hr_Students extends Component {
     }
 
     render() {
-        const { students, searchValue } = this.state;
+        const { students, searchValue, loading } = this.state;
         let filteredListStudents;
 
         if (students != null) {
@@ -61,42 +64,45 @@ class Hr_Students extends Component {
         }
 
         return (
-            <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" lg="12">
-                        <Card>
-                            <CardHeader style={{ fontWeight: "bold" }}>
-                                <i className="fa fa-align-justify"></i>Danh sách sinh viên
+            loading.toString() === 'true' ? (
+                SpinnerLoading.showHashLoader(loading)
+            ) : (
+                    <div className="animated fadeIn">
+                        <Row>
+                            <Col xs="12" lg="12">
+                                <Card>
+                                    <CardHeader style={{ fontWeight: "bold" }}>
+                                        <i className="fa fa-align-justify"></i>Danh sách sinh viên
                         </CardHeader>
-                            <CardBody>
-                                <div>
-                                    <nav className="navbar navbar-light bg-light justify-content-between">
-                                        <form className="form-inline">
-                                            <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-                                        </form>
-                                    </nav>
-                                    <Table responsive striped>
-                                        <thead>
-                                            <tr>
-                                                <th style={{ textAlign: "center" }}>STT</th>
-                                                <th style={{ textAlign: "center" }}>MSSV</th>
-                                                <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                                <th style={{ textAlign: "center" }}>Email</th>
-                                                <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                <th style={{ textAlign: "center" }}>GPA</th>
-                                                <th style={{ textAlign: "center" }}>Thao tác</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {filteredListStudents && filteredListStudents.map((student, index) => {
-                                                return (
+                                    <CardBody>
+                                        <div>
+                                            <nav className="navbar navbar-light bg-light justify-content-between">
+                                                <form className="form-inline">
+                                                    <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                                </form>
+                                            </nav>
+                                            <Table responsive striped>
+                                                <thead>
                                                     <tr>
-                                                        <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.code}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.name}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.email}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                                                        {/* <td style={{ textAlign: "center" }}>
+                                                        <th style={{ textAlign: "center" }}>STT</th>
+                                                        <th style={{ textAlign: "center" }}>MSSV</th>
+                                                        <th style={{ textAlign: "center" }}>Họ và Tên</th>
+                                                        <th style={{ textAlign: "center" }}>Email</th>
+                                                        <th style={{ textAlign: "center" }}>Chuyên ngành</th>
+                                                        <th style={{ textAlign: "center" }}>GPA</th>
+                                                        <th style={{ textAlign: "center" }}>Thao tác</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {filteredListStudents && filteredListStudents.map((student, index) => {
+                                                        return (
+                                                            <tr>
+                                                                <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.email}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                                {/* <td style={{ textAlign: "center" }}>
                                                             {
                                                                 student.transcriptLink && student.transcriptLink ? (
                                                                     <a href={student.transcriptLink} download>Tải</a>
@@ -104,27 +110,28 @@ class Hr_Students extends Component {
                                                                     (<label>N/A</label>)
                                                             }
                                                         </td> */}
-                                                        <td style={{ textAlign: "center" }}>{student.gpa}</td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            <Button style={{ width: '100px', marginRight: '2px' }} color="success" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}>Chi tiết</Button>
-                                                            <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect(`/hr-student-list/details/${student.email}`)}>Nhiệm vụ</Button>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })
-                                            }
-                                        </tbody>
-                                    </Table>
-                                </div>
-                                <ToastContainer />
-                                <Pagination>
-                                    {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
-                                </Pagination>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
+                                                                <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    <Button style={{ width: '100px', marginRight: '2px' }} color="success" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}>Chi tiết</Button>
+                                                                    <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect(`/hr-student-list/details/${student.email}`)}>Nhiệm vụ</Button>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                    }
+                                                </tbody>
+                                            </Table>
+                                        </div>
+                                        <ToastContainer />
+                                        <Pagination>
+                                            {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                                        </Pagination>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                )
         );
     }
 }

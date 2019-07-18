@@ -3,32 +3,81 @@ import Popup from "reactjs-popup";
 import { Label, FormGroup, Input, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
+import decode from 'jwt-decode';
 import Toastify from '../Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 class Report_Detail extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            reportColor:['lime', 'DeepSkyBlue', 'gold', 'red', 'black'],
-            rate:['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu'],
-            reportId: -1,
+            loading: true,
+            reportColor: ['lime', 'DeepSkyBlue', 'gold', 'red', 'black', 'white'],
+            rate: ['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu', ''],
+            report: null,
+            student: null,
+            onScreenRate: 5,
+            busniessName: '',
+            supervisorName: '',
+            role: '',
         };
     }
 
     async componentDidMount() {
-        this.state.reportId = window.location.href.split("/").pop();
-        // const data = await ApiServices.Get(`/informmessage/getInformMessage?id=${informMessageID}`);
-        // if (data != null) {
-          this.setState({
-              reportId: this.state.reportId,
-          });
+        const token = localStorage.getItem('id_token');
+        var param = window.location.href.split("/").pop();
+        var needId = param.split('~');
+        const report = await ApiServices.Get(`/supervisor/getEvaluation?id=${needId[0]}`);
+        const student = await ApiServices.Get(`/student/student/${needId[1]}`);
+        let role = '';
+        let owner = await ApiServices.Get(`/supervisor/business?email=${report.supervisor_email}`);
+        let businessName = owner.business_name;
+        let actor = await ApiServices.Get(`/supervisor/supervisor?email=${report.supervisor_email}`);
+        let supervisorName = actor.name;
+        if (token != null) {
+            const decoded = decode(token);
+            role = decoded.role;
+        }
+        // if (role == 'ROLE_SUPERVISOR') {
+        //     owner = await ApiServices.Get(`/supervisor`);
+        //     businessName = owner.business.business_name;
+        // } else if (role == 'ROLE_HR') {
+        //     owner = await ApiServices.Get(`/business/getBusiness`);
+        //     businessName = owner.business_name;
+        // } else if (role == 'ROLE_ADMIN') {
+        //     owner = await ApiServices.Get(`/student/business?email=${needId[1]}`);
+        //     businessName = owner.business_name;
         // }
-        console.log(this.state.reportId);
+        let onScreenRate = 5;
+        if (((report.score_work + report.score_activity + report.score_discipline) / 3) > 9) {
+            onScreenRate = 0;
+        } else if (((report.score_work + report.score_activity + report.score_discipline) / 3) > 8) {
+            onScreenRate = 1;
+        } else if (((report.score_work + report.score_activity + report.score_discipline) / 3) > 7) {
+            onScreenRate = 2;
+        } else if (((report.score_work + report.score_activity + report.score_discipline) / 3) >= 5) {
+            onScreenRate = 3;
+        } else {
+            onScreenRate = 4;
+        }
+        if (report != null) {
+            this.setState({
+                loading: false,
+                report: report,
+                student: student,
+                onScreenRate: onScreenRate,
+                role: role,
+                businessName: businessName,
+                supervisorName: supervisorName,
+            });
+        }
+        // console.log(businessName);
+        // console.log(supervisorName);
     }
 
     handleDirect = (uri) => {
@@ -36,102 +85,141 @@ class Report_Detail extends Component {
     }
 
     render() {
-        const { searchValue, reportColor, rate, reportId } = this.state;
+        const { loading, reportColor, rate, report, role, student, onScreenRate, businessName, supervisorName } = this.state;
         return (
-            <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" lg="12">
-                        <Card>
-                            <CardHeader style={{ fontWeight: "bold" }}>
-                                <i className="fa fa-align-justify"></i>Chi tiết báo cáo #{reportId}
-                            </CardHeader>
-                            <CardBody>
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Doanh nghiệp:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <Label>Công ty ABC</Label>
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Sinh viên:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <Label>Nguyễn Văn A</Label>
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Nhà trường:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <Label>FPT University</Label>
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>MSSV:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <Label>SE60001</Label>
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Điểm hiệu quả công việc:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <Label>9</Label>
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Điểm thái độ làm việc:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <Label>9</Label>
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Điểm kỷ luật:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <Label>9</Label>
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Xếp loại:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <Label style={{fontWeight:'bold', color:reportColor[0]}}>{rate[0]}</Label>
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Nhận xét:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <Label>Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</Label>
-                                    </Col>
-                                </FormGroup>
-                                <ToastContainer />
-                                <Pagination>
-                                    {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
-                                </Pagination>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-                <div style={{paddingLeft:'45%'}}>
-                    <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/Report/Report')}>
-                        Trở về
-                    </Button>
-                </div>
-            </div>
+            loading.toString() === 'true' ? (
+                SpinnerLoading.showHashLoader(loading)
+            ) : (
+                    <div className="animated fadeIn">
+                        <Row>
+                            <Col xs="12" lg="12">
+                                <Card>
+                                    <CardHeader style={{ fontWeight: "bold" }}>
+                                        <i className="fa fa-align-justify"></i>{report === null ? "" : report.title}
+                                        { report === null ? (<></>) : 
+                                        ( role && role === 'ROLE_SUPERVISOR' ?
+                                            <>
+                                            &nbsp;&nbsp;
+                                            <Button color="primary" onClick={() => this.handleDirect(`/Report/Update_Report/${report.id}~${student.email}`)}>
+                                                Chỉnh sửa
+                                            </Button>
+                                            </>:
+                                            <></>
+                                        )
+                                        }
+                                    </CardHeader>
+                                    <CardBody>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Người tạo:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label>{supervisorName}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Doanh nghiệp:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label>{businessName}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Sinh viên:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label>{student === null ? "" : student.name}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>MSSV:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label>{student === null ? "" : student.code}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Ngày bắt đầu:</h6>
+                                            </Col>
+                                            <Col xs="12" md="4">
+                                                <Label>{report === null ? "" : report.timeStart}</Label>
+                                            </Col>
+                                            <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Ngày kết thúc:</h6>
+                                            </Col>
+                                            <Col xs="12" md="4">
+                                                <Label>{report === null ? "" : report.timeEnd}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Tên dự án</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label>{report === null ? "" : report.project_name}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Điểm hiệu quả công việc:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label>{report === null ? "" : report.score_work}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Điểm thái độ làm việc:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label>{report === null ? "" : report.score_activity}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Điểm kỷ luật:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label>{report === null ? "" : report.score_discipline}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Xếp loại:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label style={{ fontWeight: 'bold', color: reportColor[onScreenRate] }}>{rate[onScreenRate]}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Nhận xét:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label>{report === null ? "" : report.remark}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <ToastContainer />
+                                        <Pagination>
+                                            {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                                        </Pagination>
+                                    </CardBody>
+                                    <CardFooter>
+                                    </CardFooter>
+                                </Card>
+                            </Col>
+                        </Row>
+                        <div style={{ paddingLeft: '45%' }}>
+                            <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/Report/Report')}>
+                                Trở về
+                            </Button>
+                        </div>
+                    </div>
+                )
         );
     }
 }

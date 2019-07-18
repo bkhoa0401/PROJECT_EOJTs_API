@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 const actionSuccess = (Message) => toast.success(Message, {
     position: "top-right",
     autoClose: 2000,
-    hideProgressBar: false,
+    hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
@@ -13,7 +13,7 @@ const actionSuccess = (Message) => toast.success(Message, {
 const actionFail = (Message) => toast.error(Message, {
     position: "top-right",
     autoClose: 2000,
-    hideProgressBar: false,
+    hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
@@ -23,7 +23,7 @@ const actionFail = (Message) => toast.error(Message, {
 const actionWarning = (Message) => toast.warning(Message, {
     position: "top-right",
     autoClose: 2000,
-    hideProgressBar: false,
+    hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
@@ -33,7 +33,7 @@ const actionWarning = (Message) => toast.warning(Message, {
 const actionInfo = (Message) => toast.info(Message, {
     position: "top-right",
     autoClose: 2000,
-    hideProgressBar: false,
+    hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,

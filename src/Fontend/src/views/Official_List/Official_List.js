@@ -12,6 +12,10 @@ import {
 } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
 import { async } from 'q';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+
 
 const invertDirection = {
   asc: 'desc',
@@ -34,7 +38,8 @@ class Official_List extends Component {
       supervisorItem: {},
       searchValue: '',
       columnToSort: '',
-      sortDirection: 'desc'
+      sortDirection: 'desc',
+      loading: true
     }
   }
 
@@ -55,7 +60,8 @@ class Official_List extends Component {
       this.setState({
         students,
         supervisors,
-        supervisors_FirstBlank
+        supervisors_FirstBlank,
+        loading: false
       });
     }
   }
@@ -74,7 +80,6 @@ class Official_List extends Component {
   handleInputSupervisor = async (event, student) => {
     const { name, value } = event.target;
     const { supervisors, supervisors_FirstBlank, listDataEdited } = this.state;
-
     if (name === 'supervisor') {
       await this.setState({
         supervisorItem: supervisors[value]
@@ -98,24 +103,52 @@ class Official_List extends Component {
     }
   }
 
-  handleSubmit = async () => {
+  handleConfirm = () => {
     const { listDataEdited } = this.state;
-    console.log(listDataEdited);
+
     if (listDataEdited.length == 0) {
       Toastify.actionWarning("Không có sự thay đổi!");
     } else {
-      const result = await ApiServices.Put('/business/assignSupervisor', listDataEdited);
-      if (result.status == 200) {
-        Toastify.actionSuccess("Thao tác thành công!");
+      confirmAlert({
+        title: 'Xác nhận',
+        message: 'Bạn đã chắc chắn với những sự lựa chọn của mình?',
+        buttons: [
+          {
+            label: 'Đồng ý',
+            onClick: () => this.handleSubmit()
+          },
+          {
+            label: 'Hủy bỏ',
+          }
+        ]
+      });
+    }
+  };
 
-      } else {
-        Toastify.actionFail("Thao tác thất bại!");
-      }
+  handleSubmit = async () => {
+    this.setState({
+      loading: true
+    })
+
+    const { listDataEdited } = this.state;
+    const result = await ApiServices.Put('/business/assignSupervisor', listDataEdited);
+
+    if (result.status == 200) {
+      Toastify.actionSuccess("Thao tác thành công!");
+      this.setState({
+        loading: false
+      })
+
+    } else {
+      Toastify.actionFail("Thao tác thất bại!");
+      this.setState({
+        loading: false
+      })
     }
   }
 
   render() {
-    const { students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection } = this.state;
+    const { students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection, loading } = this.state;
     let filteredListStudents = orderBy(students, columnToSort, sortDirection);
     if (students != null) {
       filteredListStudents = students.filter(
@@ -128,55 +161,58 @@ class Official_List extends Component {
     }
 
     return (
-      <div className="animated fadeIn">
-        <Row>
-          <Col xs="12" lg="12">
-            <Card>
-              <CardHeader>
-                <i className="fa fa-align-justify"></i> <b>Danh sách sinh viên thực tập tại doanh nghiệp</b>
-              </CardHeader>
-              <CardBody>
-                <nav className="navbar navbar-light bg-light justify-content-between">
-                  <form className="form-inline">
-                    <input onChange={this.handleInputSearch} name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
-                  </form>
-                  <div style={{ marginRight: "70px" }}>
-                    <b>Sắp xếp theo: </b>
-                    &nbsp;&nbsp;&nbsp;
+      loading.toString() === 'true' ? (
+        SpinnerLoading.showHashLoader(loading)
+      ) : (
+          <div className="animated fadeIn">
+            <Row>
+              <Col xs="12" lg="12">
+                <Card>
+                  <CardHeader>
+                    <i className="fa fa-align-justify"></i> <b>Danh sách sinh viên thực tập tại doanh nghiệp</b>
+                  </CardHeader>
+                  <CardBody>
+                    <nav className="navbar navbar-light bg-light justify-content-between">
+                      <form className="form-inline">
+                        <input onChange={this.handleInputSearch} name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
+                      </form>
+                      <div style={{ marginRight: "70px" }}>
+                        <b>Sắp xếp theo: </b>
+                        &nbsp;&nbsp;&nbsp;
                     <select>
-                      <option value="olala">olala</option>
-                      <option value="olala">olala 2</option>
-                      <option value="olala">olala 3</option>
-                    </select>
-                  </div>
-                </nav>
+                          <option value="olala">olala</option>
+                          <option value="olala">olala 2</option>
+                          <option value="olala">olala 3</option>
+                        </select>
+                      </div>
+                    </nav>
 
-                <Table responsive striped>
-                  <thead>
-                    <tr>
-                      <th style={{ textAlign: "center" }}>STT</th>
-                      <th style={{ textAlign: "center" }}>MSSV</th>
-                      <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                      <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                      {/* <th style={{ textAlign: "center" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
-                      {/* <th style={{ textAlign: "center" }}>GPA</th>
+                    <Table responsive striped>
+                      <thead>
+                        <tr>
+                          <th style={{ textAlign: "center" }}>STT</th>
+                          <th style={{ textAlign: "center" }}>MSSV</th>
+                          <th style={{ textAlign: "center" }}>Họ và Tên</th>
+                          <th style={{ textAlign: "center" }}>Chuyên ngành</th>
+                          {/* <th style={{ textAlign: "center" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
+                          {/* <th style={{ textAlign: "center" }}>GPA</th>
                       <th style={{ textAlign: "center" }}>CV</th>
                       <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
-                      <th style={{ textAlign: "center" }}>Supervisor</th>
-                      <th style={{ textAlign: "center" }}>Thao tác</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {
-                      filteredListStudents && filteredListStudents.map((student, index) => {
-                        const linkDownCV = `http://localhost:8000/api/file/downloadFile/${student.resumeLink}`;
-                        return (
-                          <tr key={index}>
-                            <td style={{ textAlign: "center" }}>{index + 1}</td>
-                            <td style={{ textAlign: "center" }}>{student.code}</td>
-                            <td style={{ textAlign: "center" }}>{student.name}</td>
-                            <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                            {/* <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                          <th style={{ textAlign: "center" }}>Supervisor</th>
+                          <th style={{ textAlign: "center" }}>Thao tác</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          filteredListStudents && filteredListStudents.map((student, index) => {
+                            const linkDownCV = `http://localhost:8000/api/file/downloadFile/${student.resumeLink}`;
+                            return (
+                              <tr key={index}>
+                                <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                <td style={{ textAlign: "center" }}>{student.code}</td>
+                                <td style={{ textAlign: "center" }}>{student.name}</td>
+                                <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                {/* <td style={{ textAlign: "center" }}>{student.gpa}</td>
                             <td style={{ textAlign: "center" }}>
                               {
                                 student.resumeLink && student.resumeLink ? (
@@ -193,47 +229,48 @@ class Official_List extends Component {
                                   (<label>N/A</label>)
                               }
                             </td> */}
-                            <td style={{ textAlign: "center" }}>
-                              {
-                                student.supervisor == null ? (
+                                <td style={{ textAlign: "center" }}>
+                                  {
+                                    student.supervisor == null ? (
 
-                                  <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="withBlank">
-                                    {supervisors_FirstBlank && supervisors_FirstBlank.map((supervisor, i) => {
-                                      return (
-                                        <option value={i}>{supervisor.name}</option>
+                                      <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="withBlank">
+                                        {supervisors_FirstBlank && supervisors_FirstBlank.map((supervisor, i) => {
+                                          return (
+                                            <option value={i}>{supervisor.name}</option>
+                                          )
+                                        })}
+                                      </Input>
+                                    ) : (
+                                        <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="supervisor">
+                                          {supervisors && supervisors.map((supervisor, i) => {
+                                            return (
+                                              <option value={i} selected={student.supervisor.email === supervisor.email}>{supervisor.name}</option>
+                                            )
+                                          })}
+                                        </Input>
                                       )
-                                    })}
-                                  </Input>
-                                ) : (
-                                    <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="supervisor">
-                                      {supervisors && supervisors.map((supervisor, i) => {
-                                        return (
-                                          <option value={i} selected={student.supervisor.email === supervisor.email}>{supervisor.name}</option>
-                                        )
-                                      })}
-                                    </Input>
-                                  )
-                              }
+                                  }
 
-                            </td>
-                            <td style={{ textAlign: "center" }}>
-                            <Button style={{ width: '100px', marginRight: '2px' }} color="success" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}>Chi tiết</Button>
-                              <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect(`/details_task/${student.email}`)}>Nhiệm vụ</Button>
-                            </td>
-                          </tr>
-                        )
-                      })
-                    }
-                  </tbody>
-                </Table>
-                <ToastContainer />
+                                </td>
+                                <td style={{ textAlign: "center" }}>
+                                  <Button style={{ width: '100px', marginRight: '2px' }} color="success" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}>Chi tiết</Button>
+                                  <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect(`/details_task/${student.email}`)}>Nhiệm vụ</Button>
+                                </td>
+                              </tr>
+                            )
+                          })
+                        }
+                      </tbody>
+                    </Table>
+                    <ToastContainer />
 
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-        <div style={rowSave}><Button onClick={() => this.handleSubmit()} style={{ width: '100px' }} color="primary" type="submit" id="btnSave">Lưu</Button></div>
-      </div>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+            <div style={rowSave}><Button onClick={() => this.handleConfirm()} style={{ width: '100px' }} color="primary" type="submit" id="btnSave">Lưu</Button></div>
+          </div>
+        )
     );
   }
 }
