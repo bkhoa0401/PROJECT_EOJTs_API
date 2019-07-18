@@ -600,20 +600,20 @@ public class StudentController {
 
         DashboardDTO dashboardDTO = new DashboardDTO();
 
-        float percentTaskDoneOfStudent = taskService.getPercentTaskDoneOfStudent(email);
-        if (!Float.isNaN(percentTaskDoneOfStudent)) {
-            dashboardDTO.setPercentTaskDone(percentTaskDoneOfStudent * 100);
-        } else {
-            dashboardDTO.setPercentTaskDone(0);
+        List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(email);
+        if (evaluationList == null) {
+            evaluationList = new ArrayList<>();
         }
-
-        int countEvaluation = evaluationService.countEvaluation(email);
-        dashboardDTO.setCountEvaluation(countEvaluation);
-
+        dashboardDTO.setEvaluationList(evaluationList);
+        
         int countEventIsNotRead = eventService.countEventIsNotRead(email);
-        dashboardDTO.setInformMessageIsNotRead(countEventIsNotRead);
+        dashboardDTO.setUnReadInformessage(countEventIsNotRead);
 
-        dashboardDTO.setBusiness(ojt_enrollment.getBusiness());
+        List<Task> taskList = taskService.findTaskByStudentEmail(email);
+        if (taskList == null) {
+            taskList = new ArrayList<>();
+        }
+        dashboardDTO.setTaskList(taskList);
 
         return new ResponseEntity<DashboardDTO>(dashboardDTO, HttpStatus.OK);
     }
