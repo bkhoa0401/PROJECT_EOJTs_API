@@ -156,7 +156,7 @@ class Create_InformMessage extends Component {
                         Trở về
                     </Button>
                     &nbsp;&nbsp;&nbsp;
-                    <Button style={{ width: '100px' }} color="success" onClick={() => this.handleSubmit()}>
+                    <Button style={{ width: '100px' }} color="success" disabled onClick={() => this.handleSubmit()}>
                         Tạo
                     </Button>
                 </div>
