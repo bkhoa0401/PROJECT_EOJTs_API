@@ -9,18 +9,20 @@ import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurr
 import PaginationComponent from '../Paginations/pagination';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 class InformMessage_Detail extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            title:'',
-            description:'',
+            loading: true,
+            title: '',
+            description: '',
             students: null,
             business: null,
-            informFromName:'',
-            informFromEmail:'',
+            informFromName: '',
+            informFromEmail: '',
         };
     }
 
@@ -45,6 +47,7 @@ class InformMessage_Detail extends Component {
         }
         if (data != null) {
             this.setState({
+                loading: false,
                 title: data.title,
                 description: data.description,
                 students: data.students,
@@ -60,69 +63,73 @@ class InformMessage_Detail extends Component {
     }
 
     render() {
-        const { title, description, students, informFromName, informFromEmail } = this.state;
+        const { loading, title, description, students, informFromName, informFromEmail } = this.state;
         return (
-            <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" lg="12">
-                        <Card>
-                            <CardHeader style={{ fontWeight: "bold" }}>
-                                <i className="fa fa-align-justify"></i>Chi tiết thông báo
-                            </CardHeader>
-                            <CardBody>
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Từ:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <Label>{<>{informFromName}<br/>({informFromEmail})</>}</Label>
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Đến:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <Label>
-                                            {students && students.map((student, index) =>
-                                            <>
-                                            {student.name} ({student.email})<br/>
-                                            </>
-                                            )}
-                                        </Label>
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Chủ đề:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <Label style={{fontWeight:'bold'}}>{title}</Label>
-                                    </Col>
-                                </FormGroup>
-                                <hr />
-                                <FormGroup row>
-                                    <Col md="2">
-                                        <h6>Nội dung:</h6>
-                                    </Col>
-                                    <Col xs="12" md="10">
-                                        <Label>{description}</Label>
-                                    </Col>
-                                </FormGroup>
-                                <ToastContainer />
-                                <Pagination>
-                                    {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
-                                </Pagination>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-                <div style={{paddingLeft:'45%'}}>
-                    <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
-                        Trở về
-                    </Button>
-                </div>
-            </div>
+            loading.toString() === 'true' ? (
+                SpinnerLoading.showHashLoader(loading)
+            ) : (
+                    <div className="animated fadeIn">
+                        <Row>
+                            <Col xs="12" lg="12">
+                                <Card>
+                                    <CardHeader style={{ fontWeight: "bold" }}>
+                                        <i className="fa fa-align-justify"></i>Chi tiết thông báo
+                                    </CardHeader>
+                                    <CardBody>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6>Từ:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label>{<>{informFromName}<br />({informFromEmail})</>}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6>Đến:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label>
+                                                    {students && students.map((student, index) =>
+                                                        <>
+                                                            {student.name} ({student.email})<br />
+                                                        </>
+                                                    )}
+                                                </Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6>Chủ đề:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label style={{ fontWeight: 'bold' }}>{title}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <hr />
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6>Nội dung:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label>{description}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <ToastContainer />
+                                        <Pagination>
+                                            {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                                        </Pagination>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                        <div style={{ paddingLeft: '45%' }}>
+                            <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
+                                Trở về
+                            </Button>
+                        </div>
+                    </div>
+                )
         );
     }
 }

@@ -6,14 +6,17 @@ import decode from 'jwt-decode';
 import Toastify from '../Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+
 
 class InformMessage extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            loading: true,
             informs: null,
-            searchValue:'',
+            searchValue: '',
         };
     }
 
@@ -31,6 +34,7 @@ class InformMessage extends Component {
         }
         if (informs != null) {
             this.setState({
+                loading: false,
                 informs,
             });
         }
@@ -49,7 +53,7 @@ class InformMessage extends Component {
     }
 
     render() {
-        const { searchValue, informs } = this.state;
+        const { loading, searchValue, informs } = this.state;
         let filteredListInforms;
         if (informs != null) {
             filteredListInforms = informs.filter(
@@ -61,44 +65,48 @@ class InformMessage extends Component {
             );
         }
         return (
-            <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" lg="12">
-                        <Card>
-                            <CardHeader style={{ fontWeight: "bold" }}>
-                                <i className="fa fa-align-justify"></i>Thông báo
-                            </CardHeader>
-                            <CardBody>
-                                <Row style={{ paddingLeft: '90%' }}><Button color="primary" onClick={() => this.handleDirect('/InformMessage/Create_InformMessage')}>Soạn thông báo</Button></Row>
-                                <br />
-                                <div>
-                                    <nav className="navbar navbar-light bg-light justify-content-between">
-                                        <form className="form-inline">
-                                            <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-                                        </form>
-                                    </nav>
-                                    <ListGroup>
-                                        {filteredListInforms && filteredListInforms.map((inform, index) => {
-                                            return (
-                                                <ListGroupItem action onClick={() => this.handleDirect(`/InformMessage/InformMessage_Detail/${inform.id}`)}>
-                                                    <ListGroupItemHeading style={{fontWeight:'bold'}}>{inform.title}</ListGroupItemHeading>
-                                                    <ListGroupItemText>
-                                                        {inform.description}
-                                                    </ListGroupItemText>
-                                                </ListGroupItem>
-                                            )
-                                        })}
-                                    </ListGroup>
-                                </div>
-                                <ToastContainer />
-                                <Pagination>
-                                    {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
-                                </Pagination>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
+            loading.toString() === 'true' ? (
+                SpinnerLoading.showHashLoader(loading)
+            ) : (
+                    <div className="animated fadeIn">
+                        <Row>
+                            <Col xs="12" lg="12">
+                                <Card>
+                                    <CardHeader style={{ fontWeight: "bold" }}>
+                                        <i className="fa fa-align-justify"></i>Thông báo
+                                    </CardHeader>
+                                    <CardBody>
+                                        <Row style={{ paddingLeft: '90%' }}><Button color="primary" onClick={() => this.handleDirect('/InformMessage/Create_InformMessage')}>Soạn thông báo</Button></Row>
+                                        <br />
+                                        <div>
+                                            <nav className="navbar navbar-light bg-light justify-content-between">
+                                                <form className="form-inline">
+                                                    <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                                </form>
+                                            </nav>
+                                            <ListGroup>
+                                                {filteredListInforms && filteredListInforms.map((inform, index) => {
+                                                    return (
+                                                        <ListGroupItem tag="a" action onClick={() => this.handleDirect(`/InformMessage/InformMessage_Detail/${inform.id}`)}>
+                                                            <ListGroupItemHeading style={{ fontWeight: 'bold' }}>{inform.title}</ListGroupItemHeading>
+                                                            <ListGroupItemText>
+                                                                {inform.description}
+                                                            </ListGroupItemText>
+                                                        </ListGroupItem>
+                                                    )
+                                                })}
+                                            </ListGroup>
+                                        </div>
+                                        <ToastContainer />
+                                        <Pagination>
+                                            {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                                        </Pagination>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                )
         );
     }
 }

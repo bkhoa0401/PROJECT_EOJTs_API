@@ -23,6 +23,7 @@ import { async } from 'q';
 import { initializeApp } from '../Invitation/push-notification';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 
 // // Your web app's Firebase configuration
@@ -47,6 +48,7 @@ class Company extends Component {
         super(props);
         this.state = {
             business: null,
+            loading: true
         }
     }
 
@@ -55,7 +57,8 @@ class Company extends Component {
         const business = await ApiServices.Get(`/business/business?email=${businessEmail}`);
         if (business != null) {
             this.setState({
-                business:business,
+                business: business,
+                loading: false
             });
         }
     }
@@ -65,107 +68,110 @@ class Company extends Component {
     }
 
     render() {
-        const { business } = this.state;
+        const { business, loading } = this.state;
         return (
-            <div className="animated fadeIn">
-                <ToastContainer />
-                <Row>
-                    <Col xs="12" sm="12">
-                        <Card>
-                            <CardHeader>
-                                <h4>Thông tin công ty</h4>
-                            </CardHeader>
-                            <CardBody>
-                                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Logo</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            {business === null ?
-                                                <></> :
-                                                <img src={business.logo} style={{ width: "160px", height: "160px" }}/>
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Email</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            {business === null ?
-                                                <></> :
-                                                <Label>{business.email}</Label>
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Tên doanh nghiệp</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            {business === null ?
-                                                <></> :
-                                                <Label>{business.business_name}</Label>
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Tên tiếng Anh</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            {business === null ?
-                                                <></> :
-                                                <Label>{business.business_eng_name}</Label>
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>SĐT</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            {business === null ?
-                                                <></> :
-                                                <Label>{business.business_phone}</Label>
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Website</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            {business === null ?
-                                                <></> :
-                                                <Label>{business.business_website}</Label>
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Địa chỉ</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            {business === null ?
-                                                <></> :
-                                                <Label>{business.business_address}</Label>
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Giới thiệu</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            {business === null ?
-                                                <></> :
-                                                <Label>{business.business_overview}</Label>
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    {/* <FormGroup row>
+            loading.toString() === 'true' ? (
+                SpinnerLoading.showHashLoader(loading)
+            ) : (
+                    <div className="animated fadeIn">
+                        <ToastContainer />
+                        <Row>
+                            <Col xs="12" sm="12">
+                                <Card>
+                                    <CardHeader>
+                                        <h4>Thông tin công ty</h4>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Logo</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    {business === null ?
+                                                        <></> :
+                                                        <img src={business.logo} style={{ width: "160px", height: "160px" }} />
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Email</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    {business === null ?
+                                                        <></> :
+                                                        <Label>{business.email}</Label>
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Tên doanh nghiệp</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    {business === null ?
+                                                        <></> :
+                                                        <Label>{business.business_name}</Label>
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Tên tiếng Anh</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    {business === null ?
+                                                        <></> :
+                                                        <Label>{business.business_eng_name}</Label>
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>SĐT</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    {business === null ?
+                                                        <></> :
+                                                        <Label>{business.business_phone}</Label>
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Website</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    {business === null ?
+                                                        <></> :
+                                                        <Label>{business.business_website}</Label>
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Địa chỉ</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    {business === null ?
+                                                        <></> :
+                                                        <Label>{business.business_address}</Label>
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Giới thiệu</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    {business === null ?
+                                                        <></> :
+                                                        <Label>{business.business_overview}</Label>
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                            {/* <FormGroup row>
                                         <Col md="2">
                                             <h6>Image</h6>
                                         </Col>
@@ -176,19 +182,20 @@ class Company extends Component {
                                             </span>
                                         </Col>
                                     </FormGroup> */}
-                                </Form>
-                            </CardBody>
-                            <CardFooter className="p-4">
-                            </CardFooter>
-                        </Card>
-                    </Col>
-                </Row>
-                <div style={{ paddingLeft: '45%' }}>
-                    <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/list_management/business_list')}>
-                        Trở về
+                                        </Form>
+                                    </CardBody>
+                                    <CardFooter className="p-4">
+                                    </CardFooter>
+                                </Card>
+                            </Col>
+                        </Row>
+                        <div style={{ paddingLeft: '45%' }}>
+                            <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/list_management/business_list')}>
+                                Trở về
                     </Button>
-                </div>
-            </div>
+                        </div>
+                    </div >
+                )
         );
     }
 }

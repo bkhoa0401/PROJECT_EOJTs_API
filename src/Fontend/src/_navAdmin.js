@@ -71,7 +71,7 @@ export default {
       icon: 'icon-star',
     },
     {
-      name: 'Báo cáo',
+      name: 'Đánh giá',
       url: '/Report/Report',
       icon: 'icon-star',
     },

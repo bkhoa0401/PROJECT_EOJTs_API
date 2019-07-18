@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.config.Status;
 import com.example.demo.entity.*;
+import com.example.demo.repository.Ojt_EnrollmentRepository;
 import com.example.demo.repository.StudentRepository;
 import com.example.demo.repository.SupervisorRepository;
 import com.example.demo.repository.TaskRepository;
@@ -177,23 +178,32 @@ public class StudentService {
         return false;
     }
 
-    public boolean updateStatusOptionOfStudent(int numberOfOption, boolean statusOfOption, String emailStudent) {
+    public boolean updateStatusOptionOfStudent(List<Integer> numberOfOption, boolean statusOfOption, String emailStudent) {
         Student student = getStudentByEmail(emailStudent);
+        boolean flag = false;
+
         if (student != null) {
-            if (numberOfOption == 1) {
-                student.setAcceptedOption1(statusOfOption);
-                student.setInterviewed1(true);
-                studentRepository.save(student);
-                return true;
-            }
-            if (numberOfOption == 2) {
-                student.setAcceptedOption2(statusOfOption);
-                student.setInterviewed2(true);
-                studentRepository.save(student);
-                return true;
+            for(int i = 0; i < numberOfOption.size(); i++) {
+                if(numberOfOption.get(i) == 1) {
+                    student.setAcceptedOption1(statusOfOption);
+                    student.setInterviewed1(true);
+                    studentRepository.save(student);
+                    flag = true;
+                }
+                if (numberOfOption.get(i) == 2) {
+                    student.setAcceptedOption2(statusOfOption);
+                    student.setInterviewed2(true);
+                    studentRepository.save(student);
+                    flag = true;
+                }
             }
         }
-        return false;
+
+        if (flag) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
@@ -302,6 +312,15 @@ public class StudentService {
             return true;
         }
         return false;
+    }
+
+    public Business getBusinessOfStudent(String studentEmail) {
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(studentEmail);
+        Business business = ojt_enrollment.getBusiness();
+        if (business != null) {
+            return business;
+        }
+        return null;
     }
 
     public List<Business> getBusinessByOptionStudent(String studentEmail) {

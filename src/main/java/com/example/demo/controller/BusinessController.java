@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.BusinessDTO;
-import com.example.demo.dto.Business_JobPostDTO;
-import com.example.demo.dto.Business_ListJobPostDTO;
-import com.example.demo.dto.Job_PostDTO;
+import com.example.demo.config.Sms;
+import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.slf4j.Logger;
@@ -18,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -254,7 +253,7 @@ public class BusinessController {
 
     // update status of option student when interview
     @PutMapping("/updateStatusOfStudent")
-    public ResponseEntity<Void> updateStatusOfOptionStudent(@RequestParam int numberOfOption, @RequestParam boolean statusOfOption
+    public ResponseEntity<Void> updateStatusOfOptionStudent(@RequestParam List<Integer> numberOfOption, @RequestParam boolean statusOfOption
             , @RequestParam String emailOfStudent) {
         boolean updateStatus = studentService.updateStatusOptionOfStudent(numberOfOption, statusOfOption, emailOfStudent);
         if (updateStatus == true) {
@@ -468,6 +467,21 @@ public class BusinessController {
             return new ResponseEntity<List<Evaluation>>(overviewEvaluationList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+
+    @PostMapping("/sms")
+    @ResponseBody
+    public ResponseEntity<String> sendSms(@RequestBody SmsDTO smsDTO) {
+        Sms sms = new Sms();
+
+        try {
+            sms.sendSMS(smsDTO.getReceiverNumber(), smsDTO.getContent(), 2, "EOJTs");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     //get email from token

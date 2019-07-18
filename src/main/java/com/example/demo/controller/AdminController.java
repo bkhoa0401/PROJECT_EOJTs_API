@@ -51,12 +51,14 @@ public class AdminController {
     public ResponseEntity<Void> updateStudentToBusinessPassOption1OrOption2() {
         List<Student> studentListPassOnlyOption1 = studentService.getAllStudentByStatusOption(1); // only pass nv1
         List<Student> studentListPassOnlyOption2 = studentService.getAllStudentByStatusOption(2); // only pass nv2
+        List<Student> studentListPassAllOption = studentService.getAllStudentByStatusOption(3); // pass 2 nv
 
-        List<Student> listTotalStudentPassOnlyOption1OrOption2 = new ArrayList<>();
-        listTotalStudentPassOnlyOption1OrOption2.addAll(studentListPassOnlyOption1);
-        listTotalStudentPassOnlyOption1OrOption2.addAll(studentListPassOnlyOption2);
+        List<Student> listTotalStudentPassOnlyOption1OrOption2AndAll = new ArrayList<>();
+        listTotalStudentPassOnlyOption1OrOption2AndAll.addAll(studentListPassOnlyOption1);
+        listTotalStudentPassOnlyOption1OrOption2AndAll.addAll(studentListPassOnlyOption2);
+        listTotalStudentPassOnlyOption1OrOption2AndAll.addAll(studentListPassAllOption);
 
-        ojt_enrollmentService.updateStudentToBusinessPassOption1OrOption2(listTotalStudentPassOnlyOption1OrOption2);
+        ojt_enrollmentService.updateStudentToBusinessPassOption1OrOption2(listTotalStudentPassOnlyOption1OrOption2AndAll);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

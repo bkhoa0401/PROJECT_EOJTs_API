@@ -46,6 +46,7 @@
     "react-radio-buttons": "^1.2.2",
     "react-router-config": "^5.0.0",
     "react-router-dom": "^5.0.0",
+    "react-spinners": "^0.5.8",
     "react-test-renderer": "^16.8.6",
     "react-toastify": "^5.1.1",
     "react-validation": "^3.0.7",

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Badge, DropdownItem, DropdownMenu, DropdownToggle, Nav, NavItem } from 'reactstrap';
+import { Col, FormGroup, Badge, DropdownItem, DropdownMenu, DropdownToggle, Nav, NavItem } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 import { AppAsideToggler, AppHeaderDropdown, AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
@@ -54,15 +54,22 @@ class DefaultHeader extends Component {
               <img src={'../../assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
             </DropdownToggle>
             <DropdownMenu right style={{ right: 'auto' }}>
-              <DropdownItem header tag="div" className="text-center"><strong>Account</strong></DropdownItem>
-              {/* <DropdownItem><i className="fa fa-bell-o"></i> Updates<Badge color="info">42</Badge></DropdownItem> */}
+              {/* <DropdownItem header tag="div" className="text-center"><strong>Account</strong></DropdownItem> */}
+              {/* <DropdownItem><i className="fa fa-bell-o"></i> Updates<Badge color="info">42</Badge></DropdownItem>
               <DropdownItem><i className="fa fa-envelope-o"></i> Messages<Badge color="success">42</Badge></DropdownItem>
-              {/* <DropdownItem><i className="fa fa-tasks"></i> Tasks<Badge color="danger">42</Badge></DropdownItem> */}
-              <DropdownItem><i className="fa fa-comments"></i> Comments<Badge color="warning">42</Badge></DropdownItem>
-              <DropdownItem><i className="fa fa-comments"></i>
-                <NavItem className="d-md-down-none">
-                  <NavLink to="account/changepassword" className="nav-link"> Đổi mật khẩu</NavLink>
-                </NavItem>
+              <DropdownItem><i className="fa fa-tasks"></i> Tasks<Badge color="danger">42</Badge></DropdownItem>
+              <DropdownItem><i className="fa fa-comments"></i> Comments<Badge color="warning">42</Badge></DropdownItem> */}
+              <DropdownItem>
+                <FormGroup row>
+                  <Col md="2" style={{height:"7px"}}>
+                    <i className="fa cui-pencil"></i>
+                  </Col>
+                  <Col md="9.5" style={{height:"7px"}}>
+                    <NavItem>
+                      <NavLink to="account/changepassword" className="nav-link" style={{color:"Gray"}}>&nbsp;&nbsp;Đổi mật khẩu</NavLink>
+                    </NavItem>
+                  </Col>
+                </FormGroup> 
               </DropdownItem>
               {/* <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem> */}
               {/* <DropdownItem><i className="fa fa-user"></i> Profile</DropdownItem>
@@ -71,7 +78,16 @@ class DefaultHeader extends Component {
               <DropdownItem><i className="fa fa-file"></i> Projects<Badge color="primary">42</Badge></DropdownItem>
               <DropdownItem divider />
               <DropdownItem><i className="fa fa-shield"></i> Lock Account</DropdownItem> */}
-              <DropdownItem onClick={e => this.props.onLogout(e)}><i className="fa fa-lock"></i> Đăng xuất</DropdownItem>
+              <DropdownItem onClick={e => this.props.onLogout(e)}>
+                <FormGroup row>
+                  <Col md="2" style={{height:"7px"}}>
+                    <i className="fa cui-account-logout"></i>
+                  </Col>
+                  <Col md="9.5" style={{height:"7px", color:"Gray"}}>
+                    &nbsp;&nbsp;Đăng xuất
+                  </Col>
+                </FormGroup>  
+              </DropdownItem>
             </DropdownMenu>
           </AppHeaderDropdown>
         </Nav>

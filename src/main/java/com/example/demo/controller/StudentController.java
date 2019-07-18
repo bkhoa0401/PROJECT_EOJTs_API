@@ -318,9 +318,11 @@ public class StudentController {
     //da fix
     @GetMapping("/getListStudentIsInvited")
     @ResponseBody
-    public ResponseEntity<List<Student>> getListStudentOfBusiness() {
+    public ResponseEntity<List<Student_InvitationDTO>> getListStudentOfBusiness() {
         String email = getEmailFromToken();
         List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);
+        List<Student> studentListIsInvitedInFunc = new ArrayList<>();
+        List<Student_InvitationDTO> studentList = new ArrayList<>();
 
         Semester semester = semesterService.getSemesterCurrent();
 
@@ -334,10 +336,19 @@ public class StudentController {
         for (int i = 0; i < invitationList.size(); i++) {
             Student student = studentService.getStudentIsInvited(invitationList.get(i).getStudent().getEmail()); //find student by email
             studentList.add(student);
+            Student_InvitationDTO student_invitationDTO = new Student_InvitationDTO();
+            Student student = studentService.getStudentIsInvited(invitationList.get(i).getStudent().getEmail());
+            List<Invitation> invitations = invitationService.getListInvitationByStudentEmail(student.getEmail());
+            student_invitationDTO.setInvitations(invitations);
+            student_invitationDTO.setStudent(student);
+            studentList.add(student_invitationDTO);
+
+
+            studentListIsInvitedInFunc.add(student);
         }
         if (studentList != null) {
-            studentListIsInvited = studentList;
-            return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
+            studentListIsInvited = studentListIsInvitedInFunc;
+            return new ResponseEntity<List<Student_InvitationDTO>>(studentList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -540,6 +551,16 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/business")
+    @ResponseBody
+    public ResponseEntity<Business> getBusinessOfSutdent(@RequestParam String email) {
+        Business business = studentService.getBusinessOfStudent(email);
+        if (business != null) {
+            return new ResponseEntity<Business>(business, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     @GetMapping("/businesses")
     @ResponseBody
     public ResponseEntity<List<Business>> getBusinessesOfStudent() {
@@ -630,20 +651,20 @@ public class StudentController {
 
         DashboardDTO dashboardDTO = new DashboardDTO();
 
-        float percentTaskDoneOfStudent = taskService.getPercentTaskDoneOfStudent(email);
-        if (!Float.isNaN(percentTaskDoneOfStudent)) {
-            dashboardDTO.setPercentTaskDone(percentTaskDoneOfStudent * 100);
-        } else {
-            dashboardDTO.setPercentTaskDone(0);
+        List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(email);
+        if (evaluationList == null) {
+            evaluationList = new ArrayList<>();
         }
-
-        int countEvaluation = evaluationService.countEvaluation(email);
-        dashboardDTO.setCountEvaluation(countEvaluation);
+        dashboardDTO.setEvaluationList(evaluationList);
 
         int countEventIsNotRead = eventService.countEventIsNotRead(email);
-        dashboardDTO.setInformMessageIsNotRead(countEventIsNotRead);
+        dashboardDTO.setUnReadInformessage(countEventIsNotRead);
 
-        dashboardDTO.setBusiness(ojt_enrollment.getBusiness());
+        List<Task> taskList = taskService.findTaskByStudentEmail(email);
+        if (taskList == null) {
+            taskList = new ArrayList<>();
+        }
+        dashboardDTO.setTaskList(taskList);
 
         return new ResponseEntity<DashboardDTO>(dashboardDTO, HttpStatus.OK);
     }
@@ -726,6 +747,11 @@ public class StudentController {
         for (int i = 0; i < studentList.size(); i++) {
             List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(studentList.get(i).getEmail());
             Collections.sort(evaluationList);
+            if (evaluationList.size() < 4) {
+                for (int j = evaluationList.size(); j < 4; j++) {
+                    evaluationList.add(null);
+                }
+            }
             Student_EvaluationDTO student_evaluationDTO = new Student_EvaluationDTO();
             student_evaluationDTO.setEvaluationList(evaluationList);
             student_evaluationDTO.setStudent(studentList.get(i));
