@@ -43,12 +43,12 @@ public class Feedback {
     @Column(name = "reason_not_satisfied")
     private String reason_not_satisfied;
 
-    @Column(name = "others")
+    @Column(name = "others", columnDefinition = "NVARCHAR(MAX)")
     private String others;
 
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinColumn(name = "feedback_id")
+    @JoinColumn(name = "ojt_enrollment_id")
     private Ojt_Enrollment ojt_enrollment;
 
     public Feedback() {
