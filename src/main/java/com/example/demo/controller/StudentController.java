@@ -332,18 +332,14 @@ public class StudentController {
             }
         }
 
-        List<Student> studentList = new ArrayList<>();
         for (int i = 0; i < invitationList.size(); i++) {
-            Student student = studentService.getStudentIsInvited(invitationList.get(i).getStudent().getEmail()); //find student by email
-            studentList.add(student);
+
             Student_InvitationDTO student_invitationDTO = new Student_InvitationDTO();
             Student student = studentService.getStudentIsInvited(invitationList.get(i).getStudent().getEmail());
             List<Invitation> invitations = invitationService.getListInvitationByStudentEmail(student.getEmail());
             student_invitationDTO.setInvitations(invitations);
             student_invitationDTO.setStudent(student);
             studentList.add(student_invitationDTO);
-
-
             studentListIsInvitedInFunc.add(student);
         }
         if (studentList != null) {
