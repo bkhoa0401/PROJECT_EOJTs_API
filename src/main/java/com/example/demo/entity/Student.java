@@ -128,6 +128,10 @@ public class Student implements Serializable {
     @Column(name = "semester")
     private String semester;
 
+    @OneToMany(mappedBy = "student_proposed")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Business_Proposed> business_proposeds;
+
     public Student() {
     }
 
@@ -348,5 +352,13 @@ public class Student implements Serializable {
 
     public void setSemester(String semester) {
         this.semester = semester;
+    }
+
+    public List<Business_Proposed> getBusiness_proposeds() {
+        return business_proposeds;
+    }
+
+    public void setBusiness_proposeds(List<Business_Proposed> business_proposeds) {
+        this.business_proposeds = business_proposeds;
     }
 }
