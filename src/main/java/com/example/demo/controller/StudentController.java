@@ -640,11 +640,6 @@ public class StudentController {
     public ResponseEntity<DashboardDTO> getDashboardOfStudent() {
         String email = getEmailFromToken();
 
-        Semester semester=semesterService.getSemesterCurrent();
-
-        //Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email,semester.getId());
-
         DashboardDTO dashboardDTO = new DashboardDTO();
 
         List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(email);
