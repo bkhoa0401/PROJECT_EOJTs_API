@@ -87,5 +87,19 @@ public class EvaluationService {
         return null;
     }
 
+    public boolean updateEvaluation(int id, Evaluation evaluation) {
+        Evaluation evaluationFindById = evaluationRepository.findById(id);
+        evaluation.setOjt_enrollment(evaluationFindById.getOjt_enrollment());
+        evaluation.setSupervisor(evaluationFindById.getSupervisor());
+        Date date = new Date(Calendar.getInstance().getTime().getTime());
+        evaluation.setTimeCreated(date);
+        if (evaluationFindById != null) {
+            if (id == evaluation.getId()) {
+                evaluationRepository.save(evaluation);
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

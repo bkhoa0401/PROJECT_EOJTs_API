@@ -73,7 +73,8 @@ const InformMessage_Detail = React.lazy(() => import('./views/InformMessage/Info
 const Create_InformMessage = React.lazy(() => import('./views/InformMessage/Create_InformMessage.js'));
 const Report = React.lazy(() => import('./views/Report/Report.js'));
 const Report_Detail = React.lazy(() => import('./views/Report/Report_Detail.js'));
-const Create_Report = React.lazy(() => import('./views/Report/Create_Report.js'))
+const Create_Report = React.lazy(() => import('./views/Report/Create_Report.js'));
+const Update_Report = React.lazy(() => import('./views/Report/Update_Report.js'));
 const Hr_Students = React.lazy(() => import('./views/Hr_Students/Hr_Students.js'));
 const Hr_Student_Detail = React.lazy(() => import('./views/Hr_Students/Hr_Student_Detail.js'));
 const Hr_Task = React.lazy(() => import('./views/Hr_Task/Hr_Task.js'));
@@ -164,9 +165,10 @@ const routes = [
   { path: '/informmessage/informmessage', exact: true, name: 'Thông báo', component: InformMessage },
   { path: '/informmessage/informmessage_detail/:id', exact: true, name: 'Chi tiết thông báo', component: InformMessage_Detail },
   { path: '/informmessage/create_informmessage', exact: true, name: 'Soạn thông báo', component: Create_InformMessage },
-  { path: '/report/report', exact: true, name: 'Báo cáo', component: Report },
-  { path: '/report/report_detail/:id', exact: true, name: 'Chi tiết báo cáo', component: Report_Detail },
-  { path: '/report/create_report/:id', exact: true, name: 'Tạo báo cáo', component: Create_Report },
+  { path: '/report/report', exact: true, name: 'Đánh giá', component: Report },
+  { path: '/report/report_detail/:id', exact: true, name: 'Chi tiết Đánh giá', component: Report_Detail },
+  { path: '/report/create_report/:id', exact: true, name: 'Tạo Đánh giá', component: Create_Report },
+  { path: '/report/update_report/:id', exact: true, name: 'Chỉnh sửa Đánh giá', component: Update_Report },
   { path: '/hr-student-list', exact: true, name: 'Danh sách sinh viên', component: Hr_Students },
   { path: '/hr-student-list/details/:email', exact: true, name: 'Chi tiết sinh viên', component: Hr_Student_Detail },
   { path: '/hr-task', exact: true, name: 'Danh sách nhiệm vụ', component: Hr_Task },

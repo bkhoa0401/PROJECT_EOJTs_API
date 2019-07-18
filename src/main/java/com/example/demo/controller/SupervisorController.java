@@ -91,6 +91,16 @@ public class SupervisorController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    //update evaluation
+    @PutMapping("/updateEvaluation")
+    public ResponseEntity<Void> updateEvaluationById(@RequestParam int id, @RequestBody Evaluation evaluation) {
+        boolean update = evaluationService.updateEvaluation(id, evaluation);
+        if (update == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     @GetMapping("/getEvaluation")
     @ResponseBody
     public ResponseEntity<Evaluation> getEvaluationById(@RequestParam int id) {

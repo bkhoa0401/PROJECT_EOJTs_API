@@ -296,7 +296,7 @@ class Create_InformMessage extends Component {
                                 <Card>
                                     <CardHeader style={{ fontWeight: "bold" }}>
                                         <i className="fa fa-align-justify"></i>Soạn thông báo
-                            </CardHeader>
+                                    </CardHeader>
                                     <CardBody>
                                         <FormGroup row>
                                             <Col md="2">
@@ -362,7 +362,7 @@ class Create_InformMessage extends Component {
                                 <row>
                                     <Button color="primary" onClick={() => this.handleSelectAll()}>Chọn tất cả</Button>
                                     &nbsp;&nbsp;
-                            <Button color="primary" onClick={() => this.handleDeSelect()}>Huỷ chọn</Button>
+                                    <Button color="primary" onClick={() => this.handleDeSelect()}>Huỷ chọn</Button>
                                 </row>
                                 <br />
                                 <hr />

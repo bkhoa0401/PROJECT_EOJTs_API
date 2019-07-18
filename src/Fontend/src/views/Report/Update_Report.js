@@ -12,7 +12,7 @@ import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
-class Create_Report extends Component {
+class Update_Report extends Component {
 
     constructor(props) {
         super(props);
@@ -22,6 +22,7 @@ class Create_Report extends Component {
             reportColor: ['lime', 'DeepSkyBlue', 'gold', 'red', 'black', 'black'],
             rate: ['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu', 'N/A'],
             onScore: 5,
+            id:-1,
             title: '',
             timeStart: '',
             timeEnd: '',
@@ -31,7 +32,8 @@ class Create_Report extends Component {
             score_activity: '0',
             project_name: '',
 
-            emailStudent: '',
+            needId: null,
+            reportId:-1,
 
             student: null,
             businessName: '',
@@ -44,33 +46,66 @@ class Create_Report extends Component {
 
     async componentDidMount() {
         const token = localStorage.getItem('id_token');
-        let role = '';
-        let actor = null;
-        let businessName = '';
-        if (token != null) {
-            const decoded = decode(token);
-            role = decoded.role;
-        }
-        if (role == 'ROLE_SUPERVISOR') {
-            actor = await ApiServices.Get(`/supervisor`);
-            businessName = actor.business.business_name;
-        } else if (role == 'ROLE_HR') {
-            actor = await ApiServices.Get(`/business/getBusiness`);
-            businessName = actor.business_name;
-        }
+        // let role = '';
+        // if (token != null) {
+        //     const decoded = decode(token);
+        //     role = decoded.role;
+        // }
+        // if (role == 'ROLE_SUPERVISOR') {
+        //     actor = await ApiServices.Get(`/supervisor`);
+        //     businessName = actor.business.business_name;
+        // } else if (role == 'ROLE_HR') {
+        //     actor = await ApiServices.Get(`/business/getBusiness`);
+        //     businessName = actor.business_name;
+        // }
         var param = window.location.href.split("/").pop();
-        var needParam = param.split('~');
+        var needId = param.split('~');
+        const report = await ApiServices.Get(`/supervisor/getEvaluation?id=${needId[0]}`);
+        let owner = await ApiServices.Get(`/supervisor/business?email=${report.supervisor_email}`);
+        let businessName = owner.business_name;
+        const student = await ApiServices.Get(`/student/student/${needId[1]}`);
         let title = '';
-        let emailStudent = '';
-        title = "Đánh giá tháng #" + needParam[0];
-        emailStudent = needParam[1];
-        const student = await ApiServices.Get(`/student/student/${needParam[1]}`);
+        title = report.title;
+        const reportId = needId[0];
+        // console.log("reportID" + reportId);
+
+        const timeStart = report.timeStart;
+        const timeEnd = report.timeEnd;
+        const remark = report.remark;
+        const project_name = report.project_name;
+        const score_discipline = report.score_discipline;
+        const score_activity = report.score_activity;
+        const score_work = report.score_work;
+        let onScore = 5;
+        if (((report.score_work + report.score_activity + report.score_discipline) / 3) > 9) {
+            onScore = 0;
+        } else if (((report.score_work + report.score_activity + report.score_discipline) / 3) > 8) {
+            onScore = 1;
+        } else if (((report.score_work + report.score_activity + report.score_discipline) / 3) > 7) {
+            onScore = 2;
+        } else if (((report.score_work + report.score_activity + report.score_discipline) / 3) >= 5) {
+            onScore = 3;
+        } else {
+            onScore = 4;
+        }
+
         this.setState({
             loading: false,
+            id: needId[0],
+            needId: needId,
+            reportId: reportId,
             title: title,
-            emailStudent: emailStudent,
             student: student,
             businessName: businessName,
+
+            timeStart: timeStart,
+            timeEnd: timeEnd,
+            remark: remark,
+            score_work: score_work,
+            score_activity: score_activity,
+            score_discipline: score_discipline,
+            project_name: project_name,
+            onScore: onScore,
         });
     }
 
@@ -152,7 +187,7 @@ class Create_Report extends Component {
     }
 
     handleSubmit = async () => {
-        const { title, timeStart, timeEnd, remark, score_discipline, score_work, score_activity, project_name } = this.state;
+        const { title, timeStart, timeEnd, remark, score_discipline, score_work, score_activity, project_name, needId, id } = this.state;
         let validatorNumRange_score_work = '';
         let validatorNumRange_score_activity = '';
         let validatorNumRange_score_discipline = '';
@@ -178,8 +213,9 @@ class Create_Report extends Component {
                 this.setState({
                     loading: true
                 })
-                const emailStudent = this.state.emailStudent;
+                const reportId = parseInt(this.state.reportId);
                 const evaluation = {
+                    id,
                     title,
                     timeStart,
                     timeEnd,
@@ -189,18 +225,20 @@ class Create_Report extends Component {
                     score_activity,
                     project_name,
                 }
-                const result = await ApiServices.Post(`/supervisor/evaluation?emailStudent=${emailStudent}`, evaluation);
+                const result = await ApiServices.Put(`/supervisor/updateEvaluation?id=${reportId}`, evaluation);
                 // console.log(result);
                 // console.log(emailStudent);
                 // console.log(evaluation);
-                if (result.status == 201) {
-                    Toastify.actionSuccess("Tạo đánh giá tháng thành công!");
-                    this.props.history.push("/Report/Report");
+                if (result.status == 200) {
+                    Toastify.actionSuccess("Cập nhật đánh giá tháng thành công!");
+                    this.props.history.push(`/Report/Report_Detail/${needId[0]}~${needId[1]}`);
                 } else {
-                    Toastify.actionFail("Tạo đánh giá tháng thất bại!");
+                    Toastify.actionFail("Cập nhật đánh giá tháng thất bại!");
                     this.setState({
                         loading: false
                     })
+                    // console.log(result);
+                    // console.log(evaluation);
                 }
             }
         } else {
@@ -210,7 +248,7 @@ class Create_Report extends Component {
     }
 
     render() {
-        const { validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, remark, project_name, timeStart, timeEnd, onScore } = this.state;
+        const { needId, validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, remark, project_name, timeStart, timeEnd, onScore } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -339,12 +377,14 @@ class Create_Report extends Component {
                             </Col>
                         </Row>
                         <div style={{ paddingLeft: '40%' }}>
-                            <Button style={{ width: '100px' }} outline color="primary" onClick={() => this.handleDirect('/Report/Report')}>
-                                Trở về
-                            </Button>
-                            &nbsp;&nbsp;&nbsp;
+                            {needId === null ? (<></>):
+                            (<Button style={{ width: '100px' }} outline color="primary" onClick={() => this.handleDirect(`/Report/Report_Detail/${needId[0]}~${needId[1]}`)}>
+                                Huỷ
+                            </Button>)
+                            }
+                            &nbsp;&nbsp;&nbsp;   
                             <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleSubmit()}>
-                                Tạo
+                                Cập nhật
                             </Button>
                         </div>
                     </div>
@@ -353,4 +393,4 @@ class Create_Report extends Component {
     }
 }
 
-export default Create_Report;
+export default Update_Report;

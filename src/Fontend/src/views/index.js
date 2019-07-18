@@ -69,6 +69,7 @@ import Job_Post from "./Job_Post/Job_Post";
 import InformMessage_Detail from "./InformMessage/InformMessage_Detail";
 import Report_Detail from "./Report/Report_Detail";
 import Create_Report from "./Report/Create_Report";
+import Update_Report from "./Report/Update_Report";
 
 export {
   Badges,
@@ -144,6 +145,7 @@ export {
   Report,
   Report_Detail,
   Create_Report,
+  Update_Report,
   Hr_Students,
   Hr_Students_Detail,
   Hr_Task,
