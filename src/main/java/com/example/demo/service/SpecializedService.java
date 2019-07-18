@@ -7,6 +7,10 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+//@CacheConfig(cacheNames = {"getAllSpecialized"})
 public class SpecializedService {
     @Autowired
     SpecializedRepository specializedRepository;
@@ -55,7 +60,20 @@ public class SpecializedService {
         return specializedId;
     }
 
+    @Cacheable("specializeds")
     public List<Specialized> getAllSpecialized() {
+        List<Specialized> list = new ArrayList<>();
+        list = specializedRepository.findAll();
+        if (list != null) {
+            return list;
+        } else {
+            return null;
+        }
+    }
+
+//    @CacheEvict(value = "specializeds", allEntries = true)
+    @Cacheable("specializeds")
+    public List<Specialized> getAllSpecializedForCache() {
         List<Specialized> list = new ArrayList<>();
         list = specializedRepository.findAll();
         if (list != null) {
@@ -79,13 +97,16 @@ public class SpecializedService {
         }
     }
 
-    public boolean updateSpecialized(Specialized specialized) {
+    @CachePut(value = "specializedID", key = "#specialized.id")
+    @CacheEvict(value = "specializeds", allEntries = true)
+    public Specialized updateSpecialized(Specialized specialized) {
         Specialized specializedFound = specializedRepository.findSpecializedById(specialized.getId());
         if (specializedFound != null) {
             specializedRepository.save(specialized);
-            return true;
+            getAllSpecializedForCache();
+            return specialized;
         }
-        return false;
+        return null;
     }
 
     public boolean updateStatusSpecialized(int specializedId, boolean status) {
@@ -98,6 +119,7 @@ public class SpecializedService {
         return false;
     }
 
+    @Cacheable(value = "specializedID", key = "#id")
     public Specialized getSpecializedById(int id) {
         Specialized specialized = specializedRepository.findSpecializedById(id);
         if (specialized != null) {

@@ -82,12 +82,12 @@ public class SpecializedController {
 
     @PutMapping
     @ResponseBody
-    public ResponseEntity<Boolean> updateSpecialized(@RequestBody Specialized specialized) {
-        boolean result = specializedService.updateSpecialized(specialized);
-        if (result == true) {
-            return new ResponseEntity<Boolean>(result, HttpStatus.OK);
+    public ResponseEntity<Specialized> updateSpecialized(@RequestBody Specialized specialized) {
+        Specialized result = specializedService.updateSpecialized(specialized);
+        if (result != null) {
+            return new ResponseEntity<Specialized>(result, HttpStatus.OK);
         }
-        return new ResponseEntity<Boolean>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 
