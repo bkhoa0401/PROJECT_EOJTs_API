@@ -29,6 +29,7 @@ public class StudentDTO {
     private List<Skill> skillList;
     private boolean isIntership;
     private String businessName;
+    private String semester;
     private String supervisorName;
 
 
@@ -70,6 +71,13 @@ public class StudentDTO {
         this.dob = dob;
     }
 
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
 
     public StudentDTO() {
         this.isIntership = false;

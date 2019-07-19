@@ -1,14 +1,14 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Business;
-import com.example.demo.entity.Job_Post;
-import com.example.demo.entity.Job_Post_Skill;
-import com.example.demo.entity.Ojt_Enrollment;
+import com.example.demo.entity.*;
 import com.example.demo.repository.Job_PostRepository;
+import com.example.demo.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -25,6 +25,9 @@ public class Job_PostService {
 
     @Autowired
     Job_Post_SkillService job_post_skillService;
+
+    @Autowired
+    SemesterService semesterService;
 
     public void saveJobPost(Job_Post job_post) {
         if (job_post != null) {
@@ -65,10 +68,24 @@ public class Job_PostService {
         return false;
     }
 
+    //check semester //ok
     public List<Job_Post> getAllJobPost() {
+        Semester semester = semesterService.getSemesterCurrent();
+
         List<Job_Post> job_postList = job_postRepository.findJob_PostsOrderByTimePostDesc();
-        if (job_postList != null) {
-            return job_postList;
+
+        List<Job_Post> job_postListCurrentSemester=new ArrayList<>();
+
+        for (int i = 0; i < job_postList.size(); i++) {
+            Semester semesterOfJobPost = job_postList.get(i).getOjt_enrollment().getSemester();
+            if (semesterOfJobPost != null) {
+                if (semesterOfJobPost.getId() == semester.getId()) {
+                    job_postListCurrentSemester.add(job_postList.get(i));
+                }
+            }
+        }
+        if (job_postListCurrentSemester != null) {
+            return job_postListCurrentSemester;
         }
         return null;
     }
@@ -81,12 +98,14 @@ public class Job_PostService {
         return null;
     }
 
+    //check semester ok
+    //@CachePut(value = "jobposts")
     public boolean createJob_Post(String emailBusiness, Job_Post job_post) {
-        Business business = businessService.getBusinessByEmail(emailBusiness);
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(business);
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
+        Ojt_Enrollment ojt_enrollment =
+                ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(emailBusiness, semesterCurrent.getId());
 
         List<Job_Post_Skill> job_post_skill = job_post.getJob_post_skills();
-
 
         if (job_post != null) {
             Date date = new Date(Calendar.getInstance().getTime().getTime());

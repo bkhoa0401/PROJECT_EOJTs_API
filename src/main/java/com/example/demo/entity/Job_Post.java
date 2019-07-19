@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "job_post")
-public class Job_Post implements Comparable<Job_Post> {
+public class Job_Post implements Comparable<Job_Post>, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,8 +39,7 @@ public class Job_Post implements Comparable<Job_Post> {
     @Column(name = "interest", columnDefinition = "NVARCHAR(500)")
     private String interest;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
-//    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore
     @JoinColumn(name = "ojt_enrollment_id")
@@ -59,7 +58,7 @@ public class Job_Post implements Comparable<Job_Post> {
 
     // private List<Skill> skills;
 
-    @OneToMany(mappedBy = "job_post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "job_post")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Job_Post_Skill> job_post_skills;
 

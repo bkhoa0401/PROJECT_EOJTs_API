@@ -9,6 +9,7 @@ import org.hibernate.search.annotations.TermVector;
 
 import javax.persistence.*;
 import javax.xml.crypto.Data;
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -18,7 +19,7 @@ import java.util.List;
 @Entity
 @Indexed
 @Table(name = "specialized")
-public class Specialized {
+public class Specialized implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

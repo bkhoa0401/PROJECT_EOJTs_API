@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -22,18 +24,26 @@ public class BusinessImportFileService {
     @Autowired
     Job_Post_SkillService job_post_skillService;
 
+    @Autowired
+    SemesterService semesterService;
+
     @Transactional
     public void insertBusiness(BusinessDTO businessDTO) throws Exception {
         Business business = new Business(businessDTO.getEmail(), businessDTO.getBusiness_name()
                 , businessDTO.getBusiness_eng_name(), businessDTO.getBusiness_phone()
                 , businessDTO.getBusiness_address(), businessDTO.getBusiness_overview(), businessDTO.getBusiness_website(), businessDTO.getLogo());
 
+
+        Semester semester = semesterService.getSemesterByName(businessDTO.getNameSemester());
         Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
         ojt_enrollment.setBusiness(business);
+        ojt_enrollment.setSemester(semester);
 
+        Date datePost = new Date(Calendar.getInstance().getTime().getTime());
         Job_Post job_post = new Job_Post(businessDTO.getDescription(), businessDTO.getTime_post(), businessDTO.getViews(), businessDTO.getContact()
                 , businessDTO.getInterview_process(), businessDTO.getInterest());
         job_post.setOjt_enrollment(ojt_enrollment);
+        job_post.setTimePost(datePost);
 
         List<SkillDTO> skillDTOList = businessDTO.getSkillDTOList();
 
@@ -56,6 +66,7 @@ public class BusinessImportFileService {
         String password = usersService.getAlphaNumericString();
         usersService.sendEmail(name, email, password);
         Users users = new Users(email, password);
+        users.setActive(true);
 
         List<Role> roleList = new ArrayList<>();
         Role roleOfBusiness = new Role();

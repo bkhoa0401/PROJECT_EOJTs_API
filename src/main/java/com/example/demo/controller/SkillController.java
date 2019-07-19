@@ -39,7 +39,7 @@ public class SkillController {
 
     @GetMapping("/id")
     @ResponseBody
-    public ResponseEntity<Skill> getSkilldById(@RequestParam int id) {
+    public ResponseEntity<Skill> getSkillById(@RequestParam int id) {
         HttpStatus httpStatus;
         Skill skill = skillService.getSkillById(id);
 

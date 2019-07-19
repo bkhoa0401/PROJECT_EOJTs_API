@@ -6,11 +6,12 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "supervisor")
-public class Supervisor {
+public class Supervisor implements Serializable {
 
     @Id
     @Column(name = "email")

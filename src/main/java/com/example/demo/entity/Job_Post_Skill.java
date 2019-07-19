@@ -5,17 +5,18 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "job_post_skill")
-public class Job_Post_Skill {
+public class Job_Post_Skill implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore
     @JoinColumn(name = "job_post_id")

@@ -36,12 +36,15 @@ public class SupervisorController {
     @Autowired
     StudentService studentService;
 
+    @Autowired
+    SemesterService semesterService;
+
     @GetMapping("")
     @ResponseBody
     public ResponseEntity<SupervisorDTO> getSupervisorDetails() {
         String email = getEmailFromToken();
 
-        SupervisorDTO supervisorDTO=new SupervisorDTO();
+        SupervisorDTO supervisorDTO = new SupervisorDTO();
 
         Supervisor supervisor = supervisorService.findByEmail(email);
         supervisorDTO.setSupervisor(supervisor);
@@ -52,12 +55,15 @@ public class SupervisorController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester // ok
     @PostMapping("")
     public ResponseEntity<Void> createNewTask(@RequestBody Task task, @RequestParam String emailStudent) {
         String email = getEmailFromToken();
         Supervisor supervisor = supervisorService.findByEmail(email);
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
 
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(emailStudent);
+        Ojt_Enrollment ojt_enrollment =
+                ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(emailStudent, semesterCurrent.getId());
 
         task.setOjt_enrollment(ojt_enrollment);
         task.setSupervisor(supervisor);
@@ -82,10 +88,6 @@ public class SupervisorController {
 
         Supervisor supervisor = supervisorService.findByEmail(email);
         evaluation.setSupervisor(supervisor);
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(emailStudent);
-        evaluation.setOjt_enrollment(ojt_enrollment);
-        Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-        evaluation.setTimeCreated(date);
 
         evaluationService.createNewEvaluation(evaluation, emailStudent);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -108,6 +110,8 @@ public class SupervisorController {
         return new ResponseEntity<Evaluation>(evaluation, HttpStatus.OK);
     }
 
+    //get all evaluations of a supervisor by semester
+    //check semester // ok
     @GetMapping("/business")
     @ResponseBody
     public ResponseEntity<Business> getBusinessOfEvaluation(@RequestParam String email) {
@@ -134,7 +138,9 @@ public class SupervisorController {
     public ResponseEntity<List<Evaluation>> getAllEvaluationBySupervisorEmail() {
         String email = getEmailFromToken();
 
+        //get all evaluation of supervisor in a semester
         List<Evaluation> evaluationList = evaluationService.getEvaluationsBySupervisorEmail(email);
+        //get all student of supervisor in a semester
         List<Student> studentList = studentService.getAllStudentOfASupervisor(email);
         List<Evaluation> overviewEvaluationList = new ArrayList<Evaluation>();
         int flag = 0;
@@ -144,7 +150,7 @@ public class SupervisorController {
                 if (studentList.get(i).getCode().equals(evaluationList.get(j).getOjt_enrollment().getStudent().getCode())) {
                     overviewEvaluationList.add(evaluationList.get(j));
                     if (flag > 0) {
-                        for (int k = 1; k <= flag ; k++) {
+                        for (int k = 1; k <= flag; k++) {
                             Date date1 = overviewEvaluationList.get(overviewEvaluationList.size() - k).getTimeStart();
                             Date date2 = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k).getTimeStart();
                             if (date1.before(date2)) {
@@ -163,12 +169,22 @@ public class SupervisorController {
                 }
             }
         }
+        Semester semester = semesterService.getSemesterCurrent();
+        for (int i = 0; i < overviewEvaluationList.size(); i++) {
+            Evaluation evaluation=overviewEvaluationList.get(i);
+            if(evaluation!=null){
+                if (evaluation.getOjt_enrollment().getSemester().getId() != semester.getId()) {
+                    overviewEvaluationList.remove(overviewEvaluationList.get(i));
+                }
+            }
+        }
         if (overviewEvaluationList != null) {
             return new ResponseEntity<List<Evaluation>>(overviewEvaluationList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester //ok
     @GetMapping("/students")
     @ResponseBody
     public ResponseEntity<List<Student>> getAllStudentBySupervisorEmail() {
@@ -181,6 +197,7 @@ public class SupervisorController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester //ok
     @GetMapping("/taskByStudentEmail")
     @ResponseBody
     public ResponseEntity<List<Task>> getTasksOfStudent(@RequestParam String emailStudent) {
@@ -202,9 +219,13 @@ public class SupervisorController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester //ok
     @PutMapping("/task")
     public ResponseEntity<Void> updateTask(@RequestBody Task task, @RequestParam String emailStudent) {
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(emailStudent);
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
+
+        Ojt_Enrollment ojt_enrollment =
+                ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(emailStudent, semesterCurrent.getId());
 
         task.setOjt_enrollment(ojt_enrollment);
         boolean update = taskService.updateTask(task);

@@ -6,12 +6,13 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "invitation")
-public class Invitation {
+public class Invitation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -43,6 +44,7 @@ public class Invitation {
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "semester_id")
+    @JsonIgnore
     private Semester semester;
 
     @Column(name = "isRead")
