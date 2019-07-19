@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SupervisorRepository extends JpaRepository<Supervisor,String> {
+public interface ISupervisorRepository extends JpaRepository<Supervisor,String> {
 
     @Query(value = "select s from Supervisor s where s.ojt_enrollment=?1 and s.isActive='true'")
     List<Supervisor> findSupervisorsByOjt_enrollmentAndActiveIsTrue(Ojt_Enrollment ojt_enrollment);

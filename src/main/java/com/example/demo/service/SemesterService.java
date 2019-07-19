@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Semester;
-import com.example.demo.repository.SemesterRepository;
+import com.example.demo.repository.ISemesterRepository;
 import com.example.demo.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,28 +9,30 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class SemesterService {
+public class SemesterService implements ISemesterService{
 
     @Autowired
-    SemesterRepository semesterRepository;
+    ISemesterRepository ISemesterRepository;
 
-
+    @Override
     public Semester getSemesterByName(String name) {
-        Semester semester = semesterRepository.findSemesterByName(name);
+        Semester semester = ISemesterRepository.findSemesterByName(name);
         if (semester != null) {
             return semester;
         }
         return null;
     }
 
+    @Override
     public List<Semester> getAllSemester() {
-        List<Semester> semesters = semesterRepository.findAll();
+        List<Semester> semesters = ISemesterRepository.findAll();
         if (semesters != null) {
             return semesters;
         }
         return null;
     }
 
+    @Override
     public Semester getSemesterCurrent(){
         List<Semester> semesters = getAllSemester();
         Semester semesterCurrent=new Semester();
@@ -45,6 +47,5 @@ public class SemesterService {
             }
         }
         return semesterCurrent;
-
     }
 }

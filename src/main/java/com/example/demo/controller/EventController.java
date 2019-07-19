@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Event;
 import com.example.demo.service.EventService;
+import com.example.demo.service.IEventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ import java.util.List;
 public class EventController {
 
     @Autowired
-    EventService eventService;
+    IEventService eventService;
 
     @GetMapping("/getEvent")
     @ResponseBody

@@ -2,11 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.dto.Business_JobPostDTO;
 import com.example.demo.entity.*;
-import com.example.demo.repository.BusinessRepository;
-import com.example.demo.repository.EvaluationRepository;
+import com.example.demo.repository.IBusinessRepository;
+import com.example.demo.repository.IEvaluationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,34 +12,37 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class BusinessService {
+public class BusinessService implements IBusinessService{
     @Autowired
-    BusinessRepository businessRepository;
+    IBusinessRepository IBusinessRepository;
 
     @Autowired
-    Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
-    StudentService studentService;
+    IStudentService studentService;
 
     @Autowired
-    EvaluationRepository evaluationRepository;
+    IEvaluationRepository IEvaluationRepository;
 
     @Autowired
-    SemesterService semesterService;
+    ISemesterService semesterService;
 
+    @Override
     public void saveBusiness(Business business) {
-        businessRepository.save(business);
+        IBusinessRepository.save(business);
     }
 
+    @Override
     public List<Business> getAllBusiness() {
-        List<Business> businessList = businessRepository.findAll();
+        List<Business> businessList = IBusinessRepository.findAll();
         if (businessList != null) {
             return businessList;
         }
         return null;
     }
 
+    @Override
     public List<Business> getAllBusinessBySemester() {
         Semester semester = semesterService.getSemesterCurrent();
 
@@ -60,35 +61,39 @@ public class BusinessService {
         return null;
     }
 
+    @Override
     public Business getBusinessByEmail(String email) {
-        Business business = businessRepository.findBusinessByEmail(email);
+        Business business = IBusinessRepository.findBusinessByEmail(email);
         if (business != null) {
             return business;
         }
         return null;
     }
 
+    @Override
     public boolean updateBusiness(String email, Business business) {
-        Business businessFindByEmail = businessRepository.findBusinessByEmail(email);
+        Business businessFindByEmail = IBusinessRepository.findBusinessByEmail(email);
         if (businessFindByEmail != null) {
             if (email.equals(business.getEmail())) {
-                businessRepository.save(business);
+                IBusinessRepository.save(business);
                 return true;
             }
         }
         return false;
     }
 
+    @Override
     public Business findBusinessByName(String name) {
-        Business business = businessRepository.findBusinessByBusiness_eng_name(name);
+        Business business = IBusinessRepository.findBusinessByBusiness_eng_name(name);
         if (business != null) {
             return business;
         }
         return null;
     }
 
+    @Override
     public List<Business> findTop5BusinessByRateAverage() {
-        List<Business> businessList = businessRepository.findTop5OrderByRateAverageDesc();
+        List<Business> businessList = IBusinessRepository.findTop5OrderByRateAverageDesc();
         List<Business> businessListTop5 = new ArrayList<>();
 
         Semester semester = semesterService.getSemesterCurrent();
@@ -116,6 +121,7 @@ public class BusinessService {
     }
 
     // check semester // ok
+    @Override
     public List<Student> getSuggestListStudent(String emailBusiness) {
 
 //        Business business = businessRepository.findBusinessByEmail(emailBusiness);
@@ -164,6 +170,7 @@ public class BusinessService {
         return studentListSuggest;
     }
 
+    @Override
     public List<Skill> getListSkillBySpecializedOfStudent(List<Skill> skillListOfBusiness, int specialized) {
         List<Skill> list = new ArrayList<>();
         for (int i = 0; i < skillListOfBusiness.size(); i++) {
@@ -174,6 +181,7 @@ public class BusinessService {
         return list;
     }
 
+    @Override
     public void updateRateNumber(String email, int rate) {
         Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
         Business business = ojt_enrollment.getBusiness();
@@ -191,11 +199,12 @@ public class BusinessService {
         }
         business.setRateCount(++countRate);
 
-        businessRepository.save(business);
+        IBusinessRepository.save(business);
     }
 
     //@Cacheable(value = "jobposts",unless= "#result.size() == 0")
     //check semester //ok
+    @Override
     public List<Business_JobPostDTO> getAllJobPostOfBusinesses() {
         // List<Business> businessList = getAllBusiness();
         List<Business> businessList = getAllBusinessBySemester();
@@ -223,5 +232,4 @@ public class BusinessService {
         Collections.sort(business_jobPostDTOList);
         return business_jobPostDTOList;
     }
-
 }

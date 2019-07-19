@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface Ojt_EnrollmentRepository extends JpaRepository<Ojt_Enrollment, Integer> {
+public interface IOjt_EnrollmentRepository extends JpaRepository<Ojt_Enrollment, Integer> {
 
     Ojt_Enrollment getOjt_EnrollmentByBusiness_Email(String email);
 

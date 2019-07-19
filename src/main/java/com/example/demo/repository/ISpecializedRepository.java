@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SpecializedRepository extends JpaRepository<Specialized, Integer> {
+public interface ISpecializedRepository extends JpaRepository<Specialized, Integer> {
 
     @Query(value = "SELECT s.id \n"
             + "       FROM Specialized s\n"

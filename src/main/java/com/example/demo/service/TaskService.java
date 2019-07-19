@@ -4,7 +4,7 @@ import com.example.demo.config.Status;
 import com.example.demo.entity.Ojt_Enrollment;
 import com.example.demo.entity.Semester;
 import com.example.demo.entity.Task;
-import com.example.demo.repository.TaskRepository;
+import com.example.demo.repository.ITaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,26 +13,28 @@ import java.util.Calendar;
 import java.util.List;
 
 @Service
-public class TaskService {
+public class TaskService implements ITaskService {
 
     @Autowired
-    TaskRepository taskRepository;
+    ITaskRepository ITaskRepository;
 
     @Autowired
-    Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
-    SemesterService semesterService;
+    ISemesterService semesterService;
 
+    @Override
     public void createTaskForStudent(Task task) {
         Date date = new Date(Calendar.getInstance().getTime().getTime());
         task.setTime_created(date);
         task.setStatus(Status.NOT_START);
-        taskRepository.save(task);
+        ITaskRepository.save(task);
     }
 
+    @Override
     public List<Task> findTaskBySupervisorEmail(String email) {
-        List<Task> taskList = taskRepository.findTasksBySupervisorEmail(email);
+        List<Task> taskList = ITaskRepository.findTasksBySupervisorEmail(email);
         if (taskList != null) {
             return taskList;
         }
@@ -40,48 +42,53 @@ public class TaskService {
     }
 
     //check semester //ok
+    @Override
     public List<Task> findTaskByStudentEmail(String email) {
-       // Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
-        Semester semesterCurrent=semesterService.getSemesterCurrent();
+        // Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
 
-        Ojt_Enrollment ojt_enrollment=
-                ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email,semesterCurrent.getId());
-        List<Task> taskList = taskRepository.findTasksByOjt_enrollment(ojt_enrollment);
+        Ojt_Enrollment ojt_enrollment =
+                ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email, semesterCurrent.getId());
+        List<Task> taskList = ITaskRepository.findTasksByOjt_enrollment(ojt_enrollment);
         if (taskList != null) {
             return taskList;
         }
         return null;
     }
 
+    @Override
     public Task findTaskById(int id) {
-        Task task = taskRepository.findById(id);
+        Task task = ITaskRepository.findById(id);
         if (task != null) {
             return task;
         }
         return null;
     }
 
+    @Override
     public boolean updateTask(Task task) {
-        Task taskIsExisted = taskRepository.findById(task.getId());
+        Task taskIsExisted = ITaskRepository.findById(task.getId());
         if (taskIsExisted != null) {
 //            task.setOjt_enrollment(taskIsExisted.getOjt_enrollment());
             task.setTime_created(taskIsExisted.getTime_created());
             task.setSupervisor(taskIsExisted.getSupervisor());
-            taskRepository.save(task);
+            ITaskRepository.save(task);
             return true;
         }
         return false;
     }
 
+    @Override
     public boolean deleteTask(int id) {
-        Task task = taskRepository.findById(id);
+        Task task = ITaskRepository.findById(id);
         if (task != null) {
-            taskRepository.deleteById(task.getId());
+            ITaskRepository.deleteById(task.getId());
             return true;
         }
         return false;
     }
 
+    @Override
     public boolean updateStatusTask(int id, int typeStatusTask) {
         Task task = findTaskById(id);
         if (task != null) {
@@ -90,24 +97,26 @@ public class TaskService {
             } else if (typeStatusTask == 3) {
                 task.setStatus(Status.DONE);
             }
-            taskRepository.save(task);
+            ITaskRepository.save(task);
             return true;
         }
         return false;
     }
 
+    @Override
     public List<Task> findTaskDoneByStudentEmail(String email) {
-       // Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
-        Semester semester=semesterService.getSemesterCurrent();
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email,semester.getId());
+        // Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
+        Semester semester = semesterService.getSemesterCurrent();
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email, semester.getId());
 
-        List<Task> taskList = taskRepository.findTasksByOjt_enrollmentAndStatusIsDone(ojt_enrollment);
+        List<Task> taskList = ITaskRepository.findTasksByOjt_enrollmentAndStatusIsDone(ojt_enrollment);
         if (taskList != null) {
             return taskList;
         }
         return null;
     }
 
+    @Override
     public float getPercentTaskDoneOfStudent(String email) {
         List<Task> taskListOfStudent = findTaskByStudentEmail(email);
         List<Task> taskListDoneOfStudent = findTaskDoneByStudentEmail(email);
@@ -115,12 +124,13 @@ public class TaskService {
         return (float) taskListDoneOfStudent.size() / (float) taskListOfStudent.size();
     }
 
+    @Override
     public List<Task> findTasksOfStudentByStatus(String email, Status status) {
-        Semester semester=semesterService.getSemesterCurrent();
+        Semester semester = semesterService.getSemesterCurrent();
         //Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(email);
-        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email,semester.getId());
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email, semester.getId());
 
-        List<Task> taskList = taskRepository.findTasksByOjt_enrollmentAndStatus(ojt_enrollment, status);
+        List<Task> taskList = ITaskRepository.findTasksByOjt_enrollmentAndStatus(ojt_enrollment, status);
         if (taskList != null) {
             return taskList;
         }

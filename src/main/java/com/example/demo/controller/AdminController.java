@@ -20,22 +20,22 @@ import java.util.List;
 @RequestMapping("/api/admin")
 public class AdminController {
     @Autowired
-    StudentService studentService;
+    IStudentService studentService;
 
     @Autowired
-    Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
-    EventService eventService;
+    IEventService eventService;
 
     @Autowired
-    UsersService usersService;
+    IUsersService usersService;
 
     @Autowired
-    AdminService adminService;
+    IAdminService adminService;
 
     @Autowired
-    BusinessService businessService;
+    IBusinessService businessService;
 
     @GetMapping
     @ResponseBody

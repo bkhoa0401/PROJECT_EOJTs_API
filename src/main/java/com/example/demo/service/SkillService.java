@@ -3,23 +3,21 @@ package com.example.demo.service;
 import com.example.demo.entity.Job_Post;
 import com.example.demo.entity.Job_Post_Skill;
 import com.example.demo.entity.Skill;
-import com.example.demo.entity.Specialized;
-import com.example.demo.repository.SkillRepository;
+import com.example.demo.repository.ISkillRepository;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class SkillService {
+public class SkillService implements ISkillService {
     @Autowired
-    SkillRepository skillRepository;
+    ISkillRepository ISkillRepository;
 
     @Autowired
     HibernateSearchService hibernateSearchService;
@@ -27,6 +25,7 @@ public class SkillService {
     @Autowired
     private EntityManager entityManager;
 
+    @Override
     public int fullTextSearch(String skillName) {
         int skillId = 0;
         hibernateSearchService.initializeHibernateSearch();
@@ -57,14 +56,15 @@ public class SkillService {
         return skillId;
     }
 
+    @Override
     public List<Skill> getListSkillBySpecialized(int specializedId) {
-        return skillRepository.findBySpecializedId(specializedId);
+        return ISkillRepository.findBySpecializedId(specializedId);
     }
 
-
+    @Override
     public List<Skill> getAllSkill() {
         List<Skill> list = new ArrayList<>();
-        list = skillRepository.findAll();
+        list = ISkillRepository.findAll();
         if (list != null) {
             return list;
         } else {
@@ -72,9 +72,10 @@ public class SkillService {
         }
     }
 
+    @Override
     public boolean createSkill(Skill skill) {
         try {
-            skillRepository.save(skill);
+            ISkillRepository.save(skill);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,27 +83,30 @@ public class SkillService {
         }
     }
 
+    @Override
     public boolean updateSkill(Skill skill) {
-        Skill skillFound = skillRepository.findSkillById(skill.getId());
+        Skill skillFound = ISkillRepository.findSkillById(skill.getId());
         if (skillFound != null) {
-            skillRepository.save(skill);
+            ISkillRepository.save(skill);
             return true;
         }
         return false;
     }
 
+    @Override
     public boolean updateStatusSkill(int skillId, boolean status) {
-        Skill skillFound = skillRepository.findSkillById(skillId);
+        Skill skillFound = ISkillRepository.findSkillById(skillId);
         if (skillFound != null) {
             skillFound.setStatus(status);
-            skillRepository.save(skillFound);
+            ISkillRepository.save(skillFound);
             return true;
         }
         return false;
     }
 
+    @Override
     public Skill getSkillById(int id) {
-        Skill skill = skillRepository.findSkillById(id);
+        Skill skill = ISkillRepository.findSkillById(id);
         if (skill != null) {
             return skill;
         } else {
@@ -110,6 +114,7 @@ public class SkillService {
         }
     }
 
+    @Override
     public List<Skill> getListSkillJobPost(Job_Post job_post) {
 
         List<Job_Post_Skill> job_post_skills = job_post.getJob_post_skills();

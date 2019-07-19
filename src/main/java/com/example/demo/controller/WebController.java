@@ -20,19 +20,19 @@ import javax.servlet.http.HttpServletResponse;
 public class WebController {
 
     @Autowired
-    private UsersService usersService;
+    IUsersService usersService;
 
     @Autowired
-    private JwtService jwtService;
+    IJwtService jwtService;
 
     @Autowired
-    private StudentService studentService;
+    IStudentService studentService;
 
     @Autowired
-    private Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
-    private SemesterService semesterService;
+    ISemesterService semesterService;
 
 
     @GetMapping("")

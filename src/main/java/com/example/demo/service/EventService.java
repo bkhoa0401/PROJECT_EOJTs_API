@@ -1,75 +1,78 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Event;
-import com.example.demo.repository.EventRepository;
+import com.example.demo.repository.IEventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Service
-public class EventService {
+public class EventService implements IEventService{
 
     @Autowired
-    EventRepository eventRepository;
+    IEventRepository IEventRepository;
 
+    @Override
     public List<Event> getEventList(String email) {
-        List<Event> events = eventRepository.findEventsByStudentEmail(email);
+        List<Event> events = IEventRepository.findEventsByStudentEmail(email);
         if (events != null) {
             return events;
         }
         return null;
     }
 
+    @Override
     public List<Event> getEventListOfAdmin(String email) {
-        List<Event> events = eventRepository.findEventsByAdmin_Email(email);
+        List<Event> events = IEventRepository.findEventsByAdmin_Email(email);
         if (events != null) {
             return events;
         }
         return null;
     }
 
+    @Override
     public List<Event> getEventListOfBusiness(String email) {
-        List<Event> events = eventRepository.findEventsByBusinessEmail(email);
+        List<Event> events = IEventRepository.findEventsByBusinessEmail(email);
         if (events != null) {
             return events;
         }
         return null;
     }
 
-
+    @Override
     public int countEventIsNotRead(String email) {
-        int count = eventRepository.findEventsByStudentEmailAndReadIsFalse(email);
+        int count = IEventRepository.findEventsByStudentEmailAndReadIsFalse(email);
 
         return count;
     }
 
+    @Override
     public Event findEventById(int id) {
-        Event event = eventRepository.findEventById(id);
+        Event event = IEventRepository.findEventById(id);
         if (event != null) {
             event.setRead(true);
-            eventRepository.save(event);
+            IEventRepository.save(event);
             return event;
         }
         return null;
     }
 
+    @Override
     public boolean createEvent(Event event) {
         if (event != null) {
-            eventRepository.save(event);
+            IEventRepository.save(event);
             return true;
         }
         return false;
     }
 
+    @Override
     public boolean updateStatusIsRead(int id) {
         Event event = findEventById(id);
         if (event != null) {
             event.setRead(true);
-            eventRepository.save(event);
+            IEventRepository.save(event);
             return true;
         }
         return false;

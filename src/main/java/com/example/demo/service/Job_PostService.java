@@ -1,10 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.*;
-import com.example.demo.repository.Job_PostRepository;
-import com.example.demo.utils.Utils;
+import com.example.demo.repository.IJob_PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -13,68 +11,74 @@ import java.util.Calendar;
 import java.util.List;
 
 @Service
-public class Job_PostService {
+public class Job_PostService implements IJob_PostService {
     @Autowired
-    Job_PostRepository job_postRepository;
+    IJob_PostRepository IJob_postRepository;
 
     @Autowired
-    BusinessService businessService;
+    IBusinessService businessService;
 
     @Autowired
-    Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
-    Job_Post_SkillService job_post_skillService;
+    IJob_Post_SkillService job_post_skillService;
 
     @Autowired
-    SemesterService semesterService;
+    ISemesterService semesterService;
 
+    @Override
     public void saveJobPost(Job_Post job_post) {
         if (job_post != null) {
-            job_postRepository.save(job_post);
+            IJob_postRepository.save(job_post);
         }
     }
 
+    @Override
     public Job_Post findJob_PostById(int id) {
-        Job_Post job_post = job_postRepository.findJob_PostById(id);
+        Job_Post job_post = IJob_postRepository.findJob_PostById(id);
         if (job_post != null) {
             return job_post;
         }
         return null;
     }
 
+    @Override
     public int getViewOfJobPost(int id) {
-        Job_Post job_post = job_postRepository.findJob_PostById(id);
+        Job_Post job_post = IJob_postRepository.findJob_PostById(id);
         if (job_post != null) {
             return job_post.getViews();
         }
         return 0;
     }
 
+    @Override
     public void updateViewOfJobPost(int id, int views) {
-        Job_Post job_post = job_postRepository.findJob_PostById(id);
+        Job_Post job_post = IJob_postRepository.findJob_PostById(id);
         if (job_post != null) {
             job_post.setViews(views);
-            job_postRepository.save(job_post);
+            IJob_postRepository.save(job_post);
         }
     }
 
+    @Override
     public boolean updateInforJobPost(Job_Post job_post) {
-        Job_Post job_postIsExisted = job_postRepository.findJob_PostById(job_post.getId());
+        Job_Post job_postIsExisted = IJob_postRepository.findJob_PostById(job_post.getId());
         if (job_postIsExisted != null) {
-            job_postRepository.save(job_post);
+            IJob_postRepository.save(job_post);
             return true;
         }
         return false;
     }
 
     //check semester //ok
+    @Override
     public List<Job_Post> getAllJobPost() {
         Semester semester = semesterService.getSemesterCurrent();
 
-        List<Job_Post> job_postList = job_postRepository.findJob_PostsOrderByTimePostDesc();
+        List<Job_Post> job_postList = IJob_postRepository.findJob_PostsOrderByTimePostDesc();
 
-        List<Job_Post> job_postListCurrentSemester=new ArrayList<>();
+        List<Job_Post> job_postListCurrentSemester = new ArrayList<>();
 
         for (int i = 0; i < job_postList.size(); i++) {
             Semester semesterOfJobPost = job_postList.get(i).getOjt_enrollment().getSemester();
@@ -90,8 +94,9 @@ public class Job_PostService {
         return null;
     }
 
+    @Override
     public List<Job_Post> getAllJobPostOfBusiness(Ojt_Enrollment ojt_enrollment) {
-        List<Job_Post> job_postList = job_postRepository.findJob_PostByOjt_enrollment(ojt_enrollment);
+        List<Job_Post> job_postList = IJob_postRepository.findJob_PostByOjt_enrollment(ojt_enrollment);
         if (job_postList != null) {
             return job_postList;
         }
@@ -100,6 +105,7 @@ public class Job_PostService {
 
     //check semester ok
     //@CachePut(value = "jobposts")
+    @Override
     public boolean createJob_Post(String emailBusiness, Job_Post job_post) {
         Semester semesterCurrent = semesterService.getSemesterCurrent();
         Ojt_Enrollment ojt_enrollment =
@@ -115,11 +121,9 @@ public class Job_PostService {
             for (int i = 0; i < job_post_skill.size(); i++) {
                 job_post_skill.get(i).setJob_post(job_post);
             }
-            job_postRepository.save(job_post);
+            IJob_postRepository.save(job_post);
             return true;
         }
         return false;
     }
-
-
 }

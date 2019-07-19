@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import java.util.List;
 
 @Repository
-public interface StudentRepository extends JpaRepository<Student, String> {
+public interface IStudentRepository extends JpaRepository<Student, String> {
     Student findByEmail(String email);
 
     List<Student> findStudentByOption1OrOption2(String option1, String option2);

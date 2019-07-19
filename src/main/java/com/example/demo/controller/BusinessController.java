@@ -26,43 +26,43 @@ import java.util.List;
 @RequestMapping("/api/business")
 public class BusinessController {
     @Autowired
-    private BusinessService businessService;
+    IBusinessService businessService;
 
     @Autowired
-    private Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
-    private BusinessImportFileService businessImportFileService;
+    IBusinessImportFileService businessImportFileService;
 
     @Autowired
-    SkillService skillService;
+    ISkillService skillService;
 
     @Autowired
-    InvitationService invitationService;
+    IInvitationService invitationService;
 
     @Autowired
-    Job_PostService job_postService;
+    IJob_PostService job_postService;
 
     @Autowired
-    StudentService studentService;
+    IStudentService studentService;
 
     @Autowired
-    SupervisorService supervisorService;
+    ISupervisorService supervisorService;
 
     @Autowired
-    UsersService usersService;
+    IUsersService usersService;
 
     @Autowired
-    Job_Post_SkillService job_post_skillService;
+    IJob_Post_SkillService job_post_skillService;
 
     @Autowired
-    EventService eventService;
+    IEventService eventService;
 
     @Autowired
-    EvaluationService evaluationService;
+    IEvaluationService evaluationService;
 
     @Autowired
-    SemesterService semesterService;
+    ISemesterService semesterService;
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 

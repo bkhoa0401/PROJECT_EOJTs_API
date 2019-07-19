@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EvaluationRepository extends JpaRepository<Evaluation, Integer> {
+public interface IEvaluationRepository extends JpaRepository<Evaluation, Integer> {
 
     List<Evaluation> findEvaluationsBySupervisorEmail(String email);
 

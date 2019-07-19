@@ -4,10 +4,8 @@ import com.example.demo.entity.Business;
 import com.example.demo.entity.Ojt_Enrollment;
 import com.example.demo.entity.Semester;
 import com.example.demo.entity.Student;
-import com.example.demo.repository.Ojt_EnrollmentRepository;
-import com.example.demo.repository.StudentRepository;
+import com.example.demo.repository.IOjt_EnrollmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -16,42 +14,47 @@ import java.util.Calendar;
 import java.util.List;
 
 @Service
-public class Ojt_EnrollmentService {
+public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
 
     @Autowired
-    Ojt_EnrollmentRepository ojtEnrollmentRepository;
+    IOjt_EnrollmentRepository ojtEnrollmentRepository;
 
     @Autowired
-    BusinessService businessService;
+    IBusinessService businessService;
 
     @Autowired
-    SemesterService semesterService;
+    ISemesterService semesterService;
 
+    @Override
     public boolean saveListOjtEnrollment(List<Ojt_Enrollment> ojtEnrollmentList) {
         ojtEnrollmentRepository.saveAll(ojtEnrollmentList);
         return true;
     }
 
+    @Override
     public boolean saveOjtEnrollment(Ojt_Enrollment ojtEnrollment) {
         ojtEnrollmentRepository.save(ojtEnrollment);
         return true;
     }
 
+    @Override
     public List<Ojt_Enrollment> getAllOjt_Enrollment() {
         return ojtEnrollmentRepository.findAll();
     }
 
+    @Override
     public int getOjt_EnrollmentIdByBusinessEmail(String email) {
         Ojt_Enrollment ojt_enrollment = ojtEnrollmentRepository.getOjt_EnrollmentByBusiness_Email(email);
         return ojt_enrollment.getId();
     }
 
+    @Override
     public Ojt_Enrollment getOjt_EnrollmentByStudentEmail(String email) {
         Ojt_Enrollment ojt_enrollment = ojtEnrollmentRepository.getOjt_EnrollmentByStudentEmail(email);
         return ojt_enrollment;
     }
 
-
+    @Override
     public void updateStudentToBusinessPassOption1OrOption2(List<Student> studentList) {
         for (int i = 0; i < studentList.size(); i++) {
             Student student = studentList.get(i);
@@ -75,6 +78,7 @@ public class Ojt_EnrollmentService {
         }
     }
 
+    @Override
     public Ojt_Enrollment getOjt_enrollmentOfBusiness(Business business) {
         List<Ojt_Enrollment> ojt_enrollmentList = ojtEnrollmentRepository.getOjt_EnrollmentsByBusiness_Email(business.getEmail());
         for (int i = 0; i < ojt_enrollmentList.size(); i++) {
@@ -85,11 +89,12 @@ public class Ojt_EnrollmentService {
         return null;
     }
 
+    @Override
     public List<Student> getListStudentByBusiness(String email) {
-        Semester semester=semesterService.getSemesterCurrent();
+        Semester semester = semesterService.getSemesterCurrent();
         //List<Ojt_Enrollment> ojt_enrollmentList = ojtEnrollmentRepository.getOjt_EnrollmentsByBusiness_Email(email);
         List<Ojt_Enrollment> ojt_enrollmentList =
-                getOjt_EnrollmentsBySemesterIdAndBusinessNotNullAndStudentNotNull(semester.getId(),email);
+                getOjt_EnrollmentsBySemesterIdAndBusinessNotNullAndStudentNotNull(semester.getId(), email);
         List<Student> studentList = new ArrayList<>();
         for (int i = 0; i < ojt_enrollmentList.size(); i++) {
             if (ojt_enrollmentList.get(i).getStudent() != null) {
@@ -102,6 +107,7 @@ public class Ojt_EnrollmentService {
         return null;
     }
 
+    @Override
     public Ojt_Enrollment getOjt_EnrollmentById(int id) {
         Ojt_Enrollment ojt_enrollment = ojtEnrollmentRepository.getOjt_EnrollmentById(id);
         if (ojt_enrollment != null) {
@@ -110,14 +116,15 @@ public class Ojt_EnrollmentService {
         return null;
     }
 
+    @Override
     public void updateBusinessForStudent(String emailBusiness, String emailStudent) {
         Business business = businessService.getBusinessByEmail(emailBusiness);
         Date date = new Date(Calendar.getInstance().getTime().getTime());
 
-        Semester semester=semesterService.getSemesterCurrent();
+        Semester semester = semesterService.getSemesterCurrent();
 
         //Ojt_Enrollment ojt_enrollment = getOjt_EnrollmentByStudentEmail(emailStudent);
-        Ojt_Enrollment ojt_enrollment=getOjtEnrollmentByStudentEmailAndSemesterId(emailStudent,semester.getId());
+        Ojt_Enrollment ojt_enrollment = getOjtEnrollmentByStudentEmailAndSemesterId(emailStudent, semester.getId());
 
         ojt_enrollment.setTimeEnroll(date);
         ojt_enrollment.setBusiness(business);
@@ -125,6 +132,7 @@ public class Ojt_EnrollmentService {
         ojtEnrollmentRepository.save(ojt_enrollment);
     }
 
+    @Override
     public Ojt_Enrollment getOjtEnrollmentByBusinessEmailAndSemesterId(String email, int id) {
         Ojt_Enrollment ojt_enrollment = ojtEnrollmentRepository.getOjt_EnrollmentByBusiness_EmailAndSemesterIdAndStudentIsNull(email, id);
         if (ojt_enrollment != null) {
@@ -133,6 +141,7 @@ public class Ojt_EnrollmentService {
         return null;
     }
 
+    @Override
     public Ojt_Enrollment getOjtEnrollmentByStudentEmailAndSemesterId(String email, int id) {
         Ojt_Enrollment ojt_enrollment = ojtEnrollmentRepository.getOjt_EnrollmentByStudentEmailAndSemesterId(email, id);
         if (ojt_enrollment != null) {
@@ -141,6 +150,7 @@ public class Ojt_EnrollmentService {
         return null;
     }
 
+    @Override
     public List<Ojt_Enrollment> getOjt_EnrollmentsBySemesterIdAndStudentEmailNotNull(int id) {
         List<Ojt_Enrollment> ojt_enrollmentList = ojtEnrollmentRepository.getOjt_EnrollmentsBySemesterIdAndStudentEmailNotNull(id);
         if ((ojt_enrollmentList != null)) {
@@ -149,6 +159,7 @@ public class Ojt_EnrollmentService {
         return null;
     }
 
+    @Override
     public List<Ojt_Enrollment> getOjt_EnrollmentsBySemesterIdAndBusinessEmailNotNull(int id) {
         List<Ojt_Enrollment> ojt_enrollmentList = ojtEnrollmentRepository.getOjt_EnrollmentsBySemesterIdAndBusinessEmailIsNotNull(id);
         if ((ojt_enrollmentList != null)) {
@@ -157,9 +168,10 @@ public class Ojt_EnrollmentService {
         return null;
     }
 
-    public List<Ojt_Enrollment> getOjt_EnrollmentsBySemesterIdAndBusinessNotNullAndStudentNotNull(int id,String email) {
+    @Override
+    public List<Ojt_Enrollment> getOjt_EnrollmentsBySemesterIdAndBusinessNotNullAndStudentNotNull(int id, String email) {
         List<Ojt_Enrollment> ojt_enrollmentList =
-                ojtEnrollmentRepository.getOjt_EnrollmentsBySemesterIdAndBusinessNotNullAndStudentNotNull(id,email);
+                ojtEnrollmentRepository.getOjt_EnrollmentsBySemesterIdAndBusinessNotNullAndStudentNotNull(id, email);
         if ((ojt_enrollmentList != null)) {
             return ojt_enrollmentList;
         }
