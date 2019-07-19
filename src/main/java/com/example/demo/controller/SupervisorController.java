@@ -22,22 +22,22 @@ import java.sql.Date;
 public class SupervisorController {
 
     @Autowired
-    TaskService taskService;
+    ITaskService taskService;
 
     @Autowired
-    SupervisorService supervisorService;
+    ISupervisorService supervisorService;
 
     @Autowired
-    Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
-    EvaluationService evaluationService;
+    IEvaluationService evaluationService;
 
     @Autowired
-    StudentService studentService;
+    IStudentService studentService;
 
     @Autowired
-    SemesterService semesterService;
+    ISemesterService semesterService;
 
     @GetMapping("")
     @ResponseBody

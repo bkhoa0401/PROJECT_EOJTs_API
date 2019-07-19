@@ -30,40 +30,40 @@ import java.util.concurrent.TimeUnit;
 public class StudentController {
 
     @Autowired
-    StudentService studentService;
+    IStudentService studentService;
 
     @Autowired
-    UsersService usersService;
+    IUsersService usersService;
 
     @Autowired
-    Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
-    private SpecializedService specializedService;
+    ISpecializedService specializedService;
 
     @Autowired
-    SkillService skillService;
+    ISkillService skillService;
 
     @Autowired
-    InvitationService invitationService;
+    IInvitationService invitationService;
 
     @Autowired
-    BusinessService businessService;
+    IBusinessService businessService;
 
     @Autowired
-    Job_PostService job_postService;
+    IJob_PostService job_postService;
 
     @Autowired
-    TaskService taskService;
+    ITaskService taskService;
 
     @Autowired
-    EvaluationService evaluationService;
+    IEvaluationService evaluationService;
 
     @Autowired
-    EventService eventService;
+    IEventService eventService;
 
     @Autowired
-    SemesterService semesterService;
+    ISemesterService semesterService;
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 

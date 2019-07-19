@@ -1,9 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.Business_JobPostDTO;
 import com.example.demo.dto.Business_ListJobPostDTO;
 import com.example.demo.entity.*;
-import com.example.demo.repository.AdminRepository;
+import com.example.demo.repository.IAdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,24 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class AdminService {
+public class AdminService implements IAdminService{
     @Autowired
-    AdminRepository adminRepository;
+    IAdminRepository IAdminRepository;
 
     @Autowired
-    BusinessService businessService;
+    IBusinessService businessService;
 
     @Autowired
-    Job_PostService job_postService;
+    IJob_PostService job_postService;
 
     @Autowired
-    Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
-    SemesterService semesterService;
+    ISemesterService semesterService;
 
+    @Override
     public Admin findAdminByEmail(String email) {
-        Admin admin = adminRepository.findAdminByEmail(email);
+        Admin admin = IAdminRepository.findAdminByEmail(email);
         if (admin != null) {
             return admin;
         }
@@ -36,6 +36,7 @@ public class AdminService {
     }
 
     //check semester // ok
+    @Override
     public List<Business_ListJobPostDTO> getJobPostsOfBusinesses() {
        // List<Business> businessList = businessService.getAllBusiness();
 

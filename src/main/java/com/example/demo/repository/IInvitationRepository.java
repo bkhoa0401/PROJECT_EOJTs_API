@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface InvitationRepository extends JpaRepository<Invitation, Integer> {
+public interface IInvitationRepository extends JpaRepository<Invitation, Integer> {
    List<Invitation> findInvitationByStudentEmailOrderByTimeCreatedDesc(String email);
 
     List<Invitation> findInvitationByBusinessEmailOrderByTimeCreatedDesc(String email);

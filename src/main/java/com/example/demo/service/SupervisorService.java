@@ -1,42 +1,43 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.*;
-import com.example.demo.repository.SupervisorRepository;
-import com.example.demo.utils.Utils;
+import com.example.demo.repository.ISupervisorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class SupervisorService {
+public class SupervisorService implements ISupervisorService {
     @Autowired
-    SupervisorRepository supervisorRepository;
+    ISupervisorRepository ISupervisorRepository;
 
     @Autowired
-    Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
-    BusinessService businessService;
+    IBusinessService businessService;
 
     @Autowired
-    UsersService usersService;
+    IUsersService usersService;
 
     @Autowired
-    SemesterService semesterService;
+    ISemesterService semesterService;
 
+    @Override
     public Supervisor findByEmail(String email) {
-        return supervisorRepository.findByEmail(email);
+        return ISupervisorRepository.findByEmail(email);
     }
 
     //check semester // ok
+    @Override
     public List<Supervisor> getAllSupervisorOfABusiness(String emailBusiness) {
         Semester semesterCurrent = semesterService.getSemesterCurrent();
 
         Ojt_Enrollment ojt_enrollment =
                 ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(emailBusiness, semesterCurrent.getId());
 
-        List<Supervisor> supervisors = supervisorRepository.findSupervisorsByOjt_enrollmentAndActiveIsTrue(ojt_enrollment);
+        List<Supervisor> supervisors = ISupervisorRepository.findSupervisorsByOjt_enrollmentAndActiveIsTrue(ojt_enrollment);
         if (supervisors != null) {
             return supervisors;
         }
@@ -44,15 +45,16 @@ public class SupervisorService {
     }
 
     //check semester //ok
+    @Override
     public boolean createSupervisor(Supervisor supervisor, String emailBusiness) {
-        Supervisor supervisorFound = supervisorRepository.findByEmail(supervisor.getEmail());
+        Supervisor supervisorFound = ISupervisorRepository.findByEmail(supervisor.getEmail());
         if (supervisorFound == null) {
-            Semester semesterCurrent=semesterService.getSemesterCurrent();
+            Semester semesterCurrent = semesterService.getSemesterCurrent();
 
-            Ojt_Enrollment ojt_enrollment=
-                    ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(emailBusiness,semesterCurrent.getId());
+            Ojt_Enrollment ojt_enrollment =
+                    ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(emailBusiness, semesterCurrent.getId());
             supervisor.setOjt_enrollment(ojt_enrollment);
-            supervisorRepository.save(supervisor);
+            ISupervisorRepository.save(supervisor);
 
             String password = usersService.getAlphaNumericString();
 
@@ -62,15 +64,14 @@ public class SupervisorService {
         return false;
     }
 
+    @Override
     public boolean updateStateSupervisor(String email, boolean isActive) {
-        Supervisor supervisor = supervisorRepository.findByEmail(email);
+        Supervisor supervisor = ISupervisorRepository.findByEmail(email);
         if (supervisor != null) {
             supervisor.setActive(isActive);
-            supervisorRepository.save(supervisor);
+            ISupervisorRepository.save(supervisor);
             return true;
         }
         return false;
     }
-
-
 }

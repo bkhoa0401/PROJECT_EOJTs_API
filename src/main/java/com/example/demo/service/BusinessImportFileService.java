@@ -13,21 +13,22 @@ import java.util.Calendar;
 import java.util.List;
 
 @Service
-public class BusinessImportFileService {
+public class BusinessImportFileService implements IBusinessImportFileService{
 
     @Autowired
-    Job_PostService job_postService;
+    IJob_PostService job_postService;
 
     @Autowired
-    UsersService usersService;
+    IUsersService usersService;
 
     @Autowired
-    Job_Post_SkillService job_post_skillService;
+    IJob_Post_SkillService job_post_skillService;
 
     @Autowired
-    SemesterService semesterService;
+    ISemesterService semesterService;
 
     @Transactional
+    @Override
     public void insertBusiness(BusinessDTO businessDTO) throws Exception {
         Business business = new Business(businessDTO.getEmail(), businessDTO.getBusiness_name()
                 , businessDTO.getBusiness_eng_name(), businessDTO.getBusiness_phone()

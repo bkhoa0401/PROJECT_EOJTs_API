@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SkillRepository extends JpaRepository<Skill,Integer> {
+public interface ISkillRepository extends JpaRepository<Skill,Integer> {
 
     List<Skill> findBySpecializedId(int specializedId);
 

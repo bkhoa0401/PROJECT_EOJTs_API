@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Ojt_Enrollment;
 import com.example.demo.entity.Semester;
+import com.example.demo.service.IOjt_EnrollmentService;
+import com.example.demo.service.ISemesterService;
 import com.example.demo.service.Ojt_EnrollmentService;
 import com.example.demo.service.SemesterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +20,10 @@ import java.util.List;
 public class Ojt_EnrollmentController {
 
     @Autowired
-    Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
-    SemesterService semesterService;
+    ISemesterService semesterService;
 
     @GetMapping
     public ResponseEntity<List<Ojt_Enrollment>> getAllOjt_Enrollment() throws Exception {

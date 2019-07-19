@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BusinessRepository extends JpaRepository<Business, String> {
+public interface IBusinessRepository extends JpaRepository<Business, String> {
 
     Business findBusinessByEmail(String email);
 

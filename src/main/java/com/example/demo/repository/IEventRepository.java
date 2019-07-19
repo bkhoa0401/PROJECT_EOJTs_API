@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface EventRepository extends JpaRepository<Event, Integer> {
+public interface IEventRepository extends JpaRepository<Event, Integer> {
 
     @Query("select e from Event e join e.students st where st.email = ?1")
     List<Event> findEventsByStudentEmail(String email);
