@@ -20,6 +20,9 @@ public class Question implements Serializable {
     @Column(name = "content", columnDefinition = "NVARCHAR(MAX)")
     private String content;
 
+    @Column(name = "isActive")
+    private boolean isActive;
+
     @Column(name = "has_others")
     private boolean has_others;
 
@@ -35,8 +38,9 @@ public class Question implements Serializable {
     public Question() {
     }
 
-    public Question(String content, boolean has_others, List<Answer> answers, List<Student_Answer> student_answers) {
+    public Question(String content, boolean isActive, boolean has_others, List<Answer> answers, List<Student_Answer> student_answers) {
         this.content = content;
+        this.isActive = isActive;
         this.has_others = has_others;
         this.answers = answers;
         this.student_answers = student_answers;
@@ -56,6 +60,14 @@ public class Question implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public boolean isHas_others() {
