@@ -16,7 +16,7 @@ public class Business_Proposed implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
-    
+
     @Column(name = "email")
     private String email;
 
@@ -41,12 +41,6 @@ public class Business_Proposed implements Serializable {
     @Column(name = "logo")
     private String logo;
 
-    @Column(name = "rate_count")
-    private int rateCount = 0;
-
-    @Column(name = "rate_average")
-    private float rateAverage = 0f;
-
     @Column(name = "business_nationality")
     private String business_nationality; // quốc tịch công ty
 
@@ -57,7 +51,7 @@ public class Business_Proposed implements Serializable {
     private boolean isAcceptedByStartupRoom; // đc chấp nhận bởi phòng khởi nghiệp?
 
     @Column(name = "isAcceptedByHeadOfTraining")
-    private boolean isAcceptedBy; // đc chấp nhận bởi trưởng phòng đào tạo?
+    private boolean isAcceptedByHeadOfTraining; // đc chấp nhận bởi trưởng phòng đào tạo?
 
     @Column(name = "isAcceptedByHeadMaster")
     private boolean isAcceptedByHeadMaster; // đc chấp nhận bởi hiệu trưởng?
@@ -131,22 +125,6 @@ public class Business_Proposed implements Serializable {
         this.logo = logo;
     }
 
-    public int getRateCount() {
-        return rateCount;
-    }
-
-    public void setRateCount(int rateCount) {
-        this.rateCount = rateCount;
-    }
-
-    public float getRateAverage() {
-        return rateAverage;
-    }
-
-    public void setRateAverage(float rateAverage) {
-        this.rateAverage = rateAverage;
-    }
-
     public String getBusiness_nationality() {
         return business_nationality;
     }
@@ -171,14 +149,6 @@ public class Business_Proposed implements Serializable {
         isAcceptedByStartupRoom = acceptedByStartupRoom;
     }
 
-    public boolean isAcceptedBy() {
-        return isAcceptedBy;
-    }
-
-    public void setAcceptedBy(boolean acceptedBy) {
-        isAcceptedBy = acceptedBy;
-    }
-
     public boolean isAcceptedByHeadMaster() {
         return isAcceptedByHeadMaster;
     }
@@ -193,5 +163,21 @@ public class Business_Proposed implements Serializable {
 
     public void setStudent_proposed(Student student_proposed) {
         this.student_proposed = student_proposed;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public boolean isAcceptedByHeadOfTraining() {
+        return isAcceptedByHeadOfTraining;
+    }
+
+    public void setAcceptedByHeadOfTraining(boolean acceptedByHeadOfTraining) {
+        isAcceptedByHeadOfTraining = acceptedByHeadOfTraining;
     }
 }
