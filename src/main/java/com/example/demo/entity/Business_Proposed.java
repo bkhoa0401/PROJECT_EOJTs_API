@@ -13,6 +13,10 @@ import java.util.List;
 public class Business_Proposed implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private int id;
+    
     @Column(name = "email")
     private String email;
 
