@@ -8,7 +8,9 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Student")
@@ -127,6 +129,31 @@ public class Student implements Serializable {
 
     @Column(name = "semester")
     private String semester;
+
+    @OneToMany(mappedBy = "student_proposed")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
+    private List<Business_Proposed> business_proposeds;
+
+
+//    @ManyToMany
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    @JoinTable(
+//            name = "student_answer",
+//            joinColumns = {
+//                    @JoinColumn(name = "student_email")},
+//            inverseJoinColumns = {
+//                    @JoinColumn(name = "answer_id")}
+//    )
+//    private List<Answer> answers;
+
+    @OneToMany(
+            mappedBy = "student",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonIgnore
+    private List<Student_Answer> answers = new ArrayList<>();
 
     public Student() {
     }
@@ -348,5 +375,34 @@ public class Student implements Serializable {
 
     public void setSemester(String semester) {
         this.semester = semester;
+    }
+
+    public List<Business_Proposed> getBusiness_proposeds() {
+        return business_proposeds;
+    }
+
+    public void setBusiness_proposeds(List<Business_Proposed> business_proposeds) {
+        this.business_proposeds = business_proposeds;
+    }
+
+    public List<Student_Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Student_Answer> answers) {
+        this.answers = answers;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student tag = (Student) o;
+        return Objects.equals(name, tag.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }
