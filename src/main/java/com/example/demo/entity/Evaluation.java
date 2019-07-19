@@ -58,6 +58,8 @@ public class Evaluation implements  Comparable<Evaluation>, Serializable {
     @Column(name = "timeEnd")
     private Date timeEnd;
 
+    @Column(name = "evaluationLink")
+    private String evaluationLink;
 
     public String getProject_name() {
         return project_name;
@@ -165,6 +167,14 @@ public class Evaluation implements  Comparable<Evaluation>, Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    private String getEvaluationLink() {
+        return evaluationLink;
+    }
+
+    private void setEvaluationLink(String evaluationLink) {
+        this.evaluationLink = evaluationLink;
     }
 
     @Override

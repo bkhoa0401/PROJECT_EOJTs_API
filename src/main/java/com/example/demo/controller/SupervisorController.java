@@ -138,48 +138,56 @@ public class SupervisorController {
     public ResponseEntity<List<Evaluation>> getAllEvaluationBySupervisorEmail() {
         String email = getEmailFromToken();
 
-        //get all evaluation of supervisor in a semester
-        List<Evaluation> evaluationList = evaluationService.getEvaluationsBySupervisorEmail(email);
-        //get all student of supervisor in a semester
+        //get all students of supervisor in a semester
         List<Student> studentList = studentService.getAllStudentOfASupervisor(email);
-        List<Evaluation> overviewEvaluationList = new ArrayList<Evaluation>();
-        int flag = 0;
-        for (int i = 0; i < studentList.size(); i++) {
-            flag = 0;
-            for (int j = 0; j < evaluationList.size(); j++) {
-                if (studentList.get(i).getCode().equals(evaluationList.get(j).getOjt_enrollment().getStudent().getCode())) {
-                    overviewEvaluationList.add(evaluationList.get(j));
-                    if (flag > 0) {
-                        for (int k = 1; k <= flag; k++) {
-                            Date date1 = overviewEvaluationList.get(overviewEvaluationList.size() - k).getTimeStart();
-                            Date date2 = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k).getTimeStart();
-                            if (date1.before(date2)) {
-                                Evaluation tmpEvaluation = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k);
-                                overviewEvaluationList.set(overviewEvaluationList.size() - 1 - k, overviewEvaluationList.get(overviewEvaluationList.size() - k));
-                                overviewEvaluationList.set(overviewEvaluationList.size() - k, tmpEvaluation);
-                            }
-                        }
-                    }
-                    flag++;
-                }
-            }
-            if (flag < 4) {
-                for (int l = flag; l < 4; l++) {
-                    overviewEvaluationList.add(null);
-                }
-            }
-        }
-        Semester semester = semesterService.getSemesterCurrent();
-        for (int i = 0; i < overviewEvaluationList.size(); i++) {
-            Evaluation evaluation=overviewEvaluationList.get(i);
-            if(evaluation!=null){
-                if (evaluation.getOjt_enrollment().getSemester().getId() != semester.getId()) {
-                    overviewEvaluationList.remove(overviewEvaluationList.get(i));
-                }
-            }
-        }
-        if (overviewEvaluationList != null) {
-            return new ResponseEntity<List<Evaluation>>(overviewEvaluationList, HttpStatus.OK);
+        //get all evaluations of list student of supervisor
+//        List<Evaluation> evaluationList = evaluationService.getEvaluationsBySupervisorEmail(email);
+
+//        List<Evaluation> evaluationList = new ArrayList<Evaluation>();
+//        for (int i = 0; i < studentList.size(); i++) {
+//            evaluationList.addAll(evaluationService.getEvaluationsByStudentEmail(studentList.get(i).getEmail()));
+//        }
+//
+//        List<Evaluation> overviewEvaluationList = new ArrayList<Evaluation>();
+//        int flag = 0;
+//        for (int i = 0; i < studentList.size(); i++) {
+//            flag = 0;
+//            for (int j = 0; j < evaluationList.size(); j++) {
+//                if (studentList.get(i).getCode().equals(evaluationList.get(j).getOjt_enrollment().getStudent().getCode())) {
+//                    overviewEvaluationList.add(evaluationList.get(j));
+//                    if (flag > 0) {
+//                        for (int k = 1; k <= flag; k++) {
+//                            Date date1 = overviewEvaluationList.get(overviewEvaluationList.size() - k).getTimeStart();
+//                            Date date2 = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k).getTimeStart();
+//                            if (date1.before(date2)) {
+//                                Evaluation tmpEvaluation = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k);
+//                                overviewEvaluationList.set(overviewEvaluationList.size() - 1 - k, overviewEvaluationList.get(overviewEvaluationList.size() - k));
+//                                overviewEvaluationList.set(overviewEvaluationList.size() - k, tmpEvaluation);
+//                            }
+//                        }
+//                    }
+//                    flag++;
+//                }
+//            }
+//            if (flag < 4) {
+//                for (int l = flag; l < 4; l++) {
+//                    overviewEvaluationList.add(null);
+//                }
+//            }
+//        }
+
+        List<Evaluation> evaluationList = evaluationService.getEvaluationListOfStudentList(studentList);
+//        Semester semester = semesterService.getSemesterCurrent();
+//        for (int i = 0; i < evaluationList.size(); i++) {
+//            Evaluation evaluation=evaluationList.get(i);
+//            if(evaluation!=null){
+//                if (evaluation.getOjt_enrollment().getSemester().getId() != semester.getId()) {
+//                    evaluationList.set(i, null);
+//                }
+//            }
+//        }
+        if (evaluationList != null) {
+            return new ResponseEntity<List<Evaluation>>(evaluationList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
