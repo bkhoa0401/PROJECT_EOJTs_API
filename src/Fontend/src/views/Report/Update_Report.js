@@ -226,9 +226,9 @@ class Update_Report extends Component {
                     project_name,
                 }
                 const result = await ApiServices.Put(`/supervisor/updateEvaluation?id=${reportId}`, evaluation);
-                // console.log(result);
+                console.log(result);
                 // console.log(emailStudent);
-                // console.log(evaluation);
+                console.log(evaluation);
                 if (result.status == 200) {
                     Toastify.actionSuccess("Cập nhật đánh giá tháng thành công!");
                     this.props.history.push(`/Report/Report_Detail/${needId[0]}~${needId[1]}`);
@@ -290,13 +290,13 @@ class Update_Report extends Component {
                                                 <h6 style={{ fontWeight: "bold" }}>Ngày bắt đầu:</h6>
                                             </Col>
                                             <Col xs="12" md="4">
-                                                <Input value={timeStart} type="date" onChange={this.handleInput} id="timeStart" name="timeStart"></Input>
+                                                <Badge className="mr-1" color="primary" pill style={{fontSize:"16px"}}>{timeStart === null ? "" : timeStart}</Badge>
                                             </Col>
                                             <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Ngày kết thúc:</h6>
                                             </Col>
                                             <Col xs="12" md="4">
-                                                <Input value={timeEnd} type="date" onChange={this.handleInput} id="timeEnd" name="timeEnd"></Input>
+                                                <Badge className="mr-1" color="danger" pill style={{fontSize:"16px"}}>{timeEnd === null ? "" : timeEnd}</Badge>
                                             </Col>
                                         </FormGroup>
                                         <FormGroup row>

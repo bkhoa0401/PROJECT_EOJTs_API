@@ -24,4 +24,6 @@ public interface IEvaluationService {
     boolean updateEvaluation(int id, Evaluation evaluation);
 
     List<Evaluation> getEvaluationListOfStudentList(List<Student> studentList);
+
+    List<Evaluation> checkSemesterOfListEvaluation(List<Evaluation> evaluationList);
 }

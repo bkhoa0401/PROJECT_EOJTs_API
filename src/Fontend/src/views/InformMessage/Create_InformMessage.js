@@ -247,13 +247,13 @@ class Create_InformMessage extends Component {
         let descriptionNeedFix = this.state.description;
         descriptionNeedFix = descriptionNeedFix.replace('<p>', '');
         descriptionNeedFix = descriptionNeedFix.replace('</p>', '');
-        if (descriptionNeedFix == "") {
-            descriptionNeedFix = "(No content)";
-        }
+        // if (descriptionNeedFix == "") {
+        //     descriptionNeedFix = "(No content)";
+        // }
         let titleNeedFix = this.state.title;
-        if (titleNeedFix == "") {
-            titleNeedFix = "(No Title)";
-        }
+        // if (titleNeedFix == "") {
+        //     titleNeedFix = "(No Title)";
+        // }
         const description = descriptionNeedFix;
         const title = titleNeedFix;
         if (this.validator.allValid()) {
@@ -326,6 +326,9 @@ class Create_InformMessage extends Component {
                                             </Col>
                                             <Col xs="12" md="10">
                                                 <Input type="text" value={title} onChange={this.handleInput} id="title" name="title" />
+                                                <span className="form-error is-visible text-danger">
+                                                    {this.validator.message('Chủ đề', title, 'required')}
+                                                </span>
                                             </Col>
                                         </FormGroup>
                                         <hr />
@@ -343,6 +346,9 @@ class Create_InformMessage extends Component {
                                                         })
                                                     }}
                                                 />
+                                                <span className="form-error is-visible text-danger">
+                                                    {this.validator.message('Nội dung', description, 'required')}
+                                                </span>
                                             </Col>
                                         </FormGroup>
                                         <ToastContainer />

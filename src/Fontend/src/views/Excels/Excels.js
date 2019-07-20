@@ -154,6 +154,12 @@ class Excels extends Component {
                     Toastify.actionFail("Thêm tệp thất bại!");
                 }
 
+                var currentTime = new Date();
+
+                var month = ("0" + (currentTime.getMonth() + 1)).slice(-2);
+                var date = month + '-' + currentTime.getDate() + '-' + currentTime.getFullYear();
+                var time = currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds();
+
                 var database = firebase.database();
                 var ref = database.ref('Users');
 
@@ -161,8 +167,8 @@ class Excels extends Component {
                     var usersRef = ref.child(`${listStudents[i].code}`);
                     usersRef.set({
                         userState: {
-                            date: '',
-                            time: '',
+                            date: date,
+                            time: time,
                             type: 'offline'
                         }
                     });
