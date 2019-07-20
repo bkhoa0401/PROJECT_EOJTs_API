@@ -115,6 +115,8 @@ public class Job_PostService {
             for (int i = 0; i < job_post_skill.size(); i++) {
                 job_post_skill.get(i).setJob_post(job_post);
             }
+
+
             job_postRepository.save(job_post);
             return true;
         }

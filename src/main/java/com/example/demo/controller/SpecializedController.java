@@ -6,6 +6,7 @@ import com.example.demo.entity.Users;
 import com.example.demo.service.SpecializedService;
 import com.example.demo.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,7 @@ public class SpecializedController {
         return new ResponseEntity<Integer>(specializedService.getIdByName(nameSpecialized), HttpStatus.OK);
     }
 
+
     @GetMapping
     @ResponseBody
     public ResponseEntity<List<Specialized>> getAllSpecialized() {
@@ -41,6 +43,13 @@ public class SpecializedController {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
             return new ResponseEntity<List<Specialized>>(specializedList, httpStatus);
         }
+    }
+
+    @GetMapping("/top")
+    @ResponseBody
+    public ResponseEntity<List<Specialized>> getTop() {
+      List<Specialized> specializedList=specializedService.getTop2();
+      return new ResponseEntity<>(specializedList,HttpStatus.OK);
     }
 
 
@@ -82,10 +91,10 @@ public class SpecializedController {
 
     @PutMapping
     @ResponseBody
-    public ResponseEntity<Specialized> updateSpecialized(@RequestBody Specialized specialized) {
-        Specialized result = specializedService.updateSpecialized(specialized);
+    public ResponseEntity<List<Specialized>> updateSpecialized(@RequestBody Specialized specialized) {
+        List<Specialized> result = specializedService.updateSpecialized(specialized);
         if (result != null) {
-            return new ResponseEntity<Specialized>(result, HttpStatus.OK);
+            return new ResponseEntity<List<Specialized>>(result, HttpStatus.OK);
         }
         return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -14,7 +14,6 @@ public class Job_Post_SkillService {
     public void saveJobPostSkill(Job_Post_Skill job_post_skill) {
         if (job_post_skill != null) {
             job_post_skillRepository.save(job_post_skill);
-
         }
     }
 

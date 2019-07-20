@@ -6,6 +6,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.TermVector;
+import org.springframework.cache.annotation.CachePut;
 
 import javax.persistence.*;
 import javax.xml.crypto.Data;
@@ -13,13 +14,11 @@ import java.io.Serializable;
 import java.util.List;
 
 
-//@JsonIgnoreProperties(ignoreUnknown = true, value = {"hibernateLazyInitializer", "handler"})
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property  = "id")
-
 @Entity
 @Indexed
 @Table(name = "specialized")
 public class Specialized implements Serializable {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -81,6 +80,20 @@ public class Specialized implements Serializable {
     }
 
     public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public Specialized() {
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
+    public Specialized(int id, String name, Boolean status) {
+        this.id = id;
+        this.name = name;
         this.status = status;
     }
 }

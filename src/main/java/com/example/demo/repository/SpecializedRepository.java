@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface SpecializedRepository extends JpaRepository<Specialized, Integer> {
 
@@ -14,5 +16,7 @@ public interface SpecializedRepository extends JpaRepository<Specialized, Intege
     int findSpecializedIdByName(String name);
 
     Specialized findSpecializedById(int id);
+
+    List<Specialized> findTop2ByStatusIsTrue();
 
 }

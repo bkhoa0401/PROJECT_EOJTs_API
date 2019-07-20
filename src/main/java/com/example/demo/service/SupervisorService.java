@@ -25,6 +25,7 @@ public class SupervisorService {
     @Autowired
     SemesterService semesterService;
 
+
     public Supervisor findByEmail(String email) {
         return supervisorRepository.findByEmail(email);
     }
@@ -37,6 +38,12 @@ public class SupervisorService {
                 ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(emailBusiness, semesterCurrent.getId());
 
         List<Supervisor> supervisors = supervisorRepository.findSupervisorsByOjt_enrollmentAndActiveIsTrue(ojt_enrollment);
+
+        for (int i = 0; i < supervisors.size(); i++) {
+            if (supervisors.get(i).isActive() == false) {
+                supervisors.remove(supervisors.get(i));
+            }
+        }
         if (supervisors != null) {
             return supervisors;
         }
@@ -47,10 +54,10 @@ public class SupervisorService {
     public boolean createSupervisor(Supervisor supervisor, String emailBusiness) {
         Supervisor supervisorFound = supervisorRepository.findByEmail(supervisor.getEmail());
         if (supervisorFound == null) {
-            Semester semesterCurrent=semesterService.getSemesterCurrent();
+            Semester semesterCurrent = semesterService.getSemesterCurrent();
 
-            Ojt_Enrollment ojt_enrollment=
-                    ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(emailBusiness,semesterCurrent.getId());
+            Ojt_Enrollment ojt_enrollment =
+                    ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(emailBusiness, semesterCurrent.getId());
             supervisor.setOjt_enrollment(ojt_enrollment);
             supervisorRepository.save(supervisor);
 
@@ -64,7 +71,10 @@ public class SupervisorService {
 
     public boolean updateStateSupervisor(String email, boolean isActive) {
         Supervisor supervisor = supervisorRepository.findByEmail(email);
+        Users users = usersService.findUserByEmail(supervisor.getEmail());
+
         if (supervisor != null) {
+            users.setActive(isActive);
             supervisor.setActive(isActive);
             supervisorRepository.save(supervisor);
             return true;
