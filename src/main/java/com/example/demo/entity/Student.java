@@ -1,7 +1,9 @@
 package com.example.demo.entity;
 
 
+import com.example.demo.config.StudentStatus;
 import com.fasterxml.jackson.annotation.*;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -124,8 +126,10 @@ public class Student implements Serializable {
     @Column(name = "gender")
     private boolean gender;
 
+    @Enumerated(EnumType.STRING)
+    @Check(constraints = "status IN ('NOTSTART' ,'STARTED', 'PASS', 'FAIL')")
     @Column(name = "status")
-    private String status;
+    private StudentStatus status = StudentStatus.NOTSTART;
 
     @Column(name = "semester")
     private String semester;
@@ -135,29 +139,13 @@ public class Student implements Serializable {
     @JsonIgnore
     private List<Business_Proposed> business_proposeds;
 
-
-//    @ManyToMany
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    @JoinTable(
-//            name = "student_answer",
-//            joinColumns = {
-//                    @JoinColumn(name = "student_email")},
-//            inverseJoinColumns = {
-//                    @JoinColumn(name = "answer_id")}
-//    )
-//    private List<Answer> answers;
-
-    @OneToMany(
-            mappedBy = "student",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
+    @OneToMany(mappedBy = "student")
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore
-    private List<Student_Answer> answers = new ArrayList<>();
+    private List<Student_Answer> student_answers = new ArrayList<>();
 
     public Student() {
     }
-
 
     public String getToken() {
         return token;
@@ -361,11 +349,11 @@ public class Student implements Serializable {
         this.gender = gender;
     }
 
-    public String getStatus() {
+    public StudentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StudentStatus status) {
         this.status = status;
     }
 
@@ -385,24 +373,11 @@ public class Student implements Serializable {
         this.business_proposeds = business_proposeds;
     }
 
-    public List<Student_Answer> getAnswers() {
-        return answers;
+    public List<Student_Answer> getStudent_answers() {
+        return student_answers;
     }
 
-    public void setAnswers(List<Student_Answer> answers) {
-        this.answers = answers;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Student tag = (Student) o;
-        return Objects.equals(name, tag.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
+    public void setStudent_answers(List<Student_Answer> student_answers) {
+        this.student_answers = student_answers;
     }
 }

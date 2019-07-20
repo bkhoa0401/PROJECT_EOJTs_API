@@ -151,6 +151,7 @@ public class StudentController {
         ojt_enrollment.setStudent(student);
         ojt_enrollment.setSemester(semester);
         try {
+            student.setSemester(semester.getName());
             studentService.saveStudent(student);
             usersService.saveUser(users);
             ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);

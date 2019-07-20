@@ -43,7 +43,7 @@ public class Task implements Serializable {
     @Column(name = "status")
     private Status status = Status.NOTSTART;
 
-    @Column(name = "description", columnDefinition = "NVARCHAR(255)")
+    @Column(name = "description", columnDefinition = "NVARCHAR(MAX)")
     private String description;
 
     @ManyToOne
