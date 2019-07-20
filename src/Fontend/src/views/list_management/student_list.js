@@ -124,7 +124,7 @@ class student_list extends Component {
                                                         <td style={{ textAlign: "center" }}>
                                                             <Button style={{ width: "80px" }} color="success" onClick={() => this.handleDirect(`/student/${student.email}`)}>Chi tiết</Button>
                                                             &nbsp;
-                                                    <Button style={{ width: "90px" }} color="primary" onClick={() => this.handleDirect(`/hr-student-list/details/${student.email}`)}>Nhiệm vụ</Button>
+                                                            <Button style={{ width: "90px" }} color="primary" onClick={() => this.handleDirect(`/hr-student-list/details/${student.email}`)}>Nhiệm vụ</Button>
                                                             &nbsp;
                                                     {/* <Button style={{ width: "70px" }} color="danger">Xoá</Button> */}
                                                         </td>
@@ -159,7 +159,7 @@ class student_list extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {students && students.map((student, index) => {
+                                            {filteredListStudents && filteredListStudents.map((student, index) => {
                                                 return (
                                                     <tr>
                                                         <td style={{ textAlign: "center" }}>{index + 1}</td>

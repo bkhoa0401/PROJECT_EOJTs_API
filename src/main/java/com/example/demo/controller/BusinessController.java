@@ -434,37 +434,46 @@ public class BusinessController {
     public ResponseEntity<List<Evaluation>> getAllEvaluationOfBusiness() {
         String email = getEmailFromToken();
 
-        List<Evaluation> evaluationList = evaluationService.getListEvaluationOfBusiness(email);
+        //get student of business in a semester
         List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(email);
-        List<Evaluation> overviewEvaluationList = new ArrayList<Evaluation>();
-        int flag = 0;
-        for (int i = 0; i < studentList.size(); i++) {
-            flag = 0;
-            for (int j = 0; j < evaluationList.size(); j++) {
-                if (studentList.get(i).getCode().equals(evaluationList.get(j).getOjt_enrollment().getStudent().getCode())) {
-                    overviewEvaluationList.add(evaluationList.get(j));
-                    if (flag > 0) {
-                        for (int k = 1; k <= flag; k++) {
-                            Date date1 = overviewEvaluationList.get(overviewEvaluationList.size() - k).getTimeStart();
-                            Date date2 = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k).getTimeStart();
-                            if (date1.before(date2)) {
-                                Evaluation tmpEvaluation = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k);
-                                overviewEvaluationList.set(overviewEvaluationList.size() - 1 - k, overviewEvaluationList.get(overviewEvaluationList.size() - k));
-                                overviewEvaluationList.set(overviewEvaluationList.size() - k, tmpEvaluation);
-                            }
-                        }
-                    }
-                    flag++;
-                }
-            }
-            if (flag < 4) {
-                for (int l = flag; l < 4; l++) {
-                    overviewEvaluationList.add(null);
-                }
-            }
-        }
-        if (overviewEvaluationList != null) {
-            return new ResponseEntity<List<Evaluation>>(overviewEvaluationList, HttpStatus.OK);
+        //get all evaluations of list student of business
+//        List<Evaluation> evaluationList = evaluationService.getListEvaluationOfBusiness(email);
+
+//        List<Evaluation> evaluationList = new ArrayList<Evaluation>();
+//        for (int i = 0; i < studentList.size(); i++) {
+//            evaluationList.addAll(evaluationService.getEvaluationsByStudentEmail(studentList.get(i).getEmail()));
+//        }
+//
+//        List<Evaluation> overviewEvaluationList = new ArrayList<Evaluation>();
+//        int flag = 0;
+//        for (int i = 0; i < studentList.size(); i++) {
+//            flag = 0;
+//            for (int j = 0; j < evaluationList.size(); j++) {
+//                if (studentList.get(i).getCode().equals(evaluationList.get(j).getOjt_enrollment().getStudent().getCode())) {
+//                    overviewEvaluationList.add(evaluationList.get(j));
+//                    if (flag > 0) {
+//                        for (int k = 1; k <= flag; k++) {
+//                            Date date1 = overviewEvaluationList.get(overviewEvaluationList.size() - k).getTimeStart();
+//                            Date date2 = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k).getTimeStart();
+//                            if (date1.before(date2)) {
+//                                Evaluation tmpEvaluation = overviewEvaluationList.get(overviewEvaluationList.size() - 1 - k);
+//                                overviewEvaluationList.set(overviewEvaluationList.size() - 1 - k, overviewEvaluationList.get(overviewEvaluationList.size() - k));
+//                                overviewEvaluationList.set(overviewEvaluationList.size() - k, tmpEvaluation);
+//                            }
+//                        }
+//                    }
+//                    flag++;
+//                }
+//            }
+//            if (flag < 4) {
+//                for (int l = flag; l < 4; l++) {
+//                    overviewEvaluationList.add(null);
+//                }
+//            }
+//        }
+        List<Evaluation> evaluationList = evaluationService.getEvaluationListOfStudentList(studentList);
+        if (evaluationList != null) {
+            return new ResponseEntity<List<Evaluation>>(evaluationList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

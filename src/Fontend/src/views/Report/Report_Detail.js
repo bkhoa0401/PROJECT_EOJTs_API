@@ -208,6 +208,8 @@ class Report_Detail extends Component {
                                             {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
                                         </Pagination>
                                     </CardBody>
+                                    <CardFooter>
+                                    </CardFooter>
                                 </Card>
                             </Col>
                         </Row>
