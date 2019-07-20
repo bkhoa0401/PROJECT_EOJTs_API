@@ -44,7 +44,7 @@ public class Ojt_Enrollment implements Serializable{
     private List<Evaluation> evaluations;
 
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "semester_id")
     private Semester semester;

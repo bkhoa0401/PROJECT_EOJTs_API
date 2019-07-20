@@ -29,6 +29,7 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
 import SimpleReactValidator from '../../validator/simple-react-validator';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import firebase from 'firebase';
 
 class User_Student_Create extends Component {
 
@@ -124,6 +125,24 @@ class User_Student_Create extends Component {
                 this.setState({
                     loading: false
                 })
+                var currentTime = new Date();
+
+                var month = ("0" + (currentTime.getMonth() + 1)).slice(-2);
+                var date = month + '-' + currentTime.getDate() + '-' + currentTime.getFullYear();
+                var time = currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds();
+
+                var database = firebase.database();
+                var ref = database.ref('Users');
+
+                var usersRef = ref.child(`${code}`);
+                usersRef.set({
+                    userState: {
+                        date: date,
+                        time: time,
+                        type: 'offline'
+                    }
+                });
+
             } else {
                 Toastify.actionFail("Tạo tài khoản mới thất bại!");
                 this.setState({
