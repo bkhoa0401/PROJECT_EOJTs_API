@@ -728,6 +728,8 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+
+    //check semester ok
     @GetMapping("/studentsEvaluations")
     @ResponseBody
     public ResponseEntity<List<Student_EvaluationDTO>> getEvaluationsOfStudents() {
@@ -743,6 +745,7 @@ public class StudentController {
                     evaluationList.add(null);
                 }
             }
+            evaluationList = evaluationService.checkSemesterOfListEvaluation(evaluationList);
             Student_EvaluationDTO student_evaluationDTO = new Student_EvaluationDTO();
             student_evaluationDTO.setEvaluationList(evaluationList);
             student_evaluationDTO.setStudent(studentList.get(i));
