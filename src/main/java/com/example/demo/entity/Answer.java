@@ -27,15 +27,9 @@ public class Answer implements Serializable {
     @LazyCollection(LazyCollectionOption.FALSE)
     private Question question;
 
-//    @ManyToMany(mappedBy = "answers")
-//    private List<Student> students;
-
-    @OneToMany(
-            mappedBy = "answer",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<Student_Answer> students = new ArrayList<>();
+    @OneToMany(mappedBy = "answer")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Student_Answer> student_answers = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -61,24 +55,11 @@ public class Answer implements Serializable {
         this.question = question;
     }
 
-    public List<Student_Answer> getStudents() {
-        return students;
+    public List<Student_Answer> getStudent_answers() {
+        return student_answers;
     }
 
-    public void setStudents(List<Student_Answer> students) {
-        this.students = students;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Answer tag = (Answer) o;
-        return Objects.equals(id, tag.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public void setStudent_answers(List<Student_Answer> student_answers) {
+        this.student_answers = student_answers;
     }
 }

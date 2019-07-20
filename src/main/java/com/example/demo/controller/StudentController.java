@@ -151,6 +151,7 @@ public class StudentController {
         ojt_enrollment.setStudent(student);
         ojt_enrollment.setSemester(semester);
         try {
+            student.setSemester(semester.getName());
             studentService.saveStudent(student);
             usersService.saveUser(users);
             ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);
@@ -716,7 +717,7 @@ public class StudentController {
 
         List<Task> taskList = new ArrayList<>();
         if (type == 1) {
-            taskList = taskService.findTasksOfStudentByStatus(email, Status.NOT_START);
+            taskList = taskService.findTasksOfStudentByStatus(email, Status.NOTSTART);
         } else if (type == 2) {
             taskList = taskService.findTasksOfStudentByStatus(email, Status.PENDING);
         } else if (type == 3) {

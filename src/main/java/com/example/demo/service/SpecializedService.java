@@ -57,7 +57,7 @@ public class SpecializedService implements ISpecializedService{
     }
 
     @Override
-    @Cacheable("specializeds")
+//    @Cacheable("specializeds")
     public List<Specialized> getAllSpecialized() {
         List<Specialized> list ;
         list = ISpecializedRepository.findAll();
@@ -70,7 +70,7 @@ public class SpecializedService implements ISpecializedService{
 
     @Override
 //    @CacheEvict(value = "specializeds", allEntries = true)
-    @Cacheable("specializeds")
+//    @Cacheable("specializeds")
     public List<Specialized> getAllSpecializedForCache() {
         List<Specialized> list = new ArrayList<>();
         list = ISpecializedRepository.findAll();
@@ -98,13 +98,13 @@ public class SpecializedService implements ISpecializedService{
     }
 
     @Override
-    @CachePut(value = "specializedID", key = "#specialized.id")
-    @CacheEvict(value = "specializeds", allEntries = true)
+//    @CachePut(value = "specializedID", key = "#specialized.id")
+//    @CacheEvict(value = "specializeds", allEntries = true)
     public Specialized updateSpecialized(Specialized specialized) {
         Specialized specializedFound = ISpecializedRepository.findSpecializedById(specialized.getId());
         if (specializedFound != null) {
             ISpecializedRepository.save(specialized);
-            getAllSpecializedForCache();
+//            getAllSpecializedForCache();
             return specialized;
         }
         return null;
@@ -122,7 +122,7 @@ public class SpecializedService implements ISpecializedService{
     }
 
     @Override
-    @Cacheable(value = "specializedID", key = "#id")
+//    @Cacheable(value = "specializedID", key = "#id")
     public Specialized getSpecializedById(int id) {
         Specialized specialized = ISpecializedRepository.findSpecializedById(id);
         if (specialized != null) {

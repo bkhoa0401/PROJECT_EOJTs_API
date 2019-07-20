@@ -120,8 +120,10 @@ public class Job_PostService implements IJob_PostService {
 
             for (int i = 0; i < job_post_skill.size(); i++) {
                 job_post_skill.get(i).setJob_post(job_post);
+                job_post_skillService.saveJobPostSkill(job_post_skill.get(i));
             }
             IJob_postRepository.save(job_post);
+
             return true;
         }
         return false;

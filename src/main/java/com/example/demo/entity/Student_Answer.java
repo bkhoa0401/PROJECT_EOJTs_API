@@ -1,5 +1,9 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -8,31 +12,26 @@ import java.util.Objects;
 @Table(name = "student_answer")
 public class Student_Answer implements Serializable {
 
-    @EmbeddedId
-    private StudentAnswerID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("student_email")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "student_email")
     private Student student;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("answer_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "answer_id")
     private Answer answer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "other")
     private Question other;
 
-
     public Student_Answer() {
-    }
-
-    public StudentAnswerID getId() {
-        return id;
-    }
-
-    public void setId(StudentAnswerID id) {
-        this.id = id;
     }
 
     public Student getStudent() {
@@ -57,22 +56,5 @@ public class Student_Answer implements Serializable {
 
     public void setOther(Question other) {
         this.other = other;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass())
-            return false;
-
-        Student_Answer that = (Student_Answer) o;
-        return Objects.equals(student, that.student) &&
-                Objects.equals(answer, that.answer);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(student, answer);
     }
 }

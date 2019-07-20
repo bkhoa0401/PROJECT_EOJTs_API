@@ -28,7 +28,7 @@ public class TaskService implements ITaskService {
     public void createTaskForStudent(Task task) {
         Date date = new Date(Calendar.getInstance().getTime().getTime());
         task.setTime_created(date);
-        task.setStatus(Status.NOT_START);
+        task.setStatus(Status.NOTSTART);
         ITaskRepository.save(task);
     }
 

@@ -16,7 +16,7 @@ public class Job_Post_Skill implements Serializable {
     @Column(name = "id")
     private int id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore
     @JoinColumn(name = "job_post_id")

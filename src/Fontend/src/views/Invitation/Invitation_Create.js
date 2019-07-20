@@ -261,64 +261,71 @@ class Invitation_Create extends Component {
 
         // studentNumber = '84' + studentNumber;
 
-        var sms = {
-            receiverNumber: `${studentNumber}`,
-            content: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`
-        }
+        // var sms = {
+        //     receiverNumber: `${studentNumber}`,
+        //     content: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`
+        // }
 
-        const invitation = {
-            description: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
-            state: 0,
-            timeCreated: "2019-09-09",
-            title: `Lời mời thực tập từ công ty ${business_name}`
-        }
+        // const invitation = {
+        //     description: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
+        //     state: 0,
+        //     timeCreated: "2019-09-09",
+        //     title: `Lời mời thực tập từ công ty ${business_name}`
+        // }
 
-        const result = await ApiServices.Post(`/business/createInvitation?emailStudent=${email}`, invitation);
+        // const result = await ApiServices.Post(`/business/createInvitation?emailStudent=${email}`, invitation);
 
-        const notificationDTO = {
-            data: {
-                title: `Lời mời thực tập từ công ty ${business_name}`,
-                body: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
-                click_action: "http://localhost:3000/#/invitation/new",
-                icon: "http://url-to-an-icon/icon.png"
-            },
-            to: `${deviceToken}`
-        }
+        // const notificationDTO = {
+        //     data: {
+        //         title: `Lời mời thực tập từ công ty ${business_name}`,
+        //         body: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
+        //         click_action: "http://localhost:3000/#/invitation/new",
+        //         icon: "http://url-to-an-icon/icon.png"
+        //     },
+        //     to: `${deviceToken}`
+        // }
 
-        const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
+        // const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
 
-        if (result.status == 201) {
-            Toastify.actionSuccess('Gửi lời mời thành công');
-            if (isSend == null || isSend.status != 200) {
-                Toastify.actionWarning('Gửi thông báo thất bại');
-            }
-            this.setState({
-                loading: false
-            })
+        // if (result.status == 201) {
+        //     Toastify.actionSuccess('Gửi lời mời thành công');
+        //     if (isSend == null || isSend.status != 200) {
+        //         Toastify.actionWarning('Gửi thông báo thất bại');
+        //     }
+        //     this.setState({
+        //         loading: false
+        //     })
 
-        } else {
-            Toastify.actionFail('Gửi lời mời thất bại');
-            this.setState({
-                loading: false
-            })
-        }
+        // } else {
+        //     Toastify.actionFail('Gửi lời mời thất bại');
+        //     this.setState({
+        //         loading: false
+        //     })
+        // }
 
-        const students2nd = await ApiServices.Get('/student/getListStudentNotYetInvited');
-        const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
-        const business = await ApiServices.Get('/business/getBusiness');
-        if (students2nd != null && suggestedStudents != null) {
-            this.setState({
-                students: students2nd,
-                suggestedStudents: suggestedStudents,
-                business_name: business.business_name
-            });
-        }
+        // const students2nd = await ApiServices.Get('/student/getListStudentNotYetInvited');
+        // const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
+        // const business = await ApiServices.Get('/business/getBusiness');
+        // if (students2nd != null && suggestedStudents != null) {
+        //     this.setState({
+        //         students: students2nd,
+        //         suggestedStudents: suggestedStudents,
+        //         business_name: business.business_name
+        //     });
+        // }
 
 
         setTimeout(
             function () {
                 var tempDate = new Date();
-                console.log(tempDate);
+                // console.log(tempDate);
+
+                var currentTime = new Date();
+                var date = currentTime.getMonth() + '-' + currentTime.getDay() + '-' + currentTime.getFullYear();
+                var time = currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds();
+
+                console.log('date', date);
+                console.log('time', time);
 
                 let ref = firebase.database().ref('Users');
                 ref.on('value', snapshot => {
@@ -333,24 +340,26 @@ class Invitation_Create extends Component {
                         var dateFirebase = state[codeFound].userState.date;
                         var timeFirebase = state[codeFound].userState.time;
                         var tempDateFirebase = new Date(dateFirebase + ' ' + timeFirebase);
-                        console.log(tempDateFirebase);
+                        console.log('dateFirebase', dateFirebase);
+                        console.log('timeFirebase', timeFirebase);
+                        console.log('tempDateFirebase', tempDateFirebase);
                         var type = state[codeFound].userState.type;
 
                         var seconds = (tempDate - tempDateFirebase) / 1000;
                         console.log(seconds);
 
-                        if (type === 'offline') {
-                            const result = ApiServices.Post('/business/sms', sms)
-                        } else if (type === 'online') {
-                            if (seconds > 12) {
-                                const result = ApiServices.Post('/business/sms', sms)
-                            }
-                        }
+                        // if (type === 'offline') {
+                        //     const result = ApiServices.Post('/business/sms', sms)
+                        // } else if (type === 'online') {
+                        //     if (seconds > 12) {
+                        //         const result = ApiServices.Post('/business/sms', sms)
+                        //     }
+                        // }
                     }
                 });
             }
                 .bind(this),
-            10000
+            2000
         );
     }
 
