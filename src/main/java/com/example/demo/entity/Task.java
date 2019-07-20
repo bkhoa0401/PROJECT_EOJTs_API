@@ -39,11 +39,11 @@ public class Task implements Serializable {
 
 
     @Enumerated(EnumType.STRING)
-    @Check(constraints = "status IN ('NOT_START' ,'PENDING', 'DONE')")
+    @Check(constraints = "status IN ('NOTSTART' ,'PENDING', 'DONE')")
     @Column(name = "status")
-    private Status status = Status.NOT_START;
+    private Status status = Status.NOTSTART;
 
-    @Column(name = "description", columnDefinition = "NVARCHAR(255)")
+    @Column(name = "description", columnDefinition = "NVARCHAR(MAX)")
     private String description;
 
     @ManyToOne

@@ -1,7 +1,7 @@
 package com.example.demo.config;
 
 public enum Status {
-    NOT_START,
+    NOTSTART,
     PENDING,
     DONE
 }

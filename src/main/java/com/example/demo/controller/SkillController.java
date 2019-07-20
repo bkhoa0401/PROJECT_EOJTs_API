@@ -3,6 +3,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.SpecializedDTO;
 import com.example.demo.entity.Skill;
+import com.example.demo.service.ISkillService;
 import com.example.demo.service.SkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ import java.util.List;
 public class SkillController {
 
     @Autowired
-    SkillService skillService;
+    ISkillService skillService;
 
 
     @GetMapping

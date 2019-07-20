@@ -12,18 +12,20 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
-public class JwtService {
+public class JwtService implements IJwtService {
 
     public static final String EMAIL = "email";
     public static final String ROLE = "role";
     public static final String SECRET_KEY = "CAPSTONE_EOJTS_FPTUNIVERSITY_CAPSTONE_EOJTS_FPTUNIVERSITY_CAPSTONE_EOJTS_FPTUNIVERSITY";
     public static final int EXPIRE_TIME = 86400000;
 
+    @Override
     public String generateTokenLogin(String email, String role) {
         String token = null;
         try {
@@ -43,7 +45,8 @@ public class JwtService {
         return token;
     }
 
-    private JWTClaimsSet getClaimsFromToken(String token) {
+    @Override
+    public JWTClaimsSet getClaimsFromToken(String token) {
         JWTClaimsSet claims = null;
         try {
             SignedJWT signedJWT = SignedJWT.parse(token);
@@ -57,17 +60,20 @@ public class JwtService {
         return claims;
     }
 
-    private Date generateExpirationDate() {
+    @Override
+    public Date generateExpirationDate() {
         return new Date(System.currentTimeMillis() + EXPIRE_TIME);
     }
 
-    private Date getExpirationDateFromToken(String token) {
+    @Override
+    public Date getExpirationDateFromToken(String token) {
         Date expiration = null;
         JWTClaimsSet claims = getClaimsFromToken(token);
         expiration = claims.getExpirationTime();
         return expiration;
     }
 
+    @Override
     public String getEmailFromToken(String token) {
         String email = null;
         try {
@@ -79,17 +85,20 @@ public class JwtService {
         return email;
     }
 
-    private byte[] generateShareSecret() {
+    @Override
+    public byte[] generateShareSecret() {
         byte[] sharedSecret = new byte[32];
         sharedSecret = SECRET_KEY.getBytes();
         return sharedSecret;
     }
 
-    private Boolean isTokenExpired(String token) {
+    @Override
+    public Boolean isTokenExpired(String token) {
         Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
 
+    @Override
     public Boolean validateTokenLogin(String token) {
         if (token == null || token.trim().length() == 0) {
             return false;

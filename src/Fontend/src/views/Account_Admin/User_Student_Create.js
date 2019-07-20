@@ -46,8 +46,8 @@ class User_Student_Create extends Component {
             gender: 0,
             specializeds: [],
             specializedItem: {},
-            semester: '',
-            status: 'ing'
+            gpa: '',
+            // semester: '',
         }
     }
 
@@ -91,12 +91,13 @@ class User_Student_Create extends Component {
             dob: '',
             gender: 0,
             specializedItem: this.state.specializeds[0],
-            semester: '',
+            gpa: '',
+            // semester: '',
         })
     }
 
     handleSubmit = async () => {
-        const { email, name, phone, address, code, dob, gender, specializedItem, semester, status } = this.state;
+        const { email, name, phone, address, code, dob, gender, specializedItem, gpa } = this.state;
         const specialized = {
             id: specializedItem.id
         }
@@ -109,8 +110,8 @@ class User_Student_Create extends Component {
             dob,
             gender,
             specialized,
-            semester,
-            status
+            gpa
+            // semester
         }
 
         if (this.validator.allValid()) {
@@ -180,7 +181,18 @@ class User_Student_Create extends Component {
                                                 <Col xs="12" md="10">
                                                     <Input value={this.state.code} onChange={this.handleInput} type="text" name="code" placeholder="Mã số sinh viên" />
                                                     <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Mã số sinh viên', this.state.code, 'required|min:8|alpha_num')}
+                                                        {this.validator.message('Mã số sinh viên', this.state.code, 'required|min:7|alpha_num')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <Label htmlFor="gpa">GPA</Label>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={this.state.gpa} onChange={this.handleInput} type="number" name="gpa" placeholder="GPA" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('GPA', this.state.gpa, 'required|numberic')}
                                                     </span>
                                                 </Col>
                                             </FormGroup>
@@ -242,17 +254,17 @@ class User_Student_Create extends Component {
                                                     </Input>
                                                 </Col>
                                             </FormGroup>
-                                            <FormGroup row>
+                                            {/* <FormGroup row>
                                                 <Col md="2">
                                                     <Label htmlFor="semester">Học kì</Label>
                                                 </Col>
                                                 <Col xs="12" md="10">
-                                                    <Input value={this.state.semester} onChange={this.handleInput} type="number" name="semester" placeholder="Học kì" />
+                                                    <Input value={this.state.semester} onChange={this.handleInput} type="text" name="semester" placeholder="Học kì" />
                                                     <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Học kì', this.state.address, 'required|numberic')}
+                                                        {this.validator.message('Học kì', this.state.semester, 'required|alpha_num_space|min:8|max:10')}
                                                     </span>
                                                 </Col>
-                                            </FormGroup>
+                                            </FormGroup> */}
                                         </Form>
                                         <ToastContainer />
                                     </CardBody>

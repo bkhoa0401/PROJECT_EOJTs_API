@@ -20,16 +20,19 @@ import javax.servlet.http.HttpServletResponse;
 public class WebController {
 
     @Autowired
-    private UsersService usersService;
+    IUsersService usersService;
 
     @Autowired
-    private JwtService jwtService;
+    IJwtService jwtService;
 
     @Autowired
-    private StudentService studentService;
+    IStudentService studentService;
 
     @Autowired
-    private Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
+
+    @Autowired
+    ISemesterService semesterService;
 
     @Autowired
     private SemesterService semesterService;
@@ -62,7 +65,9 @@ public class WebController {
                         Student student = studentService.getStudentByEmail(users.getEmail());
                         StudentDTO studentDTO = new StudentDTO();
                         studentDTO.convertFromStudentEntity(student);
-                        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(studentDTO.getEmail());
+                        Semester semester = semesterService.getSemesterCurrent();
+
+                        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(studentDTO.getEmail(), semester.getId());
                         if (ojt_enrollment.getBusiness() != null) {
                             studentDTO.setIntership(true);
                             studentDTO.setBusinessName(ojt_enrollment.getBusiness().getBusiness_eng_name());

@@ -57,11 +57,6 @@ public class Ojt_Enrollment implements Serializable{
     @Column(name = "timeEnroll")
     private Date timeEnroll;
 
-    @OneToMany(mappedBy = "ojt_enrollment", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Feedback> feedback;
-
-
     public Ojt_Enrollment() {
     }
 
@@ -135,13 +130,5 @@ public class Ojt_Enrollment implements Serializable{
 
     public void setTimeEnroll(Date timeEnroll) {
         this.timeEnroll = timeEnroll;
-    }
-
-    public List<Feedback> getFeedback() {
-        return feedback;
-    }
-
-    public void setFeedback(List<Feedback> feedback) {
-        this.feedback = feedback;
     }
 }

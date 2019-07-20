@@ -1,76 +1,73 @@
 package com.example.demo.service;
 
-import com.example.demo.config.Status;
 import com.example.demo.entity.*;
-import com.example.demo.repository.Ojt_EnrollmentRepository;
-import com.example.demo.repository.StudentRepository;
-import com.example.demo.repository.SupervisorRepository;
-import com.example.demo.repository.TaskRepository;
+import com.example.demo.repository.IStudentRepository;
+import com.example.demo.repository.ISupervisorRepository;
+import com.example.demo.repository.ITaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 
 @Service
-public class StudentService {
+public class StudentService implements IStudentService {
     @Autowired
-    StudentRepository studentRepository;
+    IStudentRepository IStudentRepository;
 
     @Autowired
-    SupervisorRepository supervisorRepository;
+    ISupervisorRepository ISupervisorRepository;
 
     @Autowired
-    Job_PostService job_postService;
+    IJob_PostService job_postService;
 
     @Autowired
-    SkillService skillService;
+    ISkillService skillService;
 
     @Autowired
-    BusinessService businessService;
+    IBusinessService businessService;
 
     @Autowired
-    TaskService taskService;
+    ITaskService taskService;
 
     @Autowired
-    TaskRepository taskRepository;
+    ITaskRepository ITaskRepository;
 
     @Autowired
-    Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
-    SemesterService semesterService;
+    ISemesterService semesterService;
 
+    @Override
     public Student getStudentByEmail(String email) {
-        Student student = studentRepository.findByEmail(email);
+        Student student = IStudentRepository.findByEmail(email);
         return student;
     }
 
+    @Override
     public boolean saveListStudent(List<Student> studentList) {
-        studentRepository.saveAll(studentList);
+        IStudentRepository.saveAll(studentList);
         return true;
     }
 
+    @Override
     public boolean saveStudent(Student student) {
-        studentRepository.save(student);
+        IStudentRepository.save(student);
         return true;
     }
 
     //@Cacheable(value = "students")
+    @Override
     public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+        return IStudentRepository.findAll();
     }
 
     //check semester //ok
     //@Cacheable("students")
+    @Override
     public List<Student> getAllStudentsBySemesterId() {
         List<Student> studentList = new ArrayList<>();
         Semester semester = semesterService.getSemesterCurrent();
@@ -86,6 +83,7 @@ public class StudentService {
         return null;
     }
 
+    @Override
     public int getSpecializedIdByEmail(String email) {
         Student student = getStudentByEmail(email);
         int specializedId = student.getSpecialized().getId();
@@ -93,54 +91,58 @@ public class StudentService {
         return specializedId;
     }
 
+    @Override
     public boolean updateInforStudent(String email, String ojective, float gpa, List<Skill> skillList) {
         Student student = getStudentByEmail(email);
         if (student != null) {
             student.setObjective(ojective);
             student.setGpa(gpa);
             student.setSkills(skillList);
-            studentRepository.save(student);
+            IStudentRepository.save(student);
             return true;
         }
         return false;
     }
 
+    @Override
     public boolean updateOption1Student(String email, String option1) {
         Student student = getStudentByEmail(email);
         if (student != null) {
             if (option1 != null || !option1.isEmpty()) {
                 student.setOption1(option1);
             }
-            studentRepository.save(student);
+            IStudentRepository.save(student);
             return true;
         }
         return false;
     }
 
+    @Override
     public boolean updateOption2Student(String email, String option2) {
         Student student = getStudentByEmail(email);
         if (student != null) {
             if (option2 != null || !option2.isEmpty()) {
                 student.setOption2(option2);
             }
-            studentRepository.save(student);
+            IStudentRepository.save(student);
             return true;
         }
         return false;
     }
 
+    @Override
     public Student getStudentIsInvited(String email) {
-        Student student = studentRepository.findByEmail(email);
+        Student student = IStudentRepository.findByEmail(email);
         if (student != null) {
             return student;
         }
         return null;
     }
 
-
     //check semester ok
+    @Override
     public List<Student> findStudentByBusinessNameOption(String option1, String option2) {
-        List<Student> studentList = studentRepository.findStudentByOption1OrOption2(option1, option2);
+        List<Student> studentList = IStudentRepository.findStudentByOption1OrOption2(option1, option2);
 
         Semester semester = semesterService.getSemesterCurrent();
 
@@ -166,34 +168,36 @@ public class StudentService {
         return null;
     }
 
+    @Override
     public boolean updateLinkFileResumeForStudent(String email, String resumeLink) {
         Student student = getStudentByEmail(email);
         if (student != null) {
             if (resumeLink != null) {
                 student.setResumeLink(resumeLink);
-                studentRepository.save(student);
+                IStudentRepository.save(student);
                 return true;
             }
         }
         return false;
     }
 
+    @Override
     public boolean updateStatusOptionOfStudent(List<Integer> numberOfOption, boolean statusOfOption, String emailStudent) {
         Student student = getStudentByEmail(emailStudent);
         boolean flag = false;
 
         if (student != null) {
-            for(int i = 0; i < numberOfOption.size(); i++) {
-                if(numberOfOption.get(i) == 1) {
+            for (int i = 0; i < numberOfOption.size(); i++) {
+                if (numberOfOption.get(i) == 1) {
                     student.setAcceptedOption1(statusOfOption);
                     student.setInterviewed1(true);
-                    studentRepository.save(student);
+                    IStudentRepository.save(student);
                     flag = true;
                 }
                 if (numberOfOption.get(i) == 2) {
                     student.setAcceptedOption2(statusOfOption);
                     student.setInterviewed2(true);
-                    studentRepository.save(student);
+                    IStudentRepository.save(student);
                     flag = true;
                 }
             }
@@ -206,51 +210,55 @@ public class StudentService {
         }
     }
 
-
+    @Override
     public List<Student> getAllStudentByStatusOption(int typeGetStatus) {
         List<Student> studentList;
         if (typeGetStatus == 1) {// get all sv pass  option 1
-            studentList = studentRepository.findStudentsByAcceptedOption1TrueAndAcceptedOption2False();
+            studentList = IStudentRepository.findStudentsByAcceptedOption1TrueAndAcceptedOption2False();
             return studentList;
         } else if (typeGetStatus == 2) {// get all sv pass  option 2
-            studentList = studentRepository.findStudentsByAcceptedOption2TrueAndAcceptedOption1False();
+            studentList = IStudentRepository.findStudentsByAcceptedOption2TrueAndAcceptedOption1False();
             return studentList;
         } else if (typeGetStatus == 3) {// get all sv pass 2 option
-            studentList = studentRepository.findStudentsByAcceptedOption1TrueAndAcceptedOption2True();
+            studentList = IStudentRepository.findStudentsByAcceptedOption1TrueAndAcceptedOption2True();
             return studentList;
         } else if (typeGetStatus == 4) {// get all sv fail 2 option
-            studentList = studentRepository.findStudentsByAcceptedOption1FalseAndAcceptedOption2False();
+            studentList = IStudentRepository.findStudentsByAcceptedOption1FalseAndAcceptedOption2False();
             return studentList;
         }
         return null;
     }
 
+    @Override
     public boolean updateTokenDeviceForStudent(String emailStudent, String token) {
         Student student = getStudentByEmail(emailStudent);
         if (student != null) {
             student.setToken(token);
-            studentRepository.save(student);
+            IStudentRepository.save(student);
             return true;
         }
         return false;
     }
 
+    @Override
     public boolean updateLinkTranscriptForStudent(Student student) {
-        studentRepository.save(student);
+        IStudentRepository.save(student);
         return true;
     }
 
+    @Override
     public boolean assignSupervisorForStudent(List<Student> studentList) {
         if (studentList.size() != 0) {
-            studentRepository.saveAll(studentList);
+            IStudentRepository.saveAll(studentList);
             return true;
         }
         return false;
     }
 
     //check semester //chua test
+    @Override
     public List<Job_Post> getSuggestListJobPost(String emailStudent) {
-        Student student = studentRepository.findByEmail(emailStudent);
+        Student student = IStudentRepository.findByEmail(emailStudent);
         List<Job_Post> job_postListSuggest = new ArrayList<>();
         List<Skill> skillListOfJobPost;
 
@@ -271,11 +279,11 @@ public class StudentService {
         }
         Semester semester = semesterService.getSemesterCurrent();
 
-        List<Job_Post> job_postListSuggestCurrentSemester=new ArrayList<>();
+        List<Job_Post> job_postListSuggestCurrentSemester = new ArrayList<>();
 
         for (int i = 0; i < job_postListSuggest.size(); i++) {
             Job_Post job_post = job_postListSuggest.get(i);
-            if(semester.getId()==job_post.getOjt_enrollment().getSemester().getId()){
+            if (semester.getId() == job_post.getOjt_enrollment().getSemester().getId()) {
                 job_postListSuggestCurrentSemester.add(job_post);
             }
         }
@@ -283,6 +291,7 @@ public class StudentService {
         //return job_postListSuggest;
     }
 
+    @Override
     public float compareSkillsStudentAndSkillsJobPost(List<Skill> skillListStudent, List<Skill> skillListJobPost) {
         int similar = 0;
         for (int i = 0; i < skillListStudent.size(); i++) {
@@ -304,16 +313,18 @@ public class StudentService {
         return result;
     }
 
+    @Override
     public boolean updateLinkAvatar(String emailStudent, String linkAvatar) {
-        Student student = studentRepository.findByEmail(emailStudent);
+        Student student = IStudentRepository.findByEmail(emailStudent);
         if (student != null) {
             student.setAvatarLink(linkAvatar);
-            studentRepository.save(student);
+            IStudentRepository.save(student);
             return true;
         }
         return false;
     }
 
+    @Override
     public Business getBusinessOfStudent(String studentEmail) {
         Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_EnrollmentByStudentEmail(studentEmail);
         Business business = ojt_enrollment.getBusiness();
@@ -323,9 +334,10 @@ public class StudentService {
         return null;
     }
 
+    @Override
     public List<Business> getBusinessByOptionStudent(String studentEmail) {
 
-        Student student = studentRepository.findByEmail(studentEmail);
+        Student student = IStudentRepository.findByEmail(studentEmail);
 
         String option1 = student.getOption1();
         String option2 = student.getOption2();
@@ -344,8 +356,9 @@ public class StudentService {
     }
 
     //check semester //ok
+    @Override
     public List<Student> getAllStudentOfASupervisor(String email) {
-        List<Student> studentList = studentRepository.findStudentsBySupervisorEmail(email);
+        List<Student> studentList = IStudentRepository.findStudentsBySupervisorEmail(email);
 
         Semester semester = semesterService.getSemesterCurrent();
 
@@ -373,9 +386,9 @@ public class StudentService {
         return null;
     }
 
-
+    @Override
     public boolean updateInformationStudent(String email, String name, String phone, boolean gender, String address, String birthDate) throws ParseException {
-        Student student = studentRepository.findByEmail(email);
+        Student student = IStudentRepository.findByEmail(email);
         if (student != null) {
             student.setName(name);
             student.setPhone(phone);
@@ -387,10 +400,9 @@ public class StudentService {
             java.sql.Date dob = new java.sql.Date(date.getTime());
 
             student.setDob(dob);
-            studentRepository.save(student);
+            IStudentRepository.save(student);
             return true;
         }
         return false;
     }
-
 }

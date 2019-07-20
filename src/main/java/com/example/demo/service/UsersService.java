@@ -1,12 +1,10 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.*;
-import com.example.demo.repository.UsersRepository;
+import com.example.demo.repository.IUsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
@@ -14,23 +12,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UsersService {
+public class UsersService implements IUsersService {
     @Autowired
-    UsersRepository usersRepository;
+    IUsersRepository IUsersRepository;
 
     @Autowired
     private JavaMailSender sender;
 
     @Autowired
-    RoleService roleService;
+    IRoleService roleService;
 
     @Autowired
-    Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
-    SemesterService semesterService;
+    ISemesterService semesterService;
 
-
+    @Override
     public void sendEmail(String name, String mail, String password) throws Exception {
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -42,6 +40,7 @@ public class UsersService {
         sender.send(message);
     }
 
+    @Override
     public String getAlphaNumericString() {
         String AlphaNumericString = "0123456789"
                 + "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -58,67 +57,76 @@ public class UsersService {
         return sb.toString();
     }
 
+    @Override
     public Users findUserByEmail(String email) {
-        Users users = usersRepository.findUserByEmail(email);
+        Users users = IUsersRepository.findUserByEmail(email);
         if (users != null) {
             return users;
         }
         return null;
     }
 
+    @Override
     public Users findUserByEmailAndPassWord(String email, String password) {
-        Users users = usersRepository.findUserByEmailAndPassword(email, password);
+        Users users = IUsersRepository.findUserByEmailAndPassword(email, password);
         if (users != null) {
             return users;
         }
         return null;
     }
 
+    @Override
     public boolean saveListUser(List<Users> usersList) {
-        usersRepository.saveAll(usersList);
+        IUsersRepository.saveAll(usersList);
         return true;
     }
 
+    @Override
     public boolean saveUser(Users users) {
-        usersRepository.save(users);
+        IUsersRepository.save(users);
         return true;
     }
 
+    @Override
     public List<Users> getAllUsers() {
-        return usersRepository.findAll();
+        return IUsersRepository.findAll();
     }
 
+    @Override
     public boolean updatePasswordOfUserByEmail(String email, String password) {
         Users users = findUserByEmail(email);
         if (users != null) {
             users.setPassword(password);
-            usersRepository.save(users);
+            IUsersRepository.save(users);
             return true;
         }
         return false;
     }
 
+    @Override
     public boolean updateStatus(String email, boolean isActive) {
-        Users users = usersRepository.findUserByEmail(email);
+        Users users = IUsersRepository.findUserByEmail(email);
         if (users != null) {
             users.setActive(isActive);
-            usersRepository.save(users);
+            IUsersRepository.save(users);
             return true;
         }
         return false;
     }
 
+    @Override
     public List<Users> getAllUsersByType(int type) {
         Role role = roleService.findRoleById(type);
         List<Role> roleList = new ArrayList<>();
         roleList.add(role);
 
-        List<Users> usersList = usersRepository.findUsersByRoles(roleList);
+        List<Users> usersList = IUsersRepository.findUsersByRoles(roleList);
 
 
         return usersList;
     }
 
+    @Override
     public List<Users> getAllUsersBySemester() {
         Semester semester = semesterService.getSemesterCurrent();
         List<Users> usersListCurrentSemester = new ArrayList<>();
@@ -139,7 +147,7 @@ public class UsersService {
                         }
                     } else if (role.getDescription().equals("ROLE_STUDENT")) {
                         Ojt_Enrollment ojt_enrollmentOfStudent = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(users.getEmail(), semester.getId());
-                        if(ojt_enrollmentOfStudent!=null){
+                        if (ojt_enrollmentOfStudent != null) {
                             ojt_enrollmentList.add(ojt_enrollmentOfStudent);
                         }
                     }

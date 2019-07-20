@@ -30,40 +30,40 @@ import java.util.concurrent.TimeUnit;
 public class StudentController {
 
     @Autowired
-    StudentService studentService;
+    IStudentService studentService;
 
     @Autowired
-    UsersService usersService;
+    IUsersService usersService;
 
     @Autowired
-    Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
-    private SpecializedService specializedService;
+    ISpecializedService specializedService;
 
     @Autowired
-    SkillService skillService;
+    ISkillService skillService;
 
     @Autowired
-    InvitationService invitationService;
+    IInvitationService invitationService;
 
     @Autowired
-    BusinessService businessService;
+    IBusinessService businessService;
 
     @Autowired
-    Job_PostService job_postService;
+    IJob_PostService job_postService;
 
     @Autowired
-    TaskService taskService;
+    ITaskService taskService;
 
     @Autowired
-    EvaluationService evaluationService;
+    IEvaluationService evaluationService;
 
     @Autowired
-    EventService eventService;
+    IEventService eventService;
 
     @Autowired
-    SemesterService semesterService;
+    ISemesterService semesterService;
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -151,6 +151,7 @@ public class StudentController {
         ojt_enrollment.setStudent(student);
         ojt_enrollment.setSemester(semester);
         try {
+            student.setSemester(semester.getName());
             studentService.saveStudent(student);
             usersService.saveUser(users);
             ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);
@@ -716,7 +717,7 @@ public class StudentController {
 
         List<Task> taskList = new ArrayList<>();
         if (type == 1) {
-            taskList = taskService.findTasksOfStudentByStatus(email, Status.NOT_START);
+            taskList = taskService.findTasksOfStudentByStatus(email, Status.NOTSTART);
         } else if (type == 2) {
             taskList = taskService.findTasksOfStudentByStatus(email, Status.PENDING);
         } else if (type == 3) {

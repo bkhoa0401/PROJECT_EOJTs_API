@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.entity.Business;
 import com.example.demo.entity.Specialized;
 import com.example.demo.entity.Users;
+import com.example.demo.service.ISpecializedService;
 import com.example.demo.service.SpecializedService;
 import com.example.demo.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import java.util.List;
 public class SpecializedController {
 
     @Autowired
-    SpecializedService specializedService;
+    ISpecializedService specializedService;
 
     @GetMapping("/name")
     @ResponseBody

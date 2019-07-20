@@ -82,6 +82,8 @@ const Hr_Task_Create = React.lazy(() => import('./views/Hr_Task/Hr_Task_Create.j
 const Hr_Task_Detail = React.lazy(() => import('./views/Hr_Task/Hr_Task_Detail.js'));
 const Hr_Task_Update = React.lazy(() => import('./views/Hr_Task/Hr_Task_Update.js'));
 const Business_Detail = React.lazy(() => import('./views/Company/Business_Detail.js'));
+const Feedback = React.lazy(() => import('./views/Feedback/Feedback.js'));
+const Feedback_Detail = React.lazy(() => import('./views/Feedback/Feedback_Detail.js'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -176,6 +178,8 @@ const routes = [
   { path: '/hr-task/details/:id', exact: true, name: 'Chi tiết nhiệm vụ', component: Hr_Task_Detail },
   { path: '/hr-task/update/:id', exact: true, name: 'Chỉnh sửa nhiệm vụ', component: Hr_Task_Update },
   { path: '/Company/Business_Detail/:email', exact: true, name: 'Chi tiết doanh nghiệp', component: Business_Detail },
+  { path: '/feedback/feedback', exact: true, name: 'Phản hồi', component: Feedback },
+  { path: '/feedback/feedback_detail/:id', exact: true, name: 'Chi tiết phản hồi', component: Feedback_Detail },
 ];
 
 export default routes;

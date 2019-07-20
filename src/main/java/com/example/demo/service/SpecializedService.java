@@ -2,12 +2,18 @@ package com.example.demo.service;
 
 
 import com.example.demo.entity.Specialized;
-import com.example.demo.repository.SpecializedRepository;
+import com.example.demo.repository.ISpecializedRepository;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.cache.annotation.*;
+
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+
 import org.springframework.stereotype.Service;
 
 
@@ -16,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@CacheConfig(cacheNames = {"specialized"})
-public class SpecializedService {
+public class SpecializedService implements ISpecializedService {
+
     @Autowired
-    SpecializedRepository specializedRepository;
+    ISpecializedRepository ISpecializedRepository;
 
     @Autowired
     HibernateSearchService hibernateSearchService;
@@ -27,10 +33,13 @@ public class SpecializedService {
     @Autowired
     private EntityManager entityManager;
 
+
     @Autowired
     public SpecializedService() {
     }
 
+
+    @Override
     public int fullTextSearch(String specializedName) {
         int specializedId = 0;
         hibernateSearchService.initializeHibernateSearch();
@@ -60,27 +69,30 @@ public class SpecializedService {
         return specializedId;
     }
 
+
     List<Specialized> specializedListAll = new ArrayList<>();
     List<Specialized> specializedListTop = new ArrayList<>();
 
     @Cacheable(key = "'all'")
     public List<Specialized> getAllSpecialized() {
         //List<Specialized> list;
-        specializedListAll = specializedRepository.findAll();
+        specializedListAll = ISpecializedRepository.findAll();
         if (specializedListAll != null) {
+
             return specializedListAll;
-        } else {
-            return null;
         }
+        return null;
     }
 
+    @Override
     public int getIdByName(String name) {
-        return specializedRepository.findSpecializedIdByName(name);
+        return ISpecializedRepository.findSpecializedIdByName(name);
     }
 
+    @Override
     public boolean createSpecialized(Specialized specialized) {
         try {
-            specializedRepository.save(specialized);
+            ISpecializedRepository.save(specialized);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,22 +100,11 @@ public class SpecializedService {
         }
     }
 
-    @Cacheable(key = "'top'")
-    public List<Specialized> getTop2() {
-        // List<Specialized> specializedList = specializedRepository.findTop2ByStatusIsTrue();
-        specializedListTop = specializedRepository.findTop2ByStatusIsTrue();
-        return specializedListTop;
-    }
-
-    @Caching(put = {
-            @CachePut(key = "'all'")
-//            ,
-//            @CachePut(key = "'top'")
-    })
+    @CachePut(key = "'all'")
     public List<Specialized> updateSpecialized(Specialized specialized) {
-        Specialized specializedFound = specializedRepository.findSpecializedById(specialized.getId());
+        Specialized specializedFound = ISpecializedRepository.findSpecializedById(specialized.getId());
         if (specializedFound != null) {
-            specializedRepository.save(specialized); //save db
+            ISpecializedRepository.save(specialized); //save db
             this.specializedListAll.set(specialized.getId() - 1, specialized); // save redis
             return specializedListAll;
         }
@@ -111,19 +112,21 @@ public class SpecializedService {
     }
 
 
+    @Override
     public boolean updateStatusSpecialized(int specializedId, boolean status) {
-        Specialized specializedFound = specializedRepository.findSpecializedById(specializedId);
+        Specialized specializedFound = ISpecializedRepository.findSpecializedById(specializedId);
         if (specializedFound != null) {
             specializedFound.setStatus(status);
-            specializedRepository.save(specializedFound);
+            ISpecializedRepository.save(specializedFound);
             return true;
         }
         return false;
     }
 
-    @Cacheable(value = "specializedID", key = "#id")
+    @Override
+//    @Cacheable(value = "specializedID", key = "#id")
     public Specialized getSpecializedById(int id) {
-        Specialized specialized = specializedRepository.findSpecializedById(id);
+        Specialized specialized = ISpecializedRepository.findSpecializedById(id);
         if (specialized != null) {
             return specialized;
         } else {
@@ -131,3 +134,5 @@ public class SpecializedService {
         }
     }
 }
+
+

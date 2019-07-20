@@ -1,14 +1,18 @@
 package com.example.demo.entity;
 
 
+import com.example.demo.config.StudentStatus;
 import com.fasterxml.jackson.annotation.*;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Student")
@@ -122,15 +126,26 @@ public class Student implements Serializable {
     @Column(name = "gender")
     private boolean gender;
 
+    @Enumerated(EnumType.STRING)
+    @Check(constraints = "status IN ('NOTSTART' ,'STARTED', 'PASS', 'FAIL')")
     @Column(name = "status")
-    private String status;
+    private StudentStatus status = StudentStatus.NOTSTART;
 
     @Column(name = "semester")
     private String semester;
 
+    @OneToMany(mappedBy = "student_proposed")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
+    private List<Business_Proposed> business_proposeds;
+
+    @OneToMany(mappedBy = "student")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
+    private List<Student_Answer> student_answers = new ArrayList<>();
+
     public Student() {
     }
-
 
     public String getToken() {
         return token;
@@ -334,11 +349,11 @@ public class Student implements Serializable {
         this.gender = gender;
     }
 
-    public String getStatus() {
+    public StudentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StudentStatus status) {
         this.status = status;
     }
 
@@ -348,5 +363,21 @@ public class Student implements Serializable {
 
     public void setSemester(String semester) {
         this.semester = semester;
+    }
+
+    public List<Business_Proposed> getBusiness_proposeds() {
+        return business_proposeds;
+    }
+
+    public void setBusiness_proposeds(List<Business_Proposed> business_proposeds) {
+        this.business_proposeds = business_proposeds;
+    }
+
+    public List<Student_Answer> getStudent_answers() {
+        return student_answers;
+    }
+
+    public void setStudent_answers(List<Student_Answer> student_answers) {
+        this.student_answers = student_answers;
     }
 }

@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.*;
-import com.example.demo.service.Ojt_EnrollmentService;
-import com.example.demo.service.SemesterService;
-import com.example.demo.service.UsersService;
+import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +18,13 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    UsersService userService;
+    IUsersService userService;
 
     @Autowired
-    SemesterService semesterService;
+    ISemesterService semesterService;
 
     @Autowired
-    Ojt_EnrollmentService ojt_enrollmentService;
+    IOjt_EnrollmentService ojt_enrollmentService;
 
 //    @PostMapping
 //    public ResponseEntity<Void> addListStudent(@RequestBody List<Users> userList) throws Exception {
