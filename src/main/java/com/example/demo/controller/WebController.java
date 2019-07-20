@@ -34,9 +34,6 @@ public class WebController {
     @Autowired
     ISemesterService semesterService;
 
-    @Autowired
-    private SemesterService semesterService;
-
 
     @GetMapping("")
     public String hello() {

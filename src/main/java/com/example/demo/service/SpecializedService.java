@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@CacheConfig(cacheNames = "specialized")
 public class SpecializedService implements ISpecializedService {
 
     @Autowired
@@ -78,7 +79,6 @@ public class SpecializedService implements ISpecializedService {
         //List<Specialized> list;
         specializedListAll = ISpecializedRepository.findAll();
         if (specializedListAll != null) {
-
             return specializedListAll;
         }
         return null;

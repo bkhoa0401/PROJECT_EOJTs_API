@@ -5,6 +5,7 @@ import com.example.demo.repository.ISupervisorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,9 +38,7 @@ public class SupervisorService implements ISupervisorService {
 
         Ojt_Enrollment ojt_enrollment =
                 ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(emailBusiness, semesterCurrent.getId());
-
-
-        List<Supervisor> supervisors = ISupervisorRepository.findSupervisorsByOjt_enrollmentAndActiveIsTrue(ojt_enrollment);
+        List<Supervisor> supervisors = ISupervisorRepository.findSupervisorsByOjt_enrollment(ojt_enrollment);
 
         if (supervisors != null) {
             return supervisors;
@@ -57,11 +56,22 @@ public class SupervisorService implements ISupervisorService {
             Ojt_Enrollment ojt_enrollment =
                     ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(emailBusiness, semesterCurrent.getId());
             supervisor.setOjt_enrollment(ojt_enrollment);
+            supervisor.setActive(true);
             ISupervisorRepository.save(supervisor);
 
             String password = usersService.getAlphaNumericString();
 
-            usersService.saveUser(new Users(supervisor.getEmail(), password));
+            Users users = new Users(supervisor.getEmail(), password);
+            users.setActive(true);
+
+            List<Role> roleList = new ArrayList<>();
+            Role role = new Role();
+            role.setId(4);
+            roleList.add(role);
+
+            users.setRoles(roleList);
+
+            usersService.saveUser(users);
             return true;
         }
         return false;
