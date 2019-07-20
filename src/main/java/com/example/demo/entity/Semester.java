@@ -38,6 +38,7 @@ public class Semester implements Serializable {
 
     @OneToMany(mappedBy = "semester")
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
     private List<Ojt_Enrollment> ojt_enrollments;
 
     @OneToMany(mappedBy = "semester")

@@ -10,6 +10,7 @@ import PaginationComponent from '../Paginations/pagination';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import moment from 'moment';
 
 class Report_Detail extends Component {
 
@@ -33,6 +34,12 @@ class Report_Detail extends Component {
         var param = window.location.href.split("/").pop();
         var needId = param.split('~');
         const report = await ApiServices.Get(`/supervisor/getEvaluation?id=${needId[0]}`);
+        let timeStart = report.timeStart;
+        let formatTimeStart = timeStart.split('-');
+        report.timeStart = formatTimeStart[2] + "/" + formatTimeStart[1] + "/" + formatTimeStart[0];
+        let timeEnd = report.timeEnd;
+        let formatTimeEnd = timeEnd.split('-');
+        report.timeEnd = formatTimeEnd[2] + "/" + formatTimeEnd[1] + "/" + formatTimeEnd[0];
         const student = await ApiServices.Get(`/student/student/${needId[1]}`);
         let role = '';
         let owner = await ApiServices.Get(`/supervisor/business?email=${report.supervisor_email}`);
@@ -146,13 +153,13 @@ class Report_Detail extends Component {
                                                 <h6 style={{ fontWeight: "bold" }}>Ngày bắt đầu:</h6>
                                             </Col>
                                             <Col xs="12" md="4">
-                                                <Label>{report === null ? "" : report.timeStart}</Label>
+                                                <Badge className="mr-1" color="primary" pill style={{fontSize:"16px"}}>{report === null ? "" : report.timeStart}</Badge>
                                             </Col>
                                             <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Ngày kết thúc:</h6>
                                             </Col>
                                             <Col xs="12" md="4">
-                                                <Label>{report === null ? "" : report.timeEnd}</Label>
+                                                <Badge className="mr-1" color="danger" pill style={{fontSize:"16px"}}>{report === null ? "" : report.timeEnd}</Badge>
                                             </Col>
                                         </FormGroup>
                                         <FormGroup row>

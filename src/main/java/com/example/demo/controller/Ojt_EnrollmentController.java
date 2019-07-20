@@ -51,4 +51,24 @@ public class Ojt_EnrollmentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //get semester info
+    @GetMapping("/currentSemester")
+    public ResponseEntity<Semester> getSemester() {
+        Semester semester = semesterService.getSemesterCurrent();
+        if (semester != null) {
+            return new ResponseEntity<Semester>(semester, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/getSelectedStuEnrollment")
+    public ResponseEntity<Ojt_Enrollment> getSelectedStuEnrollment(@RequestParam String email) {
+        Semester semester = semesterService.getSemesterCurrent();
+        Ojt_Enrollment ojtEnrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email, semester.getId());
+        if (ojtEnrollment != null) {
+            return new ResponseEntity<Ojt_Enrollment>(ojtEnrollment, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
 }

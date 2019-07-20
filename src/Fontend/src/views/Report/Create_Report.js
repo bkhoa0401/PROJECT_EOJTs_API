@@ -21,7 +21,7 @@ class Create_Report extends Component {
             loading: true,
             reportColor: ['lime', 'DeepSkyBlue', 'gold', 'red', 'black', 'black'],
             rate: ['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu', 'N/A'],
-            onScore: 5,
+            onScore: 4,
             title: '',
             timeStart: '',
             timeEnd: '',
@@ -35,6 +35,9 @@ class Create_Report extends Component {
 
             student: null,
             businessName: '',
+
+            timeStartShow: '',
+            timeEndShow: '',
 
             validatorNumRange_score_work: '',
             validatorNumRange_score_activity: '',
@@ -65,12 +68,74 @@ class Create_Report extends Component {
         title = "Đánh giá tháng #" + needParam[0];
         emailStudent = needParam[1];
         const student = await ApiServices.Get(`/student/student/${needParam[1]}`);
+        const ojtEnrollment = await ApiServices.Get(`/enrollment/getSelectedStuEnrollment?email=${needParam[1]}`);
+        var dateEnroll = ojtEnrollment.timeEnroll;
+        var splitDate = dateEnroll.split('-');
+        let dd = parseInt(splitDate[2]);
+        let mm = parseInt(splitDate[1]);
+        // let mm31 = [1,3,5,7,8,10,12];
+        let mm30 = [4,6,9,11];
+        let yyyy = parseInt(splitDate[0]);
+        let timeStartShow = "";
+        if (mm + parseInt(needParam[0]) > 13) {
+            if ( ( mm + parseInt( needParam[0] ) - 12 - 1 ) == 2 && (yyyy + 1) % 4 == 0 && dd > 29 ) {
+                timeStartShow = 29 + "/" + ( mm + parseInt( needParam[0] ) - 12 - 1 ) + "/" + (yyyy + 1);
+            } else if ( ( mm + parseInt( needParam[0] ) - 12 - 1 ) == 2 && (yyyy + 1) % 4 != 0 && dd > 28 ) {
+                timeStartShow = 28 + "/" + ( mm + parseInt( needParam[0] ) - 12 - 1 ) + "/" + (yyyy + 1);
+            } else if ( mm30.includes( ( mm + parseInt( needParam[0] ) - 12 - 1 ) ) && dd > 30 ) {
+                timeStartShow = 30 + "/" + ( mm + parseInt( needParam[0] ) - 12 - 1 ) + "/" + (yyyy + 1);
+            } else {
+                timeStartShow = dd + "/" + ( mm + parseInt( needParam[0] ) - 12 - 1 ) + "/" + (yyyy + 1);
+            }
+        } else {
+            if ( ( mm + parseInt( needParam[0] ) - 1 ) == 2 && yyyy % 4 == 0 && dd > 29 ) {
+                timeStartShow = 29 + "/" + ( mm + parseInt( needParam[0] ) - 1 ) + "/" + yyyy;
+            } else if ( ( mm + parseInt( needParam[0] ) - 1 ) == 2 && yyyy % 4 != 0 && dd > 28 ) {
+                timeStartShow = 28 + "/" + ( mm + parseInt( needParam[0] ) - 1 ) + "/" + yyyy;
+            } else if ( mm30.includes( ( mm + parseInt( needParam[0] ) - 1 ) ) && dd > 30 ) {
+                timeStartShow = 30 + "/" + ( mm + parseInt( needParam[0] ) - 1 ) + "/" + yyyy;
+            } else {
+                timeStartShow = dd + "/" + ( mm + parseInt( needParam[0] ) - 1 ) + "/" + yyyy;
+            }
+        }
+        let formatTimeStartShow = timeStartShow.split('/');
+        if (formatTimeStartShow[1] < 10) {
+            timeStartShow = formatTimeStartShow[0] + "/" + "0" + formatTimeStartShow[1] + "/" + formatTimeStartShow[2];
+        } 
+        let timeEndShow = "";
+        if (mm + parseInt(needParam) > 12) {
+            if ( ( mm + parseInt( needParam[0] ) - 12 ) == 2 && (yyyy + 1) % 4 == 0 && dd > 29 ) {
+                timeEndShow = 29 + "/" + ( mm + parseInt( needParam[0] ) - 12 ) + "/" + (yyyy + 1);
+            } else if ( ( mm + parseInt( needParam[0] ) - 12 ) == 2 && (yyyy + 1) % 4 != 0 && dd > 28 ) {
+                timeEndShow = 28 + "/" + ( mm + parseInt( needParam[0] ) - 12 ) + "/" + (yyyy + 1);
+            } else if ( mm30.includes( ( mm + parseInt( needParam[0] ) - 12 ) ) && dd > 30 ) {
+                timeEndShow = 30 + "/" + ( mm + parseInt( needParam[0] ) - 12 ) + "/" + (yyyy + 1);
+            } else {
+                timeEndShow = dd + "/" + ( mm + parseInt( needParam[0] ) - 12) + "/" + (yyyy + 1);
+            }
+        } else {
+            if ( ( mm + parseInt( needParam[0] ) ) == 2 && yyyy % 4 == 0 && dd > 29 ) {
+                timeEndShow = 29 + "/" + ( mm + parseInt( needParam[0] ) ) + "/" + yyyy;
+            } else if ( ( mm + parseInt( needParam[0] ) ) == 2 && yyyy % 4 != 0 && dd > 28 ) {
+                timeEndShow = 28 + "/" + ( mm + parseInt( needParam[0] ) ) + "/" + yyyy;
+            } else if ( mm30.includes( ( mm + parseInt( needParam[0] ) ) ) && dd > 30 ) {
+                timeEndShow = 30 + "/" + ( mm + parseInt( needParam[0] ) ) + "/" + yyyy;
+            } else {
+                timeEndShow = dd + "/" + ( mm + parseInt( needParam[0] )) + "/" + yyyy;
+            }
+        }
+        let formatTimeEndShow = timeEndShow.split('/');
+        if (formatTimeEndShow[1] < 10) {
+            timeEndShow = formatTimeEndShow[0] + "/" + "0" + formatTimeEndShow[1] + "/" + formatTimeEndShow[2];
+        }
         this.setState({
             loading: false,
             title: title,
             emailStudent: emailStudent,
             student: student,
             businessName: businessName,
+            timeStartShow: timeStartShow,
+            timeEndShow: timeEndShow,
         });
     }
 
@@ -152,7 +217,18 @@ class Create_Report extends Component {
     }
 
     handleSubmit = async () => {
-        const { title, timeStart, timeEnd, remark, score_discipline, score_work, score_activity, project_name } = this.state;
+        const { title, remark, score_discipline, score_work, score_activity, project_name } = this.state;
+        
+        let timeStart = "";
+        let timeStartShow = this.state.timeStartShow;
+        var formatTimeStart = timeStartShow.split('/');
+        timeStart = formatTimeStart[2] + "-" + formatTimeStart[1] + "-" + formatTimeStart[0];
+
+        let timeEnd = "";
+        let timeEndShow = this.state.timeEndShow;
+        var formatTimeEnd = timeEndShow.split('/');
+        timeEnd = formatTimeEnd[2] + "-" + formatTimeEnd[1] + "-" + formatTimeEnd[0];
+        
         let validatorNumRange_score_work = '';
         let validatorNumRange_score_activity = '';
         let validatorNumRange_score_discipline = '';
@@ -190,9 +266,9 @@ class Create_Report extends Component {
                     project_name,
                 }
                 const result = await ApiServices.Post(`/supervisor/evaluation?emailStudent=${emailStudent}`, evaluation);
-                // console.log(result);
-                // console.log(emailStudent);
-                // console.log(evaluation);
+                console.log(result);
+                console.log(emailStudent);
+                console.log(evaluation);
                 if (result.status == 201) {
                     Toastify.actionSuccess("Tạo đánh giá tháng thành công!");
                     this.props.history.push("/Report/Report");
@@ -210,7 +286,7 @@ class Create_Report extends Component {
     }
 
     render() {
-        const { validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, remark, project_name, timeStart, timeEnd, onScore } = this.state;
+        const { validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, remark, project_name, onScore, timeStartShow, timeEndShow } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -252,13 +328,13 @@ class Create_Report extends Component {
                                                 <h6 style={{ fontWeight: "bold" }}>Ngày bắt đầu:</h6>
                                             </Col>
                                             <Col xs="12" md="4">
-                                                <Input value={timeStart} type="date" onChange={this.handleInput} id="timeStart" name="timeStart"></Input>
+                                                <Badge className="mr-1" color="primary" pill style={{fontSize:"16px"}}>{timeStartShow === null ? "" : timeStartShow}</Badge>
                                             </Col>
                                             <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Ngày kết thúc:</h6>
                                             </Col>
                                             <Col xs="12" md="4">
-                                                <Input value={timeEnd} type="date" onChange={this.handleInput} id="timeEnd" name="timeEnd"></Input>
+                                                <Badge className="mr-1" color="danger" pill style={{fontSize:"16px"}}>{timeEndShow === null ? "" : timeEndShow}</Badge>
                                             </Col>
                                         </FormGroup>
                                         <FormGroup row>

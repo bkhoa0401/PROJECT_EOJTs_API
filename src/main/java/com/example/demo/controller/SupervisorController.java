@@ -133,9 +133,10 @@ public class SupervisorController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //check semester ok
     @GetMapping("/evaluations")
     @ResponseBody
-    public ResponseEntity<List<Evaluation>> getAllEvaluationBySupervisorEmail() {
+    public ResponseEntity<List<Evaluation>> getAllEvaluationOfSupervisor() {
         String email = getEmailFromToken();
 
         //get all students of supervisor in a semester

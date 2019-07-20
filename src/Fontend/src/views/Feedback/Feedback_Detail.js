@@ -138,13 +138,13 @@ class Feedback_Detail extends Component {
                                             <FormGroup>
                                                 <row>
                                                     &emsp;<u><b>Câu 1:</b></u> Bạn đánh giá như thế nào về nơi thực tập
-                                                    </row>
-                                                <row>
+                                                </row>
+                                                <row style={{paddingTop:"20px"}}>
                                                     <br />&emsp;&emsp;Điều kiện làm việc tại công ty (Máy móc, trang thiết bị phục vụ cho công việc, nội thất văn phòng):
                                                     </row>
                                                 <row>
                                                     <ListGroup>
-                                                        <ListGroupItem tag="button" action active>
+                                                        <ListGroupItem tag="button" action>
                                                             <FormGroup check className="radio">
                                                                 <Input className="form-check-input" type="radio" id="radio1" name="radios" value="Tốt" checked />
                                                                 <Label check className="form-check-label" htmlFor="radio1">Tốt</Label>

@@ -175,19 +175,34 @@ public class EvaluationService implements IEvaluationService {
                 }
             }
         }
-        Semester semester = semesterService.getSemesterCurrent();
-        for (int i = 0; i < overviewEvaluationList.size(); i++) {
-            Evaluation evaluation=overviewEvaluationList.get(i);
-            if(evaluation!=null){
-                if (evaluation.getOjt_enrollment().getSemester().getId() != semester.getId()) {
-                    overviewEvaluationList.set(i, null);
-                }
-            }
-        }
+        overviewEvaluationList = checkSemesterOfListEvaluation(overviewEvaluationList);
+//        Semester semester = semesterService.getSemesterCurrent();
+//        for (int i = 0; i < overviewEvaluationList.size(); i++) {
+//            Evaluation evaluation=overviewEvaluationList.get(i);
+//            if(evaluation!=null){
+//                if (evaluation.getOjt_enrollment().getSemester().getId() != semester.getId()) {
+//                    overviewEvaluationList.set(i, null);
+//                }
+//            }
+//        }
         if (!overviewEvaluationList.isEmpty()) {
             return overviewEvaluationList;
         }
         return null;
+    }
+
+    @Override
+    public List<Evaluation> checkSemesterOfListEvaluation(List<Evaluation> evaluationList) {
+        Semester semester = semesterService.getSemesterCurrent();
+        for (int i = 0; i < evaluationList.size(); i++) {
+            Evaluation evaluation=evaluationList.get(i);
+            if(evaluation!=null){
+                if (evaluation.getOjt_enrollment().getSemester().getId() != semester.getId()) {
+                    evaluationList.set(i, null);
+                }
+            }
+        }
+        return evaluationList;
     }
 
 }
