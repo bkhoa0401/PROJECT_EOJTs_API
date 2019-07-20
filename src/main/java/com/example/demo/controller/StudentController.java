@@ -716,7 +716,7 @@ public class StudentController {
 
         List<Task> taskList = new ArrayList<>();
         if (type == 1) {
-            taskList = taskService.findTasksOfStudentByStatus(email, Status.NOT_START);
+            taskList = taskService.findTasksOfStudentByStatus(email, Status.NOTSTART);
         } else if (type == 2) {
             taskList = taskService.findTasksOfStudentByStatus(email, Status.PENDING);
         } else if (type == 3) {
