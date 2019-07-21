@@ -38,7 +38,7 @@ public class SupervisorService implements ISupervisorService {
 
         Ojt_Enrollment ojt_enrollment =
                 ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(emailBusiness, semesterCurrent.getId());
-        List<Supervisor> supervisors = ISupervisorRepository.findSupervisorsByOjt_enrollment(ojt_enrollment);
+        List<Supervisor> supervisors = ISupervisorRepository.findSupervisorsByBusinessEmail(ojt_enrollment.getBusiness().getEmail());
 
         if (supervisors != null) {
             return supervisors;
@@ -55,7 +55,7 @@ public class SupervisorService implements ISupervisorService {
 
             Ojt_Enrollment ojt_enrollment =
                     ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(emailBusiness, semesterCurrent.getId());
-            supervisor.setOjt_enrollment(ojt_enrollment);
+            supervisor.setBusiness(ojt_enrollment.getBusiness());
             supervisor.setActive(true);
             ISupervisorRepository.save(supervisor);
 

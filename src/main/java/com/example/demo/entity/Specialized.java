@@ -19,6 +19,7 @@ import java.util.List;
 @Table(name = "specialized")
 public class Specialized implements Serializable {
 
+    private static final long serialVersionUID = 7156526077883281623L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -11,14 +11,14 @@ import java.util.List;
 @Repository
 public interface ISupervisorRepository extends JpaRepository<Supervisor,String> {
 
-    @Query(value = "select s from Supervisor s where s.ojt_enrollment=?1 and s.isActive='true'")
-    List<Supervisor> findSupervisorsByOjt_enrollmentAndActiveIsTrue(Ojt_Enrollment ojt_enrollment);
+    @Query(value = "select s from Supervisor s where s.business.email=?1 and s.isActive='true'")
+    List<Supervisor> findSupervisorsByBusinessEmailAndActiveIsTrue(String email);
 
-    @Query(value = "select s from Supervisor s where s.ojt_enrollment=?1")
-    List<Supervisor> findSupervisorsByOjt_enrollment(Ojt_Enrollment ojt_enrollment);
+    @Query(value = "select s from Supervisor s where s.business.email=?1")
+    List<Supervisor> findSupervisorsByBusinessEmail(String email);
 
     Supervisor findByEmail(String email);
 
-    @Query(value = "select s from Supervisor s where s.email=?1 and s.ojt_enrollment=?2")
-    Supervisor findSupervisorByEmailAndOjt_enrollment(String email,Ojt_Enrollment ojt_enrollment);
+    @Query(value = "select s from Supervisor s where s.email=?1 and s.business.email=?2")
+    Supervisor findSupervisorByEmailAndBusinessEmail(String email,String businessEmail);
 }

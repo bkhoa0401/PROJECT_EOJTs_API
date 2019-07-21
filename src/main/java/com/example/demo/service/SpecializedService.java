@@ -35,9 +35,6 @@ public class SpecializedService implements ISpecializedService {
     private EntityManager entityManager;
 
 
-    @Autowired
-    public SpecializedService() {
-    }
 
 
     @Override
@@ -71,8 +68,11 @@ public class SpecializedService implements ISpecializedService {
     }
 
 
+
     List<Specialized> specializedListAll = new ArrayList<>();
-    List<Specialized> specializedListTop = new ArrayList<>();
+
+
+
 
     @Cacheable(key = "'all'")
     public List<Specialized> getAllSpecialized() {
@@ -105,6 +105,10 @@ public class SpecializedService implements ISpecializedService {
         Specialized specializedFound = ISpecializedRepository.findSpecializedById(specialized.getId());
         if (specializedFound != null) {
             ISpecializedRepository.save(specialized); //save db
+
+            if(this.specializedListAll.size()==0){
+                this.specializedListAll=ISpecializedRepository.findAll();
+            }
             this.specializedListAll.set(specialized.getId() - 1, specialized); // save redis
             return specializedListAll;
         }

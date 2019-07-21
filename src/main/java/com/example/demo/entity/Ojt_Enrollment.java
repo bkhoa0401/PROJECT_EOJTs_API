@@ -50,9 +50,9 @@ public class Ojt_Enrollment implements Serializable{
     private Semester semester;
 
 
-    @OneToMany(mappedBy = "ojt_enrollment", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Supervisor> supervisors;
+//    @OneToMany(mappedBy = "ojt_enrollment", cascade = CascadeType.ALL)
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    private List<Supervisor> supervisors;
 
     @Column(name = "timeEnroll")
     private Date timeEnroll;
@@ -116,13 +116,13 @@ public class Ojt_Enrollment implements Serializable{
         this.semester = semester;
     }
 
-    public List<Supervisor> getSupervisors() {
-        return supervisors;
-    }
-
-    public void setSupervisors(List<Supervisor> supervisors) {
-        this.supervisors = supervisors;
-    }
+//    public List<Supervisor> getSupervisors() {
+//        return supervisors;
+//    }
+//
+//    public void setSupervisors(List<Supervisor> supervisors) {
+//        this.supervisors = supervisors;
+//    }
 
     public Date getTimeEnroll() {
         return timeEnroll;

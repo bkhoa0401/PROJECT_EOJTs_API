@@ -59,6 +59,9 @@ public class Business implements Serializable {
     private float rateAverage = 0f;
 
 
+    @OneToMany(mappedBy = "business", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Supervisor> supervisors;
 
     public Business() {
     }
@@ -179,4 +182,11 @@ public class Business implements Serializable {
     }
 
 
+    public List<Supervisor> getSupervisors() {
+        return supervisors;
+    }
+
+    public void setSupervisors(List<Supervisor> supervisors) {
+        this.supervisors = supervisors;
+    }
 }
