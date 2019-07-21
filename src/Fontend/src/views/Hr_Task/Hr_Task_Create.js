@@ -98,6 +98,17 @@ class Hr_Task_Create extends Component {
     handleSubmit = async () => {
         const { title, description, time_end, level_task, priority, status, studentItem } = this.state;
         const emailStudent = studentItem.email;
+
+        const notificationDTO = {
+            data: {
+                title: 'Bạn có nhiệm vụ mới',
+                body: `Xin chào ${studentItem.name}! Bạn được giao nhiệm mới "${title}" từ supervisor ${studentItem.supervisor.name}`,
+                click_action: "http://localhost:3000/#/invitation/new",
+                icon: "http://url-to-an-icon/icon.png"
+            },
+            to: `${studentItem.token}`
+        }
+
         const task = {
             title,
             description,
@@ -106,7 +117,6 @@ class Hr_Task_Create extends Component {
             priority,
             status
         }
-        console.log(task);
 
         if (this.validator.allValid()) {
             this.setState({
@@ -118,6 +128,7 @@ class Hr_Task_Create extends Component {
                 this.setState({
                     loading: false
                 })
+                const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
             } else {
                 Toastify.actionFail("Tạo nhiệm vụ mới thất bại!");
                 this.setState({
