@@ -10,7 +10,6 @@ public interface ISpecializedService {
 
     List<Specialized> getAllSpecialized();
 
-
     int getIdByName(String name);
 
     boolean createSpecialized(Specialized specialized);
