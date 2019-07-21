@@ -50,10 +50,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .antMatcher("/api/**").httpBasic().authenticationEntryPoint(restServicesEntryPoint()).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') or hasRole('ROLE_HR') or hasRole('ROLE_SUPERVISOR')")
-                .antMatchers(HttpMethod.POST, "/api/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') or hasRole('ROLE_HR') or hasRole('ROLE_SUPERVISOR')")
-                .antMatchers(HttpMethod.PUT, "/api/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') or hasRole('ROLE_HR') or hasRole('ROLE_SUPERVISOR')")
-                .antMatchers(HttpMethod.DELETE, "/api/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') or hasRole('ROLE_HR')or hasRole('ROLE_SUPERVISOR')").and()
+                .antMatchers(HttpMethod.GET, "/api/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') or hasRole('ROLE_HR') or hasRole('ROLE_SUPERVISOR') or hasRole('ROLE_STARTUP') or hasRole('ROLE_HEADTRAINING') or hasRole('ROLE_HEADMASTER')")
+                .antMatchers(HttpMethod.POST, "/api/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') or hasRole('ROLE_HR') or hasRole('ROLE_SUPERVISOR') or hasRole('ROLE_STARTUP') or hasRole('ROLE_HEADTRAINING') or hasRole('ROLE_HEADMASTER')")
+                .antMatchers(HttpMethod.PUT, "/api/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') or hasRole('ROLE_HR') or hasRole('ROLE_SUPERVISOR') or hasRole('ROLE_STARTUP') or hasRole('ROLE_HEADTRAINING') or hasRole('ROLE_HEADMASTER')")
+                .antMatchers(HttpMethod.DELETE, "/api/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT') or hasRole('ROLE_HR')or hasRole('ROLE_SUPERVISOR') or hasRole('ROLE_STARTUP') or hasRole('ROLE_HEADTRAINING') or hasRole('ROLE_HEADMASTER')").and()
                 .addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().accessDeniedHandler(customAccessDeniedHandler());
     }
