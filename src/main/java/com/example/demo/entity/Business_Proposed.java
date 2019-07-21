@@ -61,6 +61,12 @@ public class Business_Proposed implements Serializable {
     @JoinColumn(name = "student_proposed_email") // sinh viên đề xuất doanh nghiệp này
     private Student student_proposed;
 
+    @Column(name = "commentStartupRoom")
+    private String commentStartupRoom;
+
+    @Column(name = "commentHeadOfTraining")
+    private String commentHeadOfTraining;
+
     public String getEmail() {
         return email;
     }
@@ -179,5 +185,21 @@ public class Business_Proposed implements Serializable {
 
     public void setAcceptedByHeadOfTraining(boolean acceptedByHeadOfTraining) {
         isAcceptedByHeadOfTraining = acceptedByHeadOfTraining;
+    }
+
+    public String getCommentStartupRoom() {
+        return commentStartupRoom;
+    }
+
+    public void setCommentStartupRoom(String commentStartupRoom) {
+        this.commentStartupRoom = commentStartupRoom;
+    }
+
+    public String getCommentHeadOfTraining() {
+        return commentHeadOfTraining;
+    }
+
+    public void setCommentHeadOfTraining(String commentHeadOfTraining) {
+        this.commentHeadOfTraining = commentHeadOfTraining;
     }
 }
