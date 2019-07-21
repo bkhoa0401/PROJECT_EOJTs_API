@@ -46,12 +46,12 @@ public class SpecializedController {
         }
     }
 
-    @GetMapping("/top")
-    @ResponseBody
-    public ResponseEntity<List<Specialized>> getTop() {
-      List<Specialized> specializedList=specializedService.getTop2();
-      return new ResponseEntity<>(specializedList,HttpStatus.OK);
-    }
+//    @GetMapping("/top")
+//    @ResponseBody
+//    public ResponseEntity<List<Specialized>> getTop() {
+//      List<Specialized> specializedList=specializedService.getTop2();
+//      return new ResponseEntity<>(specializedList,HttpStatus.OK);
+//    }
 
 
     @GetMapping("/id")

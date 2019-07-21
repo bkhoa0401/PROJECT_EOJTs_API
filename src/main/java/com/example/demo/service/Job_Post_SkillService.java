@@ -14,11 +14,7 @@ public class Job_Post_SkillService implements IJob_Post_SkillService {
     @Override
     public void saveJobPostSkill(Job_Post_Skill job_post_skill) {
         if (job_post_skill != null) {
-<<<<<<< HEAD
-            job_post_skillRepository.save(job_post_skill);
-=======
             IJob_post_skillRepository.save(job_post_skill);
->>>>>>> master
         }
     }
 
