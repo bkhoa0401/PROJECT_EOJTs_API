@@ -12,6 +12,8 @@ import PaginationComponent from '../Paginations/pagination';
 import { async } from 'q';
 import firebase from 'firebase';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 class Excels extends Component {
 
@@ -102,11 +104,43 @@ class Excels extends Component {
         }
     }
 
+    handleDirect = (uri) => {
+        this.props.history.push(uri);
+    }
+
+    handleConfirm = (listIndexNotFound) => {
+        var skill = '';
+
+        for (let i = 0; i < listIndexNotFound.length; i++) {
+            if (i  + 1 != listIndexNotFound.length) {
+                skill = skill + ' ' + listIndexNotFound[i] + ', ';
+            } else {
+                skill = skill + ' ' + listIndexNotFound[i];
+            }
+        }
+
+        confirmAlert({
+            title: 'Lưu ý',
+            message: `Những kỹ năng: ${skill} chưa tồn tại trong hệ thống!
+            Vui lòng thêm mới những kỹ năng này và thử lại sau!`,
+            buttons: [
+                {
+                    label: 'Tạo mới kỹ năng',
+                    onClick: () => this.handleDirect('/skill/create')
+                },
+                {
+                    label: 'Hủy bỏ',
+                }
+            ]
+        });
+    };
+
 
     handleSubmit = async (buttonName) => {
         const { rows_Students, rows_Businesses } = this.state;
         const listStudents = [];
         const listBusinesses = [];
+        const listNameSkill = [], listIndexNotFound = [];
 
         if (rows_Students.length != 0) {
             this.setState({
@@ -179,15 +213,13 @@ class Excels extends Component {
         }
 
         if (rows_Businesses.length != 0) {
-            this.setState({
-                loading: true
-            })
             if (buttonName === 'Businesses') {
                 rows_Businesses && rows_Businesses.map((business, index) => {
                     let data = business[8];
                     let skillsAndNumber = [];
                     let skills_number = [];
                     const result = [];
+                    var obj = {};
 
                     skillsAndNumber = data.split("+");
                     skillsAndNumber && skillsAndNumber.map(async (element, index) => {
@@ -195,10 +227,13 @@ class Excels extends Component {
                             skills_number = element.split(":");
                             var name = skills_number[0].trim();
                             var number = skills_number[1].trim();
-                            console.log(name + ' - ' + number);
+
+                            if (listNameSkill.indexOf(name) == -1) {
+                                listNameSkill.push(name);
+                            }
                             // const id = await ApiServices.Get(`/student/skill?nameSkill=${name}`);
                             // console.log(id);
-                            const obj = {
+                            obj = {
                                 skill: {
                                     id: 0,
                                 },
@@ -227,24 +262,47 @@ class Excels extends Component {
                         nameSemester: business[15],
                         skillDTOList: result
                     };
-
                     listBusinesses.push(business);
+
                 })
 
-                console.log("LIST BUSINESSES", listBusinesses);
+                console.log('listNameSkill', listNameSkill);
+                const skillsNotExisted = await ApiServices.Post('/skill/isExisted', listNameSkill);
+                if (skillsNotExisted.status == 200) {
+                    const data = await skillsNotExisted.json();
+                    for (let k = 0; k < data.length; k++) {
+                        if (data[k].name !== '') {
+                            listIndexNotFound.push(data[k].name);
+                        }
+                    }
+                }
 
-                const result = await ApiServices.Post('/business', listBusinesses);
-                if (result.status == 201) {
+                console.log("listIndexNotFound", listIndexNotFound);
+
+                if (listIndexNotFound.length != 0) {
                     this.setState({
                         loading: false
                     })
-                    Toastify.actionSuccess("Thêm tệp thành công!");
-
+                    this.handleConfirm(listIndexNotFound);
                 } else {
                     this.setState({
-                        loading: false
+                        loading: true
                     })
-                    Toastify.actionFail("Thêm tệp thất bại!");
+                    console.log("LIST BUSINESSES", listBusinesses);
+
+                    // const result = await ApiServices.Post('/business', listBusinesses);
+                    // if (result.status == 201) {
+                    //     this.setState({
+                    //         loading: false
+                    //     })
+                    //     Toastify.actionSuccess("Thêm tệp thành công!");
+
+                    // } else {
+                    //     this.setState({
+                    //         loading: false
+                    //     })
+                    //     Toastify.actionFail("Thêm tệp thất bại!");
+                    // }
                 }
 
                 // setTimeout(

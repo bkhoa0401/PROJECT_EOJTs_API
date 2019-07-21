@@ -47,7 +47,7 @@ class Hr_Task_Update extends Component {
             priority: '',
             status: '',
             students: [],
-            studentItem: {},
+            studentItem: '',
         }
     }
 
@@ -65,14 +65,14 @@ class Hr_Task_Update extends Component {
         if (task != null) {
             this.setState({
                 loading: false,
-                id: task.id,
-                title: task.title,
-                description: task.description,
-                time_end: task.time_end,
-                level_task: task.level_task,
-                priority: task.priority,
-                status: task.status,
-                studentItem: task.ojt_enrollment.student
+                id: task.task.id,
+                title: task.task.title,
+                description: task.task.description,
+                time_end: task.task.time_end,
+                level_task: task.task.level_task,
+                priority: task.task.priority,
+                status: task.task.status,
+                studentItem: task.emailStudent
             });
         }
 
@@ -83,7 +83,7 @@ class Hr_Task_Update extends Component {
         const { students } = this.state;
         if (name.includes('student')) {
             await this.setState({
-                studentItem: students[value]
+                studentItem: students[value].email
             })
         } else {
             await this.setState({
@@ -103,13 +103,13 @@ class Hr_Task_Update extends Component {
             time_end: '',
             level_task: 'EASY',
             priority: '',
-            studentItem: this.state.students[0],
+            studentItem: this.state.students[0].email,
         })
     }
 
     handleSubmit = async () => {
         const { id, title, description, time_end, level_task, priority, status, studentItem } = this.state;
-        const emailStudent = studentItem.email;
+        const emailStudent = studentItem;
         const task = {
             id,
             title,
@@ -180,7 +180,7 @@ class Hr_Task_Update extends Component {
                                                     <Input onChange={this.handleInput} type="select" name="student">
                                                         {students && students.map((student, i) => {
                                                             return (
-                                                                <option value={i} selected={studentItem.email === students[i].email}>{student.name}</option>
+                                                                <option value={i} selected={studentItem === students[i].email}>{student.name}</option>
                                                             )
                                                         })}
                                                     </Input>

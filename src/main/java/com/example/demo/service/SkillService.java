@@ -125,4 +125,13 @@ public class SkillService implements ISkillService {
         }
         return skillList;
     }
+
+    @Override
+    public Skill getSkillByName(String name) {
+        Skill skill = ISkillRepository.findSkillByName(name);
+        if (skill != null) {
+            return skill;
+        }
+        return null;
+    }
 }
