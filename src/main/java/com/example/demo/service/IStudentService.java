@@ -19,7 +19,7 @@ public interface IStudentService {
 
     public int getSpecializedIdByEmail(String email);
 
-    public boolean updateInforStudent(String email, String ojective, float gpa, List<Skill> skillList);
+    public boolean updateInforStudent(String email, String ojective, List<Skill> skillList);
 
     public boolean updateOption1Student(String email, String option1);
 

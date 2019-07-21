@@ -225,10 +225,10 @@ public class StudentController {
 
     //update objective
     @PutMapping("/update-resume")
-    public ResponseEntity<String> updateInforOfStudent(@RequestParam String objective, @RequestParam float gpa,
+    public ResponseEntity<String> updateInforOfStudent(@RequestParam String objective,
                                                        @RequestBody List<Skill> skillList) {
         String email = getEmailFromToken();
-        boolean updateInfor = studentService.updateInforStudent(email, objective, gpa, skillList);
+        boolean updateInfor = studentService.updateInforStudent(email, objective, skillList);
         if (updateInfor == false) {
             return new ResponseEntity<String>("fail", HttpStatus.EXPECTATION_FAILED);
         }
