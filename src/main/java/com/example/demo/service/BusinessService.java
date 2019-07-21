@@ -52,6 +52,11 @@ public class BusinessService implements IBusinessService{
 
         for (int i = 0; i < ojt_enrollmentList.size(); i++) {
             Business business = ojt_enrollmentList.get(i).getBusiness();
+            for (int j = 0; j < businessList.size(); j++) {
+                if (businessList.get(j).getEmail().equals(business.getEmail())) {
+                    businessList.remove(j);
+                }
+            }
             businessList.add(business);
         }
 
