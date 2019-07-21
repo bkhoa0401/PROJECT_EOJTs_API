@@ -86,7 +86,7 @@ class ManageAccount extends Component {
                             <Col xs="12" lg="15">
                                 <Card>
                                     <CardHeader>
-                                        <i className="fa fa-align-justify"></i> Danh sách tài khoản HR
+                                        <i className="fa fa-align-justify"></i> Danh sách tài khoản Supervisor
                             </CardHeader>
                                     <CardBody>
                                         <Button color="primary" onClick={() => this.handleDirect('/account/create')}>Tạo tài khoản mới</Button>

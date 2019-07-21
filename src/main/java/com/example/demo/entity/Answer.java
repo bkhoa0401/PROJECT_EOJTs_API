@@ -27,9 +27,15 @@ public class Answer implements Serializable {
     @LazyCollection(LazyCollectionOption.FALSE)
     private Question question;
 
-    @OneToMany(mappedBy = "answer")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Student_Answer> student_answers = new ArrayList<>();
+    @Column(name = "isOther")
+    private boolean isOther;
+
+//    @OneToMany(mappedBy = "answer")
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    private List<Student_Answer> student_answers = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "answers")
+    private List<Student> students;
 
     public int getId() {
         return id;
@@ -55,11 +61,19 @@ public class Answer implements Serializable {
         this.question = question;
     }
 
-    public List<Student_Answer> getStudent_answers() {
-        return student_answers;
+    public boolean isOther() {
+        return isOther;
     }
 
-    public void setStudent_answers(List<Student_Answer> student_answers) {
-        this.student_answers = student_answers;
+    public void setOther(boolean other) {
+        isOther = other;
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 }

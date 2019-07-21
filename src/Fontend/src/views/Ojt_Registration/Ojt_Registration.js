@@ -18,6 +18,7 @@ class Ojt_Registration extends Component {
         this.state = {
             students: null,
             business_name: '',
+            business_eng_name: '',
             searchValue: '',
             loading: true
         }
@@ -30,7 +31,8 @@ class Ojt_Registration extends Component {
         if (students != null) {
             this.setState({
                 students,
-                business_name: business.business_eng_name,
+                business_name: business.business_name,
+                business_eng_name: business.business_eng_name,
                 loading: false
             });
         }
@@ -58,11 +60,11 @@ class Ojt_Registration extends Component {
 
         confirmAlert({
             title: 'Xác nhận',
-            message: `Bạn có chắc chắn muốn ${messageStatus} sinh viên '${student.name}' ?`,
+            message: `Bạn có chắc chắn muốn ${messageStatus} sinh viên "${student.name}" ?`,
             buttons: [
                 {
                     label: 'Đồng ý',
-                    onClick: () => this.handleIsAcceptedOption(student.email, numberOfOption, statusOfOption)
+                    onClick: () => this.handleIsAcceptedOption(student, numberOfOption, statusOfOption)
                 },
                 {
                     label: 'Hủy bỏ',
@@ -71,7 +73,26 @@ class Ojt_Registration extends Component {
         });
     };
 
-    handleIsAcceptedOption = async (email, numberOfOption, statusOfOption) => {
+    handleIsAcceptedOption = async (student, numberOfOption, statusOfOption) => {
+
+        var action, message;
+        if (statusOfOption == true) {
+            action = 'Duyệt';
+            message = `Chúc mừng ${student.name}! Việc đăng kí thực tập của bạn đã được ${this.state.business_name} chấp nhận!`;
+        } else {
+            action = 'Từ chối'
+            message = `Xin chào ${student.name}! ${this.state.business_name} đã từ chối việc đăng kí thực tập của bạn tại doanh nghiệp của họ!`;
+        }
+
+        const notificationDTO = {
+            data: {
+                title: `Kết quả đăng kí thực tập tại doanh nghiệp ${this.state.business_name}`,
+                body: message,
+                click_action: "http://localhost:3000/#/invitation/new",
+                icon: "http://url-to-an-icon/icon.png"
+            },
+            to: `${student.token}`
+        }
 
         this.setState({
             loading: true
@@ -82,16 +103,17 @@ class Ojt_Registration extends Component {
             numberOfOption.push(1);
             numberOfOption.push(2);
         }
+        const result = await ApiServices.Put(`/business/updateStatusOfStudent?numberOfOption=${numberOfOption}&statusOfOption=${statusOfOption}&emailOfStudent=${student.email}`);
 
-        const result = await ApiServices.Put(`/business/updateStatusOfStudent?numberOfOption=${numberOfOption}&statusOfOption=${statusOfOption}&emailOfStudent=${email}`);
-
-        if (result.status == 200) {
-            Toastify.actionSuccess('Thao tác thành công!');
+        if (result == 200) {
+            Toastify.actionSuccess(`${action} thành công!`);
+            const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
             this.setState({
                 loading: false
             })
         } else {
-            Toastify.actionFail('Thao tác thất bại!');
+            Toastify.actionFail(`${action} thất bại!`);
+            const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
             this.setState({
                 loading: false
             })
@@ -102,13 +124,13 @@ class Ojt_Registration extends Component {
         if (students != null) {
             this.setState({
                 students,
-                business_name: business.business_eng_name
+                business_eng_name: business.business_eng_name
             });
         }
     }
 
     render() {
-        const { students, business_name, searchValue, loading } = this.state;
+        const { students, business_eng_name, searchValue, loading } = this.state;
 
         let filteredListStudents;
 
@@ -158,9 +180,9 @@ class Ojt_Registration extends Component {
                                                         let email = student.email;
                                                         let numberOfOption = 'N/A';
 
-                                                        if (student.option1 == business_name && student.option2 != business_name) {
+                                                        if (student.option1 == business_eng_name && student.option2 != business_eng_name) {
                                                             numberOfOption = "1";
-                                                        } else if (student.option2 == business_name && student.option1 != business_name) {
+                                                        } else if (student.option2 == business_eng_name && student.option1 != business_eng_name) {
                                                             numberOfOption = "2";
                                                         } else {
                                                             numberOfOption = "1, 2";

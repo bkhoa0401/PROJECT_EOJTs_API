@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.SupervisorDTO;
+import com.example.demo.dto.TaskDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class SupervisorController {
 
         Supervisor supervisor = supervisorService.findByEmail(email);
         supervisorDTO.setSupervisor(supervisor);
-        supervisorDTO.setBusiness(supervisor.getOjt_enrollment().getBusiness());
+        supervisorDTO.setBusiness(supervisor.getBusiness());
         if (supervisor != null) {
             return new ResponseEntity<SupervisorDTO>(supervisorDTO, HttpStatus.OK);
         }
@@ -73,11 +74,20 @@ public class SupervisorController {
 
     @GetMapping("/tasks")
     @ResponseBody
-    public ResponseEntity<List<Task>> findTasksBySupervisorEmail() {
+    public ResponseEntity<List<TaskDTO>> findTasksBySupervisorEmail() {
         String email = getEmailFromToken();
         List<Task> taskList = taskService.findTaskBySupervisorEmail(email);
-        if (taskList != null) {
-            return new ResponseEntity<List<Task>>(taskList, HttpStatus.OK);
+
+        List<TaskDTO> taskDTOList=new ArrayList<>();
+        for (int i = 0; i < taskList.size(); i++) {
+            Task task = taskList.get(i);
+            Student student=task.getOjt_enrollment().getStudent();
+
+            TaskDTO taskDTO=new TaskDTO(task,student.getEmail(),student.getName());
+            taskDTOList.add(taskDTO);
+        }
+        if (taskDTOList != null) {
+            return new ResponseEntity<List<TaskDTO>>(taskDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -116,7 +126,7 @@ public class SupervisorController {
     @ResponseBody
     public ResponseEntity<Business> getBusinessOfEvaluation(@RequestParam String email) {
         Supervisor supervisor = supervisorService.findByEmail(email);
-        Business business = supervisor.getOjt_enrollment().getBusiness();
+        Business business = supervisor.getBusiness();
         if (business != null) {
             return new ResponseEntity<Business>(business, HttpStatus.OK);
         }
@@ -220,10 +230,15 @@ public class SupervisorController {
 
     @GetMapping("/task")
     @ResponseBody
-    public ResponseEntity<Task> getTaskById(@RequestParam int id) {
+    public ResponseEntity<TaskDTO> getTaskById(@RequestParam int id) {
         Task task = taskService.findTaskById(id);
+
+        Student student=task.getOjt_enrollment().getStudent();
+
+        TaskDTO taskDTO=new TaskDTO(task,student.getEmail(),student.getName());
+
         if (task != null) {
-            return new ResponseEntity<Task>(task, HttpStatus.OK);
+            return new ResponseEntity<TaskDTO>(taskDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

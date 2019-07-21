@@ -139,10 +139,22 @@ public class Student implements Serializable {
     @JsonIgnore
     private List<Business_Proposed> business_proposeds;
 
-    @OneToMany(mappedBy = "student")
-    @LazyCollection(LazyCollectionOption.FALSE)
+//    @OneToMany(mappedBy = "student")
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    @JsonIgnore
+//    private List<Student_Answer> student_answers = new ArrayList<>();
+
+    @ManyToMany
     @JsonIgnore
-    private List<Student_Answer> student_answers = new ArrayList<>();
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(
+            name = "student_answer",
+            joinColumns = {
+                    @JoinColumn(name = "student_email")},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "answer_id")}
+    )
+    private List<Answer> answers;
 
     public Student() {
     }
@@ -373,11 +385,11 @@ public class Student implements Serializable {
         this.business_proposeds = business_proposeds;
     }
 
-    public List<Student_Answer> getStudent_answers() {
-        return student_answers;
+    public List<Answer> getAnswers() {
+        return answers;
     }
 
-    public void setStudent_answers(List<Student_Answer> student_answers) {
-        this.student_answers = student_answers;
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 }

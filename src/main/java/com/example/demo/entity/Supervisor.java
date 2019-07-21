@@ -41,14 +41,20 @@ public class Supervisor implements Serializable {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Student> students;
 
-    @ManyToOne
-    @JsonIgnore
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinColumn(name = "ojt_enrollment_id")
-    private Ojt_Enrollment ojt_enrollment;
+//    @ManyToOne
+//    @JsonIgnore
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    @JoinColumn(name = "ojt_enrollment_id")
+//    private Ojt_Enrollment ojt_enrollment;
 
     @Column(name = "isActive")
     private boolean isActive;
+
+    @ManyToOne
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "business_email")
+    @JsonIgnore
+    private Business business;
 
     public String getEmail() {
         return email;
@@ -106,13 +112,13 @@ public class Supervisor implements Serializable {
         this.students = students;
     }
 
-    public Ojt_Enrollment getOjt_enrollment() {
-        return ojt_enrollment;
-    }
-
-    public void setOjt_enrollment(Ojt_Enrollment ojt_enrollment) {
-        this.ojt_enrollment = ojt_enrollment;
-    }
+//    public Ojt_Enrollment getOjt_enrollment() {
+//        return ojt_enrollment;
+//    }
+//
+//    public void setOjt_enrollment(Ojt_Enrollment ojt_enrollment) {
+//        this.ojt_enrollment = ojt_enrollment;
+//    }
 
     public boolean isActive() {
         return isActive;
@@ -120,5 +126,13 @@ public class Supervisor implements Serializable {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public Business getBusiness() {
+        return business;
+    }
+
+    public void setBusiness(Business business) {
+        this.business = business;
     }
 }

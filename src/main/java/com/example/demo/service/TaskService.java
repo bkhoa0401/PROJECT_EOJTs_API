@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -34,9 +35,19 @@ public class TaskService implements ITaskService {
 
     @Override
     public List<Task> findTaskBySupervisorEmail(String email) {
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
+
         List<Task> taskList = ITaskRepository.findTasksBySupervisorEmail(email);
-        if (taskList != null) {
-            return taskList;
+        List<Task> taskListCurrentSemester=new ArrayList<>();
+
+        for (int i = 0; i < taskList.size(); i++) {
+            int idSemesterOfTask = taskList.get(i).getOjt_enrollment().getSemester().getId();
+            if (idSemesterOfTask == semesterCurrent.getId()) {
+                taskListCurrentSemester.add(taskList.get(i));
+            }
+        }
+        if (taskListCurrentSemester != null) {
+            return taskListCurrentSemester;
         }
         return null;
     }

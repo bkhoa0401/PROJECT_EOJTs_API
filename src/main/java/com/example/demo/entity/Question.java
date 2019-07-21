@@ -30,20 +30,19 @@ public class Question implements Serializable {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Answer> answers;
 
-    @OneToMany(mappedBy = "other")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Student_Answer> student_answers;
+//    @OneToMany(mappedBy = "other")
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    private List<Student_Answer> student_answers;
 
 
     public Question() {
     }
 
-    public Question(String content, boolean isActive, boolean has_others, List<Answer> answers, List<Student_Answer> student_answers) {
+    public Question(String content, boolean isActive, boolean has_others, List<Answer> answers) {
         this.content = content;
         this.isActive = isActive;
         this.has_others = has_others;
         this.answers = answers;
-        this.student_answers = student_answers;
     }
 
     public int getId() {
@@ -84,13 +83,5 @@ public class Question implements Serializable {
 
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
-    }
-
-    public List<Student_Answer> getStudent_answers() {
-        return student_answers;
-    }
-
-    public void setStudent_answers(List<Student_Answer> student_answers) {
-        this.student_answers = student_answers;
     }
 }
