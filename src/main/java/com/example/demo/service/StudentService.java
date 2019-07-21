@@ -92,11 +92,10 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public boolean updateInforStudent(String email, String ojective, float gpa, List<Skill> skillList) {
+    public boolean updateInforStudent(String email, String ojective, List<Skill> skillList) {
         Student student = getStudentByEmail(email);
         if (student != null) {
             student.setObjective(ojective);
-            student.setGpa(gpa);
             student.setSkills(skillList);
             IStudentRepository.save(student);
             return true;
