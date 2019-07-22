@@ -131,9 +131,6 @@ public class Student implements Serializable {
     @Column(name = "status")
     private StudentStatus status = StudentStatus.NOTSTART;
 
-    @Column(name = "semester")
-    private String semester;
-
     @OneToMany(mappedBy = "student_proposed")
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore
@@ -367,14 +364,6 @@ public class Student implements Serializable {
 
     public void setStatus(StudentStatus status) {
         this.status = status;
-    }
-
-    public String getSemester() {
-        return semester;
-    }
-
-    public void setSemester(String semester) {
-        this.semester = semester;
     }
 
     public List<Business_Proposed> getBusiness_proposeds() {

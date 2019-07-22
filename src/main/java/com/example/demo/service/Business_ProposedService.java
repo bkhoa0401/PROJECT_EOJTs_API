@@ -52,7 +52,7 @@ public class Business_ProposedService implements IBusiness_ProposedService {
         Business_Proposed business_proposed = findById(id);
         if (business_proposed != null) {
             business_proposed.setCommentStartupRoom(comment);
-            business_proposed.setAcceptedByStartupRoom(true);
+            business_proposed.setAcceptedByStartupRoom(status);
             iBusiness_proposedRepository.save(business_proposed);
         }
     }
@@ -62,7 +62,7 @@ public class Business_ProposedService implements IBusiness_ProposedService {
         Business_Proposed business_proposed = findById(id);
         if (business_proposed != null) {
             business_proposed.setCommentHeadOfTraining(comment);
-            business_proposed.setAcceptedByHeadOfTraining(true);
+            business_proposed.setAcceptedByHeadOfTraining(status);
             iBusiness_proposedRepository.save(business_proposed);
         }
     }
@@ -71,7 +71,7 @@ public class Business_ProposedService implements IBusiness_ProposedService {
     public void updateStatusByHeadMaster(int id, boolean status) {
         Business_Proposed business_proposed = findById(id);
         if (business_proposed != null) {
-            business_proposed.setAcceptedByHeadMaster(true);
+            business_proposed.setAcceptedByHeadMaster(status);
             iBusiness_proposedRepository.save(business_proposed);
         }
     }
