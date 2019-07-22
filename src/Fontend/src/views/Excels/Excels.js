@@ -290,19 +290,19 @@ class Excels extends Component {
                     })
                     console.log("LIST BUSINESSES", listBusinesses);
 
-                    // const result = await ApiServices.Post('/business', listBusinesses);
-                    // if (result.status == 201) {
-                    //     this.setState({
-                    //         loading: false
-                    //     })
-                    //     Toastify.actionSuccess("Thêm tệp thành công!");
+                    const result = await ApiServices.Post('/business', listBusinesses);
+                    if (result.status == 201) {
+                        this.setState({
+                            loading: false
+                        })
+                        Toastify.actionSuccess("Thêm tệp thành công!");
 
-                    // } else {
-                    //     this.setState({
-                    //         loading: false
-                    //     })
-                    //     Toastify.actionFail("Thêm tệp thất bại!");
-                    // }
+                    } else {
+                        this.setState({
+                            loading: false
+                        })
+                        Toastify.actionFail("Thêm tệp thất bại!");
+                    }
                 }
 
                 // setTimeout(
