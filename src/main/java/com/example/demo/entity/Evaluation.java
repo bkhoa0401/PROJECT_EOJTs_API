@@ -58,8 +58,11 @@ public class Evaluation implements  Comparable<Evaluation>, Serializable {
     @Column(name = "timeEnd")
     private Date timeEnd;
 
-    @Column(name = "evaluationLink")
-    private String evaluationLink;
+//    @Column(name = "evaluationLink")
+//    private String evaluationLink;
+
+    @Column(name = "workDays")
+    private int workDays;
 
     public String getProject_name() {
         return project_name;
@@ -169,12 +172,20 @@ public class Evaluation implements  Comparable<Evaluation>, Serializable {
         this.id = id;
     }
 
-    private String getEvaluationLink() {
-        return evaluationLink;
+//    private String getEvaluationLink() {
+//        return evaluationLink;
+//    }
+//
+//    private void setEvaluationLink(String evaluationLink) {
+//        this.evaluationLink = evaluationLink;
+//    }
+
+    public int getWorkDays() {
+        return workDays;
     }
 
-    private void setEvaluationLink(String evaluationLink) {
-        this.evaluationLink = evaluationLink;
+    public void setWorkDays(int workDays) {
+        this.workDays = workDays;
     }
 
     @Override

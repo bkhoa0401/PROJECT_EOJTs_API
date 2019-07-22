@@ -11,6 +11,11 @@ import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import moment from 'moment';
+import {
+    ExcelExport,
+    ExcelExportColumn,
+    ExcelExportColumnGroup,
+} from '@progress/kendo-react-excel-export';
 
 class Report_Detail extends Component {
 
@@ -21,11 +26,13 @@ class Report_Detail extends Component {
             reportColor: ['lime', 'DeepSkyBlue', 'gold', 'red', 'black', 'white'],
             rate: ['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu', ''],
             report: null,
+            reportDownload: null,
             student: null,
             onScreenRate: 5,
             busniessName: '',
             supervisorName: '',
             role: '',
+            // data: null,
         };
     }
 
@@ -61,18 +68,47 @@ class Report_Detail extends Component {
         //     businessName = owner.business_name;
         // }
         let onScreenRate = 5;
-        if (((report.score_work + report.score_activity + report.score_discipline) / 3) > 9) {
+        if ((report.score_work*0.5 + report.score_activity*0.1 + report.score_discipline*0.4) > 9) {
             onScreenRate = 0;
-        } else if (((report.score_work + report.score_activity + report.score_discipline) / 3) > 8) {
+        } else if ((report.score_work*0.5 + report.score_activity*0.1 + report.score_discipline*0.4) > 8) {
             onScreenRate = 1;
-        } else if (((report.score_work + report.score_activity + report.score_discipline) / 3) > 7) {
+        } else if ((report.score_work*0.5 + report.score_activity*0.1 + report.score_discipline*0.4) > 7) {
             onScreenRate = 2;
-        } else if (((report.score_work + report.score_activity + report.score_discipline) / 3) >= 5) {
+        } else if ((report.score_work*0.5 + report.score_activity*0.1 + report.score_discipline*0.4) >= 5) {
             onScreenRate = 3;
         } else {
             onScreenRate = 4;
         }
         if (report != null) {
+            let averageScore = (report.score_work*0.5 + report.score_activity*0.1 + report.score_discipline*0.4);
+            let rating = '';
+            if (averageScore > 9) {
+                rating = "Xuất sắc";
+            } else if (averageScore > 8) {
+                rating = "Tốt";
+            } else if (averageScore > 7) {
+                rating = "Khá";
+            } else if (averageScore >= 5) {
+                rating = "Trung bình";
+            } else {
+                rating = "Yếu";
+            }
+            // let reportDownload = [{
+            //     MSSV: student.code,
+            //     name: student.name,
+            //     companyName: businessName,
+            //     projectName: report.project_name,
+            //     startDate: report.timeStart,
+            //     endDate: report.timeEnd,
+            //     discipline: report.score_discipline,
+            //     workEffect: report.score_work,
+            //     activity: report.score_activity,
+            //     averageScore: averageScore,
+            //     rating: rating,
+            //     daysWork: 30,
+            //     remark: report.remark,
+            // }];
+            // const data =  process(reportDownload).data;
             this.setState({
                 loading: false,
                 report: report,
@@ -81,7 +117,25 @@ class Report_Detail extends Component {
                 role: role,
                 businessName: businessName,
                 supervisorName: supervisorName,
+                reportDownload: [{
+                    MSSV: student.code,
+                    name: student.name,
+                    companyName: businessName,
+                    projectName: report.project_name,
+                    startDate: report.timeStart,
+                    endDate: report.timeEnd,
+                    discipline: report.score_discipline,
+                    workEffect: report.score_work,
+                    activity: report.score_activity,
+                    averageScore: averageScore,
+                    rating: rating,
+                    daysWork: 30,
+                    remark: report.remark,
+                }],
+                // reportDownload: reportDownload,
+                // data: data,
             });
+            console.log(this.state.reportDownload);
         }
         // console.log(businessName);
         // console.log(supervisorName);
@@ -91,8 +145,13 @@ class Report_Detail extends Component {
         this.props.history.push(uri);
     }
 
+    _exporter;
+    export = () => {
+        this._exporter.save();
+    }
+
     render() {
-        const { loading, reportColor, rate, report, role, student, onScreenRate, businessName, supervisorName } = this.state;
+        const { loading, reportColor, rate, report, role, student, onScreenRate, businessName, supervisorName, reportDownload } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -103,19 +162,65 @@ class Report_Detail extends Component {
                                 <Card>
                                     <CardHeader style={{ fontWeight: "bold" }}>
                                         <i className="fa fa-align-justify"></i>{report === null ? "" : report.title}
-                                        { report === null ? (<></>) : 
-                                        ( role && role === 'ROLE_SUPERVISOR' ?
-                                            <>
-                                            &nbsp;&nbsp;
+                                        {report === null ? (<></>) :
+                                            (role && role === 'ROLE_SUPERVISOR' ?
+                                                <>
+                                                    &nbsp;&nbsp;
                                             <Button color="primary" onClick={() => this.handleDirect(`/Report/Update_Report/${report.id}~${student.email}`)}>
-                                                Chỉnh sửa
+                                                        Chỉnh sửa
                                             </Button>
-                                            </>:
-                                            <></>
-                                        )
+                                                </> :
+                                                <></>
+                                            )
                                         }
                                     </CardHeader>
                                     <CardBody>
+                                        <FormGroup row style={{paddingLeft:'90%'}}>
+                                            {report === null ? "" :
+                                                <>
+                                                    <Button outline color="primary" onClick={this.export}>Tải đánh giá</Button>
+                                                    <ExcelExport
+                                                        data={reportDownload}
+                                                        fileName={report.title}
+                                                        ref={(exporter) => { this._exporter = exporter; }}
+                                                    >
+                                                        <ExcelExportColumnGroup title={report.title}
+                                                            headerCellOptions={{ textAlign: 'center', background:'#ffffff', bold:true, color:'#000000', fontSize:18}}
+                                                        >
+                                                            <ExcelExportColumn field="MSSV" title="MSSV" 
+                                                                headerCellOptions={{ textAlign: 'center', bold:true, background:'#ffffff', color:'#000000', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}} />
+                                                            <ExcelExportColumn field="name" title="Họ Tên" 
+                                                                headerCellOptions={{ textAlign: 'center', bold:true, background:'#ffffff', color:'#000000', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
+                                                            <ExcelExportColumn field="companyName" title="Tên Doanh Nghiệp" 
+                                                                headerCellOptions={{ textAlign: 'center', bold:true, background:'#ffffff', color:'#000000', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
+                                                            <ExcelExportColumn field="projectName" title="Tên Dự Án"
+                                                                headerCellOptions={{ textAlign: 'center', bold:true, background:'#ffffff' , color:'#000000', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
+                                                            <ExcelExportColumn field="startDate" title="Ngày bắt đầu đánh giá" 
+                                                                headerCellOptions={{ textAlign: 'center', bold:true, background:'#ffffff', color:'#000000', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
+                                                            <ExcelExportColumn field="endDate" title="Ngày kết thúc đánh giá" 
+                                                                headerCellOptions={{ textAlign: 'center', bold:true, background:'#ffffff', color:'#000000', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
+                                                            <ExcelExportColumnGroup title="Đánh giá OJT" 
+                                                                headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}>
+                                                                <ExcelExportColumn field="discipline" title="Kỷ luật(40%)" 
+                                                                    headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
+                                                                <ExcelExportColumn field="workEffect" title="Hiệu quả công việc(50%)" 
+                                                                    headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
+                                                                <ExcelExportColumn field="activity" title="Tham gia các hoạt động(10%)" 
+                                                                    headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
+                                                                <ExcelExportColumn field="averageScore" title="Kết quả thực tập" 
+                                                                    headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
+                                                                <ExcelExportColumn field="rating" title="Xếp loại" 
+                                                                    headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
+                                                                <ExcelExportColumn field="daysWork" title="Số ngày làm việc" 
+                                                                    headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
+                                                                <ExcelExportColumn field="remark" title="Nhận xét" 
+                                                                    headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
+                                                            </ExcelExportColumnGroup>
+                                                        </ExcelExportColumnGroup>
+                                                    </ExcelExport>
+                                                </>
+                                            }
+                                        </FormGroup>
                                         <FormGroup row>
                                             <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Người tạo:</h6>
@@ -153,13 +258,13 @@ class Report_Detail extends Component {
                                                 <h6 style={{ fontWeight: "bold" }}>Ngày bắt đầu:</h6>
                                             </Col>
                                             <Col xs="12" md="4">
-                                                <Badge className="mr-1" color="primary" pill style={{fontSize:"16px"}}>{report === null ? "" : report.timeStart}</Badge>
+                                                <Badge className="mr-1" color="primary" pill style={{ fontSize: "16px" }}>{report === null ? "" : report.timeStart}</Badge>
                                             </Col>
                                             <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Ngày kết thúc:</h6>
                                             </Col>
                                             <Col xs="12" md="4">
-                                                <Badge className="mr-1" color="danger" pill style={{fontSize:"16px"}}>{report === null ? "" : report.timeEnd}</Badge>
+                                                <Badge className="mr-1" color="danger" pill style={{ fontSize: "16px" }}>{report === null ? "" : report.timeEnd}</Badge>
                                             </Col>
                                         </FormGroup>
                                         <FormGroup row>

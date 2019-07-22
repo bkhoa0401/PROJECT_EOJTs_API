@@ -183,7 +183,7 @@ class Create_Report extends Component {
         if (score_discipline == "" || score_work == "" || score_activity == "") {
             onScore = 5;
         } else {
-            let tmpScore = parseFloat((parseFloat(score_discipline) + parseFloat(score_activity) + parseFloat(score_activity)) / 3);
+            let tmpScore = parseFloat((parseFloat(score_discipline)*0.4 + parseFloat(score_work)*0.5 + parseFloat(score_activity)*0.1));
             // console.log("score_discipline " + tmpScore);
             if (tmpScore > 9) {
                 onScore = 0;
