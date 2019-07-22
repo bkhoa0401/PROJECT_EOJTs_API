@@ -7,8 +7,6 @@ import com.example.demo.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,14 +14,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
-import java.sql.Date;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+
 
 @RestController
 @RequestMapping("/api/student")
@@ -99,7 +94,7 @@ public class StudentController {
 
             usersList.add(users);
 
-            Semester semester = semesterService.getSemesterByName(studentList.get(i).getSemester());
+            Semester semester = semesterService.getSemesterCurrent();
 
             Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
             ojt_enrollment.setStudent(studentList.get(i));
@@ -151,7 +146,6 @@ public class StudentController {
         ojt_enrollment.setStudent(student);
         ojt_enrollment.setSemester(semester);
         try {
-            student.setSemester(semester.getName());
             studentService.saveStudent(student);
             usersService.saveUser(users);
             ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);
@@ -173,17 +167,39 @@ public class StudentController {
     //check semester //ok
     @GetMapping("/getAllStudent")
     @ResponseBody
-    public ResponseEntity<List<Student>> getAllStudents() throws Exception {
+    public ResponseEntity<List<Student_OjtenrollmentDTO>> getAllStudents() throws Exception {
         LOG.info("Getting all student");
-        List<Student> studentList = new ArrayList<>();
+        Semester semester=semesterService.getSemesterCurrent();
+        List<Student> studentList;
+        List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOList = new ArrayList<>();
         try {
             studentList = studentService.getAllStudentsBySemesterId();
+
+            for (int i = 0; i < studentList.size(); i++) {
+                Student student = studentList.get(i);
+                Student_OjtenrollmentDTO student_ojtenrollmentDTO = new Student_OjtenrollmentDTO();
+                student_ojtenrollmentDTO.setStudent(student);
+                Ojt_Enrollment ojt_enrollment =
+                        ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(student.getEmail(),semester.getId());
+                if (ojt_enrollment.getBusiness() != null) {
+                    student_ojtenrollmentDTO.setBusinessEnroll(ojt_enrollment.getBusiness().getEmail());
+                }else{
+                    if(student.isInterviewed1()==true && student.isInterviewed2()==true){ //no di pv 2 lan
+                        if(student.isAcceptedOption1()==false && student.isAcceptedOption2()==false){ //rot 2 ca 2 nv
+                            student_ojtenrollmentDTO.setBusinessEnroll("Fail");
+                        }
+                    }else{
+                        student_ojtenrollmentDTO.setBusinessEnroll("");
+                    }
+                }
+                student_ojtenrollmentDTOList.add(student_ojtenrollmentDTO);
+            }
 
         } catch (Exception ex) {
             LOG.info(ex.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(studentList, HttpStatus.OK);
+        return new ResponseEntity<>(student_ojtenrollmentDTOList, HttpStatus.OK);
     }
 
     //get list skill by specialzed
