@@ -8,6 +8,8 @@ public interface IUsersService {
 
     void sendEmail(String name, String mail, String password) throws Exception;
 
+    void sendEmailHeading(String mail, String content) throws Exception;
+
     String getAlphaNumericString();
 
     Users findUserByEmail(String email);

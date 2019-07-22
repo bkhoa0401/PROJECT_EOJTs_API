@@ -37,14 +37,14 @@ public class HeadingController {
 
     @PutMapping("/startup")
     public ResponseEntity<Void> updateStatusAcceptByStartUpRoom(@RequestParam int id,
-                                                                @RequestParam String comment, @RequestParam boolean status) {
+                                                                @RequestParam String comment, @RequestParam boolean status) throws Exception {
         String email = getEmailFromToken();
         Users users = iUsersService.findUserByEmail(email);
         List<Role> roles = users.getRoles();
 
         for (int i = 0; i < roles.size(); i++) {
             if (roles.get(i).getDescription().equals("ROLE_STARTUP")) {
-                iBusiness_proposedService.updateStatusByStartUpRoom(id, comment, status);
+                iBusiness_proposedService.updateStatusByStartUpRoom(id, comment, status, email);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         }
@@ -53,14 +53,14 @@ public class HeadingController {
 
     @PutMapping("/headTraining")
     public ResponseEntity<Void> updateStatusAcceptByHeadTraining(@RequestParam int id,
-                                                                 @RequestParam String comment, @RequestParam boolean status) {
+                                                                 @RequestParam String comment, @RequestParam boolean status) throws Exception {
         String email = getEmailFromToken();
         Users users = iUsersService.findUserByEmail(email);
         List<Role> roles = users.getRoles();
 
         for (int i = 0; i < roles.size(); i++) {
             if (roles.get(i).getDescription().equals("ROLE_HEADTRAINING")) {
-                iBusiness_proposedService.updateStatusByHeadOfTraining(id, comment, status);
+                iBusiness_proposedService.updateStatusByHeadOfTraining(id, comment, status, email);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         }
@@ -69,14 +69,14 @@ public class HeadingController {
     }
 
     @PutMapping("/headMaster")
-    public ResponseEntity<Void> updateStatusAcceptByHeadMaster(@RequestParam int id, @RequestParam boolean status) {
+    public ResponseEntity<Void> updateStatusAcceptByHeadMaster(@RequestParam int id, @RequestParam boolean status) throws Exception {
         String email = getEmailFromToken();
         Users users = iUsersService.findUserByEmail(email);
         List<Role> roles = users.getRoles();
 
         for (int i = 0; i < roles.size(); i++) {
             if (roles.get(i).getDescription().equals("ROLE_HEADMASTER")) {
-                iBusiness_proposedService.updateStatusByHeadMaster(id, status);
+                iBusiness_proposedService.updateStatusByHeadMaster(id, status, email);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         }

@@ -76,7 +76,6 @@ class Hr_Task extends Component {
     }
 
     showTaskState(taskStatus) {
-        console.log(taskStatus);
         if (taskStatus === 'NOTSTART') {
             return (
                 <Badge color="danger">Chưa bắt đầu</Badge>
@@ -96,7 +95,7 @@ class Hr_Task extends Component {
     handleConfirm = (task) => {
         confirmAlert({
             title: 'Xác nhận',
-            message: `Bạn chắc chắn muốn xóa nhiệm vụ '${task.title}' của sinh viên ${task.ojt_enrollment.student.name}?`,
+            message: `Bạn chắc chắn muốn xóa nhiệm vụ '${task.title}' của sinh viên ${task.nameStudent}?`,
             buttons: [
                 {
                     label: 'Xác nhận',
@@ -149,24 +148,24 @@ class Hr_Task extends Component {
                                                         return (
                                                             <tr>
                                                                 <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                                <td style={{ textAlign: "center" }}>{task.title}</td>
+                                                                <td style={{ textAlign: "center" }}>{task.task.title}</td>
                                                                 {/* <td style={{ textAlign: "center" }}>{task.priority}</td> */}
                                                                 {/* <td style={{ textAlign: "center" }}>{task.time_end}</td>
                                                         <td style={{ textAlign: "center" }}>{task.level_task}</td> */}
-                                                                <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
-                                                                <td style={{ textAlign: "center" }}>{task.ojt_enrollment.student.name}</td>
+                                                                <td style={{ textAlign: "center" }}>{task.task.supervisor.name}</td>
+                                                                <td style={{ textAlign: "center" }}>{task.nameStudent}</td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {
-                                                                        this.showTaskState(task.status)
+                                                                        this.showTaskState(task.task.status)
                                                                     }
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/details/${task.id}`)}>Chi tiết</Button>
+                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/details/${task.task.id}`)}>Chi tiết</Button>
                                                                     {
                                                                         task.status === 'DONE' ? (
-                                                                            <Button disabled style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task)}>Xóa</Button>
+                                                                            <Button disabled style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}>Xóa</Button>
                                                                         ) : (
-                                                                                <Button style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task)}>Xóa</Button>
+                                                                                <Button style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}>Xóa</Button>
                                                                             )
                                                                     }
                                                                 </td>
