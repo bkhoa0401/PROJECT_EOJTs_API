@@ -13,4 +13,6 @@ public interface ISkillRepository extends JpaRepository<Skill,Integer> {
     List<Skill> findBySpecializedId(int specializedId);
 
     Skill findSkillById(int id);
+
+    Skill findSkillByName(String name);
 }

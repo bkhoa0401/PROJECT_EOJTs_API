@@ -41,6 +41,18 @@ public class UsersService implements IUsersService {
     }
 
     @Override
+    public void sendEmailHeading(String mail, String content) throws Exception {
+        MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setTo(mail);
+        helper.setText(content);
+        helper.setSubject("[XÉT DUYỆT ĐỀ XUẤT THỰC TẬP TẠI CÔNG TY NGOÀI CỦA SINH VIÊN]");
+
+        sender.send(message);
+    }
+
+    @Override
     public String getAlphaNumericString() {
         String AlphaNumericString = "0123456789"
                 + "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

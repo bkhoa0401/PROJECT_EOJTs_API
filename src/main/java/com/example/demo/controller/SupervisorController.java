@@ -92,6 +92,7 @@ public class SupervisorController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //time_enroll of  ojt_enrollment has to be not null
     @PostMapping("/evaluation")
     public ResponseEntity<Void> createNewEvaluation(@RequestBody Evaluation evaluation, @RequestParam String emailStudent) {
         String email = getEmailFromToken();

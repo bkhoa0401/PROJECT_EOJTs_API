@@ -37,6 +37,9 @@ public class AdminController {
     @Autowired
     IBusinessService businessService;
 
+    @Autowired
+    ISemesterService semesterService;
+
     @GetMapping
     @ResponseBody
     public ResponseEntity<List<Student>> getAllStudentByTypeStatusOption(@RequestParam int typeOfStatus) {
@@ -78,14 +81,25 @@ public class AdminController {
 
 
     //get all events of admin
+    //check semester ok
     @GetMapping("/events")
     @ResponseBody
     public ResponseEntity<List<Event>> getAllEventOfAdmin() {
         String email = getEmailFromToken();
         List<Event> events = eventService.getEventListOfAdmin(email);
-        if (events != null) {
-            Collections.sort(events);
-            return new ResponseEntity<List<Event>>(events, HttpStatus.OK);
+        Semester semester = semesterService.getSemesterCurrent();
+        Date dateStartSemester = semester.getStart_date();
+        Date dateEndSemester = semester.getEnd_date();
+        List<Event> finalListEvent = new ArrayList<Event>();
+        for (int i = 0; i < events.size(); i++) {
+            Date dateEventCreate = events.get(i).getTime_created();
+            if (dateEventCreate.after(dateStartSemester) && dateEventCreate.before(dateEndSemester)) {
+                finalListEvent.add(events.get(i));
+            }
+        }
+        if (finalListEvent != null) {
+            Collections.sort(finalListEvent);
+            return new ResponseEntity<List<Event>>(finalListEvent, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

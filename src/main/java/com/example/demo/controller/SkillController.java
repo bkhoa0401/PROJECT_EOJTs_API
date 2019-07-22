@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 
+import com.example.demo.dto.SkillDTO;
 import com.example.demo.dto.SpecializedDTO;
 import com.example.demo.entity.Skill;
 import com.example.demo.service.ISkillService;
@@ -126,5 +127,25 @@ public class SkillController {
             return new ResponseEntity<List<Skill>>(skillList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PostMapping("/isExisted")
+    @ResponseBody
+    public ResponseEntity<List<SkillDTO>> getListSkillExistedByListName(@RequestBody List<String> skillDTOList) {
+        List<SkillDTO> skillDTOSNotFound = new ArrayList<>();
+        for (int i = 0; i < skillDTOList.size(); i++) {
+
+            Skill skillFound = skillService.getSkillByName(skillDTOList.get(i));
+
+            if (skillFound == null) {
+                SkillDTO skillDTO = new SkillDTO();
+                skillDTO.setName(skillDTOList.get(i));
+                skillDTOSNotFound.add(skillDTO);
+            }
+        }
+        if (skillDTOSNotFound.size() != 0) {
+            return new ResponseEntity<List<SkillDTO>>(skillDTOSNotFound, HttpStatus.OK);
+        }
+        return new ResponseEntity<List<SkillDTO>>(skillDTOSNotFound, HttpStatus.NO_CONTENT);
     }
 }

@@ -103,21 +103,21 @@ class Update_Job extends Component {
         // console.log('arrayQuantity', arrayQuantity);
         console.log('specializedUpdate', specializedUpdate);
 
-        // for (let j = 0; j < specializedUpdate.length; j++) {
-        //     const skills = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${specializedUpdate[j]}`);
-        //     if (skills != null) {
-        //         for (let k = 0; k < skills.length; k++) {
-        //             choseSpecialized.push(skills[k].id);
-        //         }
-        //     }
-        // }
-
-        const skillsUpdate = await ApiServices.Post('/skill/byListSpecializedId', specializedUpdate);
-        if (skillsUpdate != null) {
-            for (let k = 0; k < skillsUpdate.length; k++) {
-                choseSpecialized.push(skillsUpdate[k].id);
+        for (let j = 0; j < specializedUpdate.length; j++) {
+            const skills = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${specializedUpdate[j]}`);
+            if (skills != null) {
+                for (let k = 0; k < skills.length; k++) {
+                    choseSpecialized.push(skills[k].id);
+                }
             }
         }
+
+        // const skillsUpdate = await ApiServices.Post('/skill/byListSpecializedId', specializedUpdate);
+        // if (skillsUpdate != null) {
+        //     for (let k = 0; k < skillsUpdate.length; k++) {
+        //         choseSpecialized.push(skillsUpdate[k].id);
+        //     }
+        // }
 
         console.log(choseSpecialized);
 

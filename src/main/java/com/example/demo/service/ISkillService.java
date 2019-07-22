@@ -22,4 +22,6 @@ public interface ISkillService {
     Skill getSkillById(int id);
 
     List<Skill> getListSkillJobPost(Job_Post job_post);
+
+    Skill getSkillByName(String name);
 }

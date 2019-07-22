@@ -51,16 +51,16 @@ class Hr_Task_Detail extends Component {
         if (task != null) {
             this.setState({
                 loading: false,
-                id: task.id,
-                title: task.title,
-                description: task.description,
-                time_created: task.time_created,
-                time_end: task.time_end,
-                level_task: task.level_task,
-                priority: task.priority,
-                status: task.status,
-                supervisorName: task.supervisor.name,
-                studentName: task.ojt_enrollment.student.name
+                id: task.task.id,
+                title: task.task.title,
+                description: task.task.description,
+                time_created: task.task.time_created,
+                time_end: task.task.time_end,
+                level_task: task.task.level_task,
+                priority: task.task.priority,
+                status: task.task.status,
+                supervisorName: task.task.supervisor.name,
+                studentName: task.nameStudent
             });
         }
     }
@@ -110,16 +110,16 @@ class Hr_Task_Detail extends Component {
 
             if (task != null) {
                 this.setState({
-                    id: task.id,
-                    title: task.title,
-                    description: task.description,
-                    time_created: task.time_created,
-                    time_end: task.time_end,
-                    level_task: task.level_task,
-                    priority: task.priority,
-                    status: task.status,
-                    supervisorName: task.supervisor.name,
-                    studentName: task.ojt_enrollment.student.name
+                    id: task.task.id,
+                    title: task.task.title,
+                    description: task.task.description,
+                    time_created: task.task.time_created,
+                    time_end: task.task.time_end,
+                    level_task: task.task.level_task,
+                    priority: task.task.priority,
+                    status: task.task.status,
+                    supervisorName: task.task.supervisor.name,
+                    studentName: task.nameStudent
                 });
             }
         } else {
