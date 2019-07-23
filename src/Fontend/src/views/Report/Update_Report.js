@@ -31,16 +31,21 @@ class Update_Report extends Component {
             score_work: '0',
             score_activity: '0',
             project_name: '',
+            workDays: 0,
 
             needId: null,
             reportId:-1,
 
             student: null,
             businessName: '',
+            onScreenStartDate: '',
+            onScreenEndDate: '',
 
             validatorNumRange_score_work: '',
             validatorNumRange_score_activity: '',
             validatorNumRange_score_discipline: '',
+            maxWorkDays:0,
+            validatorMaxWorkDays: '',
         };
     }
 
@@ -76,6 +81,7 @@ class Update_Report extends Component {
         const score_discipline = report.score_discipline;
         const score_activity = report.score_activity;
         const score_work = report.score_work;
+        const workDays = report.workDays;
         let onScore = 5;
         if (((report.score_work + report.score_activity + report.score_discipline) / 3) > 9) {
             onScore = 0;
@@ -89,6 +95,27 @@ class Update_Report extends Component {
             onScore = 4;
         }
 
+        let formatTimeStartShow = report.timeStart.split('-');
+        let formatTimeEndShow = report.timeEnd.split('-');
+        let onScreenStartDate = formatTimeStartShow[2] + "/" + formatTimeStartShow[1] + "/" + formatTimeStartShow[0];
+        let onScreenEndDate = formatTimeEndShow[2] + "/" + formatTimeEndShow[1] + "/" + formatTimeEndShow[0];
+        let mm31 = [1,3,5,7,8,10,12];
+        let mm30 = [4,6,9,11];
+
+        let maxWorkDays = 0;
+        if (mm30.includes(parseInt(formatTimeStartShow[1]))) {
+            maxWorkDays = 30 - parseInt(formatTimeStartShow[2]) + parseInt(formatTimeEndShow[2]);
+        } else if (mm31.includes(parseInt(formatTimeStartShow[1]))) {
+            maxWorkDays = 31 - parseInt(formatTimeStartShow[2]) + parseInt(formatTimeEndShow[2]);
+        } else if (parseInt(formatTimeStartShow[1]) == 2) {
+            if (parseInt(formatTimeStartShow[0]) % 4 == 0) {
+                maxWorkDays = 29 - parseInt(formatTimeStartShow[2]) + parseInt(formatTimeEndShow[2]);
+            } else {
+                maxWorkDays = 28 - parseInt(formatTimeStartShow[2]) + parseInt(formatTimeEndShow[2]);
+            }
+        }
+        console.log(maxWorkDays);
+
         this.setState({
             loading: false,
             id: needId[0],
@@ -97,6 +124,7 @@ class Update_Report extends Component {
             title: title,
             student: student,
             businessName: businessName,
+            maxWorkDays: maxWorkDays,
 
             timeStart: timeStart,
             timeEnd: timeEnd,
@@ -106,6 +134,9 @@ class Update_Report extends Component {
             score_discipline: score_discipline,
             project_name: project_name,
             onScore: onScore,
+            onScreenStartDate: onScreenStartDate,
+            onScreenEndDate: onScreenEndDate,
+            workDays: workDays,
         });
     }
 
@@ -121,6 +152,7 @@ class Update_Report extends Component {
         let validatorNumRange_score_work = '';
         let validatorNumRange_score_activity = '';
         let validatorNumRange_score_discipline = '';
+        let validatorMaxWorkDays = '';
         // if ((parseFloat(score_work) >= 0 && parseFloat(score_work) <= 10) ||
         //         (parseFloat(score_activity) >= 0 && parseFloat(score_activity) <= 10) ||
         //         (parseFloat(score_discipline) >= 0 && parseFloat(score_discipline) <= 10)) {
@@ -175,6 +207,7 @@ class Update_Report extends Component {
             validatorNumRange_score_work: validatorNumRange_score_work,
             validatorNumRange_score_activity: validatorNumRange_score_activity,
             validatorNumRange_score_discipline: validatorNumRange_score_discipline,
+            validatorMaxWorkDays: validatorMaxWorkDays,
         })
         // console.log(this.state.onScore);
         // console.log("score_discipline " + score_discipline);
@@ -187,14 +220,16 @@ class Update_Report extends Component {
     }
 
     handleSubmit = async () => {
-        const { title, timeStart, timeEnd, remark, score_discipline, score_work, score_activity, project_name, needId, id } = this.state;
+        const { title, remark, score_discipline, score_work, score_activity, project_name, needId, id, timeStart, timeEnd, workDays, maxWorkDays } = this.state;
         let validatorNumRange_score_work = '';
         let validatorNumRange_score_activity = '';
         let validatorNumRange_score_discipline = '';
+        let validatorMaxWorkDays = '';
         if (this.validator.allValid()) {
             if ((parseFloat(score_work) < 0 || parseFloat(score_work) > 10) ||
                 (parseFloat(score_activity) < 0 || parseFloat(score_activity) > 10) ||
-                (parseFloat(score_discipline) < 0 || parseFloat(score_discipline) > 10)) {
+                (parseFloat(score_discipline) < 0 || parseFloat(score_discipline) > 10) ||
+                workDays > maxWorkDays) {
                 if (parseFloat(score_work) < 0 || parseFloat(score_work) > 10) {
                     validatorNumRange_score_work = 'Điểm hiệu quả công việc không hợp lệ.';
                 }
@@ -204,10 +239,16 @@ class Update_Report extends Component {
                 if (parseFloat(score_discipline) < 0 || parseFloat(score_discipline) > 10) {
                     validatorNumRange_score_discipline = 'Điểm kỷ luật không hợp lệ';
                 }
+
+                if (workDays > maxWorkDays) {
+                    validatorMaxWorkDays = 'Số ngày làm việc không thể vượt qua số ngày thực tế trong tháng.';
+                }
+
                 this.setState({
                     validatorNumRange_score_work: validatorNumRange_score_work,
                     validatorNumRange_score_activity: validatorNumRange_score_activity,
                     validatorNumRange_score_discipline: validatorNumRange_score_discipline,
+                    validatorMaxWorkDays: validatorMaxWorkDays,
                 })
             } else {
                 this.setState({
@@ -224,6 +265,7 @@ class Update_Report extends Component {
                     score_work,
                     score_activity,
                     project_name,
+                    workDays,
                 }
                 const result = await ApiServices.Put(`/supervisor/updateEvaluation?id=${reportId}`, evaluation);
                 console.log(result);
@@ -248,7 +290,7 @@ class Update_Report extends Component {
     }
 
     render() {
-        const { needId, validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, remark, project_name, timeStart, timeEnd, onScore } = this.state;
+        const { maxWorkDays, validatorMaxWorkDays, needId, validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, remark, project_name, onScreenStartDate, onScreenEndDate, onScore, workDays } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -290,13 +332,13 @@ class Update_Report extends Component {
                                                 <h6 style={{ fontWeight: "bold" }}>Ngày bắt đầu:</h6>
                                             </Col>
                                             <Col xs="12" md="4">
-                                                <Badge className="mr-1" color="primary" pill style={{fontSize:"16px"}}>{timeStart === null ? "" : timeStart}</Badge>
+                                                <Badge className="mr-1" color="primary" pill style={{fontSize:"16px"}}>{onScreenStartDate === null ? "" : onScreenStartDate}</Badge>
                                             </Col>
                                             <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Ngày kết thúc:</h6>
                                             </Col>
                                             <Col xs="12" md="4">
-                                                <Badge className="mr-1" color="danger" pill style={{fontSize:"16px"}}>{timeEnd === null ? "" : timeEnd}</Badge>
+                                                <Badge className="mr-1" color="danger" pill style={{fontSize:"16px"}}>{onScreenEndDate === null ? "" : onScreenEndDate}</Badge>
                                             </Col>
                                         </FormGroup>
                                         <FormGroup row>
@@ -358,6 +400,20 @@ class Update_Report extends Component {
                                             </Col>
                                             <Col xs="12" md="10">
                                                 <Label style={{ fontWeight: 'bold', color: reportColor[onScore] }}>{rate[onScore]}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Số ngày làm việc:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Input value={workDays} type='number' style={{ width: '70px' }} onChange={this.handleInputScore} id="workDays" name="workDays" min="0" max={maxWorkDays}></Input>
+                                                <span className="form-error is-visible text-danger">
+                                                    {this.validator.message('Số ngày làm việc', workDays, 'required|integer')}
+                                                </span>
+                                                <span className="form-error is-visible text-danger">
+                                                    {validatorMaxWorkDays}
+                                                </span>
                                             </Col>
                                         </FormGroup>
                                         <FormGroup row>

@@ -177,7 +177,7 @@ const routes = [
   { path: '/hr-task/create', exact: true, name: 'Tạo nhiệm vụ mới', component: Hr_Task_Create },
   { path: '/hr-task/details/:id', exact: true, name: 'Chi tiết nhiệm vụ', component: Hr_Task_Detail },
   { path: '/hr-task/update/:id', exact: true, name: 'Chỉnh sửa nhiệm vụ', component: Hr_Task_Update },
-  { path: '/Company/Business_Detail/:email', exact: true, name: 'Chi tiết doanh nghiệp', component: Business_Detail },
+  { path: '/list_management/business_list/Business_Detail/:email', exact: true, name: 'Chi tiết doanh nghiệp', component: Business_Detail },
   { path: '/feedback/feedback', exact: true, name: 'Phản hồi', component: Feedback },
   { path: '/feedback/feedback_detail/:id', exact: true, name: 'Chi tiết phản hồi', component: Feedback_Detail },
 ];

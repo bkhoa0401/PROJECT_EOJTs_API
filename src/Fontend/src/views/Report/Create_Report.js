@@ -30,6 +30,7 @@ class Create_Report extends Component {
             score_work: '0',
             score_activity: '0',
             project_name: '',
+            workDays:0,
 
             emailStudent: '',
 
@@ -42,6 +43,8 @@ class Create_Report extends Component {
             validatorNumRange_score_work: '',
             validatorNumRange_score_activity: '',
             validatorNumRange_score_discipline: '',
+            maxWorkDays:0,
+            validatorMaxWorkDays: '',        
         };
     }
 
@@ -73,7 +76,7 @@ class Create_Report extends Component {
         var splitDate = dateEnroll.split('-');
         let dd = parseInt(splitDate[2]);
         let mm = parseInt(splitDate[1]);
-        // let mm31 = [1,3,5,7,8,10,12];
+        let mm31 = [1,3,5,7,8,10,12];
         let mm30 = [4,6,9,11];
         let yyyy = parseInt(splitDate[0]);
         let timeStartShow = "";
@@ -128,14 +131,31 @@ class Create_Report extends Component {
         if (formatTimeEndShow[1] < 10) {
             timeEndShow = formatTimeEndShow[0] + "/" + "0" + formatTimeEndShow[1] + "/" + formatTimeEndShow[2];
         }
+
+        let maxWorkDays = 0;
+        if (mm30.includes(parseInt(formatTimeStartShow[1]))) {
+            maxWorkDays = 30 - parseInt(formatTimeStartShow[0]) + parseInt(formatTimeEndShow[0]);
+        } else if (mm31.includes(parseInt(formatTimeStartShow[1]))) {
+            maxWorkDays = 31 - parseInt(formatTimeStartShow[0]) + parseInt(formatTimeEndShow[0]);
+        } else if (parseInt(formatTimeStartShow[1]) == 2) {
+            if (parseInt(formatTimeStartShow[2]) % 4 == 0) {
+                maxWorkDays = 29 - parseInt(formatTimeStartShow[0]) + parseInt(formatTimeEndShow[0]);
+            } else {
+                maxWorkDays = 28 - parseInt(formatTimeStartShow[0]) + parseInt(formatTimeEndShow[0]);
+            }
+        }
+        // console.log(maxWorkDays);
         this.setState({
             loading: false,
             title: title,
             emailStudent: emailStudent,
             student: student,
             businessName: businessName,
+            //dd-MM-yyyy
             timeStartShow: timeStartShow,
+            //dd-MM-yyyy
             timeEndShow: timeEndShow,
+            maxWorkDays: maxWorkDays,
         });
     }
 
@@ -151,6 +171,7 @@ class Create_Report extends Component {
         let validatorNumRange_score_work = '';
         let validatorNumRange_score_activity = '';
         let validatorNumRange_score_discipline = '';
+        let validatorMaxWorkDays = '';
         // if ((parseFloat(score_work) >= 0 && parseFloat(score_work) <= 10) ||
         //         (parseFloat(score_activity) >= 0 && parseFloat(score_activity) <= 10) ||
         //         (parseFloat(score_discipline) >= 0 && parseFloat(score_discipline) <= 10)) {
@@ -183,7 +204,7 @@ class Create_Report extends Component {
         if (score_discipline == "" || score_work == "" || score_activity == "") {
             onScore = 5;
         } else {
-            let tmpScore = parseFloat((parseFloat(score_discipline) + parseFloat(score_activity) + parseFloat(score_activity)) / 3);
+            let tmpScore = parseFloat((parseFloat(score_discipline)*0.4 + parseFloat(score_work)*0.5 + parseFloat(score_activity)*0.1));
             // console.log("score_discipline " + tmpScore);
             if (tmpScore > 9) {
                 onScore = 0;
@@ -205,6 +226,7 @@ class Create_Report extends Component {
             validatorNumRange_score_work: validatorNumRange_score_work,
             validatorNumRange_score_activity: validatorNumRange_score_activity,
             validatorNumRange_score_discipline: validatorNumRange_score_discipline,
+            validatorMaxWorkDays: validatorMaxWorkDays,
         })
         // console.log(this.state.onScore);
         // console.log("score_discipline " + score_discipline);
@@ -217,38 +239,47 @@ class Create_Report extends Component {
     }
 
     handleSubmit = async () => {
-        const { title, remark, score_discipline, score_work, score_activity, project_name } = this.state;
+        const { title, remark, score_discipline, score_work, score_activity, project_name, workDays, maxWorkDays } = this.state;
         
         let timeStart = "";
         let timeStartShow = this.state.timeStartShow;
         var formatTimeStart = timeStartShow.split('/');
+        //yyyy-MM-dd
         timeStart = formatTimeStart[2] + "-" + formatTimeStart[1] + "-" + formatTimeStart[0];
 
         let timeEnd = "";
         let timeEndShow = this.state.timeEndShow;
         var formatTimeEnd = timeEndShow.split('/');
+        //yyyy-MM-dd
         timeEnd = formatTimeEnd[2] + "-" + formatTimeEnd[1] + "-" + formatTimeEnd[0];
-        
         let validatorNumRange_score_work = '';
         let validatorNumRange_score_activity = '';
         let validatorNumRange_score_discipline = '';
+        let validatorMaxWorkDays = '';
         if (this.validator.allValid()) {
             if ((parseFloat(score_work) < 0 || parseFloat(score_work) > 10) ||
                 (parseFloat(score_activity) < 0 || parseFloat(score_activity) > 10) ||
-                (parseFloat(score_discipline) < 0 || parseFloat(score_discipline) > 10)) {
+                (parseFloat(score_discipline) < 0 || parseFloat(score_discipline) > 10) ||
+                workDays > maxWorkDays) {
                 if (parseFloat(score_work) < 0 || parseFloat(score_work) > 10) {
-                    validatorNumRange_score_work = 'Điểm hiệu quả công việc không hợp lệ.';
+                    validatorNumRange_score_work = 'Điểm hiệu quả công việc không hợp lệ.( >= 0 & <=10 )';
                 }
                 if (parseFloat(score_activity) < 0 || parseFloat(score_activity) > 10) {
-                    validatorNumRange_score_activity = 'Điểm thái độ làm việc không hợp lệ';
+                    validatorNumRange_score_activity = 'Điểm thái độ làm việc không hợp lệ.( >= 0 & <=10 )';
                 }
                 if (parseFloat(score_discipline) < 0 || parseFloat(score_discipline) > 10) {
-                    validatorNumRange_score_discipline = 'Điểm kỷ luật không hợp lệ';
+                    validatorNumRange_score_discipline = 'Điểm kỷ luật không hợp lệ. ( >= 0 & <=10 )';
                 }
+
+                if (workDays > maxWorkDays) {
+                    validatorMaxWorkDays = 'Số ngày làm việc không thể vượt qua số ngày thực tế trong tháng.';
+                }
+
                 this.setState({
                     validatorNumRange_score_work: validatorNumRange_score_work,
                     validatorNumRange_score_activity: validatorNumRange_score_activity,
                     validatorNumRange_score_discipline: validatorNumRange_score_discipline,
+                    validatorMaxWorkDays: validatorMaxWorkDays,
                 })
             } else {
                 this.setState({
@@ -264,6 +295,7 @@ class Create_Report extends Component {
                     score_work,
                     score_activity,
                     project_name,
+                    workDays,
                 }
                 const result = await ApiServices.Post(`/supervisor/evaluation?emailStudent=${emailStudent}`, evaluation);
                 console.log(result);
@@ -286,7 +318,7 @@ class Create_Report extends Component {
     }
 
     render() {
-        const { validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, remark, project_name, onScore, timeStartShow, timeEndShow } = this.state;
+        const { maxWorkDays, validatorMaxWorkDays, validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, workDays, remark, project_name, onScore, timeStartShow, timeEndShow } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -350,6 +382,20 @@ class Create_Report extends Component {
                                         </FormGroup>
                                         <FormGroup row>
                                             <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Điểm kỷ luật:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Input value={score_discipline} type='number' style={{ width: '70px' }} onChange={this.handleInputScore} id="score_discipline" name="score_discipline" min="0" max="10"></Input>
+                                                <span className="form-error is-visible text-danger">
+                                                    {this.validator.message('Điểm kỷ luật', score_discipline, 'required|numeric')}
+                                                </span>
+                                                <span className="form-error is-visible text-danger">
+                                                    {validatorNumRange_score_discipline}
+                                                </span>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Điểm hiệu quả công việc:</h6>
                                             </Col>
                                             <Col xs="12" md="10">
@@ -378,24 +424,24 @@ class Create_Report extends Component {
                                         </FormGroup>
                                         <FormGroup row>
                                             <Col md="2">
-                                                <h6 style={{ fontWeight: "bold" }}>Điểm kỷ luật:</h6>
-                                            </Col>
-                                            <Col xs="12" md="10">
-                                                <Input value={score_discipline} type='number' style={{ width: '70px' }} onChange={this.handleInputScore} id="score_discipline" name="score_discipline" min="0" max="10"></Input>
-                                                <span className="form-error is-visible text-danger">
-                                                    {this.validator.message('Điểm kỷ luật', score_discipline, 'required|numeric')}
-                                                </span>
-                                                <span className="form-error is-visible text-danger">
-                                                    {validatorNumRange_score_discipline}
-                                                </span>
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Xếp loại:</h6>
                                             </Col>
                                             <Col xs="12" md="10">
                                                 <Label style={{ fontWeight: 'bold', color: reportColor[onScore] }}>{rate[onScore]}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Số ngày làm việc:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Input value={workDays} type='number' style={{ width: '70px' }} onChange={this.handleInputScore} id="workDays" name="workDays" min="0" max={maxWorkDays}></Input>
+                                                <span className="form-error is-visible text-danger">
+                                                    {this.validator.message('Số ngày làm việc', workDays, 'required|integer')}
+                                                </span>
+                                                <span className="form-error is-visible text-danger">
+                                                    {validatorMaxWorkDays}
+                                                </span>
                                             </Col>
                                         </FormGroup>
                                         <FormGroup row>

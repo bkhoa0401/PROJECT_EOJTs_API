@@ -102,6 +102,14 @@ class ScheduleParameters extends Component {
                             <CardBody>
                                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
                                     <FormGroup row>
+                                        <Col md="1">
+                                            <h6>Học kỳ:</h6>
+                                        </Col>
+                                        <Col xs="12" md="11">
+                                            <Label style={{fontWeight:"bold"}}>SUMMER2019</Label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
                                         <Col md="3">
                                             <h6>Hạn cuối đăng ký nguyện vọng</h6>
                                         </Col>

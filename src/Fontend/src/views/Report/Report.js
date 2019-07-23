@@ -57,7 +57,7 @@ class Report extends Component {
         // console.log(overviewReports);
         for (let index = 0; index < overviewReports.length; index++) {
             if (overviewReports[index] != null) {
-                overviewReportsRate.push((overviewReports[index].score_discipline + overviewReports[index].score_work + overviewReports[index].score_activity) / 3);
+                overviewReportsRate.push(overviewReports[index].score_discipline*0.4 + overviewReports[index].score_work*0.5 + overviewReports[index].score_activity*0.1);
                 if (overviewReportsRate[index] > 9) {
                     onScreenStatus.push(0);
                 } else if (overviewReportsRate[index] > 8) {
