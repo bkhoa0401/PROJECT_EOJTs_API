@@ -35,6 +35,16 @@ public class HeadingController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/id")
+    @ResponseBody
+    public ResponseEntity<Business_Proposed> getBusiness_Proposed(@RequestParam int id) {
+        Business_Proposed business_proposed = iBusiness_proposedService.findById(id);
+        if (business_proposed != null) {
+            return new ResponseEntity<Business_Proposed>(business_proposed, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @PutMapping("/startup")
     public ResponseEntity<Void> updateStatusAcceptByStartUpRoom(@RequestParam int id,
                                                                 @RequestParam String comment, @RequestParam boolean status) throws Exception {

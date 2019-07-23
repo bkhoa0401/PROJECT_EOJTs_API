@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.config.BusinessProposedStatus;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IBusiness_ProposedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,9 +61,13 @@ public class Business_ProposedService implements IBusiness_ProposedService {
         Business_Proposed business_proposed = findById(id);
 
         if (business_proposed != null) {
-
             business_proposed.setCommentStartupRoom(comment);
-            business_proposed.setAcceptedByStartupRoom(status);
+
+            if (status) {
+                business_proposed.setIsAcceptedByStartupRoom(BusinessProposedStatus.ACCEPTED);
+            } else {
+                business_proposed.setIsAcceptedByStartupRoom(BusinessProposedStatus.REJECTED);
+            }
             iBusiness_proposedRepository.save(business_proposed);
         }
 
@@ -82,7 +87,11 @@ public class Business_ProposedService implements IBusiness_ProposedService {
 
         if (business_proposed != null) {
             business_proposed.setCommentHeadOfTraining(comment);
-            business_proposed.setAcceptedByHeadOfTraining(status);
+            if (status) {
+                business_proposed.setIsAcceptedByHeadOfTraining(BusinessProposedStatus.ACCEPTED);
+            } else {
+                business_proposed.setIsAcceptedByHeadOfTraining(BusinessProposedStatus.REJECTED);
+            }
             iBusiness_proposedRepository.save(business_proposed);
         }
 
@@ -101,7 +110,11 @@ public class Business_ProposedService implements IBusiness_ProposedService {
         Business_Proposed business_proposed = findById(id);
 
         if (business_proposed != null) {
-            business_proposed.setAcceptedByHeadMaster(status);
+            if (status) {
+                business_proposed.setIsAcceptedByHeadMaster(BusinessProposedStatus.ACCEPTED);
+            } else {
+                business_proposed.setIsAcceptedByHeadMaster(BusinessProposedStatus.REJECTED);
+            }
             iBusiness_proposedRepository.save(business_proposed);
         }
 
