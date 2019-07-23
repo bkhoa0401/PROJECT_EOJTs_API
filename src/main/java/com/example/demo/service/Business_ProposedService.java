@@ -141,4 +141,10 @@ public class Business_ProposedService implements IBusiness_ProposedService {
         }
     }
 
+    @Override
+    public void createBusinessPropose(Business_Proposed business_proposed) {
+        iBusiness_proposedRepository.save(business_proposed);
+    }
+
+
 }

@@ -60,6 +60,9 @@ public class StudentController {
     @Autowired
     ISemesterService semesterService;
 
+    @Autowired
+    IBusiness_ProposedService iBusiness_proposedService;
+
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     //check semester //ok
@@ -778,6 +781,15 @@ public class StudentController {
 
         if (student_evaluationDTOS != null) {
             return new ResponseEntity<List<Student_EvaluationDTO>>(student_evaluationDTOS, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PostMapping("/businessPropose")
+    public ResponseEntity<Void> createBusinessPropose(@RequestBody Business_Proposed business_proposed){
+        if(business_proposed!=null){
+            iBusiness_proposedService.createBusinessPropose(business_proposed);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
