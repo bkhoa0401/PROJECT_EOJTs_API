@@ -52,6 +52,8 @@ import {
   Hr_Task_Detail,
   Hr_Task_Update,
   Feedback,
+  BusinessProposed,
+  BusinessProposed_Detail
 
 } from './Base';
 
@@ -154,6 +156,9 @@ export {
   Hr_Task_Detail,
   Hr_Task_Update,
   Feedback,
-  Feedback_Detail
+  Feedback_Detail,
+  BusinessProposed,
+  BusinessProposed_Detail,
+  
 };
 

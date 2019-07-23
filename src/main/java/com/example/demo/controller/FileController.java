@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.Business_Proposed;
 import com.example.demo.entity.Student;
+import com.example.demo.repository.IBusiness_ProposedRepository;
 import com.example.demo.service.FileStorageService;
 import com.example.demo.service.StudentService;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
 
 @RestController
@@ -32,6 +35,9 @@ public class FileController {
 
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    private IBusiness_ProposedRepository iBusiness_proposedRepository;
 
     @PostMapping("/uploadFile")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
@@ -74,7 +80,17 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "File Name=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
+    @PostMapping("/uploadListFile")
+    public ResponseEntity<String> uploadListFile(@RequestParam("files") List<MultipartFile> files){
+        String studentEmail=getEmailFromToken();
 
+        List<String> fileName = fileStorageService.storeListFile(files,studentEmail);
+
+        if (fileName == null) {
+            return new ResponseEntity<String>("fail", HttpStatus.EXPECTATION_FAILED);
+        }
+        return new ResponseEntity<String>("success", HttpStatus.OK);
+    }
 
     //get email from token
     private String getEmailFromToken() {

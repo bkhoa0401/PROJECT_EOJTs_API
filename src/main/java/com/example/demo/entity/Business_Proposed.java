@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
+import com.example.demo.config.BusinessProposedStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -41,31 +43,40 @@ public class Business_Proposed implements Serializable {
     @Column(name = "logo")
     private String logo;
 
-    @Column(name = "business_nationality")
+    @Column(name = "business_nationality", columnDefinition = "NVARCHAR(255)")
     private String business_nationality; // quốc tịch công ty
 
-    @Column(name = "business_field_of_activity")
+    @Column(name = "business_field_of_activity", columnDefinition = "NVARCHAR(255)")
     private String business_field_of_activity; // lĩnh vực hoạt động
 
     @Column(name = "isAcceptedByStartupRoom")
-    private boolean isAcceptedByStartupRoom; // đc chấp nhận bởi phòng khởi nghiệp?
+    @Enumerated(EnumType.STRING)
+    @Check(constraints = "level_task IN ('ACCEPTED' ,'REJECTED', 'PENDING')")
+    private BusinessProposedStatus isAcceptedByStartupRoom = BusinessProposedStatus.PENDING; // đc chấp nhận bởi phòng khởi nghiệp?
 
     @Column(name = "isAcceptedByHeadOfTraining")
-    private boolean isAcceptedByHeadOfTraining; // đc chấp nhận bởi trưởng phòng đào tạo?
+    @Enumerated(EnumType.STRING)
+    @Check(constraints = "level_task IN ('ACCEPTED' ,'REJECTED', 'PENDING')")
+    private BusinessProposedStatus isAcceptedByHeadOfTraining = BusinessProposedStatus.PENDING; // đc chấp nhận bởi trưởng phòng đào tạo?
 
     @Column(name = "isAcceptedByHeadMaster")
-    private boolean isAcceptedByHeadMaster; // đc chấp nhận bởi hiệu trưởng?
+    @Enumerated(EnumType.STRING)
+    @Check(constraints = "level_task IN ('ACCEPTED' ,'REJECTED', 'PENDING')")
+    private BusinessProposedStatus isAcceptedByHeadMaster = BusinessProposedStatus.PENDING; // đc chấp nhận bởi hiệu trưởng?
 
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "student_proposed_email") // sinh viên đề xuất doanh nghiệp này
     private Student student_proposed;
 
-    @Column(name = "commentStartupRoom")
+    @Column(name = "commentStartupRoom", columnDefinition = "NVARCHAR(255)")
     private String commentStartupRoom;
 
-    @Column(name = "commentHeadOfTraining")
+    @Column(name = "commentHeadOfTraining", columnDefinition = "NVARCHAR(255)")
     private String commentHeadOfTraining;
+
+    @Column(name = "scale", columnDefinition = "NVARCHAR(150)") // quy mô công ty
+    private String scale;
 
     public String getEmail() {
         return email;
@@ -147,22 +158,6 @@ public class Business_Proposed implements Serializable {
         this.business_field_of_activity = business_field_of_activity;
     }
 
-    public boolean isAcceptedByStartupRoom() {
-        return isAcceptedByStartupRoom;
-    }
-
-    public void setAcceptedByStartupRoom(boolean acceptedByStartupRoom) {
-        isAcceptedByStartupRoom = acceptedByStartupRoom;
-    }
-
-    public boolean isAcceptedByHeadMaster() {
-        return isAcceptedByHeadMaster;
-    }
-
-    public void setAcceptedByHeadMaster(boolean acceptedByHeadMaster) {
-        isAcceptedByHeadMaster = acceptedByHeadMaster;
-    }
-
     public Student getStudent_proposed() {
         return student_proposed;
     }
@@ -179,14 +174,6 @@ public class Business_Proposed implements Serializable {
         this.id = id;
     }
 
-    public boolean isAcceptedByHeadOfTraining() {
-        return isAcceptedByHeadOfTraining;
-    }
-
-    public void setAcceptedByHeadOfTraining(boolean acceptedByHeadOfTraining) {
-        isAcceptedByHeadOfTraining = acceptedByHeadOfTraining;
-    }
-
     public String getCommentStartupRoom() {
         return commentStartupRoom;
     }
@@ -201,5 +188,37 @@ public class Business_Proposed implements Serializable {
 
     public void setCommentHeadOfTraining(String commentHeadOfTraining) {
         this.commentHeadOfTraining = commentHeadOfTraining;
+    }
+
+    public BusinessProposedStatus getIsAcceptedByStartupRoom() {
+        return isAcceptedByStartupRoom;
+    }
+
+    public void setIsAcceptedByStartupRoom(BusinessProposedStatus isAcceptedByStartupRoom) {
+        this.isAcceptedByStartupRoom = isAcceptedByStartupRoom;
+    }
+
+    public BusinessProposedStatus getIsAcceptedByHeadOfTraining() {
+        return isAcceptedByHeadOfTraining;
+    }
+
+    public void setIsAcceptedByHeadOfTraining(BusinessProposedStatus isAcceptedByHeadOfTraining) {
+        this.isAcceptedByHeadOfTraining = isAcceptedByHeadOfTraining;
+    }
+
+    public BusinessProposedStatus getIsAcceptedByHeadMaster() {
+        return isAcceptedByHeadMaster;
+    }
+
+    public void setIsAcceptedByHeadMaster(BusinessProposedStatus isAcceptedByHeadMaster) {
+        this.isAcceptedByHeadMaster = isAcceptedByHeadMaster;
+    }
+
+    public String getScale() {
+        return scale;
+    }
+
+    public void setScale(String scale) {
+        this.scale = scale;
     }
 }

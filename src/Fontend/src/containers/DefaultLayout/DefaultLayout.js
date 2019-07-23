@@ -19,6 +19,9 @@ import {
 import navigationHr from '../../_navHr';
 import navigationAdmin from '../../_navAdmin';
 import navigationSupervisor from '../../_navSupervisor';
+import navigationStartup from '../../_navStartup';
+import navigationTraining from '../../_navTraining';
+import navigationMaster from '../../_navMaster';
 // routes config
 import routes from '../../routes';
 import decode from 'jwt-decode';
@@ -69,6 +72,12 @@ class DefaultLayout extends Component {
       navItems = navigationHr;
     } else if (role === 'ROLE_SUPERVISOR') {
       navItems = navigationSupervisor;
+    } else if (role === 'ROLE_STARTUP') {
+      navItems = navigationStartup;
+    } else if (role === 'ROLE_HEADTRAINING') {
+      navItems = navigationTraining;
+    } else if (role === 'ROLE_HEADMASTER') {
+      navItems = navigationMaster;
     }
     if (AuthServices.isLoggedIn()) {
       return (

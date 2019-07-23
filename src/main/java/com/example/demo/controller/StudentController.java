@@ -60,6 +60,15 @@ public class StudentController {
     @Autowired
     ISemesterService semesterService;
 
+    @Autowired
+    IBusiness_ProposedService iBusiness_proposedService;
+
+    @Autowired
+    IQuestionService iQuestionService;
+
+    @Autowired
+    IStudent_AnswerService iStudent_answerService;
+
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     //check semester //ok
@@ -169,7 +178,7 @@ public class StudentController {
     @ResponseBody
     public ResponseEntity<List<Student_OjtenrollmentDTO>> getAllStudents() throws Exception {
         LOG.info("Getting all student");
-        Semester semester=semesterService.getSemesterCurrent();
+        Semester semester = semesterService.getSemesterCurrent();
         List<Student> studentList;
         List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOList = new ArrayList<>();
         try {
@@ -186,12 +195,12 @@ public class StudentController {
                 Student_OjtenrollmentDTO student_ojtenrollmentDTO = new Student_OjtenrollmentDTO();
                 student_ojtenrollmentDTO.setStudent(student);
                 Ojt_Enrollment ojt_enrollment =
-                        ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(student.getEmail(),semester.getId());
+                        ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(student.getEmail(), semester.getId());
                 if (ojt_enrollment.getBusiness() != null) {
                     student_ojtenrollmentDTO.setBusinessEnroll(ojt_enrollment.getBusiness().getBusiness_eng_name());
-                }else{
-                    if(student.isInterviewed1()==true && student.isInterviewed2()==true){
-                        if(student.isAcceptedOption1()==false && student.isAcceptedOption2()==false){
+                } else {
+                    if (student.isInterviewed1() == true && student.isInterviewed2() == true) {
+                        if (student.isAcceptedOption1() == false && student.isAcceptedOption2() == false) {
                             student_ojtenrollmentDTO.setBusinessEnroll("Rớt");
                         }
 //                    }else{
@@ -780,6 +789,34 @@ public class StudentController {
             return new ResponseEntity<List<Student_EvaluationDTO>>(student_evaluationDTOS, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PostMapping("/businessPropose")
+    public ResponseEntity<Void> createBusinessPropose(@RequestBody Business_Proposed business_proposed) {
+        if (business_proposed != null) {
+            iBusiness_proposedService.createBusinessPropose(business_proposed);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/questions")
+    @ResponseBody
+    public ResponseEntity<List<Question>> getListQuestion() {
+        List<Question> questions = iQuestionService.getAllQuestion();
+        if (questions != null) {
+            return new ResponseEntity<List<Question>>(questions, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PostMapping("/answers")
+    public ResponseEntity<Void> answersFeedBack(@RequestBody List<Answer> answers) {
+        String studentEmail = getEmailFromToken();
+        Student student = studentService.getStudentByEmail(studentEmail);
+
+        iStudent_answerService.saveStudent_Answer(student, answers);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     //get email from token

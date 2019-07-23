@@ -13,6 +13,8 @@ import java.util.List;
 @Table(name = "job_post")
 public class Job_Post implements Comparable<Job_Post>, Serializable {
 
+    private static final long serialVersionUID = 7156526077883281624L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
