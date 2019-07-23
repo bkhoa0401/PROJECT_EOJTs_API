@@ -45,6 +45,12 @@ class Login extends Component {
         this.props.history.push('/hr');
       } else if (role === 'ROLE_SUPERVISOR') {
         this.props.history.push('/supervisor');
+      } else if (role === 'ROLE_STARTUP') {
+        this.props.history.push('/startup');
+      } else if (role === 'ROLE_HEADTRAINING') {
+        this.props.history.push('/headtraining');
+      } else if (role === 'ROLE_HEADMASTER') {
+        this.props.history.push('/headmaster');
       }
     } else if (result === 'false') {
       Toastify.actionFail("Thông tin chưa chính xác! Vui lòng thử lại!");
