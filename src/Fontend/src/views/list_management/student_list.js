@@ -71,7 +71,7 @@ class student_list extends Component {
         if (students != null) {
             filteredListStudents = students.filter(
                 (student) => {
-                    if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+                    if (student.student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
                         return student;
                     }
                 }
@@ -108,23 +108,23 @@ class student_list extends Component {
                                                 return (
                                                     <tr>
                                                         <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.code}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.name}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.email}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.student.code}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.student.name}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.student.email}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
                                                         <td style={{ textAlign: "center" }}>
                                                             {
                                                                 student.transcriptLink && student.transcriptLink ? (
-                                                                    <a href={student.transcriptLink} download>Tải</a>
+                                                                    <a href={student.student.transcriptLink} download>Tải</a>
                                                                 ) :
                                                                     (<label>N/A</label>)
                                                             }
                                                         </td>
                                                         {/* <td style={{ textAlign: "center" }}>{student.gpa}</td> */}
                                                         <td style={{ textAlign: "center" }}>
-                                                            <Button style={{ width: "80px" }} color="success" onClick={() => this.handleDirect(`/student/${student.email}`)}>Chi tiết</Button>
+                                                            <Button style={{ width: "80px" }} color="success" onClick={() => this.handleDirect(`/student/${student.student.email}`)}>Chi tiết</Button>
                                                             &nbsp;
-                                                            <Button style={{ width: "90px" }} color="primary" onClick={() => this.handleDirect(`/hr-student-list/details/${student.email}`)}>Nhiệm vụ</Button>
+                                                            <Button style={{ width: "90px" }} color="primary" onClick={() => this.handleDirect(`/hr-student-list/details/${student.student.email}`)}>Nhiệm vụ</Button>
                                                             &nbsp;
                                                     {/* <Button style={{ width: "70px" }} color="danger">Xoá</Button> */}
                                                         </td>
@@ -163,12 +163,12 @@ class student_list extends Component {
                                                 return (
                                                     <tr>
                                                         <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.code}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.name}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.option1 === null ? 'N/A' : student.option1}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.option2 === null ? 'N/A' : student.option2}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.option1 === null && student.option2 === null ? 'N/A' : 'Công ty ABC'}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.student.code}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.student.name}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.student.option1 === null ? 'N/A' : student.student.option1}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.student.option2 === null ? 'N/A' : student.student.option2}</td>
+                                                        <td style={{ textAlign: "center" }}>{student.businessEnroll === null ? 'N/A' : student.businessEnroll}</td>
                                                         <td style={{ textAlign: "center" }}>
                                                             <Button onClick={this.openPopupRegist} color="primary">Đăng ký</Button>
                                                         </td>

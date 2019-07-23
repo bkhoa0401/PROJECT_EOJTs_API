@@ -129,7 +129,7 @@ class Report_Detail extends Component {
                     activity: report.score_activity,
                     averageScore: averageScore,
                     rating: rating,
-                    daysWork: 30,
+                    daysWork: report.workDays,
                     remark: report.remark,
                 }],
                 // reportDownload: reportDownload,
@@ -277,6 +277,14 @@ class Report_Detail extends Component {
                                         </FormGroup>
                                         <FormGroup row>
                                             <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Điểm kỷ luật:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label>{report === null ? "" : report.score_discipline}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Điểm hiệu quả công việc:</h6>
                                             </Col>
                                             <Col xs="12" md="10">
@@ -293,18 +301,18 @@ class Report_Detail extends Component {
                                         </FormGroup>
                                         <FormGroup row>
                                             <Col md="2">
-                                                <h6 style={{ fontWeight: "bold" }}>Điểm kỷ luật:</h6>
-                                            </Col>
-                                            <Col xs="12" md="10">
-                                                <Label>{report === null ? "" : report.score_discipline}</Label>
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Xếp loại:</h6>
                                             </Col>
                                             <Col xs="12" md="10">
                                                 <Label style={{ fontWeight: 'bold', color: reportColor[onScreenRate] }}>{rate[onScreenRate]}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Số ngày làm việc:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Label>{report === null ? "" : report.workDays}</Label>
                                             </Col>
                                         </FormGroup>
                                         <FormGroup row>
