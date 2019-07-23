@@ -17,11 +17,11 @@ public class Event implements Comparable<Event>, Serializable {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "title", columnDefinition = "NVARCHAR(150)")
+    @Column(name = "title", columnDefinition = "NVARCHAR(255)")
     private String title;
 
 
-    @Column(name = "description", columnDefinition = "NVARCHAR(150)")
+    @Column(name = "description", columnDefinition = "NVARCHAR(MAX)")
     private String description;
 
 
