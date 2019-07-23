@@ -27,4 +27,6 @@ public interface IBusinessService {
     void updateRateNumber(String email, int rate);
 
     List<Business_JobPostDTO> getAllJobPostOfBusinesses();
+
+    List<Job_Post> getAllJobPostOfBusiness(String email);
 }

@@ -11,4 +11,6 @@ public interface IAdminService {
     Admin findAdminByEmail(String email);
 
     List<Business_ListJobPostDTO> getJobPostsOfBusinesses();
+
+    List<Business> getSuggestedBusinessListForFail(Student student);
 }

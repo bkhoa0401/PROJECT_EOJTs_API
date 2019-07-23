@@ -161,4 +161,15 @@ public class AdminController {
         return email;
     }
 
+    @GetMapping("/getSuggestedBusinessForFail")
+    @ResponseBody
+    private ResponseEntity<List<Business>> getSuggestedBusinessForFail(@RequestParam String email) {
+        Student suggestStudent = studentService.getStudentByEmail(email);
+        List<Business> listSuggestBusiness = adminService.getSuggestedBusinessListForFail(suggestStudent);
+        if (listSuggestBusiness != null) {
+            return new ResponseEntity<List<Business>>(listSuggestBusiness, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
 }
