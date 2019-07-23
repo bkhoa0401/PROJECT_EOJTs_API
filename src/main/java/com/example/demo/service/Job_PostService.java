@@ -3,6 +3,8 @@ package com.example.demo.service;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IJob_PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -11,6 +13,7 @@ import java.util.Calendar;
 import java.util.List;
 
 @Service
+@CacheConfig(cacheNames = "jobpost")
 public class Job_PostService implements IJob_PostService {
     @Autowired
     IJob_PostRepository IJob_postRepository;
@@ -72,6 +75,8 @@ public class Job_PostService implements IJob_PostService {
     }
 
     //check semester //ok
+
+    @Cacheable(key = "'all'")
     @Override
     public List<Job_Post> getAllJobPost() {
         Semester semester = semesterService.getSemesterCurrent();

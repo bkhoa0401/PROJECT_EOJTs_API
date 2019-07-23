@@ -4,6 +4,7 @@ import com.example.demo.entity.*;
 import com.example.demo.repository.IBusiness_ProposedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -139,4 +140,5 @@ public class Business_ProposedService implements IBusiness_ProposedService {
             // Xử lí logic khúc này: add vô bảng business + set ojt_enrollment
         }
     }
+
 }
