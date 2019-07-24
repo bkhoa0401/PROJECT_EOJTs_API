@@ -15,7 +15,8 @@ class BusinessProposed extends Component {
         this.state = {
             businesses: null,
             searchValue: '',
-            loading: true
+            loading: true,
+            role: '',
         };
     }
 
@@ -28,12 +29,16 @@ class BusinessProposed extends Component {
             role = decoded.role;
         }
 
+        this.setState({
+            role: role
+        });
+
         if (role === 'ROLE_STARTUP') {
             const businesses = await ApiServices.Get('/heading');
             if (businesses != null) {
                 this.setState({
                     businesses,
-                    loading: false
+                    loading: false,
                 });
             } else {
                 this.setState({
@@ -111,7 +116,7 @@ class BusinessProposed extends Component {
     }
 
     render() {
-        const { businesses, searchValue, loading } = this.state;
+        const { businesses, searchValue, loading, role } = this.state;
         let filteredListBusinesses;
         if (businesses != null) {
             filteredListBusinesses = businesses.filter(
@@ -145,12 +150,28 @@ class BusinessProposed extends Component {
                                                     <tr>
                                                         <th style={{ textAlign: "center" }}>STT</th>
                                                         <th style={{ textAlign: "center" }}>Tên doanh nghiệp</th>
-                                                        {/* <th style={{ textAlign: "center" }}>Lĩnh vực hoạt động</th>
-                                                        <th style={{ textAlign: "center" }}>Quy mô công ty</th> */}
                                                         <th style={{ textAlign: "center" }}>Đề xuất bởi</th>
-                                                        <th style={{ textAlign: "center" }}>Ý kiến phòng khởi nghiệp</th>
-                                                        <th style={{ textAlign: "center" }}>Ý kiến phòng đào tạo</th>
-                                                        <th style={{ textAlign: "center" }}>Ý kiến hiệu trưởng</th>
+                                                        {
+                                                            (role === 'ROLE_STARTUP' || role === 'ROLE_HEADTRAINING' || role === 'ROLE_HEADMASTER') ? (
+                                                                <th style={{ textAlign: "center" }}>Ý kiến phòng khởi nghiệp</th>
+                                                            ) : (
+                                                                    <th></th>
+                                                                )
+                                                        }
+                                                        {
+                                                            (role === 'ROLE_HEADTRAINING' || role === 'ROLE_HEADMASTER') ? (
+                                                                <th style={{ textAlign: "center" }}>Ý kiến phòng đào tạo</th>
+                                                            ) : (
+                                                                    <th></th>
+                                                                )
+                                                        }
+                                                        {
+                                                            (role === 'ROLE_HEADMASTER') ? (
+                                                                <th style={{ textAlign: "center" }}>Ý kiến ban giám hiệu</th>
+                                                            ) : (
+                                                                    <th></th>
+                                                                )
+                                                        }
                                                         <th style={{ textAlign: "center" }}>Thao tác</th>
                                                     </tr>
                                                 </thead>
@@ -160,24 +181,40 @@ class BusinessProposed extends Component {
                                                             <tr>
                                                                 <td style={{ textAlign: "center" }}>{index + 1}</td>
                                                                 <td style={{ textAlign: "center" }}>{business.business_name}</td>
-                                                                {/* <td style={{ textAlign: "center" }}>{business.business_field_of_activity}</td>
-                                                                <td style={{ textAlign: "center" }}>{business.scale}</td> */}
                                                                 <td style={{ textAlign: "center" }}>{business.student_proposed.name}</td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {
-                                                                        this.showStatus(business.isAcceptedByStartupRoom)
-                                                                    }
-                                                                </td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {
-                                                                        this.showStatus(business.isAcceptedByHeadOfTraining)
-                                                                    }
-                                                                </td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {
-                                                                        this.showStatus(business.isAcceptedByHeadMaster)
-                                                                    }
-                                                                </td>
+                                                                {
+                                                                    (role === 'ROLE_STARTUP' || role === 'ROLE_HEADTRAINING' || role === 'ROLE_HEADMASTER') ? (
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            {
+                                                                                this.showStatus(business.isAcceptedByStartupRoom)
+                                                                            }
+                                                                        </td>
+                                                                    ) : (
+                                                                            <td></td>
+                                                                        )
+                                                                }
+                                                                {
+                                                                    (role === 'ROLE_HEADTRAINING' || role === 'ROLE_HEADMASTER') ? (
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            {
+                                                                                this.showStatus(business.isAcceptedByHeadOfTraining)
+                                                                            }
+                                                                        </td>
+                                                                    ) : (
+                                                                            <td></td>
+                                                                        )
+                                                                }
+                                                                {
+                                                                    (role === 'ROLE_HEADMASTER') ? (
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            {
+                                                                                this.showStatus(business.isAcceptedByHeadMaster)
+                                                                            }
+                                                                        </td>
+                                                                    ) : (
+                                                                            <td></td>
+                                                                        )
+                                                                }
                                                                 <td style={{ textAlign: "center" }}>
                                                                     <Button style={{ width: "100px" }}
                                                                         color="primary"

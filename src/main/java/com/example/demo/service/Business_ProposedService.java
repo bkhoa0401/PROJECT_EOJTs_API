@@ -101,36 +101,39 @@ public class Business_ProposedService implements IBusiness_ProposedService {
                 + comment;
         String emailNextHeading = "headmaster@gmail.com";
         String contentEmail = "PHÒNG ĐÀO TẠO ĐÃ XEM XÉT VÀ CHẤP NHẬN YÊU CẤU THỰC TẬP TẠI DOANH NGHIỆP " + business_proposed.getBusiness_name()
-                + " CỦA SINH VIÊN " + business_proposed.getStudent_proposed().getName() + "!\n" + "KÍNH MONG HIỆU TRƯỞNG XEM XÉT TRƯỜNG HỢP!";
+                + " CỦA SINH VIÊN " + business_proposed.getStudent_proposed().getName() + "!\n" + "KÍNH MONG BAN GIÁM HIỆU XEM XÉT TRƯỜNG HỢP!";
 
         createInformMessageAndSendMail(status, business_proposed, descriptionEvent, email, emailNextHeading, contentEmail);
     }
 
     @Override
-    public void updateStatusByHeadMaster(int id, boolean status, String email) throws Exception {
+    public void updateStatusByHeadMaster(int id, String comment, boolean status, String email) throws Exception {
         Business_Proposed business_proposed = findById(id);
-
+        String descriptionEvent = "", emailNextHeading = "", contentEmail = "";
         if (business_proposed != null) {
+            business_proposed.setCommentHeadOfMaster(comment);
             if (status) {
                 business_proposed.setIsAcceptedByHeadMaster(BusinessProposedStatus.ACCEPTED);
+
+                descriptionEvent = "Xin chào " + business_proposed.getStudent_proposed().getName() + "! Lời đề nghị thực tập tại doanh nghiệp " +
+                        business_proposed.getBusiness_name() + " của bạn đã được phê duyệt bởi Ban giám hiệu";
             } else {
                 business_proposed.setIsAcceptedByHeadMaster(BusinessProposedStatus.REJECTED);
+
+                descriptionEvent = "Xin chào " + business_proposed.getStudent_proposed().getName() + "! Lời đề nghị thực tập tại doanh nghiệp " +
+                        business_proposed.getBusiness_name() + " của bạn đã bị từ chối bởi Ban giám hiệu vì lí do: " + comment;
+                contentEmail = "PHÒNG ĐÀO TẠO ĐÃ XEM XÉT VÀ CHẤP NHẬN YÊU CẤU THỰC TẬP TẠI DOANH NGHIỆP " + business_proposed.getBusiness_name()
+                        + " CỦA SINH VIÊN " + business_proposed.getStudent_proposed().getName() + "!\n" + "KÍNH MONG BAN GIÁM HIỆU XEM XÉT TRƯỜNG HỢP!";
             }
             iBusiness_proposedRepository.save(business_proposed);
         }
-
-        String descriptionEvent = "Xin chào " + business_proposed.getStudent_proposed().getName() + "! Lời đề nghị thực tập tại doanh nghiệp " +
-                business_proposed.getBusiness_name() + " của bạn đã bị từ chối bởi Hiệu trưởng";
-        String emailNextHeading = "";
-        String contentEmail = "PHÒNG ĐÀO TẠO ĐÃ XEM XÉT VÀ CHẤP NHẬN YÊU CẤU THỰC TẬP TẠI DOANH NGHIỆP " + business_proposed.getBusiness_name()
-                + " CỦA SINH VIÊN " + business_proposed.getStudent_proposed().getName() + "!\n" + "KÍNH MONG HIỆU TRƯỞNG XEM XÉT TRƯỜNG HỢP!";
 
         createInformMessageAndSendMail(status, business_proposed, descriptionEvent, email, emailNextHeading, contentEmail);
     }
 
     @Override
     public void createInformMessageAndSendMail(boolean status, Business_Proposed business_proposed, String descriptionEvent, String emailHeading, String emailNextHeading, String emailContent) throws Exception {
-        if (!status) {
+        if (!status || (status && emailHeading.equals("headmaster@gmail.com"))) {
             // create inform message
             Event event = new Event();
             Date date = new Date(Calendar.getInstance().getTime().getTime());
@@ -149,7 +152,8 @@ public class Business_ProposedService implements IBusiness_ProposedService {
         } else if (status && !emailHeading.equals("headmaster@gmail.com")) {
             // gửi mail cho người kế tiếp
             iUsersService.sendEmailHeading(emailNextHeading, emailContent);
-        } else {
+        }
+        if (status && emailHeading.equals("headmaster@gmail.com")) {
             // Xử lí logic khúc này: add vô bảng business + set ojt_enrollment
         }
     }

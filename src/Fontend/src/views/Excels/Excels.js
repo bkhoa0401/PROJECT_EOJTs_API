@@ -14,6 +14,7 @@ import firebase from 'firebase';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import Popup from "reactjs-popup";
 
 class Excels extends Component {
 
@@ -34,6 +35,9 @@ class Excels extends Component {
             pageNumberBus: 1,
             currentPageBus: 0,
             businessesPagination: null,
+            open: false,
+            business: null,
+
         }
     }
 
@@ -112,7 +116,7 @@ class Excels extends Component {
         var skill = '';
 
         for (let i = 0; i < listIndexNotFound.length; i++) {
-            if (i  + 1 != listIndexNotFound.length) {
+            if (i + 1 != listIndexNotFound.length) {
                 skill = skill + ' ' + listIndexNotFound[i] + ', ';
             } else {
                 skill = skill + ' ' + listIndexNotFound[i];
@@ -135,6 +139,16 @@ class Excels extends Component {
         });
     };
 
+    openPopUp = (business) => {
+        this.setState({
+            open: true,
+            business: business,
+        })
+    }
+
+    closePopup = () => {
+        this.setState({ open: false })
+    }
 
     handleSubmit = async (buttonName) => {
         const { rows_Students, rows_Businesses } = this.state;
@@ -167,8 +181,7 @@ class Excels extends Component {
                         specialized: {
                             name: student[8]
                         },
-                        semester: student[9],
-                        gpa: student[10]
+                        gpa: student[9],
                     };
                     listStudents.push(student);
                 })
@@ -351,7 +364,7 @@ class Excels extends Component {
         }
 
         let flag = true;
-        var titles = ["STT", "MSSV", "Họ Tên", "Ngày sinh", "Giới tính", "SĐT", "Email", "Địa chỉ", "Ngành học", "Kì", "GPA"];
+        var titles = ["STT", "MSSV", "Họ Tên", "Ngày sinh", "Giới tính", "SĐT", "Email", "Địa chỉ", "Ngành học", "GPA"];
 
         if (fileType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 
@@ -362,7 +375,7 @@ class Excels extends Component {
                 else {
                     let titlesExcel = resp.rows[0];
 
-                    if (titlesExcel.length != 11) {
+                    if (titlesExcel.length != 10) {
                         flag = false;
                     } else {
                         for (let i = 0; i < titles.length; i++) {
@@ -455,6 +468,63 @@ class Excels extends Component {
         }
     }
 
+    showPopup = () => {
+        const { business } = this.state;
+        if (business != null) {
+            return (
+                <Popup
+                    open={this.state.open}
+                    closeOnDocumentClick
+                    onClose={this.closePopup} style={{ width: "max" }}>
+                    <div className="TabContent" style={{ width: "max" }}>
+                        <Button className="close" onClick={this.closePopup} >
+                            &times;
+                    </Button>
+                        <br /><br />
+                        <Card>
+                            <CardHeader>
+                                <h4 style={{ textAlign: "center", fontWeight: "bold" }}>Thông tin chi tiết doanh nghiệp</h4>
+                            </CardHeader>
+                            {/* <FormGroup row>
+                        <Col xs="12" md="12">
+                            <Input type="textarea" rows="5" placeholder="Nhập nhận xét..." id="comment" name="comment" />
+                        </Col>
+                        <Col xs="12" md="12">
+                            <Input type="textarea" rows="5" placeholder="Nhập nhận xét..." id="comment" name="comment" />
+                        </Col>
+                        </FormGroup> */}
+                            <CardBody>
+                                <FormGroup row>
+                                    <Col md="3">
+                                        <h6>Tên doanh nghiệp</h6>
+                                    </Col>
+                                    <Col xs="12" md="8">
+                                        <label>{business[1]}</label>
+                                    </Col>
+                                </FormGroup>
+                                <FormGroup row>
+                                    <Col md="3">
+                                        <h6>Tên tiếng anh</h6>
+                                    </Col>
+                                    <Col xs="12" md="8">
+                                        <label>{business[2]}</label>
+                                    </Col>
+                                </FormGroup>
+                            </CardBody>
+                            <CardFooter>
+                                <Row style={{ marginLeft: "40%" }}>
+                                    <Col xs="4" sm="4">
+                                        <Button onClick={this.closePopup} type="submit" color="primary" block>Xác nhận</Button>
+                                    </Col>
+                                </Row>
+                            </CardFooter>
+                        </Card>
+                    </div>
+                </Popup>
+            )
+        }
+    }
+
     // rowStudentEdited = async (event) => {
     //     let rowId = event.target.id;
     //     let tmp = event.target.id.split("-");
@@ -481,7 +551,7 @@ class Excels extends Component {
     // }
 
     render() {
-        const { files_Students, rows_Students, files_Businesses, rows_Businesses, loading } = this.state;
+        const { files_Students, rows_Students, files_Businesses, rows_Businesses, loading, business } = this.state;
         const { studentsPagination, pageNumber, currentPage } = this.state;
         const { businessesPagination, pageNumberBus, currentPageBus } = this.state;
 
@@ -525,7 +595,6 @@ class Excels extends Component {
                                                             <th>Email</th>
                                                             <th>Địa chỉ</th>
                                                             <th>Ngành học</th>
-                                                            <th>Kì</th>
                                                             <th>GPA</th>
                                                         </thead>
                                                         <tbody>
@@ -543,7 +612,6 @@ class Excels extends Component {
                                                                             <td id={"s-" + index + "-7"} onKeyUp={this.rowStudentEdited}>{student[7]}</td>
                                                                             <td id={"s-" + index + "-8"} onKeyUp={this.rowStudentEdited}>{student[8]}</td>
                                                                             <td id={"s-" + index + "-9"} onKeyUp={this.rowStudentEdited}>{student[9]}</td>
-                                                                            <td id={"s-" + index + "-10"} onKeyUp={this.rowStudentEdited}>{student[10]}</td>
                                                                         </tr>
                                                                     )
                                                                 })
@@ -591,17 +659,16 @@ class Excels extends Component {
                                                 </Col>
 
                                                 {files_Businesses && (
-                                                    <div style={{ overflowX: "auto" }}>
-                                                        <table class="table table-bordered table-hover" style={{ textAlign: "center" }}>
-                                                            <thead>
-                                                                <th style={{ whiteSpace: "nowrap" }}>STT</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>Doanh nghiệp</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>Tên tiếng Anh</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>Email</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>SĐT</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>Địa chỉ công ty</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>Website</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>Địa chỉ SV sẽ thực tập</th>
+                                                    <table class="table table-bordered table-hover" style={{ textAlign: "center" }}>
+                                                        <thead>
+                                                            <th style={{ whiteSpace: "nowrap" }}>STT</th>
+                                                            <th style={{ whiteSpace: "nowrap" }}>Doanh nghiệp</th>
+                                                            {/* <th style={{ whiteSpace: "nowrap" }}>Tên tiếng Anh</th> */}
+                                                            <th style={{ whiteSpace: "nowrap" }}>Email</th>
+                                                            <th style={{ whiteSpace: "nowrap" }}>SĐT</th>
+                                                            <th style={{ whiteSpace: "nowrap" }}>Địa chỉ công ty</th>
+                                                            <th style={{ whiteSpace: "nowrap" }}>Website</th>
+                                                            {/* <th style={{ whiteSpace: "nowrap" }}>Địa chỉ SV sẽ thực tập</th>
                                                                 <th style={{ whiteSpace: "nowrap" }}>Vị trí - Số lượng</th>
                                                                 <th style={{ whiteSpace: "nowrap" }}>Quy trình tuyển</th>
                                                                 <th style={{ whiteSpace: "nowrap" }}>Liên hệ</th>
@@ -609,21 +676,22 @@ class Excels extends Component {
                                                                 <th style={{ whiteSpace: "nowrap" }}>Giới thiệu công ty</th>
                                                                 <th style={{ whiteSpace: "nowrap" }}>Chính sách ưu đãi</th>
                                                                 <th style={{ whiteSpace: "nowrap" }}>Logo</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>Kì</th>
-                                                            </thead>
-                                                            <tbody>
-                                                                {
-                                                                    businessesPagination && businessesPagination.map((business, index) => {
-                                                                        return (
-                                                                            <tr key={index}>
-                                                                                <td style={{ whiteSpace: "nowrap" }}>{business[0]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-1"} onKeyUp={this.rowBusinessEdited}>{business[1]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-2"} onKeyUp={this.rowBusinessEdited}>{business[2]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-3"} onKeyUp={this.rowBusinessEdited}>{business[3]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-4"} onKeyUp={this.rowBusinessEdited}>{business[4]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-5"} onKeyUp={this.rowBusinessEdited}>{business[5]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-6"} onKeyUp={this.rowBusinessEdited}>{business[6]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-7"} onKeyUp={this.rowBusinessEdited}>{business[7]}</td>
+                                                                <th style={{ whiteSpace: "nowrap" }}>Kì</th> */}
+                                                            <th style={{ whiteSpace: "nowrap" }}>Thao tác</th>
+                                                        </thead>
+                                                        <tbody>
+                                                            {
+                                                                businessesPagination && businessesPagination.map((business, index) => {
+                                                                    return (
+                                                                        <tr key={index}>
+                                                                            <td style={{ whiteSpace: "nowrap" }}>{business[0]}</td>
+                                                                            <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-1"} onKeyUp={this.rowBusinessEdited}>{business[1]}</td>
+                                                                            {/* <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-2"} onKeyUp={this.rowBusinessEdited}>{business[2]}</td> */}
+                                                                            <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-3"} onKeyUp={this.rowBusinessEdited}>{business[3]}</td>
+                                                                            <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-4"} onKeyUp={this.rowBusinessEdited}>{business[4]}</td>
+                                                                            <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-5"} onKeyUp={this.rowBusinessEdited}>{business[5]}</td>
+                                                                            <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-6"} onKeyUp={this.rowBusinessEdited}>{business[6]}</td>
+                                                                            {/* <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-7"} onKeyUp={this.rowBusinessEdited}>{business[7]}</td>
                                                                                 <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-8"} onKeyUp={this.rowBusinessEdited}>{business[8]}</td>
                                                                                 <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-9"} onKeyUp={this.rowBusinessEdited}>{business[9]}</td>
                                                                                 <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-10"} onKeyUp={this.rowBusinessEdited}>{business[10]}</td>
@@ -631,14 +699,24 @@ class Excels extends Component {
                                                                                 <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-12"} onKeyUp={this.rowBusinessEdited}>{business[12]}</td>
                                                                                 <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-13"} onKeyUp={this.rowBusinessEdited}>{business[13]}</td>
                                                                                 <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-14"} onKeyUp={this.rowBusinessEdited}>{business[14]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-15"} onKeyUp={this.rowBusinessEdited}>{business[15]}</td>
-                                                                            </tr>
-                                                                        )
-                                                                    })
-                                                                }
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
+                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-15"} onKeyUp={this.rowBusinessEdited}>{business[15]}</td> */}
+                                                                            <td style={{ textAlign: "center" }}>
+                                                                                <Button style={{ width: "100px" }}
+                                                                                    color="primary"
+                                                                                    onClick={() => this.openPopUp(business)}
+                                                                                >
+                                                                                    Chi tiết
+                                                                                </Button>
+                                                                            </td>
+                                                                        </tr>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </tbody>
+                                                        {
+                                                            this.showPopup()
+                                                        }
+                                                    </table>
                                                 )}
                                             </FormGroup>
                                         </Form>

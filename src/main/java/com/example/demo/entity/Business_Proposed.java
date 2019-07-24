@@ -75,6 +75,9 @@ public class Business_Proposed implements Serializable {
     @Column(name = "commentHeadOfTraining", columnDefinition = "NVARCHAR(255)")
     private String commentHeadOfTraining;
 
+    @Column(name = "commentHeadOfMaster", columnDefinition = "NVARCHAR(255)")
+    private String commentHeadOfMaster;
+
     @Column(name = "scale", columnDefinition = "NVARCHAR(150)") // quy mô công ty
     private String scale;
 
@@ -220,5 +223,13 @@ public class Business_Proposed implements Serializable {
 
     public void setScale(String scale) {
         this.scale = scale;
+    }
+
+    public String getCommentHeadOfMaster() {
+        return commentHeadOfMaster;
+    }
+
+    public void setCommentHeadOfMaster(String commentHeadOfMaster) {
+        this.commentHeadOfMaster = commentHeadOfMaster;
     }
 }

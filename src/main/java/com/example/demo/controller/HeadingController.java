@@ -79,14 +79,14 @@ public class HeadingController {
     }
 
     @PutMapping("/headMaster")
-    public ResponseEntity<Void> updateStatusAcceptByHeadMaster(@RequestParam int id, @RequestParam boolean status) throws Exception {
+    public ResponseEntity<Void> updateStatusAcceptByHeadMaster(@RequestParam int id, @RequestParam String comment, @RequestParam boolean status) throws Exception {
         String email = getEmailFromToken();
         Users users = iUsersService.findUserByEmail(email);
         List<Role> roles = users.getRoles();
 
         for (int i = 0; i < roles.size(); i++) {
             if (roles.get(i).getDescription().equals("ROLE_HEADMASTER")) {
-                iBusiness_proposedService.updateStatusByHeadMaster(id, status, email);
+                iBusiness_proposedService.updateStatusByHeadMaster(id, comment, status, email);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         }

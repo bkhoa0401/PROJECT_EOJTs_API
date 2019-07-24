@@ -65,7 +65,7 @@ class BusinessProposed_Detail extends Component {
         }
 
         console.log(role);
-        
+
         if (role === 'ROLE_STARTUP') {
             if (business.isAcceptedByHeadOfTraining !== 'PENDING') {
                 document.getElementById('btnApprove').setAttribute("disabled", "disabled");
@@ -253,7 +253,7 @@ class BusinessProposed_Detail extends Component {
         } else if (role === 'ROLE_HEADTRAINING') {
             result = await ApiServices.Put(`/heading/headTraining?id=${id}&comment=${comment}&status=${status}`);
         } else if (role === 'ROLE_HEADMASTER') {
-            result = await ApiServices.Put(`/heading/headMaster?id=${id}&status=${status}`);
+            result = await ApiServices.Put(`/heading/headMaster?id=${id}&comment=${comment}&status=${status}`);
         }
         if (result.status == 200) {
             Toastify.actionSuccess(messageSucces);
@@ -508,27 +508,42 @@ class BusinessProposed_Detail extends Component {
                                                     }
                                                 </Col>
                                             </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="9">
+                                                    <div style={{ marginLeft: "31%", textAlign: "center" }}>
+                                                        {
+                                                            business.isAcceptedByHeadMaster !== 'PENDING' ? (
+                                                                <label style={{ width: "300px" }}>{business.commentHeadOfMaster}</label>
+                                                            ) : (
+                                                                    <label style={{ width: "300px" }}></label>
+                                                                )
+                                                        }
+                                                    </div>
+                                                </Col>
+                                            </FormGroup>
                                         </Form>
                                     </CardBody>
                                     <CardFooter className="p-5">
                                         <Row style={{ marginLeft: "20%" }}>
                                             <Col xs="3" sm="3">
-                                                {
+                                                {/* {
                                                     role === 'ROLE_HEADMASTER' ? (
                                                         <Button id="btnApprove" onClick={() => this.handleConfirmMaster(true)} type="submit" color="primary" block>Phê duyệt</Button>
                                                     ) : (
                                                             <Button id="btnApprove" onClick={() => this.openPopUp(true)} type="submit" color="primary" block>Phê duyệt</Button>
                                                         )
-                                                }
+                                                } */}
+                                                <Button id="btnApprove" onClick={() => this.openPopUp(true)} type="submit" color="primary" block>Phê duyệt</Button>
                                             </Col>
                                             <Col xs="3" sm="3">
-                                                {
+                                                {/* {
                                                     role === 'ROLE_HEADMASTER' ? (
                                                         <Button id="btnReject" color="danger" block onClick={() => this.handleConfirmMaster(false)}>Từ chối</Button>
                                                     ) : (
                                                             <Button id="btnReject" color="danger" block onClick={() => this.openPopUp(false)}>Từ chối</Button>
                                                         )
-                                                }
+                                                } */}
+                                                <Button id="btnReject" color="danger" block onClick={() => this.openPopUp(false)}>Từ chối</Button>
                                             </Col>
                                             <Col xs="3" sm="3">
                                                 <Button color="success" block onClick={() => this.handleDirect("/business-proposed")}>Trở về</Button>
@@ -555,7 +570,7 @@ class BusinessProposed_Detail extends Component {
                                                 <Input value={this.state.comment} type="textarea" rows="5" placeholder="Nhập nhận xét..." onChange={this.handleInput} id="comment" name="comment" />
                                             </Col>
                                             <span style={{ marginLeft: "3%" }} className="form-error is-visible text-danger">
-                                                {this.validator.message('Nhận xét - đánh giá', this.state.comment, 'required|min:10|max:255')}
+                                                {this.validator.message('Nhận xét - đánh giá', this.state.comment, 'required|max:255')}
                                             </span>
                                         </FormGroup>
                                         <CardFooter>
