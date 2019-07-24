@@ -23,6 +23,7 @@ public class Answer implements Serializable {
     private String content;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "question_id")
     @LazyCollection(LazyCollectionOption.FALSE)
     private Question question;
@@ -30,12 +31,13 @@ public class Answer implements Serializable {
     @Column(name = "isOther")
     private boolean isOther;
 
-//    @OneToMany(mappedBy = "answer")
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    private List<Student_Answer> student_answers = new ArrayList<>();
+    @OneToMany(mappedBy = "answer")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
+    private List<Student_Answer> student_answers;
 
-    @ManyToMany(mappedBy = "answers")
-    private List<Student> students;
+//    @ManyToMany(mappedBy = "answers")
+//    private List<Student> students;
 
     public int getId() {
         return id;
@@ -69,11 +71,18 @@ public class Answer implements Serializable {
         isOther = other;
     }
 
-    public List<Student> getStudents() {
-        return students;
+    public List<Student_Answer> getStudent_answers() {
+        return student_answers;
     }
 
-    public void setStudents(List<Student> students) {
-        this.students = students;
+    public void setStudent_answers(List<Student_Answer> student_answers) {
+        this.student_answers = student_answers;
     }
+//    public List<Student> getStudents() {
+//        return students;
+//    }
+//
+//    public void setStudents(List<Student> students) {
+//        this.students = students;
+//    }
 }

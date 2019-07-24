@@ -81,13 +81,10 @@ public class FileController {
                 .body(resource);
     }
     @PostMapping("/uploadListFile")
-    public ResponseEntity<String> uploadListFile(@RequestParam("files[]") List<MultipartFile> files,
-                                                 @RequestBody Business_Proposed business_proposed) {
+    public ResponseEntity<String> uploadListFile(@RequestParam("files") List<MultipartFile> files){
         String studentEmail=getEmailFromToken();
 
         List<String> fileName = fileStorageService.storeListFile(files,studentEmail);
-
-        iBusiness_proposedRepository.save(business_proposed);
 
         if (fileName == null) {
             return new ResponseEntity<String>("fail", HttpStatus.EXPECTATION_FAILED);
