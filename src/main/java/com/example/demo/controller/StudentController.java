@@ -847,6 +847,15 @@ public class StudentController {
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
+    @GetMapping ("/unReadMessage")
+    public ResponseEntity<Integer> getUnreadMess(){
+        String email=getEmailFromToken();
+
+        int countEventIsNotRead = eventService.countEventIsNotRead(email);
+
+        return new ResponseEntity<Integer>(countEventIsNotRead, HttpStatus.OK);
+    }
+
     //get email from token
     private String getEmailFromToken() {
         String email = "";
