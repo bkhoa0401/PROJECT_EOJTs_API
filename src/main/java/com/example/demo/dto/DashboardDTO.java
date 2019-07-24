@@ -10,14 +10,17 @@ public class DashboardDTO {
     private List<Task> taskList;
     private List<Evaluation> evaluationList;
     private int unReadInformessage;
+    private boolean isMakeFeedback;
+
 
     public DashboardDTO() {
     }
 
-    public DashboardDTO(List<Task> taskList, List<Evaluation> evaluationList, int unReadInformessage) {
+    public DashboardDTO(List<Task> taskList, List<Evaluation> evaluationList, int unReadInformessage, boolean isMakeFeedback) {
         this.taskList = taskList;
         this.evaluationList = evaluationList;
         this.unReadInformessage = unReadInformessage;
+        this.isMakeFeedback = isMakeFeedback;
     }
 
     public List<Task> getTaskList() {
@@ -42,5 +45,13 @@ public class DashboardDTO {
 
     public void setUnReadInformessage(int unReadInformessage) {
         this.unReadInformessage = unReadInformessage;
+    }
+
+    public boolean isMakeFeedback() {
+        return isMakeFeedback;
+    }
+
+    public void setMakeFeedback(boolean makeFeedback) {
+        isMakeFeedback = makeFeedback;
     }
 }
