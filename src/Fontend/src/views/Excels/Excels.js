@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ApiServices from '../../service/api-service';
 import {
     Button, Card, CardBody, CardFooter,
-    CardHeader, Col, Form, FormGroup, Input, Label, Row, Pagination
+    CardHeader, Col, Form, FormGroup, Input, Label, Row, Pagination, Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 import { ExcelRenderer } from 'react-excel-renderer';
 import { ToastContainer } from 'react-toastify';
@@ -37,9 +37,155 @@ class Excels extends Component {
             businessesPagination: null,
             open: false,
             business: null,
+            large: false,
+        };
+        this.toggleLarge = this.toggleLarge.bind(this);
+    }
 
+    toggleLarge = (business) => {
+        this.setState({
+            large: !this.state.large,
+            business: business
+        });
+    }
+
+    showModal = () => {
+        const { business } = this.state;
+        if (business != null) {
+            return (
+                <Modal isOpen={this.state.large} toggle={this.toggleLarge}
+                    className={'modal-lg ' + this.props.className}>
+                    <ModalHeader style={{ backgroundColor: "#20a8d8", color: "#f0f8ff" }} toggle={this.toggleLarge}>Chi tiết doanh nghiệp</ModalHeader>
+                    <ModalBody>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Tên doanh nghiệp:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{business[1]}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Tên tiếng anh:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{business[2]}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Email:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{business[3]}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Số điện thoại:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{business[4]}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Địa chỉ công ty:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{business[5]}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Website:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{business[6]}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Địa chỉ SV sẽ thực tập:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{business[7]}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Vị trí - Số lượng:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{business[8]}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Quy trình tuyển:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{business[9]}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Liên hệ:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{business[10]}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Mô tả:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{business[11]}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Giới thiệu công ty:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{business[12]}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Chính sách ưu đãi:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{business[13]}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Logo:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{business[14]}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Kì:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{business[15]}</label>
+                            </Col>
+                        </FormGroup>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button style={{ marginRight: "42%", width: "100px" }} color="primary" onClick={this.toggleLarge}>Xác nhận</Button>
+                    </ModalFooter>
+                </Modal>
+            )
         }
     }
+
 
 
     handlePageNumber = (currentPage) => {
@@ -244,8 +390,6 @@ class Excels extends Component {
                             if (listNameSkill.indexOf(name) == -1) {
                                 listNameSkill.push(name);
                             }
-                            // const id = await ApiServices.Get(`/student/skill?nameSkill=${name}`);
-                            // console.log(id);
                             obj = {
                                 skill: {
                                     id: 0,
@@ -468,62 +612,7 @@ class Excels extends Component {
         }
     }
 
-    showPopup = () => {
-        const { business } = this.state;
-        if (business != null) {
-            return (
-                <Popup
-                    open={this.state.open}
-                    closeOnDocumentClick
-                    onClose={this.closePopup} style={{ width: "max" }}>
-                    <div className="TabContent" style={{ width: "max" }}>
-                        <Button className="close" onClick={this.closePopup} >
-                            &times;
-                    </Button>
-                        <br /><br />
-                        <Card>
-                            <CardHeader>
-                                <h4 style={{ textAlign: "center", fontWeight: "bold" }}>Thông tin chi tiết doanh nghiệp</h4>
-                            </CardHeader>
-                            {/* <FormGroup row>
-                        <Col xs="12" md="12">
-                            <Input type="textarea" rows="5" placeholder="Nhập nhận xét..." id="comment" name="comment" />
-                        </Col>
-                        <Col xs="12" md="12">
-                            <Input type="textarea" rows="5" placeholder="Nhập nhận xét..." id="comment" name="comment" />
-                        </Col>
-                        </FormGroup> */}
-                            <CardBody>
-                                <FormGroup row>
-                                    <Col md="3">
-                                        <h6>Tên doanh nghiệp</h6>
-                                    </Col>
-                                    <Col xs="12" md="8">
-                                        <label>{business[1]}</label>
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Col md="3">
-                                        <h6>Tên tiếng anh</h6>
-                                    </Col>
-                                    <Col xs="12" md="8">
-                                        <label>{business[2]}</label>
-                                    </Col>
-                                </FormGroup>
-                            </CardBody>
-                            <CardFooter>
-                                <Row style={{ marginLeft: "40%" }}>
-                                    <Col xs="4" sm="4">
-                                        <Button onClick={this.closePopup} type="submit" color="primary" block>Xác nhận</Button>
-                                    </Col>
-                                </Row>
-                            </CardFooter>
-                        </Card>
-                    </div>
-                </Popup>
-            )
-        }
-    }
+
 
     // rowStudentEdited = async (event) => {
     //     let rowId = event.target.id;
@@ -701,21 +790,16 @@ class Excels extends Component {
                                                                                 <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-14"} onKeyUp={this.rowBusinessEdited}>{business[14]}</td>
                                                                                 <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-15"} onKeyUp={this.rowBusinessEdited}>{business[15]}</td> */}
                                                                             <td style={{ textAlign: "center" }}>
-                                                                                <Button style={{ width: "100px" }}
-                                                                                    color="primary"
-                                                                                    onClick={() => this.openPopUp(business)}
-                                                                                >
-                                                                                    Chi tiết
-                                                                                </Button>
+                                                                                <Button style={{ width: "100px" }} color="primary" onClick={() => this.toggleLarge(business)} className="mr-1">Chi tiết</Button>
+                                                                                {
+                                                                                    this.showModal()
+                                                                                }
                                                                             </td>
                                                                         </tr>
                                                                     )
                                                                 })
                                                             }
                                                         </tbody>
-                                                        {
-                                                            this.showPopup()
-                                                        }
                                                     </table>
                                                 )}
                                             </FormGroup>
