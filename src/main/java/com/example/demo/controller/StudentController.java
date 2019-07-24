@@ -839,6 +839,14 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PostMapping("/feedback")
+    public ResponseEntity<Void> postFeedback(@RequestParam String content){
+        String email=getEmailFromToken();
+        studentService.postFeedBack(email,content);
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
     //get email from token
     private String getEmailFromToken() {
         String email = "";
