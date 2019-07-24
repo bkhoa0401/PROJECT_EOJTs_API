@@ -25,7 +25,7 @@ public class Student_AnswerService implements IStudent_AnswerService {
     IQuestionService iQuestionService;
 
     @Override
-    public void saveStudent_Answer(Student student, List<Answer> answer, Map<String,String> mapsOther) {
+    public void saveStudent_Answer(Student student, List<Answer> answer, Map<String, String> mapsOther) {
         Student_Answer student_answer = new Student_Answer();
 
         for (int i = 0; i < answer.size(); i++) {
@@ -34,12 +34,13 @@ public class Student_AnswerService implements IStudent_AnswerService {
             iStudent_answerRepository.save(student_answer);
             student_answer = new Student_Answer();
         }
-        for(Map.Entry<String,String> maps:mapsOther.entrySet()){
-            Answer answerOther=new Answer();
+        for (Map.Entry<String, String> maps : mapsOther.entrySet()) {
+
+            Answer answerOther = new Answer();
             answerOther.setOther(true);
             answerOther.setContent(maps.getValue());
 
-            Question question=iQuestionService.findQuestionById(Integer.parseInt(maps.getKey()));
+            Question question = iQuestionService.findQuestionById(Integer.parseInt(maps.getKey()));
             answerOther.setQuestion(question);
 
             iAnswerRepository.save(answerOther);
@@ -50,5 +51,14 @@ public class Student_AnswerService implements IStudent_AnswerService {
             student_answer = new Student_Answer();
         }
 
+    }
+
+    @Override
+    public void saveFeedback(Student student, Answer answer) {
+        Student_Answer student_answer = new Student_Answer();
+        student_answer.setStudent(student);
+        student_answer.setAnswer(answer);
+
+        iStudent_answerRepository.save(student_answer);
     }
 }

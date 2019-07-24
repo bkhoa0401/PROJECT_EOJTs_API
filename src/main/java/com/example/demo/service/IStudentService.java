@@ -54,4 +54,6 @@ public interface IStudentService {
     public List<Student> getAllStudentOfASupervisor(String email);
 
     public boolean updateInformationStudent(String email, String name, String phone, boolean gender, String address, String birthDate) throws ParseException;
+
+    public void postFeedBack(String email,String content);
 }
