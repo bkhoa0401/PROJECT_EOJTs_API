@@ -18,6 +18,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -811,11 +812,11 @@ public class StudentController {
     }
 
     @PostMapping("/answers")
-    public ResponseEntity<Void> answersFeedBack(@RequestBody List<Answer> answers) {
+    public ResponseEntity<Void> answersFeedBack(@RequestBody List<Answer> answers, @RequestParam Map<String,String> mapOthers) {
         String studentEmail = getEmailFromToken();
         Student student = studentService.getStudentByEmail(studentEmail);
 
-        iStudent_answerService.saveStudent_Answer(student, answers);
+        iStudent_answerService.saveStudent_Answer(student, answers,mapOthers);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
