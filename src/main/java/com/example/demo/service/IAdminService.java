@@ -13,4 +13,6 @@ public interface IAdminService {
     List<Business_ListJobPostDTO> getJobPostsOfBusinesses();
 
     List<Business> getSuggestedBusinessListForFail(Student student);
+
+    List<Business> filterListBusinessByStudentSpecialized(int specializedId, List<Business> businessList);
 }

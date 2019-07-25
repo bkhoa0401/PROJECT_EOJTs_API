@@ -62,18 +62,17 @@ public class AdminService implements IAdminService{
         return business_listJobPostDTOS;
     }
 
+    //finish
     //Warning: Don't modify this, i get high when i wrote this
+    //get suggested business for student
     @Override
     public List<Business> getSuggestedBusinessListForFail(Student student) {
         List<Business_ListJobPostDTO> listAllBusiness = getJobPostsOfBusinesses();
         List<Business> listSuggestedBusiness = new ArrayList<>();
         List<Business_SuggestScoreDTO> listSuggestedBusinessWithScore = new ArrayList<>();
         for (int i = 0; i < listAllBusiness.size(); i++) {
-            if (listAllBusiness.get(i).getBusiness().getBusiness_eng_name() == student.getOption1()) {
-                listAllBusiness.remove(i);
-            } else if (listAllBusiness.get(i).getBusiness().getBusiness_eng_name() == student.getOption2()) {
-                listAllBusiness.remove(i);
-            } else {
+            if (!listAllBusiness.get(i).getBusiness().getBusiness_eng_name().equals(student.getOption1()) &&
+                    !listAllBusiness.get(i).getBusiness().getBusiness_eng_name().equals(student.getOption2())) {
                 List<Job_Post> job_postList = listAllBusiness.get(i).getJob_postList();
                 if (job_postList != null) {
                     for (int j = 0; j < job_postList.size(); j++) {
@@ -86,19 +85,29 @@ public class AdminService implements IAdminService{
                                 }
                             }
                         }
-                        if (matchFlag / job_postList.get(j).getJob_post_skills().size() > 0.5) {
+                        //(float)matchFlag / job_postList.get(j).getJob_post_skills().size() > 0.5
+                        if (matchFlag > 0) {
                             Business_SuggestScoreDTO business_suggestScoreDTO = new Business_SuggestScoreDTO();
                             business_suggestScoreDTO.setBusiness(listAllBusiness.get(i).getBusiness());
-                            business_suggestScoreDTO.setSuggestScore(matchFlag / job_postList.get(j).getJob_post_skills().size());
-                            listSuggestedBusinessWithScore.add(business_suggestScoreDTO);
-                            break;
+                            business_suggestScoreDTO.setSuggestScore((float)matchFlag / job_postList.get(j).getJob_post_skills().size());
+                            int isSet = -1;
+                            for (int l = 0; l < listSuggestedBusinessWithScore.size(); l++) {
+                                if (listSuggestedBusinessWithScore.get(l).getBusiness().getBusiness_eng_name().equals(business_suggestScoreDTO.getBusiness().getBusiness_eng_name())) {
+                                    isSet = l;
+                                }
+                            }
+                            if (isSet == -1) {
+                                listSuggestedBusinessWithScore.add(business_suggestScoreDTO);
+                            } else {
+                                listSuggestedBusinessWithScore.get(isSet).setSuggestScore(business_suggestScoreDTO.getSuggestScore());
+                            }
                         }
                     }
                 }
             }
         }
         for (int i = 0; i < listSuggestedBusinessWithScore.size(); i++) {
-            for (int j = 1; j < listSuggestedBusinessWithScore.size(); j++) {
+            for (int j = i; j < listSuggestedBusinessWithScore.size(); j++) {
                 if (listSuggestedBusinessWithScore.get(i).getSuggestScore() < listSuggestedBusinessWithScore.get(j).getSuggestScore()) {
                     Business_SuggestScoreDTO tmpBusiness_suggestScoreDTO = listSuggestedBusinessWithScore.get(i);
                     listSuggestedBusinessWithScore.set(i, listSuggestedBusinessWithScore.get(j));
@@ -107,7 +116,7 @@ public class AdminService implements IAdminService{
             }
         }
         for (int i = 0; i < listSuggestedBusinessWithScore.size(); i++) {
-            for (int j = 1; j < listSuggestedBusinessWithScore.size(); j++) {
+            for (int j = i; j < listSuggestedBusinessWithScore.size(); j++) {
                 if (listSuggestedBusinessWithScore.get(i).getSuggestScore() == listSuggestedBusinessWithScore.get(j).getSuggestScore() &&
                         listSuggestedBusinessWithScore.get(i).getBusiness().getRateAverage() < listSuggestedBusinessWithScore.get(j).getBusiness().getRateAverage()) {
                     Business_SuggestScoreDTO tmpBusiness_suggestScoreDTO = listSuggestedBusinessWithScore.get(i);
@@ -117,7 +126,7 @@ public class AdminService implements IAdminService{
             }
         }
         for (int i = 0; i < listSuggestedBusinessWithScore.size(); i++) {
-            for (int j = 1; j < listSuggestedBusinessWithScore.size(); j++) {
+            for (int j = i; j < listSuggestedBusinessWithScore.size(); j++) {
                 if (listSuggestedBusinessWithScore.get(i).getSuggestScore() == listSuggestedBusinessWithScore.get(j).getSuggestScore() &&
                         listSuggestedBusinessWithScore.get(i).getBusiness().getRateAverage() == listSuggestedBusinessWithScore.get(j).getBusiness().getRateAverage() &&
                         listSuggestedBusinessWithScore.get(i).getBusiness().getRateCount() < listSuggestedBusinessWithScore.get(j).getBusiness().getRateCount()) {
@@ -131,5 +140,27 @@ public class AdminService implements IAdminService{
             listSuggestedBusiness.add(listSuggestedBusinessWithScore.get(i).getBusiness());
         }
         return listSuggestedBusiness;
+    }
+
+
+    //get business has job_post in specific specialized
+    @Override
+    public List<Business> filterListBusinessByStudentSpecialized(int specializedId, List<Business> businessList) {
+        List<Business> finalList = new ArrayList<>();
+        for (int i = 0; i < businessList.size(); i++) {
+            Semester currentSemester = semesterService.getSemesterCurrent();
+            Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(businessList.get(i).getEmail(), currentSemester.getId());
+            List<Job_Post> job_postList = job_postService.getAllJobPostOfBusiness(ojt_enrollment);
+            for (int j = 0; j < job_postList.size(); j++) {
+                for (int k = 0; k < job_postList.get(j).getJob_post_skills().size(); k++) {
+                    if (job_postList.get(j).getJob_post_skills().get(k).getSkill().getSpecialized().getId() == specializedId) {
+                        if (!finalList.contains(businessList.get(i))) {
+                            finalList.add(businessList.get(i));
+                        }
+                    }
+                }
+            }
+        }
+        return finalList;
     }
 }

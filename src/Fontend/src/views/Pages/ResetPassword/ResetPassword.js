@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Card, CardBody, CardFooter, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 
-class FotgotPassword extends Component {
+class ResetPassword extends Component {
 
     handleBack = async () => {
         this.props.history.push('/login');
@@ -87,4 +87,4 @@ class FotgotPassword extends Component {
     }
 }
 
-export default FotgotPassword;
+export default ResetPassword;

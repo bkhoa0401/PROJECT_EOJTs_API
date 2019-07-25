@@ -161,6 +161,7 @@ public class AdminController {
         return email;
     }
 
+    //Not doing anything from this//get suggested business for student
     @GetMapping("/getSuggestedBusinessForFail")
     @ResponseBody
     private ResponseEntity<List<Business>> getSuggestedBusinessForFail(@RequestParam String email) {
@@ -168,6 +169,39 @@ public class AdminController {
         List<Business> listSuggestBusiness = adminService.getSuggestedBusinessListForFail(suggestStudent);
         if (listSuggestBusiness != null) {
             return new ResponseEntity<List<Business>>(listSuggestBusiness, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    //get business has job_post in specific specialized
+    @GetMapping("/getOtherBusiness")
+    @ResponseBody
+    private ResponseEntity<List<Business>> getOtherBusiness(@RequestParam String email) {
+        Student suggestStudent = studentService.getStudentByEmail(email);
+        List<Business> listBusiness = businessService.getAllBusinessBySemester();
+        List<Business> listSuggestBusiness = adminService.getSuggestedBusinessListForFail(suggestStudent);
+        List<Business> listOtherBusiness = new ArrayList<>();
+        for (int i = 0; i < listBusiness.size(); i++) {
+            if (!listBusiness.get(i).getBusiness_eng_name().equals(suggestStudent.getOption1()) &&
+                    !listBusiness.get(i).getBusiness_eng_name().equals(suggestStudent.getOption2()) &&
+                    !listSuggestBusiness.contains(listBusiness.get(i))) {
+                listOtherBusiness.add(listBusiness.get(i));
+            }
+        }
+        List<Business> finalList = adminService.filterListBusinessByStudentSpecialized(suggestStudent.getSpecialized().getId(), listOtherBusiness);
+        if (finalList != null) {
+            return new ResponseEntity<List<Business>>(finalList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+
+    //set business for student by student id
+    @PutMapping("/setBusinessForStudent")
+    public ResponseEntity<Void> setBusinessForStudent(@RequestParam String emailOfBusiness, @RequestParam String emailOfStudent) {
+        boolean setStatus = ojt_enrollmentService.setBusinessForStudent(emailOfBusiness, emailOfStudent);
+        if (setStatus == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

@@ -27,6 +27,8 @@ public interface IOjt_EnrollmentService {
 
     void updateBusinessForStudent(String emailBusiness, String emailStudent);
 
+    boolean setBusinessForStudent(String emailBusiness, String emailStudent);
+
     Ojt_Enrollment getOjtEnrollmentByBusinessEmailAndSemesterId(String email, int id);
 
     Ojt_Enrollment getOjtEnrollmentByStudentEmailAndSemesterId(String email, int id);
