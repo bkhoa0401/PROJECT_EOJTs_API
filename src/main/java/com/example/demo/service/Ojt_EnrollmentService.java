@@ -132,6 +132,29 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
         ojtEnrollmentRepository.save(ojt_enrollment);
     }
 
+    //set business for student by student id and return result
+    @Override
+    public boolean setBusinessForStudent(String emailBusiness, String emailStudent) {
+        Business business = businessService.getBusinessByEmail(emailBusiness);
+        Date date = new Date(Calendar.getInstance().getTime().getTime());
+
+        Semester semester = semesterService.getSemesterCurrent();
+
+        //Ojt_Enrollment ojt_enrollment = getOjt_EnrollmentByStudentEmail(emailStudent);
+        Ojt_Enrollment ojt_enrollment = getOjtEnrollmentByStudentEmailAndSemesterId(emailStudent, semester.getId());
+        boolean flag = false;
+        if (ojt_enrollment != null) {
+
+            ojt_enrollment.setTimeEnroll(date);
+            ojt_enrollment.setBusiness(business);
+
+            ojtEnrollmentRepository.save(ojt_enrollment);
+
+            flag = true;
+        }
+        return flag;
+    }
+
     @Override
     public Ojt_Enrollment getOjtEnrollmentByBusinessEmailAndSemesterId(String email, int id) {
         Ojt_Enrollment ojt_enrollment = ojtEnrollmentRepository.getOjt_EnrollmentByBusiness_EmailAndSemesterIdAndStudentIsNull(email, id);

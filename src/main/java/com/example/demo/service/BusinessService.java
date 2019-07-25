@@ -237,4 +237,17 @@ public class BusinessService implements IBusinessService{
         Collections.sort(business_jobPostDTOList);
         return business_jobPostDTOList;
     }
+
+    @Override
+    public List<Job_Post> getAllJobPostOfBusiness(String email) {
+        Business business = getBusinessByEmail(email);
+
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
+        Ojt_Enrollment ojt_enrollment =
+                ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(business.getEmail(), semesterCurrent.getId());
+
+        List<Job_Post> job_postList = ojt_enrollment.getJob_posts();
+
+        return job_postList;
+    }
 }

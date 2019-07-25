@@ -105,7 +105,7 @@ class Ojt_Registration extends Component {
         }
         const result = await ApiServices.Put(`/business/updateStatusOfStudent?numberOfOption=${numberOfOption}&statusOfOption=${statusOfOption}&emailOfStudent=${student.email}`);
 
-        if (result == 200) {
+        if (result.status == 200) {
             Toastify.actionSuccess(`${action} thành công!`);
             const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
             this.setState({

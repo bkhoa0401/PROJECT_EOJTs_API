@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Popup from "reactjs-popup";
-import { Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import { FormGroup, Modal, ModalHeader, ModalBody, ModalFooter, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../Toastify/Toastify';
@@ -8,6 +8,8 @@ import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurr
 import PaginationComponent from '../Paginations/pagination';
 import { forEach } from '@firebase/util';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 
 class student_list extends Component {
@@ -17,14 +19,17 @@ class student_list extends Component {
 
         this.toggle = this.toggle.bind(this);
         this.state = {
+            modal: false,
             activeTab: new Array(1).fill('1'),
-            open: false,
+            // open: false,
             students: null,
             searchValue: '',
-            loading: true
+            loading: true,
+            suggestedBusiness: null,
+            otherBusiness: null,
+            studentSelect: null,
         };
-        this.openPopupRegist = this.openPopupRegist.bind(this);
-        this.closePopupRegist = this.closePopupRegist.bind(this);
+        // this.toggleModal = this.toggleModal.bind(this);
     }
 
     async componentDidMount() {
@@ -45,12 +50,21 @@ class student_list extends Component {
         });
     }
 
-    openPopupRegist() {
-        this.setState({ open: true })
-    }
-
-    closePopupRegist() {
-        this.setState({ open: false })
+    toggleModal = async (studentSelect) => {
+        let suggestedBusiness = null;
+        let otherBusiness = null;
+        if (this.state.modal == false) {
+            suggestedBusiness = await ApiServices.Get(`/admin/getSuggestedBusinessForFail?email=${studentSelect.email}`);
+            otherBusiness = await ApiServices.Get(`/admin/getOtherBusiness?email=${studentSelect.email}`);
+        }
+        // console.log(suggestedBusiness);
+        // console.log(otherBusiness);
+        this.setState({
+            modal: !this.state.modal,
+            suggestedBusiness: suggestedBusiness,
+            otherBusiness: otherBusiness,
+            studentSelect: studentSelect,
+        });
     }
 
     handleInput = async (event) => {
@@ -64,8 +78,64 @@ class student_list extends Component {
         this.props.history.push(uri);
     }
 
+    handleConfirm = (studentSelect, businessEmail, businessName) => {
+        this.setState({
+            modal: !this.state.modal,
+            open: true
+        });
+        confirmAlert({
+            title: 'Xác nhận',
+            message: `Bạn có chắc chắn muốn đăng ký công ty ${businessName} cho sinh viên ${studentSelect.name}?`,
+            buttons: [
+                {
+                    label: 'Đồng ý',
+                    onClick: () => this.handleYes(studentSelect, businessEmail, businessName)
+                },
+                {
+                    label: 'Hủy bỏ',
+                    onClick: () => this.toggleModal(studentSelect)
+                }
+            ]
+        });
+    };
+
+    handleYes = async (studentSelect, businessEmail, businessName) => {
+
+        var message = `Chúc mừng ${studentSelect.name}! Bạn đã được đăng ký thực tập tại ${businessName}!`;
+
+        const notificationDTO = {
+            data: {
+                title: `Kết quả đăng kí thực tập tại doanh nghiệp ${businessName}`,
+                body: message,
+                click_action: "http://localhost:3000/#/invitation/new",
+                icon: "http://url-to-an-icon/icon.png"
+            },
+            to: `${studentSelect.token}`
+        }
+
+        this.setState({
+            loading: true
+        })
+
+        const result = await ApiServices.Put(`/admin/setBusinessForStudent?emailOfBusiness=${businessEmail}&emailOfStudent=${studentSelect.email}`);
+        console.log(result);
+
+        if (result.status == 200) {
+            Toastify.actionSuccess(`Đăng ký thành công!`);
+            const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
+            this.setState({
+                loading: false
+            })
+        } else {
+            Toastify.actionFail(`Đăng ký thất bại!`);
+            this.setState({
+                loading: false
+            })
+        }
+    }
+
     tabPane() {
-        const { students, searchValue, loading } = this.state;
+        const { students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect } = this.state;
         let filteredListStudents;
 
         if (students != null) {
@@ -170,7 +240,7 @@ class student_list extends Component {
                                                         <td style={{ textAlign: "center" }}>{student.student.option2 === null ? 'N/A' : student.student.option2}</td>
                                                         <td style={{ textAlign: "center" }}>{student.businessEnroll === null ? 'N/A' : student.businessEnroll}</td>
                                                         <td style={{ textAlign: "center" }}>
-                                                            <Button onClick={this.openPopupRegist} color="primary">Đăng ký</Button>
+                                                            <Button onClick={() => this.toggleModal(student.student)} color="primary">Đăng ký</Button>
                                                         </td>
                                                     </tr>
                                                 )
@@ -181,33 +251,40 @@ class student_list extends Component {
                                 </div>
                             }
                         </TabPane>
-                        <Popup
-                            open={this.state.open}
-                            closeOnDocumentClick
-                            onClose={this.closePopupRegist}
-                        >
-                            <div className="TabContent">
-                                <Button className="close" onClick={this.closePopupRegist} >
-                                    &times;
-                        </Button>
-                                <h3 style={{ textAlign: "center" }}>Đăng ký công ty thực tập</h3>
+                        <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={'modal-primary ' + this.props.className}>
+                            <ModalHeader toggle={this.toggleModal}>Đăng ký công ty thực tập</ModalHeader>
+                            <ModalBody>
+                                <h6 style={{ fontWeight: 'bold' }}>Công ty được đề cử(Theo thứ tự):</h6>
+                                <hr />
+                                {suggestedBusiness && suggestedBusiness.map((business, index) =>
+                                    <FormGroup row>
+                                        <Col md="10">
+                                            <h6>{index + 1}. {business.business_eng_name}</h6>
+                                        </Col>
+                                        <Col xs="12" md="2">
+                                            <Button color="primary" onClick={() => this.handleConfirm(studentSelect, business.email, business.business_eng_name)}>Chọn</Button>
+                                        </Col>
+                                    </FormGroup>
+                                )}
                                 <br />
-                                <Table>
-                                    <thead>
-                                        <tr>
-                                            <th>Công ty</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Công ty A</td>
-                                            <td style={{ textAlign: "right" }}><Button color="primary">Chọn</Button></td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
-                            </div>
-                        </Popup>
+                                <h6 style={{ fontWeight: 'bold' }}>Các công ty khác có tuyển cùng chuyên ngành:</h6>
+                                <hr />
+                                {otherBusiness && otherBusiness.map((business, index) =>
+                                    <FormGroup row>
+                                        <Col md="10">
+                                            <h6>{business.business_eng_name}</h6>
+                                        </Col>
+                                        <Col xs="12" md="2">
+                                            <Button color="primary">Chọn</Button>
+                                        </Col>
+                                    </FormGroup>
+                                )}
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="primary" onClick={this.toggleModal}>Do Something</Button>{' '}
+                                <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
+                            </ModalFooter>
+                        </Modal>
                     </>
                 )
         );

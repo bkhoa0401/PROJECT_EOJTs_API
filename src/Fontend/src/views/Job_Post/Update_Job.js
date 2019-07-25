@@ -78,7 +78,7 @@ class Update_Job extends Component {
     async componentDidMount() {
         const { specializedUpdate, arraySkill, arrayQuantity, choseSpecialized } = this.state;
         const specializeds = await ApiServices.Get('/specialized');
-        const skills = await ApiServices.Get(`/skill`);
+        const skills = await ApiServices.Get('/skill');
         if (specializeds != null) {
             this.setState({
                 specializeds,
