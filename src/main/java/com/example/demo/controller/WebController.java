@@ -2,10 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.LoginDTO;
 import com.example.demo.dto.StudentDTO;
-import com.example.demo.entity.Ojt_Enrollment;
-import com.example.demo.entity.Semester;
-import com.example.demo.entity.Student;
-import com.example.demo.entity.Users;
+import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +30,9 @@ public class WebController {
 
     @Autowired
     ISemesterService semesterService;
+
+    @Autowired
+    IStudent_AnswerService iStudent_answerService;
 
 
     @GetMapping("")
@@ -68,6 +68,14 @@ public class WebController {
                         if (ojt_enrollment.getBusiness() != null) {
                             studentDTO.setIntership(true);
                             studentDTO.setBusinessName(ojt_enrollment.getBusiness().getBusiness_eng_name());
+                        }else{
+                            studentDTO.setIntership(false);
+                        }
+                        Student_Answer student_answer=iStudent_answerService.findStudentAnswerByStudentEmail(studentDTO.getEmail());
+                        if(student_answer!=null){
+                            studentDTO.setMakeFeedback(true);
+                        }else{
+                            studentDTO.setMakeFeedback(false);
                         }
                         login.setStudent(studentDTO);
                     }

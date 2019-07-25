@@ -19,12 +19,14 @@ import org.springframework.context.annotation.Bean;
 
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.stereotype.Service;
 
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @CacheConfig(cacheNames = "specialized")
@@ -75,6 +77,8 @@ public class SpecializedService implements ISpecializedService {
 
 
     List<Specialized> specializedListAll = new ArrayList<>();
+
+
 
     @Cacheable(key = "'all'")
     public List<Specialized> getAllSpecialized() {

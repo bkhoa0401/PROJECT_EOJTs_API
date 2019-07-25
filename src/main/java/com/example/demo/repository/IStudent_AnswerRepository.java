@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IStudent_AnswerRepository extends JpaRepository<Student_Answer,Integer> {
+public interface IStudent_AnswerRepository extends JpaRepository<Student_Answer, Integer> {
+    Student_Answer findByStudentEmail(String email);
 }
