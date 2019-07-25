@@ -750,45 +750,45 @@ class Excels extends Component {
                                                 {files_Businesses && (
                                                     <table class="table table-bordered table-hover" style={{ textAlign: "center" }}>
                                                         <thead>
-                                                            <th style={{ whiteSpace: "nowrap" }}>STT</th>
-                                                            <th style={{ whiteSpace: "nowrap" }}>Doanh nghiệp</th>
-                                                            {/* <th style={{ whiteSpace: "nowrap" }}>Tên tiếng Anh</th> */}
-                                                            <th style={{ whiteSpace: "nowrap" }}>Email</th>
-                                                            <th style={{ whiteSpace: "nowrap" }}>SĐT</th>
-                                                            <th style={{ whiteSpace: "nowrap" }}>Địa chỉ công ty</th>
-                                                            <th style={{ whiteSpace: "nowrap" }}>Website</th>
-                                                            {/* <th style={{ whiteSpace: "nowrap" }}>Địa chỉ SV sẽ thực tập</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>Vị trí - Số lượng</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>Quy trình tuyển</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>Liên hệ</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>Mô tả</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>Giới thiệu công ty</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>Chính sách ưu đãi</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>Logo</th>
-                                                                <th style={{ whiteSpace: "nowrap" }}>Kì</th> */}
-                                                            <th style={{ whiteSpace: "nowrap" }}>Thao tác</th>
+                                                            <th >STT</th>
+                                                            <th >Doanh nghiệp</th>
+                                                            {/* <th >Tên tiếng Anh</th> */}
+                                                            <th >Email</th>
+                                                            <th >SĐT</th>
+                                                            <th >Địa chỉ công ty</th>
+                                                            <th >Website</th>
+                                                            {/* <th >Địa chỉ SV sẽ thực tập</th>
+                                                                <th >Vị trí - Số lượng</th>
+                                                                <th >Quy trình tuyển</th>
+                                                                <th >Liên hệ</th>
+                                                                <th >Mô tả</th>
+                                                                <th >Giới thiệu công ty</th>
+                                                                <th >Chính sách ưu đãi</th>
+                                                                <th >Logo</th>
+                                                                <th >Kì</th> */}
+                                                            <th >Thao tác</th>
                                                         </thead>
                                                         <tbody>
                                                             {
                                                                 businessesPagination && businessesPagination.map((business, index) => {
                                                                     return (
                                                                         <tr key={index}>
-                                                                            <td style={{ whiteSpace: "nowrap" }}>{business[0]}</td>
-                                                                            <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-1"} onKeyUp={this.rowBusinessEdited}>{business[1]}</td>
-                                                                            {/* <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-2"} onKeyUp={this.rowBusinessEdited}>{business[2]}</td> */}
-                                                                            <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-3"} onKeyUp={this.rowBusinessEdited}>{business[3]}</td>
-                                                                            <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-4"} onKeyUp={this.rowBusinessEdited}>{business[4]}</td>
-                                                                            <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-5"} onKeyUp={this.rowBusinessEdited}>{business[5]}</td>
-                                                                            <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-6"} onKeyUp={this.rowBusinessEdited}>{business[6]}</td>
-                                                                            {/* <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-7"} onKeyUp={this.rowBusinessEdited}>{business[7]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-8"} onKeyUp={this.rowBusinessEdited}>{business[8]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-9"} onKeyUp={this.rowBusinessEdited}>{business[9]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-10"} onKeyUp={this.rowBusinessEdited}>{business[10]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-11"} onKeyUp={this.rowBusinessEdited}>{business[11]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-12"} onKeyUp={this.rowBusinessEdited}>{business[12]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-13"} onKeyUp={this.rowBusinessEdited}>{business[13]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-14"} onKeyUp={this.rowBusinessEdited}>{business[14]}</td>
-                                                                                <td style={{ whiteSpace: "nowrap" }} id={"b-" + index + "-15"} onKeyUp={this.rowBusinessEdited}>{business[15]}</td> */}
+                                                                            <td >{business[0]}</td>
+                                                                            <td id={"b-" + index + "-1"} onKeyUp={this.rowBusinessEdited}>{business[1]}</td>
+                                                                            {/* <td  id={"b-" + index + "-2"} onKeyUp={this.rowBusinessEdited}>{business[2]}</td> */}
+                                                                            <td id={"b-" + index + "-3"} onKeyUp={this.rowBusinessEdited}>{business[3]}</td>
+                                                                            <td id={"b-" + index + "-4"} onKeyUp={this.rowBusinessEdited}>{business[4]}</td>
+                                                                            <td id={"b-" + index + "-5"} onKeyUp={this.rowBusinessEdited}>{business[5]}</td>
+                                                                            <td id={"b-" + index + "-6"} onKeyUp={this.rowBusinessEdited}>{business[6]}</td>
+                                                                            {/* <td  id={"b-" + index + "-7"} onKeyUp={this.rowBusinessEdited}>{business[7]}</td>
+                                                                                <td  id={"b-" + index + "-8"} onKeyUp={this.rowBusinessEdited}>{business[8]}</td>
+                                                                                <td  id={"b-" + index + "-9"} onKeyUp={this.rowBusinessEdited}>{business[9]}</td>
+                                                                                <td  id={"b-" + index + "-10"} onKeyUp={this.rowBusinessEdited}>{business[10]}</td>
+                                                                                <td  id={"b-" + index + "-11"} onKeyUp={this.rowBusinessEdited}>{business[11]}</td>
+                                                                                <td  id={"b-" + index + "-12"} onKeyUp={this.rowBusinessEdited}>{business[12]}</td>
+                                                                                <td  id={"b-" + index + "-13"} onKeyUp={this.rowBusinessEdited}>{business[13]}</td>
+                                                                                <td  id={"b-" + index + "-14"} onKeyUp={this.rowBusinessEdited}>{business[14]}</td>
+                                                                                <td  id={"b-" + index + "-15"} onKeyUp={this.rowBusinessEdited}>{business[15]}</td> */}
                                                                             <td style={{ textAlign: "center" }}>
                                                                                 <Button style={{ width: "100px" }} color="primary" onClick={() => this.toggleLarge(business)} className="mr-1">Chi tiết</Button>
                                                                                 {
