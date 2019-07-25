@@ -86,6 +86,7 @@ const Feedback = React.lazy(() => import('./views/Feedback/Feedback.js'));
 const Feedback_Detail = React.lazy(() => import('./views/Feedback/Feedback_Detail.js'));
 const BusinessProposed = React.lazy(() => import('./views/BusinessProposed/BusinessProposed.js'));
 const BusinessProposed_Detail = React.lazy(() => import('./views/BusinessProposed/BusinessProposed_Detail.js'));
+const BusinessProposed_Update = React.lazy(() => import('./views/BusinessProposed/BusinessProposed_Update.js'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -184,6 +185,7 @@ const routes = [
   { path: '/feedback/feedback_detail/:id', exact: true, name: 'Chi tiết phản hồi', component: Feedback_Detail },
   { path: '/business-proposed', exact: true, name: 'Doanh nghiệp đề xuất', component: BusinessProposed },
   { path: '/business-proposed/:id', exact: true, name: 'Chi tiết doanh nghiệp đề xuất', component: BusinessProposed_Detail },
+  { path: '/business-proposed/update/:id', exact: true, name: 'Chỉnh sửa chi tiết doanh nghiệp đề xuất', component: BusinessProposed_Update },
 ];
 
 export default routes;

@@ -19,4 +19,6 @@ public interface IBusiness_ProposedService {
     void createInformMessageAndSendMail(boolean status, Business_Proposed business_proposed, String descriptionEvent, String emailHeading, String emailNextHeading, String emailContent) throws Exception;
 
     void createBusinessPropose(Business_Proposed business_proposed);
+
+    boolean updateBusinessPropose(Business_Proposed business_proposed);
 }

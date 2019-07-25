@@ -33,6 +33,9 @@ public class Business_ProposedService implements IBusiness_ProposedService {
     @Autowired
     IUsersService iUsersService;
 
+    @Autowired
+    IBusinessService iBusinessService;
+
     @Override
     public List<Business_Proposed> getAll() {
 
@@ -155,6 +158,46 @@ public class Business_ProposedService implements IBusiness_ProposedService {
         }
         if (status && emailHeading.equals("headmaster@gmail.com")) {
             // Xử lí logic khúc này: add vô bảng business + set ojt_enrollment
+
+            List<Role> roleList = new ArrayList<>();
+            Role role = new Role();
+            Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
+            List<Ojt_Enrollment> ojtEnrollmentList = new ArrayList<>();
+            Users users = new Users();
+            Business business = new Business();
+
+            String password = iUsersService.getAlphaNumericString();
+
+            role.setId(3);
+            roleList.add(role);
+            users.setRoles(roleList);
+            users.setEmail(business_proposed.getEmail());
+            users.setPassword(password);
+            users.setActive(true);
+
+            Semester semester = iSemesterService.getSemesterCurrent();
+
+            business.setEmail(business_proposed.getEmail());
+            business.setBusiness_name(business_proposed.getBusiness_name());
+            business.setBusiness_eng_name(business_proposed.getBusiness_eng_name());
+            business.setBusiness_phone(business_proposed.getBusiness_phone());
+            business.setBusiness_address(business_proposed.getBusiness_address());
+            business.setBusiness_overview(business_proposed.getBusiness_overview());
+            business.setBusiness_website(business_proposed.getBusiness_website());
+            business.setLogo(business_proposed.getLogo());
+
+
+            ojt_enrollment.setBusiness(business);
+            ojt_enrollment.setSemester(semester);
+            ojtEnrollmentList.add(ojt_enrollment);
+            business.setOjt_enrollments(ojtEnrollmentList);
+
+            iBusinessService.saveBusiness(business);
+            iUsersService.saveUser(users);
+
+            if (iUsersService.saveUser(users)) {
+                iUsersService.sendEmail(business.getBusiness_name(), users.getEmail(), users.getPassword());
+            }
         }
     }
 
@@ -163,5 +206,14 @@ public class Business_ProposedService implements IBusiness_ProposedService {
         iBusiness_proposedRepository.save(business_proposed);
     }
 
+    @Override
+    public boolean updateBusinessPropose(Business_Proposed business_proposed) {
+        Business_Proposed businessProposedFound = iBusiness_proposedRepository.findById(business_proposed.getId());
 
+        if (businessProposedFound != null) {
+            iBusiness_proposedRepository.save(business_proposed);
+            return true;
+        }
+        return false;
+    }
 }

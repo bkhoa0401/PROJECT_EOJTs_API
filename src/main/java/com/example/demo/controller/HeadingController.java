@@ -94,6 +94,15 @@ public class HeadingController {
 
     }
 
+    @PutMapping
+    public ResponseEntity<Void> updateBusiness(@RequestBody Business_Proposed business_proposed) {
+        boolean result = iBusiness_proposedService.updateBusinessPropose(business_proposed);
+        if (result) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     //get email from token
     private String getEmailFromToken() {
         String email = "";
