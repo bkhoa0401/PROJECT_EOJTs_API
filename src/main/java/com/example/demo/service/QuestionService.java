@@ -32,4 +32,10 @@ public class QuestionService implements IQuestionService {
         }
         return null;
     }
+
+    @Override
+    public Question findQuestionById(int id) {
+        Question question=iQuestionRepository.findById(id);
+        return question;
+    }
 }

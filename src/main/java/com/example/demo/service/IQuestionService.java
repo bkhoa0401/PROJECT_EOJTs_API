@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface IQuestionService {
     List<Question> getAllQuestion();
+    Question findQuestionById(int id);
 }

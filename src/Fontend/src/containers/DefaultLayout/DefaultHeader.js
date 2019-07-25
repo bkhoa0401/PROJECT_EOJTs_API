@@ -4,6 +4,7 @@ import { Col, FormGroup, Badge, DropdownItem, DropdownMenu, DropdownToggle, Nav,
 import PropTypes from 'prop-types';
 
 import { AppAsideToggler, AppHeaderDropdown, AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
+import decode from 'jwt-decode';
 import logo from '../../assets/img/brand/logo.svg'
 import sygnet from '../../assets/img/brand/sygnet.svg'
 
@@ -14,10 +15,31 @@ const propTypes = {
 const defaultProps = {};
 
 class DefaultHeader extends Component {
-  render() {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: ''
+    }
+  }
+
+  async componentWillMount() {
+    const token = localStorage.getItem('id_token');
+    if (token != null) {
+      const decoded = decode(token);
+      const email = decoded.email;
+
+      
+      this.setState({
+        email
+      });
+    }
+  }
+
+  render() {
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
+    const { role } = this.state;
 
     return (
       <React.Fragment>
@@ -40,9 +62,12 @@ class DefaultHeader extends Component {
           </NavItem>
         </Nav> */}
         <Nav className="ml-auto" navbar>
-          <NavItem className="d-md-down-none">
-            <NavLink to="#" className="nav-link"><i className="icon-bell"></i><Badge pill color="danger">5</Badge></NavLink>
+          <NavItem>
+            <h6 className="nav-link" style={{ color: "Gray", textDecoration: "underline"}}>&nbsp;&nbsp;Xin chào! Nguyễn Hồng Đức</h6>
           </NavItem>
+          {/* <NavItem className="d-md-down-none">
+            <NavLink to="#" className="nav-link"><i className="icon-bell"></i><Badge pill color="danger">5</Badge></NavLink>
+          </NavItem> */}
           {/* <NavItem className="d-md-down-none">
             <NavLink to="#" className="nav-link"><i className="icon-list"></i></NavLink>
           </NavItem>
@@ -61,15 +86,15 @@ class DefaultHeader extends Component {
               <DropdownItem><i className="fa fa-comments"></i> Comments<Badge color="warning">42</Badge></DropdownItem> */}
               <DropdownItem>
                 <FormGroup row>
-                  <Col md="2" style={{height:"7px"}}>
+                  <Col md="2" style={{ height: "7px" }}>
                     <i className="fa cui-pencil"></i>
                   </Col>
-                  <Col md="9.5" style={{height:"7px"}}>
+                  <Col md="9.5" style={{ height: "7px" }}>
                     <NavItem>
-                      <NavLink to="account/changepassword" className="nav-link" style={{color:"Gray"}}>&nbsp;&nbsp;Đổi mật khẩu</NavLink>
+                      <NavLink to="account/changepassword" className="nav-link" style={{ color: "Gray" }}>&nbsp;&nbsp;Đổi mật khẩu</NavLink>
                     </NavItem>
                   </Col>
-                </FormGroup> 
+                </FormGroup>
               </DropdownItem>
               {/* <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem> */}
               {/* <DropdownItem><i className="fa fa-user"></i> Profile</DropdownItem>
@@ -80,13 +105,13 @@ class DefaultHeader extends Component {
               <DropdownItem><i className="fa fa-shield"></i> Lock Account</DropdownItem> */}
               <DropdownItem onClick={e => this.props.onLogout(e)}>
                 <FormGroup row>
-                  <Col md="2" style={{height:"7px"}}>
+                  <Col md="2" style={{ height: "7px" }}>
                     <i className="fa cui-account-logout"></i>
                   </Col>
-                  <Col md="9.5" style={{height:"7px", color:"Gray"}}>
+                  <Col md="9.5" style={{ height: "7px", color: "Gray" }}>
                     &nbsp;&nbsp;Đăng xuất
                   </Col>
-                </FormGroup>  
+                </FormGroup>
               </DropdownItem>
             </DropdownMenu>
           </AppHeaderDropdown>

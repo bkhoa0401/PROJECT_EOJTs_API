@@ -14,9 +14,11 @@ public interface IBusiness_ProposedService {
 
     void updateStatusByHeadOfTraining(int id, String comment, boolean status, String email) throws Exception;
 
-    void updateStatusByHeadMaster(int id, boolean status, String email) throws Exception;
+    void updateStatusByHeadMaster(int id, String comment, boolean status, String email) throws Exception;
 
     void createInformMessageAndSendMail(boolean status, Business_Proposed business_proposed, String descriptionEvent, String emailHeading, String emailNextHeading, String emailContent) throws Exception;
 
     void createBusinessPropose(Business_Proposed business_proposed);
+
+    boolean updateBusinessPropose(Business_Proposed business_proposed);
 }

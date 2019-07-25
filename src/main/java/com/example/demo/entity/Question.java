@@ -34,6 +34,8 @@ public class Question implements Serializable {
 //    @LazyCollection(LazyCollectionOption.FALSE)
 //    private List<Student_Answer> student_answers;
 
+    @Column(name = "isManyOption")
+    private boolean isManyOption;
 
     public Question() {
     }
@@ -83,5 +85,13 @@ public class Question implements Serializable {
 
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
+    }
+
+    public boolean isManyOption() {
+        return isManyOption;
+    }
+
+    public void setManyOption(boolean manyOption) {
+        isManyOption = manyOption;
     }
 }

@@ -12,6 +12,7 @@ import {
     Input,
     Label,
     Row,
+    Modal, ModalBody, ModalFooter, ModalHeader
 } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
@@ -40,7 +41,9 @@ class BusinessProposed_Detail extends Component {
             id: '',
             status: '',
             role: '',
-        }
+            success: false,
+            danger: false
+        };
     }
 
     async componentDidMount() {
@@ -65,7 +68,7 @@ class BusinessProposed_Detail extends Component {
         }
 
         console.log(role);
-        
+
         if (role === 'ROLE_STARTUP') {
             if (business.isAcceptedByHeadOfTraining !== 'PENDING') {
                 document.getElementById('btnApprove').setAttribute("disabled", "disabled");
@@ -88,21 +91,11 @@ class BusinessProposed_Detail extends Component {
         else if (role === 'ROLE_HEADMASTER') {
             if (business.isAcceptedByHeadMaster === 'ACCEPTED') {
                 document.getElementById('btnApprove').setAttribute("disabled", "disabled");
+                document.getElementById('btnReject').setAttribute("disabled", "disabled");
             } else if (business.isAcceptedByHeadMaster === 'REJECTED') {
                 document.getElementById('btnReject').setAttribute("disabled", "disabled");
             }
         }
-    }
-
-    openPopUp = (status) => {
-        this.setState({
-            open: true,
-            status: status
-        })
-    }
-
-    closePopup = () => {
-        this.setState({ open: false })
     }
 
     handleDirect = (uri) => {
@@ -171,12 +164,18 @@ class BusinessProposed_Detail extends Component {
         const { status, business } = this.state;
         let message = '';
         if (status) {
+            this.setState({
+                success: false
+            })
             message = `Bạn chắc chắn muốn "XÉT DUYỆT" yêu cầu thực tập tại doanh nghiệp "${business.business_name}" của sinh viên "${business.student_proposed.name}" ?`
         } else {
+            this.setState({
+                danger: false
+            })
             message = `Bạn chắc chắn muốn "TỪ CHỐI" yêu cầu thực tập tại doanh nghiệp "${business.business_name}" của sinh viên "${business.student_proposed.name}" ?`
         }
         if (this.validator.allValid()) {
-            this.closePopup();
+            // this.closePopup();
             confirmAlert({
                 title: 'Xác nhận',
                 message: message,
@@ -196,33 +195,33 @@ class BusinessProposed_Detail extends Component {
         }
     };
 
-    handleConfirmMaster = (status) => {
-        this.setState({
-            status: status
-        })
-        const { business } = this.state;
-        let message = '';
-        if (status) {
-            message = `Bạn chắc chắn muốn "XÉT DUYỆT" yêu cầu thực tập tại doanh nghiệp "${business.business_name}" của sinh viên "${business.student_proposed.name}" ?`
-        } else {
-            message = `Bạn chắc chắn muốn "TỪ CHỐI" yêu cầu thực tập tại doanh nghiệp "${business.business_name}" của sinh viên "${business.student_proposed.name}" ?`
-        }
+    // handleConfirmMaster = (status) => {
+    //     this.setState({
+    //         status: status
+    //     })
+    //     const { business } = this.state;
+    //     let message = '';
+    //     if (status) {
+    //         message = `Bạn chắc chắn muốn "XÉT DUYỆT" yêu cầu thực tập tại doanh nghiệp "${business.business_name}" của sinh viên "${business.student_proposed.name}" ?`
+    //     } else {
+    //         message = `Bạn chắc chắn muốn "TỪ CHỐI" yêu cầu thực tập tại doanh nghiệp "${business.business_name}" của sinh viên "${business.student_proposed.name}" ?`
+    //     }
 
-        this.closePopup();
-        confirmAlert({
-            title: 'Xác nhận',
-            message: message,
-            buttons: [
-                {
-                    label: 'Đồng ý',
-                    onClick: () => this.handleSubmit()
-                },
-                {
-                    label: 'Hủy bỏ',
-                }
-            ]
-        });
-    };
+    //     // this.closePopup();
+    //     confirmAlert({
+    //         title: 'Xác nhận',
+    //         message: message,
+    //         buttons: [
+    //             {
+    //                 label: 'Đồng ý',
+    //                 onClick: () => this.handleSubmit()
+    //             },
+    //             {
+    //                 label: 'Hủy bỏ',
+    //             }
+    //         ]
+    //     });
+    // };
 
     handleInput = async (event) => {
         const { name, value } = event.target;
@@ -244,6 +243,8 @@ class BusinessProposed_Detail extends Component {
             messageFail = "Từ chối đề xuất thất bại!";
         }
 
+        console.log(id + ' - ' + comment + ' - ' + status);
+
         this.setState({
             loading: true
         })
@@ -253,7 +254,7 @@ class BusinessProposed_Detail extends Component {
         } else if (role === 'ROLE_HEADTRAINING') {
             result = await ApiServices.Put(`/heading/headTraining?id=${id}&comment=${comment}&status=${status}`);
         } else if (role === 'ROLE_HEADMASTER') {
-            result = await ApiServices.Put(`/heading/headMaster?id=${id}&status=${status}`);
+            result = await ApiServices.Put(`/heading/headMaster?id=${id}&comment=${comment}&status=${status}`);
         }
         if (result.status == 200) {
             Toastify.actionSuccess(messageSucces);
@@ -287,6 +288,7 @@ class BusinessProposed_Detail extends Component {
             }
             else if (role === 'ROLE_HEADMASTER') {
                 if (business.isAcceptedByHeadMaster === 'ACCEPTED') {
+                    document.getElementById('btnReject').setAttribute("disabled", "disabled");
                     document.getElementById('btnApprove').setAttribute("disabled", "disabled");
                 } else if (business.isAcceptedByHeadMaster === 'REJECTED') {
                     document.getElementById('btnReject').setAttribute("disabled", "disabled");
@@ -298,6 +300,20 @@ class BusinessProposed_Detail extends Component {
                 loading: false
             })
         }
+    }
+
+    toggleSuccess = (status) => {
+        this.setState({
+            success: !this.state.success,
+            status: status
+        });
+    }
+
+    toggleDanger = (status) => {
+        this.setState({
+            danger: !this.state.danger,
+            status: status
+        });
     }
 
     render() {
@@ -313,7 +329,6 @@ class BusinessProposed_Detail extends Component {
                             <Col xs="12" sm="12">
                                 <Card>
                                     <CardHeader>
-                                        {/* <h3>Thông tin chi tiết yêu cầu thực tập tại doanh nghiệp ngoài</h3> */}
                                     </CardHeader>
                                     <CardBody>
                                         <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -416,7 +431,7 @@ class BusinessProposed_Detail extends Component {
                                                         <h6 style={{ fontWeight: "bold" }}>Mô tả doanh nghiệp:</h6>
                                                     </Col>
                                                     <Col xs="12" md="10">
-                                                        <Label>{business.business_overview}</Label>
+                                                        <Label dangerouslySetInnerHTML={{ __html: business.business_overview }} />
                                                     </Col>
                                                 </FormGroup>
                                                 <FormGroup row>
@@ -508,36 +523,68 @@ class BusinessProposed_Detail extends Component {
                                                     }
                                                 </Col>
                                             </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="9">
+                                                    <div style={{ marginLeft: "31%", textAlign: "center" }}>
+                                                        {
+                                                            business.isAcceptedByHeadMaster !== 'PENDING' ? (
+                                                                <label style={{ width: "300px" }}>{business.commentHeadOfMaster}</label>
+                                                            ) : (
+                                                                    <label style={{ width: "300px" }}></label>
+                                                                )
+                                                        }
+                                                    </div>
+                                                </Col>
+                                            </FormGroup>
                                         </Form>
                                     </CardBody>
-                                    <CardFooter className="p-5">
-                                        <Row style={{ marginLeft: "20%" }}>
+                                    <CardFooter className="p-4">
+                                        <Row>
+                                            {
+                                                (role === 'ROLE_STARTUP' && business.isAcceptedByStartupRoom === 'PENDING') ? (
+                                                    <Col xs="3" sm="3">
+                                                        <Button id="btnUpdate" type="submit" block color="primary" onClick={() => this.handleDirect(`/business-proposed/update/${business.id}`)}>Chỉnh sửa</Button>
+                                                    </Col>
+                                                ) : (
+                                                        (role === 'ROLE_STARTUP' && business.isAcceptedByStartupRoom !== 'PENDING') ? (
+                                                            <Col xs="3" sm="3">
+                                                                <Button disabled id="btnUpdate" type="submit" block color="primary" onClick={() => this.handleDirect(`/hr-task/update/`)}>Chỉnh sửa</Button>
+                                                            </Col>
+                                                        ) : (
+                                                                <Col xs="1" sm="1">
+
+                                                                </Col>
+                                                            )
+                                                    )
+                                            }
                                             <Col xs="3" sm="3">
-                                                {
+                                                {/* {
                                                     role === 'ROLE_HEADMASTER' ? (
                                                         <Button id="btnApprove" onClick={() => this.handleConfirmMaster(true)} type="submit" color="primary" block>Phê duyệt</Button>
                                                     ) : (
                                                             <Button id="btnApprove" onClick={() => this.openPopUp(true)} type="submit" color="primary" block>Phê duyệt</Button>
                                                         )
-                                                }
+                                                } */}
+                                                <Button id="btnApprove" onClick={() => this.toggleSuccess(true)} type="submit" color="success" block>Phê duyệt</Button>
                                             </Col>
                                             <Col xs="3" sm="3">
-                                                {
+                                                {/* {
                                                     role === 'ROLE_HEADMASTER' ? (
                                                         <Button id="btnReject" color="danger" block onClick={() => this.handleConfirmMaster(false)}>Từ chối</Button>
                                                     ) : (
                                                             <Button id="btnReject" color="danger" block onClick={() => this.openPopUp(false)}>Từ chối</Button>
                                                         )
-                                                }
+                                                } */}
+                                                <Button id="btnReject" color="danger" block onClick={() => this.toggleDanger(false)}>Từ chối</Button>
                                             </Col>
                                             <Col xs="3" sm="3">
-                                                <Button color="success" block onClick={() => this.handleDirect("/business-proposed")}>Trở về</Button>
+                                                <Button block color="secondary" block onClick={() => this.handleDirect("/business-proposed")}>Trở về</Button>
                                             </Col>
                                         </Row>
                                     </CardFooter>
                                 </Card>
                             </Col>
-                            <Popup
+                            {/* <Popup
                                 open={this.state.open}
                                 closeOnDocumentClick
                                 onClose={this.closePopup}>
@@ -555,7 +602,7 @@ class BusinessProposed_Detail extends Component {
                                                 <Input value={this.state.comment} type="textarea" rows="5" placeholder="Nhập nhận xét..." onChange={this.handleInput} id="comment" name="comment" />
                                             </Col>
                                             <span style={{ marginLeft: "3%" }} className="form-error is-visible text-danger">
-                                                {this.validator.message('Nhận xét - đánh giá', this.state.comment, 'required|min:10|max:255')}
+                                                {this.validator.message('Nhận xét - đánh giá', this.state.comment, 'required|max:255')}
                                             </span>
                                         </FormGroup>
                                         <CardFooter>
@@ -570,7 +617,56 @@ class BusinessProposed_Detail extends Component {
                                         </CardFooter>
                                     </Card>
                                 </div>
-                            </Popup>
+                            </Popup> */}
+                            <Modal isOpen={this.state.success} toggle={this.toggleSuccess}
+                                className={'modal-success ' + this.props.className}>
+                                <ModalHeader toggle={this.toggleSuccess}>Nhận xét - Đánh giá về doanh nghiệp</ModalHeader>
+                                <ModalBody>
+                                    <FormGroup row>
+                                        <Col xs="12" md="12">
+                                            <Input value={this.state.comment} type="textarea" rows="5" placeholder="Nhập nhận xét..." onChange={this.handleInput} id="comment" name="comment" />
+                                        </Col>
+                                        <span style={{ marginLeft: "3%" }} className="form-error is-visible text-danger">
+                                            {this.validator.message('Nhận xét - đánh giá', this.state.comment, 'required|max:255')}
+                                        </span>
+                                    </FormGroup>
+                                </ModalBody>
+                                <CardFooter className="p-3">
+                                    <Row style={{ marginLeft: "21%" }}>
+                                        <Col xs="4" sm="4">
+                                            <Button onClick={() => this.handleConfirm()} type="submit" color="primary" block>Xác nhận</Button>
+                                        </Col>
+                                        <Col xs="4" sm="4">
+                                            <Button block color="secondary" onClick={this.toggleSuccess}>Hủy bỏ</Button>
+                                        </Col>
+                                    </Row>
+                                </CardFooter>
+                            </Modal>
+
+                            <Modal isOpen={this.state.danger} toggle={this.toggleDanger}
+                                className={'modal-danger ' + this.props.className}>
+                                <ModalHeader toggle={this.toggleDanger}>Nhận xét - Đánh giá về doanh nghiệp</ModalHeader>
+                                <ModalBody>
+                                    <FormGroup row>
+                                        <Col xs="12" md="12">
+                                            <Input value={this.state.comment} type="textarea" rows="5" placeholder="Nhập nhận xét..." onChange={this.handleInput} id="comment" name="comment" />
+                                        </Col>
+                                        <span style={{ marginLeft: "3%" }} className="form-error is-visible text-danger">
+                                            {this.validator.message('Nhận xét - đánh giá', this.state.comment, 'required|max:255')}
+                                        </span>
+                                    </FormGroup>
+                                </ModalBody>
+                                <CardFooter className="p-3">
+                                    <Row style={{ marginLeft: "21%" }}>
+                                        <Col xs="4" sm="4">
+                                            <Button onClick={() => this.handleConfirm()} type="submit" color="primary" block>Xác nhận</Button>
+                                        </Col>
+                                        <Col xs="4" sm="4">
+                                            <Button block color="secondary" onClick={this.toggleDanger}>Hủy bỏ</Button>
+                                        </Col>
+                                    </Row>
+                                </CardFooter>
+                            </Modal>
                         </Row>
                     </div >
                 )

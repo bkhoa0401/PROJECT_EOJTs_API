@@ -41,6 +41,12 @@ public class StudentService implements IStudentService {
     @Autowired
     ISemesterService semesterService;
 
+    @Autowired
+    IAnswerService iAnswerService;
+
+    @Autowired
+    IStudent_AnswerService iStudent_answerService;
+
     @Override
     public Student getStudentByEmail(String email) {
         Student student = IStudentRepository.findByEmail(email);
@@ -403,5 +409,16 @@ public class StudentService implements IStudentService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void postFeedBack(String email, String content) {
+        Student student=getStudentByEmail(email);
+
+        Answer answer=new Answer();
+        answer.setContent(content);
+
+        iAnswerService.saveAnswer(answer);
+        iStudent_answerService.saveFeedback(student,answer);
     }
 }

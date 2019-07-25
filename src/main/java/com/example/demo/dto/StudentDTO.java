@@ -71,6 +71,7 @@ public class StudentDTO {
         this.dob = dob;
     }
 
+
     public String getSemester() {
         return semester;
     }
@@ -291,4 +292,5 @@ public class StudentDTO {
     public void setSupervisorName(String supervisorName) {
         this.supervisorName = supervisorName;
     }
+
 }

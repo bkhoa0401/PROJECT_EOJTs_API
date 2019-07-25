@@ -14,10 +14,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
+import java.sql.Date;
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 @RestController
@@ -689,6 +690,31 @@ public class StudentController {
         }
         dashboardDTO.setTaskList(taskList);
 
+        Semester semester = semesterService.getSemesterCurrent();
+
+        Ojt_Enrollment ojt_enrollmentOfStudent = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email, semester.getId());
+
+
+        Date dateEnroll = ojt_enrollmentOfStudent.getTimeEnroll();
+
+        Date dateCurrent = new Date(Calendar.getInstance().getTime().getTime());
+
+        long getDiff = dateCurrent.getTime() - dateEnroll.getTime();
+
+        long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
+
+        if(getDaysDiff>=30){
+            dashboardDTO.setMakeFeedback(true);
+        }else{
+            dashboardDTO.setMakeFeedback(false);
+        }
+
+        Student_Answer student_answer=iStudent_answerService.findStudentAnswerByStudentEmail(email);
+        if(student_answer!=null){
+            dashboardDTO.setDoneFeedback(true);
+        }else{
+            dashboardDTO.setDoneFeedback(false);
+        }
         return new ResponseEntity<DashboardDTO>(dashboardDTO, HttpStatus.OK);
     }
 
@@ -811,12 +837,29 @@ public class StudentController {
     }
 
     @PostMapping("/answers")
-    public ResponseEntity<Void> answersFeedBack(@RequestBody List<Answer> answers) {
+    public ResponseEntity<Void> answersFeedBack(@RequestBody List<Answer> answers, @RequestParam Map<String, String> mapOthers) {
         String studentEmail = getEmailFromToken();
         Student student = studentService.getStudentByEmail(studentEmail);
 
-        iStudent_answerService.saveStudent_Answer(student, answers);
+        iStudent_answerService.saveStudent_Answer(student, answers, mapOthers);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/feedback")
+    public ResponseEntity<Void> postFeedback(@RequestParam String content){
+        String email=getEmailFromToken();
+        studentService.postFeedBack(email,content);
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @GetMapping ("/unReadMessage")
+    public ResponseEntity<Integer> getUnreadMess(){
+        String email=getEmailFromToken();
+
+        int countEventIsNotRead = eventService.countEventIsNotRead(email);
+
+        return new ResponseEntity<Integer>(countEventIsNotRead, HttpStatus.OK);
     }
 
     //get email from token

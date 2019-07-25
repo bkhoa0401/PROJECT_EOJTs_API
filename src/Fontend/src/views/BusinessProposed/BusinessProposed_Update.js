@@ -15,7 +15,7 @@ import {
 } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
+import Toastify from '../Toastify/Toastify';
 import SimpleReactValidator from '../../validator/simple-react-validator';
 import firebase from 'firebase/app';
 import 'firebase/storage';
@@ -27,15 +27,14 @@ import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 const storage = firebase.storage();
 
-class Company extends Component {
+class BusinessProposed_Update extends Component {
 
     constructor(props) {
         super(props);
         this.validator = new SimpleReactValidator();
         this.state = {
-            image: null,
-            logo: '',
             loading: true,
+            id: '',
             business_name: '',
             business_eng_name: '',
             business_overview: '',
@@ -43,23 +42,26 @@ class Company extends Component {
             business_address: '',
             business_phone: '',
             business_website: '',
+            business: ''
         }
     }
 
     async componentDidMount() {
-        const business = await ApiServices.Get("/business/getBusiness");
+        const id = window.location.href.split("/").pop();
+        const business = await ApiServices.Get(`/heading/id?id=${id}`);
 
         if (business != null) {
             this.setState({
                 loading: false,
-                logo: business.logo,
+                id: business.id,
                 business_name: business.business_name,
                 business_eng_name: business.business_eng_name,
                 business_overview: business.business_overview,
                 email: business.email,
                 business_address: business.business_address,
                 business_phone: business.business_phone,
-                business_website: business.business_website
+                business_website: business.business_website,
+                business: business
             });
         }
     }
@@ -71,24 +73,13 @@ class Company extends Component {
         })
     }
 
-    handleChange = (event) => {
-        if (event.target.files[0]) {
-            const image = event.target.files[0];
-            var output = document.getElementById('img_logo');
-            output.src = URL.createObjectURL(image);
-            this.setState({
-                image: image
-            })
-        }
-    }
-
     handleDirect = (uri) => {
         this.props.history.push(uri);
     }
 
     handleReset = async () => {
         this.setState({
-            logo: '',
+            email: '',
             business_name: '',
             business_eng_name: '',
             business_overview: '',
@@ -98,50 +89,31 @@ class Company extends Component {
         })
     }
 
-    uploadImageToFireBase = async () => {
-        let { image } = this.state;
-
-        if (image != null) {
-            const uploadTask = await storage.ref(`images/${image.name}`).put(image);
-            await storage.ref('images').child(image.name).getDownloadURL().then(url => {
-                this.setState({
-                    logo: url
-                })
-            })
-        }
-
-        // uploadTask.on('state_changed',
-        //     (snapshot) => {
-        //         // progress function
-        //     },
-        //     (error) => {
-        //         console.log(error);
-        //     },
-        //     () => {
-        //         //complete function
-        //         storage.ref('images').child(image.name).getDownloadURL().then(url => {
-        //             this.setState({
-        //                 logo: url
-        //             })
-        //             console.log("logo", this.state.logo);
-        //         })
-        //     })
-    }
-
     saveBusiness = async () => {
-        let { logo, business_name, business_eng_name, business_overview, email,
-            business_address, business_phone, business_website, loading } = this.state;
+        let { id, business_name, business_eng_name, business_overview, email,
+            business_address, business_phone, business_website, business } = this.state;
 
         if (this.validator.allValid()) {
             this.setState({
                 loading: true
             })
             var company = {
-                logo, business_name, business_eng_name, business_overview, email,
-                business_address, business_phone, business_website
+                id, business_name, business_eng_name, business_overview, email,
+                business_address, business_phone, business_website,
+                logo: business.logo,
+                business_nationality: business.business_nationality,
+                business_field_of_activity: business.business_field_of_activity,
+                isAcceptedByStartupRoom: business.isAcceptedByStartupRoom,
+                isAcceptedByHeadOfTraining: business.isAcceptedByHeadOfTraining,
+                isAcceptedByHeadMaster: business.isAcceptedByHeadMaster,
+                student_proposed: business.student_proposed,
+                commentStartupRoom: business.commentStartupRoom,
+                commentHeadOfTraining: business.commentHeadOfTraining,
+                commentHeadOfMaster: business.commentHeadOfMaster,
+                scale: business.scale
             }
 
-            const result = await ApiServices.Put('/business/updateBusiness', company);
+            const result = await ApiServices.Put('/heading', company);
 
             if (result.status == 200) {
                 Toastify.actionSuccess('Cập nhật thông tin thành công');
@@ -162,12 +134,11 @@ class Company extends Component {
     }
 
     handleSubmit = async () => {
-        await this.uploadImageToFireBase();
         await this.saveBusiness();
     }
 
     render() {
-        const { logo, business_name, business_eng_name, business_overview, email,
+        const { id, business_name, business_eng_name, business_overview, email,
             business_address, business_phone, business_website, loading } = this.state;
         return (
             loading.toString() === 'true' ? (
@@ -180,32 +151,15 @@ class Company extends Component {
                                 <Card>
                                     <CardHeader>
                                         <h4>Thông tin công ty</h4>
-                                        {/* <Col xs="3" sm="3">
-                                    <Button style={{ marginLeft: "800px" }} block color="primary" onClick={() => this.handleDirect("/company/update")}>Chỉnh sửa</Button>
-                                </Col> */}
                                     </CardHeader>
                                     <CardBody>
                                         <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
                                             <FormGroup row>
                                                 <Col md="2">
-                                                    <h6>Logo</h6>
-                                                </Col>
-                                                <Col xs="12" md="10">
-                                                    <img src={logo} style={{ width: "160px", height: "160px" }} onChange={this.handleInput} type="file" id="img_logo" name="logo" />
-                                                    <br /><br />
-                                                    <input onChange={this.handleChange} type="file" />
-                                                    <br /><br />
-                                                    <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Logo', logo, 'required')}
-                                                    </span>
-                                                </Col>
-                                            </FormGroup>
-                                            <FormGroup row>
-                                                <Col md="2">
                                                     <h6>Email</h6>
                                                 </Col>
                                                 <Col xs="12" md="10">
-                                                    <label type="text" id="email" name="email">{email}</label>
+                                                    <Input value={email} onChange={this.handleInput} type="text" id="email" name="email" />
                                                     <span className="form-error is-visible text-danger">
                                                         {this.validator.message('email', email, 'required|email')}
                                                     </span>
@@ -286,17 +240,6 @@ class Company extends Component {
                                                     </span>
                                                 </Col>
                                             </FormGroup>
-                                            {/* <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Image</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value="Đây là 1 gallery" onChange={this.handleInput} type="text" id="timeStartOJT" name="timeStartOJT" />
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('timeStartOJT', this.state.timeStartOJT, 'required')}
-                                            </span>
-                                        </Col>
-                                    </FormGroup> */}
                                         </Form>
                                     </CardBody>
                                     <CardFooter className="p-4">
@@ -307,9 +250,9 @@ class Company extends Component {
                                             <Col xs="3" sm="3">
                                                 <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
                                             </Col>
-                                            {/* <Col xs="3" sm="3">
-                                        <Button color="success" block onClick={() => this.handleDirect("/company")} type="reset">Trở về</Button>
-                                    </Col> */}
+                                            <Col xs="3" sm="3">
+                                                <Button color="secondary" block onClick={() => this.handleDirect(`/business-proposed/${id}`)} type="submit">Trở về</Button>
+                                            </Col>
                                         </Row>
                                     </CardFooter>
                                 </Card>
@@ -321,4 +264,4 @@ class Company extends Component {
     }
 }
 
-export default Company;
+export default BusinessProposed_Update;
