@@ -71,12 +71,7 @@ public class WebController {
                         }else{
                             studentDTO.setIntership(false);
                         }
-                        Student_Answer student_answer=iStudent_answerService.findStudentAnswerByStudentEmail(studentDTO.getEmail());
-                        if(student_answer!=null){
-                            studentDTO.setMakeFeedback(true);
-                        }else{
-                            studentDTO.setMakeFeedback(false);
-                        }
+
                         login.setStudent(studentDTO);
                     }
                 }

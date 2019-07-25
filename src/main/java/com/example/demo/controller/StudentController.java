@@ -709,6 +709,12 @@ public class StudentController {
             dashboardDTO.setMakeFeedback(false);
         }
 
+        Student_Answer student_answer=iStudent_answerService.findStudentAnswerByStudentEmail(email);
+        if(student_answer!=null){
+            dashboardDTO.setDoneFeedback(true);
+        }else{
+            dashboardDTO.setDoneFeedback(false);
+        }
         return new ResponseEntity<DashboardDTO>(dashboardDTO, HttpStatus.OK);
     }
 

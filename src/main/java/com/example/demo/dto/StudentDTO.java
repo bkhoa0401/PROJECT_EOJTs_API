@@ -31,7 +31,6 @@ public class StudentDTO {
     private String businessName;
     private String semester;
     private String supervisorName;
-    private boolean isMakeFeedback;
 
 
     public StudentDTO(String email, String name, String specialized, String phone, String address, String objective, String option1, String option2, boolean isAcceptedOption1, boolean isAcceptedOption2, String code, String token, String avatarLink, float gpa, String resumeLink) {
@@ -83,7 +82,6 @@ public class StudentDTO {
 
     public StudentDTO() {
         this.isIntership = false;
-        this.isMakeFeedback=false;
     }
 
     public String getBusinessName() {
@@ -295,11 +293,4 @@ public class StudentDTO {
         this.supervisorName = supervisorName;
     }
 
-    public boolean isMakeFeedback() {
-        return isMakeFeedback;
-    }
-
-    public void setMakeFeedback(boolean makeFeedback) {
-        isMakeFeedback = makeFeedback;
-    }
 }

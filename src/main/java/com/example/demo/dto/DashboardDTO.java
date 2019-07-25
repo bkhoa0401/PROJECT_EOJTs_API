@@ -11,9 +11,11 @@ public class DashboardDTO {
     private List<Evaluation> evaluationList;
     private int unReadInformessage;
     private boolean isMakeFeedback;
+    private boolean isDoneFeedback;
 
 
     public DashboardDTO() {
+        isDoneFeedback=false;
     }
 
     public DashboardDTO(List<Task> taskList, List<Evaluation> evaluationList, int unReadInformessage, boolean isMakeFeedback) {
@@ -53,5 +55,13 @@ public class DashboardDTO {
 
     public void setMakeFeedback(boolean makeFeedback) {
         isMakeFeedback = makeFeedback;
+    }
+
+    public boolean isDoneFeedback() {
+        return isDoneFeedback;
+    }
+
+    public void setDoneFeedback(boolean doneFeedback) {
+        isDoneFeedback = doneFeedback;
     }
 }
