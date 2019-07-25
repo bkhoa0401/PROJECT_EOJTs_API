@@ -709,6 +709,12 @@ public class StudentController {
             dashboardDTO.setMakeFeedback(false);
         }
 
+        Student_Answer student_answer=iStudent_answerService.findStudentAnswerByStudentEmail(email);
+        if(student_answer!=null){
+            dashboardDTO.setDoneFeedback(true);
+        }else{
+            dashboardDTO.setDoneFeedback(false);
+        }
         return new ResponseEntity<DashboardDTO>(dashboardDTO, HttpStatus.OK);
     }
 
@@ -845,6 +851,15 @@ public class StudentController {
         studentService.postFeedBack(email,content);
 
         return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @GetMapping ("/unReadMessage")
+    public ResponseEntity<Integer> getUnreadMess(){
+        String email=getEmailFromToken();
+
+        int countEventIsNotRead = eventService.countEventIsNotRead(email);
+
+        return new ResponseEntity<Integer>(countEventIsNotRead, HttpStatus.OK);
     }
 
     //get email from token

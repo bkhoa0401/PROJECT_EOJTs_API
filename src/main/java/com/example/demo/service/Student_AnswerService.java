@@ -61,4 +61,9 @@ public class Student_AnswerService implements IStudent_AnswerService {
 
         iStudent_answerRepository.save(student_answer);
     }
+
+    @Override
+    public Student_Answer findStudentAnswerByStudentEmail(String email) {
+        return iStudent_answerRepository.findByStudentEmail(email);
+    }
 }
