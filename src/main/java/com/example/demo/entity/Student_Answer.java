@@ -34,6 +34,12 @@ public class Student_Answer implements Serializable {
     public Student_Answer() {
     }
 
+    public Student_Answer(int id,Student student, Answer answer) {
+        this.id=id;
+        this.student = student;
+        this.answer = answer;
+    }
+
     public Student getStudent() {
         return student;
     }

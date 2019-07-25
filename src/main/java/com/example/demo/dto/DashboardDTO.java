@@ -12,7 +12,15 @@ public class DashboardDTO {
     private int unReadInformessage;
     private boolean isMakeFeedback;
     private boolean isDoneFeedback;
+    private Business business;
 
+    public Business getBusiness() {
+        return business;
+    }
+
+    public void setBusiness(Business business) {
+        this.business = business;
+    }
 
     public DashboardDTO() {
         isDoneFeedback=false;

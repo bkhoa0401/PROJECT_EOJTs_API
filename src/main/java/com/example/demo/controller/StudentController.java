@@ -696,25 +696,28 @@ public class StudentController {
 
 
         Date dateEnroll = ojt_enrollmentOfStudent.getTimeEnroll();
+        if (dateEnroll != null) {
+            Date dateCurrent = new Date(Calendar.getInstance().getTime().getTime());
 
-        Date dateCurrent = new Date(Calendar.getInstance().getTime().getTime());
+            long getDiff = dateCurrent.getTime() - dateEnroll.getTime();
 
-        long getDiff = dateCurrent.getTime() - dateEnroll.getTime();
+            long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
 
-        long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
-
-        if(getDaysDiff>=30){
-            dashboardDTO.setMakeFeedback(true);
-        }else{
-            dashboardDTO.setMakeFeedback(false);
+            if (getDaysDiff >= 30) {
+                dashboardDTO.setMakeFeedback(true);
+            } else {
+                dashboardDTO.setMakeFeedback(false);
+            }
         }
-
-        Student_Answer student_answer=iStudent_answerService.findStudentAnswerByStudentEmail(email);
-        if(student_answer!=null){
+        Student_Answer student_answer = iStudent_answerService.findStudentAnswerByStudentEmail(email);
+        if (student_answer != null) {
             dashboardDTO.setDoneFeedback(true);
-        }else{
+        } else {
             dashboardDTO.setDoneFeedback(false);
         }
+
+        Business business=ojt_enrollmentOfStudent.getBusiness();
+        dashboardDTO.setBusiness(business);
         return new ResponseEntity<DashboardDTO>(dashboardDTO, HttpStatus.OK);
     }
 
@@ -846,16 +849,16 @@ public class StudentController {
     }
 
     @PostMapping("/feedback")
-    public ResponseEntity<Void> postFeedback(@RequestParam String content){
-        String email=getEmailFromToken();
-        studentService.postFeedBack(email,content);
+    public ResponseEntity<Void> postFeedback(@RequestParam String content) {
+        String email = getEmailFromToken();
+        studentService.postFeedBack(email, content);
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    @GetMapping ("/unReadMessage")
-    public ResponseEntity<Integer> getUnreadMess(){
-        String email=getEmailFromToken();
+    @GetMapping("/unReadMessage")
+    public ResponseEntity<Integer> getUnreadMess() {
+        String email = getEmailFromToken();
 
         int countEventIsNotRead = eventService.countEventIsNotRead(email);
 
