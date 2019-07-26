@@ -118,7 +118,7 @@ class student_list extends Component {
         })
 
         const result = await ApiServices.Put(`/admin/setBusinessForStudent?emailOfBusiness=${businessEmail}&emailOfStudent=${studentSelect.email}`);
-        console.log(result);
+        // console.log(result);
 
         if (result.status == 200) {
             Toastify.actionSuccess(`Đăng ký thành công!`);

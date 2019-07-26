@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/account")
@@ -84,5 +86,22 @@ public class WebController {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return new ResponseEntity<LoginDTO>(login, httpStatus);
+    }
+
+    //check account existed
+    @GetMapping("/check")
+    @ResponseBody
+    private ResponseEntity<Void> checkAccountExisted(@RequestParam String email) {
+        boolean isExisted = false;
+        List<Users> listAllUser = usersService.getAllUsers();
+        for (int i = 0; i < listAllUser.size(); i++) {
+            if (listAllUser.get(i).getEmail().equals(email)) {
+                isExisted = true;
+            }
+        }
+        if (isExisted) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 }

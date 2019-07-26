@@ -24,6 +24,26 @@ const Get = async function (api, query = '') {
   return data;
 }
 
+const GetWithoutToken = async function (api, query = '') {
+  if (isNullOrUndefined(api)) {
+    return;
+  }
+
+  const setting = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'GET',
+  }
+  const response = await fetch(API + api, setting);
+  // if (response.status == 204 || response.status == 401) {
+  //   return null;
+  // }
+  // const data = await response.json();
+  // return data;
+  return response;
+}
+
 const Post = async function (api, query) {
   if (isNullOrUndefined(api)) {
     return;
@@ -111,7 +131,8 @@ const ApiServices = {
   PostNotifications,
   Put,
   Delete,
-  API
+  API, 
+  GetWithoutToken,
 }
 
 export default ApiServices;
