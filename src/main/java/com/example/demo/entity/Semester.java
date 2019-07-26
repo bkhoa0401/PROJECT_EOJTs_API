@@ -46,6 +46,9 @@ public class Semester implements Serializable {
     @JsonIgnore
     private List<Invitation> invitations;
 
+    @Column(name = "start_choose_option_time")
+    private java.sql.Date start_choose_option_time;
+
     public int getId() {
         return id;
     }
@@ -116,5 +119,13 @@ public class Semester implements Serializable {
 
     public void setInvitations(List<Invitation> invitations) {
         this.invitations = invitations;
+    }
+
+    public Date getStart_choose_option_time() {
+        return start_choose_option_time;
+    }
+
+    public void setStart_choose_option_time(Date start_choose_option_time) {
+        this.start_choose_option_time = start_choose_option_time;
     }
 }
