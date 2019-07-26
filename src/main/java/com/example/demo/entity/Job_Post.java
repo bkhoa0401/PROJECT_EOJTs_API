@@ -35,10 +35,10 @@ public class Job_Post implements Comparable<Job_Post>, Serializable {
     @Column(name = "contact", columnDefinition = "NVARCHAR(500)")
     private String contact;
 
-    @Column(name = "interview_process", columnDefinition = "NVARCHAR(500)")
+    @Column(name = "interview_process", columnDefinition = "NVARCHAR(MAX)")
     private String interview_process;
 
-    @Column(name = "interest", columnDefinition = "NVARCHAR(500)")
+    @Column(name = "interest", columnDefinition = "NVARCHAR(MAX)")
     private String interest;
 
     @ManyToOne(cascade = CascadeType.ALL)

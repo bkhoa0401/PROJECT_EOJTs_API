@@ -326,22 +326,16 @@ public class StudentController {
     @PutMapping("/updateOption1")
     public ResponseEntity<String> updateOption1OfStudent(@RequestParam String option1) {
         String email = getEmailFromToken();
-        boolean update = studentService.updateOption1Student(email, option1);
-        if (update == true) {
-            return new ResponseEntity<String>("success", HttpStatus.OK);
-        }
-        return new ResponseEntity<String>("fail", HttpStatus.EXPECTATION_FAILED);
+        String update = studentService.updateOption1Student(email, option1);
+        return new ResponseEntity<>(update, HttpStatus.OK);
     }
 
     //update option 2 of student
     @PutMapping("/updateOption2")
     public ResponseEntity<String> updateOption2OfStudent(@RequestParam String option2) {
         String email = getEmailFromToken();
-        boolean update = studentService.updateOption2Student(email, option2);
-        if (update == true) {
-            return new ResponseEntity<>("success", HttpStatus.OK);
-        }
-        return new ResponseEntity<>("fail", HttpStatus.EXPECTATION_FAILED);
+        String update = studentService.updateOption2Student(email, option2);
+        return new ResponseEntity<>(update, HttpStatus.OK);
     }
 
     private List<Student> studentListIsInvited = new ArrayList<>();
@@ -639,7 +633,7 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-    @PutMapping("/stateInvitation")
+        @PutMapping("/stateInvitation")
     public ResponseEntity<Void> setInvitationForOption(@RequestParam int id,
                                                        @RequestParam int numberOfOption) {
         String studentEmail = getEmailFromToken();
@@ -716,7 +710,7 @@ public class StudentController {
             dashboardDTO.setDoneFeedback(false);
         }
 
-        Business business=ojt_enrollmentOfStudent.getBusiness();
+        Business business = ojt_enrollmentOfStudent.getBusiness();
         dashboardDTO.setBusiness(business);
         return new ResponseEntity<DashboardDTO>(dashboardDTO, HttpStatus.OK);
     }
@@ -863,6 +857,13 @@ public class StudentController {
         int countEventIsNotRead = eventService.countEventIsNotRead(email);
 
         return new ResponseEntity<Integer>(countEventIsNotRead, HttpStatus.OK);
+    }
+
+    @GetMapping("/specialized-paging")
+    @ResponseBody
+    public ResponseEntity<List<Specialized>> getSpecializedPaging(@RequestParam int page, @RequestParam int pageSize) {
+        List<Specialized> specializedList = specializedService.pagingSpecialized(page, pageSize);
+        return new ResponseEntity<List<Specialized>>(specializedList, HttpStatus.OK);
     }
 
     //get email from token

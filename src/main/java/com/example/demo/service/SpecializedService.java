@@ -42,8 +42,6 @@ public class SpecializedService implements ISpecializedService {
     private EntityManager entityManager;
 
 
-
-
     @Override
     public int fullTextSearch(String specializedName) {
         int specializedId = 0;
@@ -75,9 +73,7 @@ public class SpecializedService implements ISpecializedService {
     }
 
 
-
     List<Specialized> specializedListAll = new ArrayList<>();
-
 
 
     @Cacheable(key = "'all'")
@@ -88,6 +84,42 @@ public class SpecializedService implements ISpecializedService {
             return specializedListAll;
         }
         return null;
+    }
+
+    @Cacheable(key = "'all'")
+    public List<Specialized> pagingSpecialized(int page, int pageSize) {
+        if (specializedListAll == null || specializedListAll.size() == 0) {
+            specializedListAll = ISpecializedRepository.findAll();
+        }
+
+        int length = specializedListAll.size();
+
+        double pageCount = Math.ceil((double) length / (double) pageSize);
+
+        int currentItemStart;
+
+        if (page == 1) {
+            currentItemStart = 0;
+        } else {
+            currentItemStart = ((page - 1) * pageSize);
+        }
+
+        int count = 0;
+        List<Specialized> listPaging = new ArrayList<>();
+        for (int i = currentItemStart; i < specializedListAll.size(); i++) {
+            if (count < pageSize) {
+                Specialized specialized = specializedListAll.get(i);
+                if (specialized != null) {
+                    listPaging.add(specialized);
+                    count++;
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+        return listPaging;
     }
 
     @Override
@@ -112,8 +144,8 @@ public class SpecializedService implements ISpecializedService {
         if (specializedFound != null) {
             ISpecializedRepository.save(specialized); //save db
 
-            if(this.specializedListAll.size()==0){
-                this.specializedListAll=ISpecializedRepository.findAll();
+            if (this.specializedListAll.size() == 0) {
+                this.specializedListAll = ISpecializedRepository.findAll();
             }
             this.specializedListAll.set(specialized.getId() - 1, specialized); // save redis
             return specializedListAll;
