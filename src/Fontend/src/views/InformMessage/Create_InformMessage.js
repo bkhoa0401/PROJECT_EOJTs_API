@@ -356,6 +356,21 @@ class Create_InformMessage extends Component {
                                             {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
                                         </Pagination>
                                     </CardBody>
+
+                                    <CardFooter className="p-3">
+                                        <Row style={{ marginLeft: "21%" }}>
+                                            <Col xs="4" sm="4">
+                                                <Button style={{ width: '100px' }} color="secondary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
+                                                    Trở về
+                                                </Button>
+                                            </Col>
+                                            <Col xs="4" sm="4">
+                                                <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleSubmit()}>
+                                                    Tạo
+                                                </Button>
+                                            </Col>
+                                        </Row>
+                                    </CardFooter>
                                 </Card>
                             </Col>
                         </Row>
@@ -390,15 +405,6 @@ class Create_InformMessage extends Component {
                                 </div>
                             </div>
                         </Popup>
-                        <div style={{ paddingLeft: '40%' }}>
-                            <Button style={{ width: '100px' }} outline color="primary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
-                                Trở về
-                            </Button>
-                            &nbsp;&nbsp;&nbsp;
-                            <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleSubmit()}>
-                                Tạo
-                            </Button>
-                        </div>
                     </div>
                 )
         );

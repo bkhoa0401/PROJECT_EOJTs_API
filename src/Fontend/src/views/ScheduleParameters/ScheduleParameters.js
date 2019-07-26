@@ -169,10 +169,10 @@ class ScheduleParameters extends Component {
                             <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Xác nhận</Button>
+                                        <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>
                                     </Col>
                                     <Col xs="3" sm="3">
-                                        <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
+                                        <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Xác nhận</Button>
                                     </Col>
                                 </Row>
                             </CardFooter>

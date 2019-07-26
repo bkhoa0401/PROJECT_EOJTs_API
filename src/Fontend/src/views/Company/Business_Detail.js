@@ -190,9 +190,9 @@ class Company extends Component {
                             </Col>
                         </Row>
                         <div style={{ paddingLeft: '45%' }}>
-                            <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/list_management/business_list')}>
+                            <Button style={{ width: '100px' }} color="secondary" onClick={() => this.handleDirect('/list_management/business_list')}>
                                 Trở về
-                    </Button>
+                            </Button>
                         </div>
                     </div >
                 )

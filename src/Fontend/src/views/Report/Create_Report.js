@@ -30,7 +30,7 @@ class Create_Report extends Component {
             score_work: '0',
             score_activity: '0',
             project_name: '',
-            workDays:0,
+            workDays: 0,
 
             emailStudent: '',
 
@@ -43,8 +43,8 @@ class Create_Report extends Component {
             validatorNumRange_score_work: '',
             validatorNumRange_score_activity: '',
             validatorNumRange_score_discipline: '',
-            maxWorkDays:0,
-            validatorMaxWorkDays: '',        
+            maxWorkDays: 0,
+            validatorMaxWorkDays: '',
         };
     }
 
@@ -76,55 +76,55 @@ class Create_Report extends Component {
         var splitDate = dateEnroll.split('-');
         let dd = parseInt(splitDate[2]);
         let mm = parseInt(splitDate[1]);
-        let mm31 = [1,3,5,7,8,10,12];
-        let mm30 = [4,6,9,11];
+        let mm31 = [1, 3, 5, 7, 8, 10, 12];
+        let mm30 = [4, 6, 9, 11];
         let yyyy = parseInt(splitDate[0]);
         let timeStartShow = "";
         if (mm + parseInt(needParam[0]) > 13) {
-            if ( ( mm + parseInt( needParam[0] ) - 12 - 1 ) == 2 && (yyyy + 1) % 4 == 0 && dd > 29 ) {
-                timeStartShow = 29 + "/" + ( mm + parseInt( needParam[0] ) - 12 - 1 ) + "/" + (yyyy + 1);
-            } else if ( ( mm + parseInt( needParam[0] ) - 12 - 1 ) == 2 && (yyyy + 1) % 4 != 0 && dd > 28 ) {
-                timeStartShow = 28 + "/" + ( mm + parseInt( needParam[0] ) - 12 - 1 ) + "/" + (yyyy + 1);
-            } else if ( mm30.includes( ( mm + parseInt( needParam[0] ) - 12 - 1 ) ) && dd > 30 ) {
-                timeStartShow = 30 + "/" + ( mm + parseInt( needParam[0] ) - 12 - 1 ) + "/" + (yyyy + 1);
+            if ((mm + parseInt(needParam[0]) - 12 - 1) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+                timeStartShow = 29 + "/" + (mm + parseInt(needParam[0]) - 12 - 1) + "/" + (yyyy + 1);
+            } else if ((mm + parseInt(needParam[0]) - 12 - 1) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+                timeStartShow = 28 + "/" + (mm + parseInt(needParam[0]) - 12 - 1) + "/" + (yyyy + 1);
+            } else if (mm30.includes((mm + parseInt(needParam[0]) - 12 - 1)) && dd > 30) {
+                timeStartShow = 30 + "/" + (mm + parseInt(needParam[0]) - 12 - 1) + "/" + (yyyy + 1);
             } else {
-                timeStartShow = dd + "/" + ( mm + parseInt( needParam[0] ) - 12 - 1 ) + "/" + (yyyy + 1);
+                timeStartShow = dd + "/" + (mm + parseInt(needParam[0]) - 12 - 1) + "/" + (yyyy + 1);
             }
         } else {
-            if ( ( mm + parseInt( needParam[0] ) - 1 ) == 2 && yyyy % 4 == 0 && dd > 29 ) {
-                timeStartShow = 29 + "/" + ( mm + parseInt( needParam[0] ) - 1 ) + "/" + yyyy;
-            } else if ( ( mm + parseInt( needParam[0] ) - 1 ) == 2 && yyyy % 4 != 0 && dd > 28 ) {
-                timeStartShow = 28 + "/" + ( mm + parseInt( needParam[0] ) - 1 ) + "/" + yyyy;
-            } else if ( mm30.includes( ( mm + parseInt( needParam[0] ) - 1 ) ) && dd > 30 ) {
-                timeStartShow = 30 + "/" + ( mm + parseInt( needParam[0] ) - 1 ) + "/" + yyyy;
+            if ((mm + parseInt(needParam[0]) - 1) == 2 && yyyy % 4 == 0 && dd > 29) {
+                timeStartShow = 29 + "/" + (mm + parseInt(needParam[0]) - 1) + "/" + yyyy;
+            } else if ((mm + parseInt(needParam[0]) - 1) == 2 && yyyy % 4 != 0 && dd > 28) {
+                timeStartShow = 28 + "/" + (mm + parseInt(needParam[0]) - 1) + "/" + yyyy;
+            } else if (mm30.includes((mm + parseInt(needParam[0]) - 1)) && dd > 30) {
+                timeStartShow = 30 + "/" + (mm + parseInt(needParam[0]) - 1) + "/" + yyyy;
             } else {
-                timeStartShow = dd + "/" + ( mm + parseInt( needParam[0] ) - 1 ) + "/" + yyyy;
+                timeStartShow = dd + "/" + (mm + parseInt(needParam[0]) - 1) + "/" + yyyy;
             }
         }
         let formatTimeStartShow = timeStartShow.split('/');
         if (formatTimeStartShow[1] < 10) {
             timeStartShow = formatTimeStartShow[0] + "/" + "0" + formatTimeStartShow[1] + "/" + formatTimeStartShow[2];
-        } 
+        }
         let timeEndShow = "";
         if (mm + parseInt(needParam) > 12) {
-            if ( ( mm + parseInt( needParam[0] ) - 12 ) == 2 && (yyyy + 1) % 4 == 0 && dd > 29 ) {
-                timeEndShow = 29 + "/" + ( mm + parseInt( needParam[0] ) - 12 ) + "/" + (yyyy + 1);
-            } else if ( ( mm + parseInt( needParam[0] ) - 12 ) == 2 && (yyyy + 1) % 4 != 0 && dd > 28 ) {
-                timeEndShow = 28 + "/" + ( mm + parseInt( needParam[0] ) - 12 ) + "/" + (yyyy + 1);
-            } else if ( mm30.includes( ( mm + parseInt( needParam[0] ) - 12 ) ) && dd > 30 ) {
-                timeEndShow = 30 + "/" + ( mm + parseInt( needParam[0] ) - 12 ) + "/" + (yyyy + 1);
+            if ((mm + parseInt(needParam[0]) - 12) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+                timeEndShow = 29 + "/" + (mm + parseInt(needParam[0]) - 12) + "/" + (yyyy + 1);
+            } else if ((mm + parseInt(needParam[0]) - 12) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+                timeEndShow = 28 + "/" + (mm + parseInt(needParam[0]) - 12) + "/" + (yyyy + 1);
+            } else if (mm30.includes((mm + parseInt(needParam[0]) - 12)) && dd > 30) {
+                timeEndShow = 30 + "/" + (mm + parseInt(needParam[0]) - 12) + "/" + (yyyy + 1);
             } else {
-                timeEndShow = dd + "/" + ( mm + parseInt( needParam[0] ) - 12) + "/" + (yyyy + 1);
+                timeEndShow = dd + "/" + (mm + parseInt(needParam[0]) - 12) + "/" + (yyyy + 1);
             }
         } else {
-            if ( ( mm + parseInt( needParam[0] ) ) == 2 && yyyy % 4 == 0 && dd > 29 ) {
-                timeEndShow = 29 + "/" + ( mm + parseInt( needParam[0] ) ) + "/" + yyyy;
-            } else if ( ( mm + parseInt( needParam[0] ) ) == 2 && yyyy % 4 != 0 && dd > 28 ) {
-                timeEndShow = 28 + "/" + ( mm + parseInt( needParam[0] ) ) + "/" + yyyy;
-            } else if ( mm30.includes( ( mm + parseInt( needParam[0] ) ) ) && dd > 30 ) {
-                timeEndShow = 30 + "/" + ( mm + parseInt( needParam[0] ) ) + "/" + yyyy;
+            if ((mm + parseInt(needParam[0])) == 2 && yyyy % 4 == 0 && dd > 29) {
+                timeEndShow = 29 + "/" + (mm + parseInt(needParam[0])) + "/" + yyyy;
+            } else if ((mm + parseInt(needParam[0])) == 2 && yyyy % 4 != 0 && dd > 28) {
+                timeEndShow = 28 + "/" + (mm + parseInt(needParam[0])) + "/" + yyyy;
+            } else if (mm30.includes((mm + parseInt(needParam[0]))) && dd > 30) {
+                timeEndShow = 30 + "/" + (mm + parseInt(needParam[0])) + "/" + yyyy;
             } else {
-                timeEndShow = dd + "/" + ( mm + parseInt( needParam[0] )) + "/" + yyyy;
+                timeEndShow = dd + "/" + (mm + parseInt(needParam[0])) + "/" + yyyy;
             }
         }
         let formatTimeEndShow = timeEndShow.split('/');
@@ -204,7 +204,7 @@ class Create_Report extends Component {
         if (score_discipline == "" || score_work == "" || score_activity == "") {
             onScore = 5;
         } else {
-            let tmpScore = parseFloat((parseFloat(score_discipline)*0.4 + parseFloat(score_work)*0.5 + parseFloat(score_activity)*0.1));
+            let tmpScore = parseFloat((parseFloat(score_discipline) * 0.4 + parseFloat(score_work) * 0.5 + parseFloat(score_activity) * 0.1));
             // console.log("score_discipline " + tmpScore);
             if (tmpScore > 9) {
                 onScore = 0;
@@ -240,7 +240,7 @@ class Create_Report extends Component {
 
     handleSubmit = async () => {
         const { title, remark, score_discipline, score_work, score_activity, project_name, workDays, maxWorkDays } = this.state;
-        
+
         let timeStart = "";
         let timeStartShow = this.state.timeStartShow;
         var formatTimeStart = timeStartShow.split('/');
@@ -360,13 +360,13 @@ class Create_Report extends Component {
                                                 <h6 style={{ fontWeight: "bold" }}>Ngày bắt đầu:</h6>
                                             </Col>
                                             <Col xs="12" md="4">
-                                                <Badge className="mr-1" color="primary" pill style={{fontSize:"16px"}}>{timeStartShow === null ? "" : timeStartShow}</Badge>
+                                                <Badge className="mr-1" color="primary" pill style={{ fontSize: "16px" }}>{timeStartShow === null ? "" : timeStartShow}</Badge>
                                             </Col>
                                             <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Ngày kết thúc:</h6>
                                             </Col>
                                             <Col xs="12" md="4">
-                                                <Badge className="mr-1" color="danger" pill style={{fontSize:"16px"}}>{timeEndShow === null ? "" : timeEndShow}</Badge>
+                                                <Badge className="mr-1" color="danger" pill style={{ fontSize: "16px" }}>{timeEndShow === null ? "" : timeEndShow}</Badge>
                                             </Col>
                                         </FormGroup>
                                         <FormGroup row>
@@ -458,19 +458,22 @@ class Create_Report extends Component {
                                         </Pagination>
                                     </CardBody>
                                     <CardFooter>
+                                        <Row style={{ marginLeft: "21%" }}>
+                                            <Col xs="4" sm="4">
+                                                <Button block color="danger" onClick={() => this.handleDirect('/Report/Report')}>
+                                                    Huỷ bỏ
+                                                </Button>
+                                            </Col>
+                                            <Col xs="4" sm="4">
+                                                <Button block color="primary" onClick={() => this.handleSubmit()}>
+                                                    Tạo
+                                                </Button>
+                                            </Col>
+                                        </Row>
                                     </CardFooter>
                                 </Card>
                             </Col>
                         </Row>
-                        <div style={{ paddingLeft: '40%' }}>
-                            <Button style={{ width: '100px' }} outline color="primary" onClick={() => this.handleDirect('/Report/Report')}>
-                                Trở về
-                            </Button>
-                            &nbsp;&nbsp;&nbsp;
-                            <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleSubmit()}>
-                                Tạo
-                            </Button>
-                        </div>
                     </div>
                 )
         );

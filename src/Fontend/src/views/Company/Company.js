@@ -300,12 +300,12 @@ class Company extends Component {
                                         </Form>
                                     </CardBody>
                                     <CardFooter className="p-4">
-                                        <Row>
-                                            <Col xs="3" sm="3">
-                                                <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Xác nhận</Button>
+                                        <Row style={{ marginLeft: "21%" }}>
+                                            <Col xs="4" sm="4">
+                                                <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>
                                             </Col>
-                                            <Col xs="3" sm="3">
-                                                <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
+                                            <Col xs="4" sm="4">
+                                                <Button onClick={() => this.handleSubmit()} type="submit" color="success" block>Xác nhận</Button>
                                             </Col>
                                             {/* <Col xs="3" sm="3">
                                         <Button color="success" block onClick={() => this.handleDirect("/company")} type="reset">Trở về</Button>

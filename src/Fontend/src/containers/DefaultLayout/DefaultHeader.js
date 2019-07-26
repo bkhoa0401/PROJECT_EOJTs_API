@@ -7,6 +7,7 @@ import { AppAsideToggler, AppHeaderDropdown, AppNavbarBrand, AppSidebarToggler }
 import decode from 'jwt-decode';
 import logo from '../../assets/img/brand/logo.svg'
 import sygnet from '../../assets/img/brand/sygnet.svg'
+import ApiServices from '../../service/api-service';
 
 const propTypes = {
   children: PropTypes.node,
@@ -19,19 +20,43 @@ class DefaultHeader extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: ''
+      username: '',
+      logo: null,
     }
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     const token = localStorage.getItem('id_token');
     if (token != null) {
       const decoded = decode(token);
-      const email = decoded.email;
-
-      
+      // const email = decoded.email;
+      const role = decoded.role;
+      let actor = null;
+      let username = '';
+      let logo = null;
+      if (role == "ROLE_ADMIN" || role == "ROLE_STARTUP" || role == "ROLE_HEADTRAINING" || role == "ROLE_HEADMASTER") {
+        actor = await ApiServices.Get(`/admin/getCurrentUser`);
+        if (actor != null) {
+          username = actor.name;
+          logo = actor.logo;
+        }
+      } else if (role == "ROLE_HR") {
+        actor = await ApiServices.Get(`/business/getBusiness`);
+        if (actor != null) {
+          username = actor.business_eng_name;
+          logo = actor.logo;
+        }
+      } else if (role == "ROLE_SUPERVISOR") {
+        actor = await ApiServices.Get(`/supervisor`);
+        if (actor != null) {
+          username = actor.name;
+          logo = actor.logo;
+        }
+      }
       this.setState({
-        email
+        // email
+        username: username,
+        logo: logo,
       });
     }
   }
@@ -39,7 +64,7 @@ class DefaultHeader extends Component {
   render() {
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
-    const { role } = this.state;
+    const { username, logo } = this.state;
 
     return (
       <React.Fragment>
@@ -63,7 +88,7 @@ class DefaultHeader extends Component {
         </Nav> */}
         <Nav className="ml-auto" navbar>
           <NavItem>
-            <h6 className="nav-link" style={{ color: "Gray", textDecoration: "underline"}}>&nbsp;&nbsp;Xin chào! Nguyễn Hồng Đức</h6>
+            <h6 className="nav-link" style={{ color: "Gray", fontWeight:'bold'}}>Xin chào, {username}!&nbsp;&nbsp;</h6>
           </NavItem>
           {/* <NavItem className="d-md-down-none">
             <NavLink to="#" className="nav-link"><i className="icon-bell"></i><Badge pill color="danger">5</Badge></NavLink>
@@ -76,7 +101,10 @@ class DefaultHeader extends Component {
           </NavItem> */}
           <AppHeaderDropdown direction="down">
             <DropdownToggle nav>
-              <img src={'../../assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
+              {logo === null ? 
+                <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="admin@bootstrapmaster.com" /> :
+                <img src={logo} className="img-avatar" alt="admin@bootstrapmaster.com" />
+              }
             </DropdownToggle>
             <DropdownMenu right style={{ right: 'auto' }}>
               {/* <DropdownItem header tag="div" className="text-center"><strong>Account</strong></DropdownItem> */}

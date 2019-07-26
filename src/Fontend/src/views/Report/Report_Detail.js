@@ -68,19 +68,19 @@ class Report_Detail extends Component {
         //     businessName = owner.business_name;
         // }
         let onScreenRate = 5;
-        if ((report.score_work*0.5 + report.score_activity*0.1 + report.score_discipline*0.4) > 9) {
+        if ((report.score_work * 0.5 + report.score_activity * 0.1 + report.score_discipline * 0.4) > 9) {
             onScreenRate = 0;
-        } else if ((report.score_work*0.5 + report.score_activity*0.1 + report.score_discipline*0.4) > 8) {
+        } else if ((report.score_work * 0.5 + report.score_activity * 0.1 + report.score_discipline * 0.4) > 8) {
             onScreenRate = 1;
-        } else if ((report.score_work*0.5 + report.score_activity*0.1 + report.score_discipline*0.4) > 7) {
+        } else if ((report.score_work * 0.5 + report.score_activity * 0.1 + report.score_discipline * 0.4) > 7) {
             onScreenRate = 2;
-        } else if ((report.score_work*0.5 + report.score_activity*0.1 + report.score_discipline*0.4) >= 5) {
+        } else if ((report.score_work * 0.5 + report.score_activity * 0.1 + report.score_discipline * 0.4) >= 5) {
             onScreenRate = 3;
         } else {
             onScreenRate = 4;
         }
         if (report != null) {
-            let averageScore = (report.score_work*0.5 + report.score_activity*0.1 + report.score_discipline*0.4);
+            let averageScore = (report.score_work * 0.5 + report.score_activity * 0.1 + report.score_discipline * 0.4);
             let rating = '';
             if (averageScore > 9) {
                 rating = "Xuất sắc";
@@ -175,7 +175,7 @@ class Report_Detail extends Component {
                                         }
                                     </CardHeader>
                                     <CardBody>
-                                        <FormGroup row style={{paddingLeft:'90%'}}>
+                                        <FormGroup row style={{ paddingLeft: '90%' }}>
                                             {report === null ? "" :
                                                 <>
                                                     <Button outline color="primary" onClick={this.export}>Tải đánh giá</Button>
@@ -185,36 +185,36 @@ class Report_Detail extends Component {
                                                         ref={(exporter) => { this._exporter = exporter; }}
                                                     >
                                                         <ExcelExportColumnGroup title={report.title}
-                                                            headerCellOptions={{ textAlign: 'center', background:'#ffffff', bold:true, color:'#000000', fontSize:18}}
+                                                            headerCellOptions={{ textAlign: 'center', background: '#ffffff', bold: true, color: '#000000', fontSize: 18 }}
                                                         >
-                                                            <ExcelExportColumn field="MSSV" title="MSSV" 
-                                                                headerCellOptions={{ textAlign: 'center', bold:true, background:'#ffffff', color:'#000000', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}} />
-                                                            <ExcelExportColumn field="name" title="Họ Tên" 
-                                                                headerCellOptions={{ textAlign: 'center', bold:true, background:'#ffffff', color:'#000000', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
-                                                            <ExcelExportColumn field="companyName" title="Tên Doanh Nghiệp" 
-                                                                headerCellOptions={{ textAlign: 'center', bold:true, background:'#ffffff', color:'#000000', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
+                                                            <ExcelExportColumn field="MSSV" title="MSSV"
+                                                                headerCellOptions={{ textAlign: 'center', bold: true, background: '#ffffff', color: '#000000', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                                            <ExcelExportColumn field="name" title="Họ Tên"
+                                                                headerCellOptions={{ textAlign: 'center', bold: true, background: '#ffffff', color: '#000000', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                                            <ExcelExportColumn field="companyName" title="Tên Doanh Nghiệp"
+                                                                headerCellOptions={{ textAlign: 'center', bold: true, background: '#ffffff', color: '#000000', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
                                                             <ExcelExportColumn field="projectName" title="Tên Dự Án"
-                                                                headerCellOptions={{ textAlign: 'center', bold:true, background:'#ffffff' , color:'#000000', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
-                                                            <ExcelExportColumn field="startDate" title="Ngày bắt đầu đánh giá" 
-                                                                headerCellOptions={{ textAlign: 'center', bold:true, background:'#ffffff', color:'#000000', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
-                                                            <ExcelExportColumn field="endDate" title="Ngày kết thúc đánh giá" 
-                                                                headerCellOptions={{ textAlign: 'center', bold:true, background:'#ffffff', color:'#000000', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
-                                                            <ExcelExportColumnGroup title="Đánh giá OJT" 
-                                                                headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}>
-                                                                <ExcelExportColumn field="discipline" title="Kỷ luật(40%)" 
-                                                                    headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
-                                                                <ExcelExportColumn field="workEffect" title="Hiệu quả công việc(50%)" 
-                                                                    headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
-                                                                <ExcelExportColumn field="activity" title="Tham gia các hoạt động(10%)" 
-                                                                    headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
-                                                                <ExcelExportColumn field="averageScore" title="Kết quả thực tập" 
-                                                                    headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
-                                                                <ExcelExportColumn field="rating" title="Xếp loại" 
-                                                                    headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
-                                                                <ExcelExportColumn field="daysWork" title="Số ngày làm việc" 
-                                                                    headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
-                                                                <ExcelExportColumn field="remark" title="Nhận xét" 
-                                                                    headerCellOptions={{ textAlign: 'center', bold:true, color:'#000000', background:'#FFFF00', borderTop:"size:2", borderLeft:"size:2", borderRight:"size:2", borderBottom:"size:2"}}/>
+                                                                headerCellOptions={{ textAlign: 'center', bold: true, background: '#ffffff', color: '#000000', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                                            <ExcelExportColumn field="startDate" title="Ngày bắt đầu đánh giá"
+                                                                headerCellOptions={{ textAlign: 'center', bold: true, background: '#ffffff', color: '#000000', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                                            <ExcelExportColumn field="endDate" title="Ngày kết thúc đánh giá"
+                                                                headerCellOptions={{ textAlign: 'center', bold: true, background: '#ffffff', color: '#000000', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                                            <ExcelExportColumnGroup title="Đánh giá OJT"
+                                                                headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }}>
+                                                                <ExcelExportColumn field="discipline" title="Kỷ luật(40%)"
+                                                                    headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                                                <ExcelExportColumn field="workEffect" title="Hiệu quả công việc(50%)"
+                                                                    headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                                                <ExcelExportColumn field="activity" title="Tham gia các hoạt động(10%)"
+                                                                    headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                                                <ExcelExportColumn field="averageScore" title="Kết quả thực tập"
+                                                                    headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                                                <ExcelExportColumn field="rating" title="Xếp loại"
+                                                                    headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                                                <ExcelExportColumn field="daysWork" title="Số ngày làm việc"
+                                                                    headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                                                <ExcelExportColumn field="remark" title="Nhận xét"
+                                                                    headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
                                                             </ExcelExportColumnGroup>
                                                         </ExcelExportColumnGroup>
                                                     </ExcelExport>
@@ -329,15 +329,17 @@ class Report_Detail extends Component {
                                         </Pagination>
                                     </CardBody>
                                     <CardFooter>
+                                        <Row>
+                                            <Col xs="4" sm="4">
+                                                <Button block color="secondary" onClick={() => this.handleDirect('/Report/Report')}>
+                                                    Trở về
+                                                </Button>
+                                            </Col>
+                                        </Row>
                                     </CardFooter>
                                 </Card>
                             </Col>
                         </Row>
-                        <div style={{ paddingLeft: '45%' }}>
-                            <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/Report/Report')}>
-                                Trở về
-                            </Button>
-                        </div>
                     </div>
                 )
         );

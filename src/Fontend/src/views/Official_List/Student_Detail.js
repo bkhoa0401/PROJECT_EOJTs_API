@@ -284,10 +284,10 @@ class Student_Detail extends Component {
                                             {
                                                 role && role === 'ROLE_HR' ?
                                                     (<Col xs="3" sm="3">
-                                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/official_list")} type="submit" color="primary" block>Trở về</Button>
+                                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/official_list")} type="submit" color="secondary" block>Trở về</Button>
                                                     </Col>) :
                                                     (<Col xs="3" sm="3">
-                                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr-student-list")} type="submit" color="primary" block>Trở về</Button>
+                                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr-student-list")} type="submit" color="secondary" block>Trở về</Button>
                                                     </Col>)
                                             }
                                         </Row>

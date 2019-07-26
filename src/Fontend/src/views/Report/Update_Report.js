@@ -22,7 +22,7 @@ class Update_Report extends Component {
             reportColor: ['lime', 'DeepSkyBlue', 'gold', 'red', 'black', 'black'],
             rate: ['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu', 'N/A'],
             onScore: 5,
-            id:-1,
+            id: -1,
             title: '',
             timeStart: '',
             timeEnd: '',
@@ -34,7 +34,7 @@ class Update_Report extends Component {
             workDays: 0,
 
             needId: null,
-            reportId:-1,
+            reportId: -1,
 
             student: null,
             businessName: '',
@@ -44,7 +44,7 @@ class Update_Report extends Component {
             validatorNumRange_score_work: '',
             validatorNumRange_score_activity: '',
             validatorNumRange_score_discipline: '',
-            maxWorkDays:0,
+            maxWorkDays: 0,
             validatorMaxWorkDays: '',
         };
     }
@@ -99,8 +99,8 @@ class Update_Report extends Component {
         let formatTimeEndShow = report.timeEnd.split('-');
         let onScreenStartDate = formatTimeStartShow[2] + "/" + formatTimeStartShow[1] + "/" + formatTimeStartShow[0];
         let onScreenEndDate = formatTimeEndShow[2] + "/" + formatTimeEndShow[1] + "/" + formatTimeEndShow[0];
-        let mm31 = [1,3,5,7,8,10,12];
-        let mm30 = [4,6,9,11];
+        let mm31 = [1, 3, 5, 7, 8, 10, 12];
+        let mm30 = [4, 6, 9, 11];
 
         let maxWorkDays = 0;
         if (mm30.includes(parseInt(formatTimeStartShow[1]))) {
@@ -332,13 +332,13 @@ class Update_Report extends Component {
                                                 <h6 style={{ fontWeight: "bold" }}>Ngày bắt đầu:</h6>
                                             </Col>
                                             <Col xs="12" md="4">
-                                                <Badge className="mr-1" color="primary" pill style={{fontSize:"16px"}}>{onScreenStartDate === null ? "" : onScreenStartDate}</Badge>
+                                                <Badge className="mr-1" color="primary" pill style={{ fontSize: "16px" }}>{onScreenStartDate === null ? "" : onScreenStartDate}</Badge>
                                             </Col>
                                             <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Ngày kết thúc:</h6>
                                             </Col>
                                             <Col xs="12" md="4">
-                                                <Badge className="mr-1" color="danger" pill style={{fontSize:"16px"}}>{onScreenEndDate === null ? "" : onScreenEndDate}</Badge>
+                                                <Badge className="mr-1" color="danger" pill style={{ fontSize: "16px" }}>{onScreenEndDate === null ? "" : onScreenEndDate}</Badge>
                                             </Col>
                                         </FormGroup>
                                         <FormGroup row>
@@ -429,20 +429,25 @@ class Update_Report extends Component {
                                             {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
                                         </Pagination>
                                     </CardBody>
+                                    <CardFooter className="p-3">
+                                        <Row style={{ marginLeft: "21%" }}>
+                                            <Col xs="4" sm="4">
+                                                {needId === null ? (<></>) :
+                                                    (<Button block color="danger" onClick={() => this.handleDirect(`/Report/Report_Detail/${needId[0]}~${needId[1]}`)}>
+                                                        Huỷ bỏ
+                                                    </Button>)
+                                                }
+                                            </Col>
+                                            <Col xs="4" sm="4">
+                                                <Button block color="primary" onClick={() => this.handleSubmit()}>
+                                                    Cập nhật
+                                                </Button>
+                                            </Col>
+                                        </Row>
+                                    </CardFooter>
                                 </Card>
                             </Col>
                         </Row>
-                        <div style={{ paddingLeft: '40%' }}>
-                            {needId === null ? (<></>):
-                            (<Button style={{ width: '100px' }} outline color="primary" onClick={() => this.handleDirect(`/Report/Report_Detail/${needId[0]}~${needId[1]}`)}>
-                                Huỷ
-                            </Button>)
-                            }
-                            &nbsp;&nbsp;&nbsp;   
-                            <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleSubmit()}>
-                                Cập nhật
-                            </Button>
-                        </div>
                     </div>
                 )
         );

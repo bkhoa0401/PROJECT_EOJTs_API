@@ -142,7 +142,7 @@ class Invitation_Create extends Component {
                                                                 }
                                                             </td>
                                                             <td style={{ textAlign: "center" }}>
-                                                                <Button onClick={() => this.handleConfirm(student)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+                                                                <Button onClick={() => this.handleConfirm(student)} type="submit" style={{ marginRight: "1.5px" }} color="primary" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                             </td>
                                                         </tr>
                                                     )
@@ -209,7 +209,7 @@ class Invitation_Create extends Component {
                                                                 }
                                                             </td>
                                                             <td style={{ textAlign: "center" }}>
-                                                                <Button onClick={() => this.handleConfirm(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+                                                                <Button onClick={() => this.handleConfirm(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="primary" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                             </td>
                                                         </tr>
                                                     )
@@ -400,7 +400,7 @@ class Invitation_Create extends Component {
                             <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/invitation")} type="submit" color="primary" block>Trở về</Button>
+                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/invitation")} type="submit" color="secondary" block>Trở về</Button>
                                     </Col>
                                 </Row>
                             </CardFooter>

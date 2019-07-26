@@ -65,6 +65,17 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/getCurrentUser")
+    @ResponseBody
+    public ResponseEntity<Admin> getCurrentUser() {
+        String email = getEmailFromToken();
+        Admin admin = adminService.findAdminByEmail(email);
+        if (admin != null) {
+            return new ResponseEntity<Admin>(admin, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     //get all student to send inform message
     //check semester //ok
     @GetMapping("/students")
