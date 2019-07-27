@@ -29,6 +29,8 @@ public class History_Details implements Serializable {
     @JoinColumn(name = "action_history_id")
     private HistoryAction historyAction;
 
+    public History_Details() {
+    }
 
     public History_Details(String tableName, String columnName, String targetId, String oldValue, String newValue, HistoryAction historyAction) {
         this.tableName = tableName;
