@@ -21,9 +21,13 @@ public interface IStudentService {
 
     public boolean updateInforStudent(String email, String ojective, List<Skill> skillList);
 
-    public boolean updateOption1Student(String email, String option1);
+//    public boolean updateOption1Student(String email, String option1);
+//
+//    public boolean updateOption2Student(String email, String option2);
 
-    public boolean updateOption2Student(String email, String option2);
+    public String updateOption1Student(String email, String option1);
+
+    public String updateOption2Student(String email, String option2);
 
     public Student getStudentIsInvited(String email);
 

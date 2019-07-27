@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.Business_ListJobPostDTO;
+import com.example.demo.dto.Businesses_OptionsDTO;
 import com.example.demo.entity.*;
 
 import java.util.ArrayList;
@@ -15,4 +16,6 @@ public interface IAdminService {
     List<Business> getSuggestedBusinessListForFail(Student student);
 
     List<Business> filterListBusinessByStudentSpecialized(int specializedId, List<Business> businessList);
+
+    Businesses_OptionsDTO getBusinesses_OptionDTO();
 }

@@ -27,7 +27,7 @@ public class Job_Post_SkillService implements IJob_Post_SkillService {
             job_post_skill_isExisted.setSkill(job_post_skill.getSkill());
             job_post_skill_isExisted.setNumber(job_post_skill.getNumber());
             job_post_skill_isExisted.setJob_post(job_post_skill.getJob_post());
-//
+
             //job_post_skillRepository.save(job_post_skill);
             IJob_post_skillRepository.save(job_post_skill);
         }

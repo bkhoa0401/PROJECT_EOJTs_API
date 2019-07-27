@@ -19,4 +19,6 @@ public interface ISpecializedService {
     boolean updateStatusSpecialized(int specializedId, boolean status);
 
     Specialized getSpecializedById(int id);
+
+    List<Specialized> pagingSpecialized(int page, int pageSize);
 }
