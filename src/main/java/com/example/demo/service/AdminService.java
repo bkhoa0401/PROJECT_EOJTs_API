@@ -295,22 +295,35 @@ public class AdminService implements IAdminService {
             statisticalQuestionAnswerDTO.setCountAnswer(countAnswer);
 
             List<Answer> answers = iAnswerService.findAnswerByOtherIsTrueAndQuestionId(question.getId());
-            List<String> others=getListOtherOfQuestion(answers);
+            List<String> others = getListOtherOfQuestion(answers);
 
             statisticalQuestionAnswerDTO.setOthers(others);
 
             statisticalQuestionAnswerDTOS.add(statisticalQuestionAnswerDTO);
 
-            statisticalQuestionAnswerDTO=new StatisticalQuestionAnswerDTO();
+            statisticalQuestionAnswerDTO = new StatisticalQuestionAnswerDTO();
         }
 
         return statisticalQuestionAnswerDTOS;
     }
 
+    @Override
+    public List<Integer> percentStudentMakeSurvey() {
+        int studentsSize = iStudentService.getAllStudentsBySemesterId().size();
+
+        int studentIsAnswer = iStudent_answerService.countStudent_AnswersGroupByStudentEmail();
+
+        List<Integer> percentStudentIsAnswer = new ArrayList<>();
+        percentStudentIsAnswer.add(studentIsAnswer);
+        percentStudentIsAnswer.add(studentsSize);
+
+        return percentStudentIsAnswer;
+    }
+
     public List<String> getListOtherOfQuestion(List<Answer> answers) {
         List<String> others = new ArrayList<>();
         for (int i = 0; i < answers.size(); i++) {
-            String content=answers.get(i).getContent();
+            String content = answers.get(i).getContent();
             others.add(content);
         }
         return others;
