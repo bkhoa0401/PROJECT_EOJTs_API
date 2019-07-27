@@ -40,13 +40,12 @@ public class SemesterService implements ISemesterService {
         Semester semesterCurrent = new Semester();
 
         for (int i = 0; i < semesters.size(); i++) {
-            String minDate = semesters.get(i).getFinish_choose_option_time().toString();
-            //String minDate = semesters.get(i).getStart_choose_option_time().toString();
+            //String minDate = semesters.get(i).getFinish_choose_option_time().toString();
+            String minDate = semesters.get(i).getStart_choose_option_time().toString();
             String maxDate = semesters.get(i).getEnd_date().toString();
             boolean getCurrentSemester = Utils.aDateBetweenTwoDate(minDate, maxDate);
             if (getCurrentSemester == true) {
                 semesterCurrent = semesters.get(i);
-                break;
             }
         }
         return semesterCurrent;
@@ -62,7 +61,7 @@ public class SemesterService implements ISemesterService {
 
         for (int i = 0; i < semesterList.size(); i++) {
             String startChooseOption = semesterList.get(i).getStart_choose_option_time().toString();
-            String endChooseOption = semesterList.get(i).getFinish_choose_option_time().toString();
+            String endChooseOption = semesterList.get(i).getFinish_choose_business_time().toString();
             boolean getCurrentSemester = Utils.aDateBetweenTwoDate(startChooseOption, endChooseOption);
             if (getCurrentSemester == true) {
                 semesterCurrentByOption = semesterList.get(i);

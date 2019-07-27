@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import com.example.demo.entity.Semester;
 import com.example.demo.entity.Skill;
 import com.example.demo.entity.Student;
 
@@ -29,8 +30,10 @@ public class StudentDTO {
     private List<Skill> skillList;
     private boolean isIntership;
     private String businessName;
-    private String semester;
     private String supervisorName;
+    private Semester semester;
+    private java.util.Date curentDate= new java.util.Date();
+
 
 
     public StudentDTO(String email, String name, String specialized, String phone, String address, String objective, String option1, String option2, boolean isAcceptedOption1, boolean isAcceptedOption2, String code, String token, String avatarLink, float gpa, String resumeLink) {
@@ -69,15 +72,6 @@ public class StudentDTO {
         this.resumeLink = resumeLink;
         this.gender = gender;
         this.dob = dob;
-    }
-
-
-    public String getSemester() {
-        return semester;
-    }
-
-    public void setSemester(String semester) {
-        this.semester = semester;
     }
 
     public StudentDTO() {
@@ -293,4 +287,19 @@ public class StudentDTO {
         this.supervisorName = supervisorName;
     }
 
+    public Semester getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Semester semester) {
+        this.semester = semester;
+    }
+
+    public java.util.Date getCurentDate() {
+        return curentDate;
+    }
+
+    public void setCurentDate(java.util.Date curentDate) {
+        this.curentDate = curentDate;
+    }
 }
