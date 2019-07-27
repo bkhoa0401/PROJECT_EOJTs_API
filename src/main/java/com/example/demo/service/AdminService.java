@@ -173,11 +173,14 @@ public class AdminService implements IAdminService {
     public Businesses_OptionsDTO getBusinesses_OptionDTO() {
         List<Business> businessList = businessService.getAllBusinessBySemester();
 
+        List<String> businessListEngName=new ArrayList<>();
+
         List<Integer> countStudentRegisterBusiness = new ArrayList<>();
         for (int i = 0; i < businessList.size(); i++) {
             Business business = businessList.get(i);
             String engNameOfBusiness = business.getBusiness_eng_name();
 
+            businessListEngName.add(engNameOfBusiness);
             List<Student> studentListByBusinessName =
                     iStudentService.findStudentByBusinessNameOption(engNameOfBusiness, engNameOfBusiness);
             Integer sizeOfStudentListByBusinessName = studentListByBusinessName.size();
@@ -185,7 +188,7 @@ public class AdminService implements IAdminService {
         }
 
         Businesses_OptionsDTO businesses_optionsDTO = new Businesses_OptionsDTO();
-        businesses_optionsDTO.setBusinessList(businessList);
+        businesses_optionsDTO.setBusinessListEngName(businessListEngName);
         businesses_optionsDTO.setCountStudentRegisterBusiness(countStudentRegisterBusiness);
 
         return businesses_optionsDTO;
@@ -200,15 +203,20 @@ public class AdminService implements IAdminService {
 
         List<Integer> countStudentInternAtBusiness = new ArrayList<>();
 
+        List<String> businessListEngName=new ArrayList<>();
+
         for (int i = 0; i < businessList.size(); i++) {
             String email = businessList.get(i).getEmail();
             int id=semester.getId();
+
+            String engName=businessList.get(i).getBusiness_eng_name();
+            businessListEngName.add(engName);
 
             int countBusiness=ojt_enrollmentService.countOjt_EnrollmentsByBusinessEmailAndSemesterIdAndStudentEmailNotNull(email,id);
             countStudentInternAtBusiness.add(countBusiness);
         }
         Businesses_StudentsDTO businesses_studentsDTO=new Businesses_StudentsDTO();
-        businesses_studentsDTO.setBusinessList(businessList);
+        businesses_studentsDTO.setBusinessListEngName(businessListEngName);
         businesses_studentsDTO.setNumberOfStudentInternAtBusiness(countStudentInternAtBusiness);
 
         return businesses_studentsDTO;

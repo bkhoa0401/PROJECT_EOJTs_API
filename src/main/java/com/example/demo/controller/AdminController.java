@@ -200,17 +200,6 @@ public class AdminController {
     }
 
 
-    //dem so luong hs thuc tap tai 1 dn
-    @GetMapping("/business-students")
-    @ResponseBody
-    public ResponseEntity<Businesses_StudentsDTO> countStudentAtABusiness(){
-        Businesses_StudentsDTO businesses_studentsDTO=adminService.getBusinesses_StudentsDTO();
-        if(businesses_studentsDTO!=null){
-            return new ResponseEntity<Businesses_StudentsDTO>(businesses_studentsDTO,HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-    }
-
     //set business for student by student id
     @PutMapping("/setBusinessForStudent")
     public ResponseEntity<Void> setBusinessForStudent(@RequestParam String emailOfBusiness, @RequestParam String emailOfStudent) {
@@ -230,5 +219,16 @@ public class AdminController {
             return new ResponseEntity<>(businesses_optionsDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    //dem so luong hs thuc tap tai 1 dn
+    @GetMapping("/business-students")
+    @ResponseBody
+    public ResponseEntity<Businesses_StudentsDTO> countStudentAtABusiness(){
+        Businesses_StudentsDTO businesses_studentsDTO=adminService.getBusinesses_StudentsDTO();
+        if(businesses_studentsDTO!=null){
+            return new ResponseEntity<Businesses_StudentsDTO>(businesses_studentsDTO,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 }
