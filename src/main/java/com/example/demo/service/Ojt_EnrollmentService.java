@@ -200,4 +200,9 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
         }
         return null;
     }
+
+    @Override
+    public int countOjt_EnrollmentsByBusinessEmailAndSemesterIdAndStudentEmailNotNull(String email, int id) {
+        return ojtEnrollmentRepository.countOjt_EnrollmentsByBusinessEmailAndSemesterIdAndStudentEmailNotNull(email,id);
+    }
 }

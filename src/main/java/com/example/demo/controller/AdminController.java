@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.Business_ListJobPostDTO;
+import com.example.demo.dto.Businesses_StudentsDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -195,6 +196,17 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+
+    //dem so luong hs thuc tap tai 1 dn
+    @GetMapping("/business-students")
+    @ResponseBody
+    public ResponseEntity<Businesses_StudentsDTO> countStudentAtABusiness(){
+        Businesses_StudentsDTO businesses_studentsDTO=adminService.getBusinesses_StudentsDTO();
+        if(businesses_studentsDTO!=null){
+            return new ResponseEntity<Businesses_StudentsDTO>(businesses_studentsDTO,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 
     //set business for student by student id
     @PutMapping("/setBusinessForStudent")

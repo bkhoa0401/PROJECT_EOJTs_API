@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.Business_ListJobPostDTO;
 import com.example.demo.dto.Business_SuggestScoreDTO;
 import com.example.demo.dto.Businesses_OptionsDTO;
+import com.example.demo.dto.Businesses_StudentsDTO;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IAdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,21 +173,44 @@ public class AdminService implements IAdminService {
     public Businesses_OptionsDTO getBusinesses_OptionDTO() {
         List<Business> businessList = businessService.getAllBusinessBySemester();
 
-        List<Integer> countStudentRegisterBusiness=new ArrayList<>();
+        List<Integer> countStudentRegisterBusiness = new ArrayList<>();
         for (int i = 0; i < businessList.size(); i++) {
             Business business = businessList.get(i);
-            String engNameOfBusiness=business.getBusiness_eng_name();
+            String engNameOfBusiness = business.getBusiness_eng_name();
 
-            List<Student> studentListByBusinessName=
-                    iStudentService.findStudentByBusinessNameOption(engNameOfBusiness,engNameOfBusiness);
-            Integer sizeOfStudentListByBusinessName=studentListByBusinessName.size();
+            List<Student> studentListByBusinessName =
+                    iStudentService.findStudentByBusinessNameOption(engNameOfBusiness, engNameOfBusiness);
+            Integer sizeOfStudentListByBusinessName = studentListByBusinessName.size();
             countStudentRegisterBusiness.add(sizeOfStudentListByBusinessName);
         }
 
-        Businesses_OptionsDTO businesses_optionsDTO=new Businesses_OptionsDTO();
+        Businesses_OptionsDTO businesses_optionsDTO = new Businesses_OptionsDTO();
         businesses_optionsDTO.setBusinessList(businessList);
         businesses_optionsDTO.setCountStudentRegisterBusiness(countStudentRegisterBusiness);
 
         return businesses_optionsDTO;
+    }
+
+    @Override
+    public Businesses_StudentsDTO getBusinesses_StudentsDTO() {
+
+        Semester semester = semesterService.getSemesterCurrent();
+
+        List<Business> businessList = businessService.getAllBusinessBySemester();
+
+        List<Integer> countStudentInternAtBusiness = new ArrayList<>();
+
+        for (int i = 0; i < businessList.size(); i++) {
+            String email = businessList.get(i).getEmail();
+            int id=semester.getId();
+
+            int countBusiness=ojt_enrollmentService.countOjt_EnrollmentsByBusinessEmailAndSemesterIdAndStudentEmailNotNull(email,id);
+            countStudentInternAtBusiness.add(countBusiness);
+        }
+        Businesses_StudentsDTO businesses_studentsDTO=new Businesses_StudentsDTO();
+        businesses_studentsDTO.setBusinessList(businessList);
+        businesses_studentsDTO.setNumberOfStudentInternAtBusiness(countStudentInternAtBusiness);
+
+        return businesses_studentsDTO;
     }
 }
