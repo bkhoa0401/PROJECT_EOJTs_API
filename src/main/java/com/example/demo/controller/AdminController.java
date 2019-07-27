@@ -220,31 +220,42 @@ public class AdminController {
     //dem so luong hs thuc tap tai 1 dn
     @GetMapping("/business-students")
     @ResponseBody
-    public ResponseEntity<Businesses_StudentsDTO> countStudentAtABusiness(){
-        Businesses_StudentsDTO businesses_studentsDTO=adminService.getBusinesses_StudentsDTO();
-        if(businesses_studentsDTO!=null){
-            return new ResponseEntity<Businesses_StudentsDTO>(businesses_studentsDTO,HttpStatus.OK);
+    public ResponseEntity<Businesses_StudentsDTO> countStudentAtABusiness() {
+        Businesses_StudentsDTO businesses_studentsDTO = adminService.getBusinesses_StudentsDTO();
+        if (businesses_studentsDTO != null) {
+            return new ResponseEntity<Businesses_StudentsDTO>(businesses_studentsDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
     @GetMapping("/statisticalEvaluations")
     @ResponseBody
-    public ResponseEntity<List<Statistical_EvaluationDTO>> getStatisticalEvaluation(){
-        List<Statistical_EvaluationDTO> statistical_evaluationDTOList=adminService.getListStatistical_EvaluationDTO();
-        if(statistical_evaluationDTOList!=null){
-            return new ResponseEntity<List<Statistical_EvaluationDTO>>(statistical_evaluationDTOList,HttpStatus.OK);
+    public ResponseEntity<List<Statistical_EvaluationDTO>> getStatisticalEvaluation() {
+        List<Statistical_EvaluationDTO> statistical_evaluationDTOList = adminService.getListStatistical_EvaluationDTO();
+        if (statistical_evaluationDTOList != null) {
+            return new ResponseEntity<List<Statistical_EvaluationDTO>>(statistical_evaluationDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
     @GetMapping("/statisticalQuestionAnswer")
     @ResponseBody
-    public ResponseEntity<List<StatisticalQuestionAnswerDTO>> getStatisticalQuestionAnswer(){
-        List<StatisticalQuestionAnswerDTO> statisticalQuestionAnswerDTOS=adminService.getListStatisticalQuestionAnswerDTO();
-        if(statisticalQuestionAnswerDTOS!=null){
-            return new ResponseEntity<List<StatisticalQuestionAnswerDTO>>(statisticalQuestionAnswerDTOS,HttpStatus.OK);
+    public ResponseEntity<List<StatisticalQuestionAnswerDTO>> getStatisticalQuestionAnswer() {
+        List<StatisticalQuestionAnswerDTO> statisticalQuestionAnswerDTOS = adminService.getListStatisticalQuestionAnswerDTO();
+        if (statisticalQuestionAnswerDTOS != null) {
+            return new ResponseEntity<List<StatisticalQuestionAnswerDTO>>(statisticalQuestionAnswerDTOS, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
+
+    @GetMapping("/statisticalStudentIsAnswer")
+    @ResponseBody
+    public ResponseEntity<List<Integer>> getStatisticalStudentIsAnswer() {
+        List<Integer> statisticalStudentIsAnswer = adminService.percentStudentMakeSurvey();
+        if (statisticalStudentIsAnswer != null) {
+            return new ResponseEntity<List<Integer>>(statisticalStudentIsAnswer, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
 }

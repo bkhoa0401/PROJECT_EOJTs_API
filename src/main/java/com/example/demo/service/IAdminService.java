@@ -23,4 +23,7 @@ public interface IAdminService {
     List<Statistical_EvaluationDTO> getListStatistical_EvaluationDTO();
 
     List<StatisticalQuestionAnswerDTO> getListStatisticalQuestionAnswerDTO();
+
+    List<Integer> percentStudentMakeSurvey();
+
 }
