@@ -315,7 +315,7 @@ public class AdminService implements IAdminService {
 
         List<Integer> percentStudentIsAnswer = new ArrayList<>();
         percentStudentIsAnswer.add(studentIsAnswer);
-        percentStudentIsAnswer.add(studentsSize);
+        percentStudentIsAnswer.add(studentsSize - studentIsAnswer);
 
         return percentStudentIsAnswer;
     }

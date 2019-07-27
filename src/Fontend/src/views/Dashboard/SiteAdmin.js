@@ -5,28 +5,6 @@ import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import ApiServices from '../../service/api-service';
 
-const doughnut = {
-  labels: [
-    'Đã trả lời',
-    'Chưa trả lời',
-    // 'Yellow',
-  ],
-  datasets: [
-    {
-      data: [300, 100],
-      backgroundColor: [
-        '#FF6384',
-        '#36A2EB',
-        // '#FFCE56',
-      ],
-      hoverBackgroundColor: [
-        '#FF6384',
-        '#36A2EB',
-        // '#FFCE56',
-      ],
-    }],
-};
-
 const pie = {
   labels: [
     'Red',
@@ -94,6 +72,7 @@ class SiteAdmin extends Component {
       line: {},
       bar: {},
       radar: {},
+      doughnut: {},
 
     };
   }
@@ -102,8 +81,10 @@ class SiteAdmin extends Component {
     const studentOptionPerBusiness = await ApiServices.Get('/admin/studentOptionPerBusiness');
     const studentInternPerBusiness = await ApiServices.Get('/admin/business-students');
     const statisticalEvaluations = await ApiServices.Get('/admin/statisticalEvaluations');
+    const statisticalStudentIsAnswer = await ApiServices.Get('/admin/statisticalStudentIsAnswer');
 
-    if (studentOptionPerBusiness != null && studentInternPerBusiness != null && statisticalEvaluations != null) {
+    if (studentOptionPerBusiness != null && studentInternPerBusiness != null && statisticalEvaluations != null
+      && statisticalStudentIsAnswer != null) {
       var line = {
         labels: studentOptionPerBusiness.businessListEngName,
         datasets: [
@@ -189,17 +170,36 @@ class SiteAdmin extends Component {
           },
         ],
       }
+      var doughnut = {
+        labels: [
+          'Đã trả lời',
+          'Chưa trả lời',
+        ],
+        datasets: [
+          {
+            data: statisticalStudentIsAnswer,
+            backgroundColor: [
+              '#FF6384',
+              '#36A2EB',
+            ],
+            hoverBackgroundColor: [
+              '#FF6384',
+              '#36A2EB',
+            ],
+          }],
+      }
       this.setState({
         loading: false,
         line: line,
         bar: bar,
         radar: radar,
+        doughnut: doughnut
       });
     }
   }
 
   render() {
-    const { loading, line, bar, radar } = this.state;
+    const { loading, line, bar, radar, doughnut } = this.state;
     return (
       loading.toString() === 'true' ? (
         SpinnerLoading.showHashLoader(loading)
