@@ -27,52 +27,6 @@ const doughnut = {
     }],
 };
 
-const radar = {
-  labels: ['Xuất sắc', 'Tốt', 'Khá', 'Trung Bình', 'Yếu'],
-  datasets: [
-    {
-      label: 'Report 1',
-      backgroundColor: 'rgba(179,181,198,0.2)',
-      borderColor: 'rgba(179,181,198,1)',
-      pointBackgroundColor: 'rgba(179,181,198,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(179,181,198,1)',
-      data: [65, 59, 90, 81, 56],
-    },
-    {
-      label: 'Report 2',
-      backgroundColor: 'rgba(255,99,132,0.2)',
-      borderColor: 'rgba(255,99,132,1)',
-      pointBackgroundColor: 'rgba(255,99,132,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(255,99,132,1)',
-      data: [28, 48, 40, 19, 96],
-    },
-    {
-      label: 'Report 3',
-      backgroundColor: '#CCFFFF',
-      borderColor: '#00FFFF',
-      pointBackgroundColor: '#00FFFF',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#00FFFF',
-      data: [10, 20, 30, 40, 50],
-    },
-    {
-      label: 'Report 4',
-      backgroundColor: '#FFF68F',
-      borderColor: '#CDAD00',
-      pointBackgroundColor: '#CDAD00',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#CDAD00',
-      data: [99, 88, 77, 66, 55],
-    },
-  ],
-};
-
 const pie = {
   labels: [
     'Red',
@@ -139,6 +93,7 @@ class SiteAdmin extends Component {
       loading: true,
       line: {},
       bar: {},
+      radar: {},
 
     };
   }
@@ -146,9 +101,9 @@ class SiteAdmin extends Component {
   async componentDidMount() {
     const studentOptionPerBusiness = await ApiServices.Get('/admin/studentOptionPerBusiness');
     const studentInternPerBusiness = await ApiServices.Get('/admin/business-students');
+    const statisticalEvaluations = await ApiServices.Get('/admin/statisticalEvaluations');
 
-
-    if (studentOptionPerBusiness != null && studentInternPerBusiness != null) {
+    if (studentOptionPerBusiness != null && studentInternPerBusiness != null && statisticalEvaluations != null) {
       var line = {
         labels: studentOptionPerBusiness.businessListEngName,
         datasets: [
@@ -189,17 +144,62 @@ class SiteAdmin extends Component {
           },
         ],
       }
+      var radar = {
+        labels: ['Xuất sắc', 'Tốt', 'Khá', 'Trung Bình', 'Yếu'],
+        datasets: [
+          {
+            label: 'Report 1',
+            backgroundColor: 'rgba(179,181,198,0.2)',
+            borderColor: 'rgba(179,181,198,1)',
+            pointBackgroundColor: 'rgba(179,181,198,1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(179,181,198,1)',
+            data: statisticalEvaluations[0].statisticalTypeEvaluation,
+          },
+          {
+            label: 'Report 2',
+            backgroundColor: 'rgba(255,99,132,0.2)',
+            borderColor: 'rgba(255,99,132,1)',
+            pointBackgroundColor: 'rgba(255,99,132,1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(255,99,132,1)',
+            data: statisticalEvaluations[1].statisticalTypeEvaluation,
+          },
+          {
+            label: 'Report 3',
+            backgroundColor: '#CCFFFF',
+            borderColor: '#00FFFF',
+            pointBackgroundColor: '#00FFFF',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#00FFFF',
+            data: statisticalEvaluations[2].statisticalTypeEvaluation,
+          },
+          {
+            label: 'Report 4',
+            backgroundColor: '#FFF68F',
+            borderColor: '#CDAD00',
+            pointBackgroundColor: '#CDAD00',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#CDAD00',
+            data: statisticalEvaluations[3].statisticalTypeEvaluation,
+          },
+        ],
+      }
       this.setState({
         loading: false,
         line: line,
         bar: bar,
-
+        radar: radar,
       });
     }
   }
 
   render() {
-    const { loading, line, bar } = this.state;
+    const { loading, line, bar, radar } = this.state;
     return (
       loading.toString() === 'true' ? (
         SpinnerLoading.showHashLoader(loading)
@@ -291,11 +291,11 @@ class SiteAdmin extends Component {
                   <small className="text-muted">docs</small>
                 </a>
               </div> */}
-                        <Input type="select" style={{ width: "150px" }}>
+                        {/* <Input type="select" style={{ width: "150px" }}>
                           <option>SPRING2019</option>
                           <option>SUMMER2019</option>
                           <option>WINTER2019</option>
-                        </Input>
+                        </Input> */}
                       </CardHeader>
                       <CardBody>
                         <div className="chart-wrapper">

@@ -161,20 +161,21 @@ class BusinessProposed_Detail extends Component {
     }
 
     handleConfirm = () => {
-        const { status, business } = this.state;
+        const { status, business, role } = this.state;
         let message = '';
-        if (status) {
-            this.setState({
-                success: false
-            })
-            message = `Bạn chắc chắn muốn "XÉT DUYỆT" yêu cầu thực tập tại doanh nghiệp "${business.business_name}" của sinh viên "${business.student_proposed.name}" ?`
-        } else {
-            this.setState({
-                danger: false
-            })
-            message = `Bạn chắc chắn muốn "TỪ CHỐI" yêu cầu thực tập tại doanh nghiệp "${business.business_name}" của sinh viên "${business.student_proposed.name}" ?`
-        }
-        if (this.validator.allValid()) {
+
+        if (this.validator.allValid() || (role === 'ROLE_HEADMASTER' && status)) {
+            if (status) {
+                this.setState({
+                    success: false
+                })
+                message = `Bạn chắc chắn muốn "XÉT DUYỆT" yêu cầu thực tập tại doanh nghiệp "${business.business_name}" của sinh viên "${business.student_proposed.name}" ?`
+            } else {
+                this.setState({
+                    danger: false
+                })
+                message = `Bạn chắc chắn muốn "TỪ CHỐI" yêu cầu thực tập tại doanh nghiệp "${business.business_name}" của sinh viên "${business.student_proposed.name}" ?`
+            }
             // this.closePopup();
             confirmAlert({
                 title: 'Xác nhận',

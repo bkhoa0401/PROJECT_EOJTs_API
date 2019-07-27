@@ -328,6 +328,7 @@ class Excels extends Component {
                             name: student[8]
                         },
                         gpa: student[9],
+                        semester: student[10],
                     };
                     listStudents.push(student);
                 })
@@ -508,7 +509,7 @@ class Excels extends Component {
         }
 
         let flag = true;
-        var titles = ["STT", "MSSV", "Họ Tên", "Ngày sinh", "Giới tính", "SĐT", "Email", "Địa chỉ", "Ngành học", "GPA"];
+        var titles = ["STT", "MSSV", "Họ Tên", "Ngày sinh", "Giới tính", "SĐT", "Email", "Địa chỉ", "Ngành học", "GPA", "Kì"];
 
         if (fileType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 
@@ -519,7 +520,7 @@ class Excels extends Component {
                 else {
                     let titlesExcel = resp.rows[0];
 
-                    if (titlesExcel.length != 10) {
+                    if (titlesExcel.length != 11) {
                         flag = false;
                     } else {
                         for (let i = 0; i < titles.length; i++) {
@@ -685,6 +686,7 @@ class Excels extends Component {
                                                             <th>Địa chỉ</th>
                                                             <th>Ngành học</th>
                                                             <th>GPA</th>
+                                                            <th>Kì</th>
                                                         </thead>
                                                         <tbody>
                                                             {
@@ -701,6 +703,7 @@ class Excels extends Component {
                                                                             <td id={"s-" + index + "-7"} onKeyUp={this.rowStudentEdited}>{student[7]}</td>
                                                                             <td id={"s-" + index + "-8"} onKeyUp={this.rowStudentEdited}>{student[8]}</td>
                                                                             <td id={"s-" + index + "-9"} onKeyUp={this.rowStudentEdited}>{student[9]}</td>
+                                                                            <td id={"s-" + index + "-10"} onKeyUp={this.rowStudentEdited}>{student[10]}</td>
                                                                         </tr>
                                                                     )
                                                                 })
