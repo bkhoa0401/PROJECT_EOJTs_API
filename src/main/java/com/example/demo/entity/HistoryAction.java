@@ -38,7 +38,7 @@ public class HistoryAction implements Serializable {
     @Column(name = "actionTime")
     Date actionTime;
 
-    @OneToMany(mappedBy = "action_history")
+    @OneToMany(mappedBy = "historyAction")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<History_Details> details;
 
