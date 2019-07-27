@@ -1,6 +1,9 @@
 package com.example.demo.entity;
 
+import com.example.demo.config.Level;
+import com.example.demo.config.ReportName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -10,7 +13,7 @@ import java.sql.Date;
 
 @Entity
 @Table(name = "evaluation")
-public class Evaluation implements  Comparable<Evaluation>, Serializable {
+public class Evaluation implements Comparable<Evaluation>, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -31,11 +34,13 @@ public class Evaluation implements  Comparable<Evaluation>, Serializable {
     @Column(name = "remark", columnDefinition = "NVARCHAR(MAX)")
     private String remark;
 
-//    @Column(name = "student_code")
+    //    @Column(name = "student_code")
 //    private String student_code;
-
+    @Enumerated(EnumType.STRING)
+    @Check(constraints = "title IN ('REPORT1' ,'REPORT2', 'REPORT3','REPORT4')")
     @Column(name = "title", columnDefinition = "NVARCHAR(255)")
-    private String title;
+    private ReportName title = ReportName.REPORT1;
+
 
     @Column(name = "timeCreated")
     private Date timeCreated;
@@ -44,13 +49,13 @@ public class Evaluation implements  Comparable<Evaluation>, Serializable {
     @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "supervisor_email")
-    private Supervisor  supervisor;
+    private Supervisor supervisor;
 
     @ManyToOne
     @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "ojt_enrollment_id")
-    private Ojt_Enrollment  ojt_enrollment;
+    private Ojt_Enrollment ojt_enrollment;
 
     @Column(name = "timeStart")
     private Date timeStart;
@@ -116,11 +121,19 @@ public class Evaluation implements  Comparable<Evaluation>, Serializable {
 //        this.student_code = student_code;
 //    }
 
-    public String getTitle() {
+//    public String getTitle() {
+//        return title;
+//    }
+//
+//    public void setTitle(String title) {
+//        this.title = title;
+//    }
+
+    public ReportName getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(ReportName title) {
         this.title = title;
     }
 

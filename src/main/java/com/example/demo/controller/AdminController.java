@@ -6,6 +6,7 @@ import com.example.demo.dto.Businesses_StudentsDTO;
 
 import com.example.demo.dto.Businesses_OptionsDTO;
 
+import com.example.demo.dto.Statistical_EvaluationDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -228,6 +229,16 @@ public class AdminController {
         Businesses_StudentsDTO businesses_studentsDTO=adminService.getBusinesses_StudentsDTO();
         if(businesses_studentsDTO!=null){
             return new ResponseEntity<Businesses_StudentsDTO>(businesses_studentsDTO,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/statisticalEvaluations")
+    @ResponseBody
+    public ResponseEntity<List<Statistical_EvaluationDTO>> getStatisticalEvaluation(){
+        List<Statistical_EvaluationDTO> statistical_evaluationDTOList=adminService.getListStatistical_EvaluationDTO();
+        if(statistical_evaluationDTOList!=null){
+            return new ResponseEntity<List<Statistical_EvaluationDTO>>(statistical_evaluationDTOList,HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

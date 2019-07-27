@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.config.ReportName;
 import com.example.demo.entity.Evaluation;
 import com.example.demo.entity.Student;
 
@@ -26,4 +27,8 @@ public interface IEvaluationService {
     List<Evaluation> getEvaluationListOfStudentList(List<Student> studentList);
 
     List<Evaluation> checkSemesterOfListEvaluation(List<Evaluation> evaluationList);
+
+    List<Evaluation> getEvaluations();//get by semester
+
+    List<Evaluation> getEvaluationsByTitle(ReportName title);
 }

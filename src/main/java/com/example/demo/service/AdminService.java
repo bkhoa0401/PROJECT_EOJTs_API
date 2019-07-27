@@ -1,9 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.Business_ListJobPostDTO;
-import com.example.demo.dto.Business_SuggestScoreDTO;
-import com.example.demo.dto.Businesses_OptionsDTO;
-import com.example.demo.dto.Businesses_StudentsDTO;
+import com.example.demo.config.ReportName;
+import com.example.demo.config.ReportType;
+import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IAdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +30,9 @@ public class AdminService implements IAdminService {
 
     @Autowired
     IStudentService iStudentService;
+
+    @Autowired
+    IEvaluationService iEvaluationService;
 
     @Override
     public Admin findAdminByEmail(String email) {
@@ -173,7 +175,7 @@ public class AdminService implements IAdminService {
     public Businesses_OptionsDTO getBusinesses_OptionDTO() {
         List<Business> businessList = businessService.getAllBusinessBySemester();
 
-        List<String> businessListEngName=new ArrayList<>();
+        List<String> businessListEngName = new ArrayList<>();
 
         List<Integer> countStudentRegisterBusiness = new ArrayList<>();
         for (int i = 0; i < businessList.size(); i++) {
@@ -203,22 +205,123 @@ public class AdminService implements IAdminService {
 
         List<Integer> countStudentInternAtBusiness = new ArrayList<>();
 
-        List<String> businessListEngName=new ArrayList<>();
+        List<String> businessListEngName = new ArrayList<>();
 
         for (int i = 0; i < businessList.size(); i++) {
             String email = businessList.get(i).getEmail();
-            int id=semester.getId();
+            int id = semester.getId();
 
-            String engName=businessList.get(i).getBusiness_eng_name();
+            String engName = businessList.get(i).getBusiness_eng_name();
             businessListEngName.add(engName);
 
-            int countBusiness=ojt_enrollmentService.countOjt_EnrollmentsByBusinessEmailAndSemesterIdAndStudentEmailNotNull(email,id);
+            int countBusiness = ojt_enrollmentService.countOjt_EnrollmentsByBusinessEmailAndSemesterIdAndStudentEmailNotNull(email, id);
             countStudentInternAtBusiness.add(countBusiness);
         }
-        Businesses_StudentsDTO businesses_studentsDTO=new Businesses_StudentsDTO();
+        Businesses_StudentsDTO businesses_studentsDTO = new Businesses_StudentsDTO();
         businesses_studentsDTO.setBusinessListEngName(businessListEngName);
         businesses_studentsDTO.setNumberOfStudentInternAtBusiness(countStudentInternAtBusiness);
 
         return businesses_studentsDTO;
+    }
+
+    @Override
+    public List<Statistical_EvaluationDTO> getListStatistical_EvaluationDTO() {
+
+        Statistical_EvaluationDTO statistical_evaluationDTOReport_1=null;
+        Statistical_EvaluationDTO statistical_evaluationDTOReport_2=null;
+        Statistical_EvaluationDTO statistical_evaluationDTOReport_3=null;
+        Statistical_EvaluationDTO statistical_evaluationDTOReport_4=null;
+
+        List<Statistical_EvaluationDTO> statisticalEvaluationDTOList = new ArrayList<>();
+
+        List<Evaluation> evaluationListReport_1 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT1);
+        if (evaluationListReport_1 != null) {
+             statistical_evaluationDTOReport_1 = statistical_evaluationDTO(evaluationListReport_1);
+             if(statistical_evaluationDTOReport_1!=null){
+                 statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_1);
+             }
+        }
+        List<Evaluation> evaluationListReport_2 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT2);
+        if (evaluationListReport_2 != null) {
+            statistical_evaluationDTOReport_2 = statistical_evaluationDTO(evaluationListReport_2);
+            if(statistical_evaluationDTOReport_2!=null){
+                statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_2);
+            }
+        }
+        List<Evaluation> evaluationListReport_3 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT3);
+        if (evaluationListReport_3 != null) {
+            statistical_evaluationDTOReport_3 = statistical_evaluationDTO(evaluationListReport_3);
+            if(statistical_evaluationDTOReport_3!=null){
+                statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_3);
+            }
+        }
+        List<Evaluation> evaluationListReport_4 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT4);
+        if (evaluationListReport_4 != null) {
+            statistical_evaluationDTOReport_4 = statistical_evaluationDTO(evaluationListReport_4);
+            if(statistical_evaluationDTOReport_4!=null){
+                statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_4);
+            }
+        }
+
+        return statisticalEvaluationDTOList;
+    }
+
+    public Statistical_EvaluationDTO statistical_evaluationDTO(List<Evaluation> evaluationListByName) {
+        int countExcellent = 0;
+        int countGood = 0;
+        int countMiddling = 0;
+        int countMedium = 0;
+        int countLeast = 0;
+
+        for (int i = 0; i < evaluationListByName.size(); i++) {
+            Evaluation evaluation = evaluationListByName.get(i);
+
+            double scoreActivity = evaluation.getScore_activity();
+            double scoreDiscipline = evaluation.getScore_discipline();
+            double scoreWork = evaluation.getScore_work();
+
+            ReportType reportType = typeOfEvaluation(scoreActivity, scoreDiscipline, scoreWork);
+            if (reportType == ReportType.Excellent) {
+                countExcellent++;
+            } else if (reportType == ReportType.Good) {
+                countGood++;
+            } else if (reportType == ReportType.Middling) {
+                countMiddling++;
+            } else if (reportType == ReportType.Medium) {
+                countMedium++;
+            } else if (reportType == ReportType.Least) {
+                countLeast++;
+            }
+        }
+        Statistical_EvaluationDTO statistical_evaluationDTO = new Statistical_EvaluationDTO();
+
+        ReportName reportName = evaluationListByName.get(0).getTitle();
+
+        List<Integer> percentTypeByNameReport = new ArrayList<>();
+        percentTypeByNameReport.add(countExcellent);
+        percentTypeByNameReport.add(countGood);
+        percentTypeByNameReport.add(countMiddling);
+        percentTypeByNameReport.add(countMedium);
+        percentTypeByNameReport.add(countLeast);
+
+        statistical_evaluationDTO.setEvaluationName(String.valueOf(reportName));
+        statistical_evaluationDTO.setStatisticalTypeEvaluation(percentTypeByNameReport);
+
+        return statistical_evaluationDTO;
+    }
+
+    public ReportType typeOfEvaluation(double scoreActivity, double scoreDiscipline, double scoreWork) {
+        double ave = (scoreActivity + scoreDiscipline + scoreWork) / 3;
+        if (ave > 9) {
+            return ReportType.Excellent;
+        } else if (ave <= 9 && ave > 8) {
+            return ReportType.Good;
+        } else if (ave <= 8 && ave > 7) {
+            return ReportType.Middling;
+        } else if (ave <= 7 && ave >= 5) {
+            return ReportType.Medium;
+        } else {
+            return ReportType.Least;
+        }
     }
 }

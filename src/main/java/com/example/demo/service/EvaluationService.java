@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.config.ReportName;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IBusinessRepository;
 import com.example.demo.repository.IEvaluationRepository;
@@ -202,6 +203,19 @@ public class EvaluationService implements IEvaluationService {
                 }
             }
         }
+        return evaluationList;
+    }
+
+    @Override
+    public List<Evaluation> getEvaluations() {
+        Semester semester=semesterService.getSemesterCurrent();
+        List<Evaluation> evaluationList=IEvaluationRepository.findEvaluationsByOjt_enrollmentSemesterId(semester.getId());
+        return evaluationList;
+    }
+
+    @Override
+    public List<Evaluation> getEvaluationsByTitle(ReportName title) {
+        List<Evaluation> evaluationList=IEvaluationRepository.findEvaluationsByTitle(title);
         return evaluationList;
     }
 
