@@ -86,7 +86,7 @@ public class SpecializedService implements ISpecializedService {
         return null;
     }
 
-    @Cacheable(key = "'all'")
+    @Cacheable(key="{#page,#pageSize}")
     public List<Specialized> pagingSpecialized(int page, int pageSize) {
         if (specializedListAll == null || specializedListAll.size() == 0) {
             specializedListAll = ISpecializedRepository.findAll();

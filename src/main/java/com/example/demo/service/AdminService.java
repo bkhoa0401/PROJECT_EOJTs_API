@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.Business_ListJobPostDTO;
 import com.example.demo.dto.Business_SuggestScoreDTO;
+import com.example.demo.dto.Businesses_OptionsDTO;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IAdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class AdminService implements IAdminService{
+public class AdminService implements IAdminService {
     @Autowired
     IAdminRepository IAdminRepository;
 
@@ -27,6 +28,9 @@ public class AdminService implements IAdminService{
     @Autowired
     ISemesterService semesterService;
 
+    @Autowired
+    IStudentService iStudentService;
+
     @Override
     public Admin findAdminByEmail(String email) {
         Admin admin = IAdminRepository.findAdminByEmail(email);
@@ -39,7 +43,7 @@ public class AdminService implements IAdminService{
     //check semester // ok
     @Override
     public List<Business_ListJobPostDTO> getJobPostsOfBusinesses() {
-       // List<Business> businessList = businessService.getAllBusiness();
+        // List<Business> businessList = businessService.getAllBusiness();
 
         List<Business> businessList = businessService.getAllBusinessBySemester();
         List<Business_ListJobPostDTO> business_listJobPostDTOS = new ArrayList<>();
@@ -47,9 +51,9 @@ public class AdminService implements IAdminService{
         for (int i = 0; i < businessList.size(); i++) {
 
             //Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(businessList.get(i));
-            Semester semesterCurrent=semesterService.getSemesterCurrent();
-            Ojt_Enrollment ojt_enrollment=
-                    ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(businessList.get(i).getEmail(),semesterCurrent.getId());
+            Semester semesterCurrent = semesterService.getSemesterCurrent();
+            Ojt_Enrollment ojt_enrollment =
+                    ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(businessList.get(i).getEmail(), semesterCurrent.getId());
 
             List<Job_Post> job_postList = job_postService.getAllJobPostOfBusiness(ojt_enrollment);
 
@@ -89,7 +93,7 @@ public class AdminService implements IAdminService{
                         if (matchFlag > 0) {
                             Business_SuggestScoreDTO business_suggestScoreDTO = new Business_SuggestScoreDTO();
                             business_suggestScoreDTO.setBusiness(listAllBusiness.get(i).getBusiness());
-                            business_suggestScoreDTO.setSuggestScore((float)matchFlag / job_postList.get(j).getJob_post_skills().size());
+                            business_suggestScoreDTO.setSuggestScore((float) matchFlag / job_postList.get(j).getJob_post_skills().size());
                             int isSet = -1;
                             for (int l = 0; l < listSuggestedBusinessWithScore.size(); l++) {
                                 if (listSuggestedBusinessWithScore.get(l).getBusiness().getBusiness_eng_name().equals(business_suggestScoreDTO.getBusiness().getBusiness_eng_name())) {
@@ -162,5 +166,27 @@ public class AdminService implements IAdminService{
             }
         }
         return finalList;
+    }
+
+    @Override
+    public Businesses_OptionsDTO getBusinesses_OptionDTO() {
+        List<Business> businessList = businessService.getAllBusinessBySemester();
+
+        List<Integer> countStudentRegisterBusiness=new ArrayList<>();
+        for (int i = 0; i < businessList.size(); i++) {
+            Business business = businessList.get(i);
+            String engNameOfBusiness=business.getBusiness_eng_name();
+
+            List<Student> studentListByBusinessName=
+                    iStudentService.findStudentByBusinessNameOption(engNameOfBusiness,engNameOfBusiness);
+            Integer sizeOfStudentListByBusinessName=studentListByBusinessName.size();
+            countStudentRegisterBusiness.add(sizeOfStudentListByBusinessName);
+        }
+
+        Businesses_OptionsDTO businesses_optionsDTO=new Businesses_OptionsDTO();
+        businesses_optionsDTO.setBusinessList(businessList);
+        businesses_optionsDTO.setCountStudentRegisterBusiness(countStudentRegisterBusiness);
+
+        return businesses_optionsDTO;
     }
 }
