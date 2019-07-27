@@ -38,6 +38,7 @@ class Excels extends Component {
             open: false,
             business: null,
             large: false,
+            listBusinessesForSave: []
         };
         this.toggleLarge = this.toggleLarge.bind(this);
     }
@@ -271,12 +272,17 @@ class Excels extends Component {
 
         confirmAlert({
             title: 'Lưu ý',
-            message: `Những kỹ năng: ${skill} chưa tồn tại trong hệ thống!
-            Vui lòng thêm mới những kỹ năng này và thử lại sau!`,
+            message: `Những kỹ năng: ${skill} chưa tồn tại trong hệ thống và sẽ được thêm vào "Ngành chung"!
+            Bạn có chắc chắn muốn thêm tệp?
+            `,
             buttons: [
                 {
-                    label: 'Tạo mới kỹ năng',
-                    onClick: () => this.handleDirect('/skill/create')
+                    label: 'Xác nhận',
+                    onClick: () => this.importListBusiness(this.state.listBusinessesForSave, listIndexNotFound)
+                },
+                {
+                    label: 'Quản lí kỹ năng',
+                    onClick: () => this.handleDirect('/skill')
                 },
                 {
                     label: 'Hủy bỏ',
@@ -439,7 +445,8 @@ class Excels extends Component {
 
                 if (listIndexNotFound.length != 0) {
                     this.setState({
-                        loading: false
+                        loading: false,
+                        listBusinessesForSave: listBusinesses,
                     })
                     this.handleConfirm(listIndexNotFound);
                 } else {
@@ -478,6 +485,31 @@ class Excels extends Component {
             Toastify.actionFail("Không tệp nào được chọn!");
         }
 
+    }
+
+    importListBusiness = async (listBusinesses, listSkill) => {
+        console.log(listBusinesses);
+        console.log(listSkill);
+        this.setState({
+            loading: true
+        })
+        const resultAddListSkill = await ApiServices.Post('/skill/listSkill', listSkill);
+
+        if (resultAddListSkill.status == 200) {
+            const result = await ApiServices.Post('/business', listBusinesses);
+            if (result.status == 201) {
+                this.setState({
+                    loading: false
+                })
+                Toastify.actionSuccess("Thêm tệp thành công!");
+
+            } else {
+                this.setState({
+                    loading: false
+                })
+                Toastify.actionFail("Thêm tệp thất bại!");
+            }
+        }
     }
 
     removeFileStudents = (event) => {

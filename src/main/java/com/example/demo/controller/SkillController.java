@@ -4,6 +4,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.SkillDTO;
 import com.example.demo.dto.SpecializedDTO;
 import com.example.demo.entity.Skill;
+import com.example.demo.entity.Specialized;
 import com.example.demo.service.ISkillService;
 import com.example.demo.service.SkillService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,5 +148,29 @@ public class SkillController {
             return new ResponseEntity<List<SkillDTO>>(skillDTOSNotFound, HttpStatus.OK);
         }
         return new ResponseEntity<List<SkillDTO>>(skillDTOSNotFound, HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/listSkill")
+    @ResponseBody
+    public ResponseEntity<Void> createListSkill(@RequestBody List<String> skills) {
+
+        for (int i = 0; i < skills.size(); i++) {
+
+            List<Skill> skillList = skillService.getAllSkill();
+            int sizeList = skillList.size();
+
+            Skill skill = new Skill();
+            Specialized specialized = new Specialized();
+            specialized.setId(1); // ngành chung
+
+            skill.setId(sizeList + 1);
+            skill.setName(skills.get(i));
+            skill.setStatus(true);
+            skill.setSpecialized(specialized);
+
+            skillService.createSkill(skill);
+
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
