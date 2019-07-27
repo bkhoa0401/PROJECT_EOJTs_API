@@ -13,12 +13,85 @@ public class History_Details implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
-
-    @Column(name = "name")
-    private String name;
+    @Column(name = "tableName")
+    private String tableName;
+    @Column(name = "columnName")
+    private String columnName;
+    @Column(name = "targetId")
+    private String targetId;
+    @Column(name = "oldValue", columnDefinition = "NVARCHAR(MAX)")
+    private String oldValue;
+    @Column(name = "newValue", columnDefinition = "NVARCHAR(MAX)")
+    private String newValue;
 
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinColumn(name = "history_group_id")
-    private History_Group  history_group;
+    @JoinColumn(name = "action_history_id")
+    private HistoryAction historyAction;
+
+
+    public History_Details(String tableName, String columnName, String targetId, String oldValue, String newValue, HistoryAction historyAction) {
+        this.tableName = tableName;
+        this.columnName = columnName;
+        this.targetId = targetId;
+        this.oldValue = oldValue;
+        this.newValue = newValue;
+        this.historyAction = historyAction;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
+    public String getColumnName() {
+        return columnName;
+    }
+
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
+    }
+
+    public String getTargetId() {
+        return targetId;
+    }
+
+    public void setTargetId(String targetId) {
+        this.targetId = targetId;
+    }
+
+    public String getOldValue() {
+        return oldValue;
+    }
+
+    public void setOldValue(String oldValue) {
+        this.oldValue = oldValue;
+    }
+
+    public String getNewValue() {
+        return newValue;
+    }
+
+    public void setNewValue(String newValue) {
+        this.newValue = newValue;
+    }
+
+    public HistoryAction getHistoryAction() {
+        return historyAction;
+    }
+
+    public void setHistoryAction(HistoryAction historyAction) {
+        this.historyAction = historyAction;
+    }
 }
