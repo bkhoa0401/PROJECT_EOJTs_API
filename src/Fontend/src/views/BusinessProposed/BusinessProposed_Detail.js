@@ -319,6 +319,10 @@ class BusinessProposed_Detail extends Component {
 
     render() {
         const { business, loading, role } = this.state;
+        let linkDownContact = '';
+        if (business != null) {
+            linkDownContact = `http://localhost:8000/api/file/downloadFile/${business.contactLink}`;
+        }
 
         return (
             loading.toString() === 'true' ? (
@@ -341,11 +345,33 @@ class BusinessProposed_Detail extends Component {
                                             <br />
                                             <hr />
                                             <div style={{ paddingLeft: "2%", paddingRight: "2%", paddingTop: "15px" }}>
-                                                <FormGroup>
+                                                <FormGroup row>
+                                                    <Col md="4">
+                                                        <h3 style={{ fontWeight: "bold" }}>Thông tin sinh viên đề xuất</h3>
+                                                        <br />
+                                                    </Col>
+                                                    <Col xs="12" md="4">
+                                                    </Col>
+                                                    <Col md="4">
+                                                        {
+                                                            business.contactLink && business.contactLink ?
+                                                                (<Col xs="12" md="10">
+                                                                    <a href={linkDownContact} download><h4>Tải ảnh hợp đồng</h4></a>
+                                                                </Col>)
+                                                                :
+                                                                (
+                                                                    <Col xs="12" md="10">
+
+                                                                    </Col>)
+                                                        }
+                                                    </Col>
+                                                </FormGroup>
+                                                <hr />
+                                                {/* <FormGroup row>
                                                     <h3 style={{ fontWeight: "bold" }}>Thông tin sinh viên đề xuất</h3>
                                                     <hr />
                                                     <br />
-                                                </FormGroup>
+                                                </FormGroup> */}
                                                 <FormGroup row>
                                                     <Col md="2">
                                                         <h6 style={{ fontWeight: "bold" }}>Họ và tên:</h6>

@@ -81,6 +81,9 @@ public class Business_Proposed implements Serializable {
     @Column(name = "scale", columnDefinition = "NVARCHAR(150)") // quy mô công ty
     private String scale;
 
+    @Column(name = "contactLink", columnDefinition = "VARCHAR(MAX)") // link tải hợp đồng
+    private String contactLink;
+
     public String getEmail() {
         return email;
     }
@@ -231,5 +234,13 @@ public class Business_Proposed implements Serializable {
 
     public void setCommentHeadOfMaster(String commentHeadOfMaster) {
         this.commentHeadOfMaster = commentHeadOfMaster;
+    }
+
+    public String getContactLink() {
+        return contactLink;
+    }
+
+    public void setContactLink(String contactLink) {
+        this.contactLink = contactLink;
     }
 }

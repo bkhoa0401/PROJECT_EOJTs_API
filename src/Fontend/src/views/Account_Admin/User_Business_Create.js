@@ -45,7 +45,8 @@ class User_Business_Create extends Component {
             business_name: '',
             business_overview: '',
             business_phone: '',
-            business_website: ''
+            business_website: '',
+            nameSemester: '',
         }
     }
 
@@ -69,13 +70,14 @@ class User_Business_Create extends Component {
             business_name: '',
             business_overview: '',
             business_phone: '',
-            business_website: ''
+            business_website: '',
+            nameSemester: '',
         })
     }
 
     handleSubmit = async () => {
         const { email, business_address, business_eng_name, business_name,
-            business_overview, business_phone, business_website } = this.state;
+            business_overview, business_phone, business_website, nameSemester } = this.state;
         const business = {
             email,
             business_address,
@@ -83,7 +85,8 @@ class User_Business_Create extends Component {
             business_name,
             business_overview,
             business_phone,
-            business_website
+            business_website,
+            nameSemester
         }
 
         console.log(business);
@@ -209,6 +212,17 @@ class User_Business_Create extends Component {
                                                     <Input value={business_address} onChange={this.handleInput} type="text" name="business_address" placeholder="Địa chỉ" />
                                                     <span className="form-error is-visible text-danger">
                                                         {this.validator.message('Địa chỉ', business_address, 'required|min:7|max:100|alpha_num_dot_splash')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <Label htmlFor="nameSemester">Học kì</Label>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={this.state.nameSemester} onChange={this.handleInput} type="text" name="nameSemester" placeholder="Học kì" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Học kì', this.state.nameSemester, 'required|alpha_num_space|min:8|max:10')}
                                                     </span>
                                                 </Col>
                                             </FormGroup>
