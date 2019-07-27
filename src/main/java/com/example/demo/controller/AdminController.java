@@ -1,7 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.Business_ListJobPostDTO;
+
 import com.example.demo.dto.Businesses_StudentsDTO;
+
+import com.example.demo.dto.Businesses_OptionsDTO;
+
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,14 +75,13 @@ public class AdminController {
     @GetMapping("/students")
     @ResponseBody
     public ResponseEntity<List<Student>> getAllStudentToSendInform() {
-       // List<Student> studentList = studentService.getAllStudents();
-        List<Student> studentList =studentService.getAllStudentsBySemesterId();
+        // List<Student> studentList = studentService.getAllStudents();
+        List<Student> studentList = studentService.getAllStudentsBySemesterId();
         if (studentList != null) {
             return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
-
 
 
     //get all events of admin
@@ -123,7 +126,7 @@ public class AdminController {
                 event.setBusiness(business);
             }
         }
-        List<Student> studentList=new ArrayList<>();
+        List<Student> studentList = new ArrayList<>();
         for (int i = 0; i < listStudentEmail.size(); i++) {
             Student student = studentService.getStudentByEmail(listStudentEmail.get(i));
             studentList.add(student);
@@ -141,11 +144,11 @@ public class AdminController {
 
     @GetMapping("/jobPostsBusinesses")
     @ResponseBody
-    public ResponseEntity<List<Business_ListJobPostDTO>> getJobPostsOfBusiness(){
-        List<Business_ListJobPostDTO> business_listJobPostDTOS=adminService.getJobPostsOfBusinesses();
+    public ResponseEntity<List<Business_ListJobPostDTO>> getJobPostsOfBusiness() {
+        List<Business_ListJobPostDTO> business_listJobPostDTOS = adminService.getJobPostsOfBusinesses();
 
-        if(business_listJobPostDTOS!=null){
-            return new ResponseEntity<List<Business_ListJobPostDTO>>(business_listJobPostDTOS,HttpStatus.OK);
+        if (business_listJobPostDTOS != null) {
+            return new ResponseEntity<List<Business_ListJobPostDTO>>(business_listJobPostDTOS, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -218,4 +221,14 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/studentOptionPerBusiness")
+    @ResponseBody
+    public ResponseEntity<Businesses_OptionsDTO> getStudentOptionPerBusiness() {
+        Businesses_OptionsDTO businesses_optionsDTO = adminService.getBusinesses_OptionDTO();
+
+        if (businesses_optionsDTO != null) {
+            return new ResponseEntity<>(businesses_optionsDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

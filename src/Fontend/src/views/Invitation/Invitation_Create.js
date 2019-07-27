@@ -63,6 +63,7 @@ class Invitation_Create extends Component {
             large: !this.state.large,
             studentDetail: studentDetail
         });
+        console.log(this.state.large);
     }
 
     showModal = () => {
@@ -183,6 +184,9 @@ class Invitation_Create extends Component {
                 SpinnerLoading.showHashLoader(loading)
             ) : (
                     <>
+                        {
+                            this.showModal()
+                        }
                         <TabPane tabId="1">
                             {
                                 <div>
@@ -308,9 +312,6 @@ class Invitation_Create extends Component {
                                                             </td> */}
                                                             <td style={{ textAlign: "center" }}>
                                                                 <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(suggestedStudent)}>Chi tiết</Button>
-                                                                {
-                                                                    this.showModal()
-                                                                }
                                                                 <Button onClick={() => this.handleConfirm(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                             </td>
                                                         </tr>

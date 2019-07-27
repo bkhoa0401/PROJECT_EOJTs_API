@@ -1,7 +1,7 @@
 export default {
   items: [
     {
-      name: 'Site Admin',
+      name: 'Dashboard',
       url: '/admin',
       icon: 'icon-star',
     },
