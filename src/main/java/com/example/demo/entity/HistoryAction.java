@@ -53,6 +53,9 @@ public class HistoryAction implements Serializable {
         this.details = details;
     }
 
+    public HistoryAction() {
+    }
+
     public int getId() {
         return id;
     }

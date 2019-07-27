@@ -1,9 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.Business_ListJobPostDTO;
-import com.example.demo.dto.Businesses_OptionsDTO;
-import com.example.demo.dto.Businesses_StudentsDTO;
-import com.example.demo.dto.Statistical_EvaluationDTO;
+import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 
 import java.util.ArrayList;
@@ -24,4 +21,6 @@ public interface IAdminService {
     Businesses_StudentsDTO getBusinesses_StudentsDTO();
 
     List<Statistical_EvaluationDTO> getListStatistical_EvaluationDTO();
+
+    List<StatisticalQuestionAnswerDTO> getListStatisticalQuestionAnswerDTO();
 }
