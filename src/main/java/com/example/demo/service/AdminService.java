@@ -297,8 +297,15 @@ public class AdminService implements IAdminService {
 
         for (int i = 0; i < questions.size(); i++) {
             Question question = questions.get(i);
+            List<String> answerStringList = new ArrayList<>();
+            List<Answer> answer = question.getAnswers();
+
+            for (int j = 0; j < answer.size(); j++) {
+                answerStringList.add(answer.get(j).getContent());
+            }
+
             statisticalQuestionAnswerDTO.setQuestion(question.getContent());
-            statisticalQuestionAnswerDTO.setAnswers(question.getAnswers());
+            statisticalQuestionAnswerDTO.setAnswers(answerStringList);
             statisticalQuestionAnswerDTO.setManyOption(question.isManyOption());
 
             countAnswer = countAnswerOfQuestion(question);

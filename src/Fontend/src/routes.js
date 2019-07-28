@@ -89,7 +89,8 @@ const Feedback_Detail = React.lazy(() => import('./views/Feedback/Feedback_Detai
 const BusinessProposed = React.lazy(() => import('./views/BusinessProposed/BusinessProposed.js'));
 const BusinessProposed_Detail = React.lazy(() => import('./views/BusinessProposed/BusinessProposed_Detail.js'));
 const BusinessProposed_Update = React.lazy(() => import('./views/BusinessProposed/BusinessProposed_Update.js'));
-const SiteAdmin = React.lazy(() => import('./views/Dashboard/SiteAdmin'));
+const SiteAdmin = React.lazy(() => import('./views/Dashboard/SiteAdmin.js'));
+const AnswerStatistics = React.lazy(() => import('./views/AnswerStatistics/AnswerStatistics.js'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -192,6 +193,7 @@ const routes = [
   { path: '/business-proposed', exact: true, name: 'Doanh nghiệp đề xuất', component: BusinessProposed },
   { path: '/business-proposed/:id', exact: true, name: 'Chi tiết doanh nghiệp đề xuất', component: BusinessProposed_Detail },
   { path: '/business-proposed/update/:id', exact: true, name: 'Chỉnh sửa chi tiết doanh nghiệp đề xuất', component: BusinessProposed_Update },
+  { path: '/answer-statistics', exact: true, name: 'Thống kê kết quả khảo sát', component: AnswerStatistics },
 ];
 
 export default routes;
