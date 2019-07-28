@@ -39,6 +39,8 @@ const Test = React.lazy(() => import('./views/Test/Test'));
 const Excels = React.lazy(() => import('./views/Excels/Excels.js'));
 const ScheduleParameters = React.lazy(() => import('./views/ScheduleParameters/ScheduleParameters.js'));
 const Company = React.lazy(() => import('./views/Company/Company.js'));
+const Account_Detail = React.lazy(() => import('./views/Account/Account_Detail.js'));
+const Account_Update = React.lazy(() => import('./views/Account/Account_Update.js'));
 const Company_Update = React.lazy(() => import('./views/Company/Company_Update.js'));
 const ChangePassword = React.lazy(() => import('./views/Account/ChangePassword.js'));
 const Invitation = React.lazy(() => import('./views/Invitation/Invitation.js'));
@@ -134,7 +136,9 @@ const routes = [
   { path: '/test', exact: true, name: 'Tests', component: Test },
   { path: '/importfiles', exact: true, name: 'Nhập tập tin', component: Excels },
   { path: '/scheduleparameters', exact: true, name: 'Thông số lịch trình', component: ScheduleParameters },
-  { path: '/company', exact: true, name: 'Công ty', component: Company },
+  { path: '/company', exact: true, name: 'Chỉnh sửa thông tin tài khoản', component: Company },
+  { path: '/account_detail', exact: true, name: 'Thông tin tài khoản', component: Account_Detail },
+  { path: '/account_detail/account_update', exact: true, name: 'Chỉnh sửa thông tin tài khoản', component: Account_Update },
   { path: '/company/update', exact: true, name: 'Chỉnh sửa', component: Company_Update },
   { path: '/account/changepassword', exact: true, name: 'Đổi mật khẩu', component: ChangePassword },
   { path: '/invitation', exact: true, name: 'Lời mời', component: Invitation },
@@ -181,6 +185,7 @@ const routes = [
   { path: '/hr-task/details/:id', exact: true, name: 'Chi tiết nhiệm vụ', component: Hr_Task_Detail },
   { path: '/hr-task/update/:id', exact: true, name: 'Chỉnh sửa nhiệm vụ', component: Hr_Task_Update },
   { path: '/list_management/business_list/Business_Detail/:email', exact: true, name: 'Chi tiết doanh nghiệp', component: Business_Detail },
+  { path: '/Business_Detail/:email', exact: true, name: 'Thông tin tài khoản', component: Business_Detail },
   { path: '/feedback/feedback', exact: true, name: 'Phản hồi', component: Feedback },
   { path: '/feedback/feedback_detail/:id', exact: true, name: 'Chi tiết phản hồi', component: Feedback_Detail },
   { path: '/business-proposed', exact: true, name: 'Doanh nghiệp đề xuất', component: BusinessProposed },

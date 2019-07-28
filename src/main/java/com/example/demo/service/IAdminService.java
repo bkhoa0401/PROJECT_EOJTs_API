@@ -15,4 +15,6 @@ public interface IAdminService {
     List<Business> getSuggestedBusinessListForFail(Student student);
 
     List<Business> filterListBusinessByStudentSpecialized(int specializedId, List<Business> businessList);
+
+    boolean updateAdmin(Admin admin);
 }

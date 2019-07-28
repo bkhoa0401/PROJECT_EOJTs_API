@@ -22,6 +22,8 @@ class DefaultHeader extends Component {
     this.state = {
       username: '',
       logo: null,
+      role:'',
+      linkProfile:'',
     }
   }
 
@@ -29,34 +31,41 @@ class DefaultHeader extends Component {
     const token = localStorage.getItem('id_token');
     if (token != null) {
       const decoded = decode(token);
-      // const email = decoded.email;
+      const email = decoded.email;
       const role = decoded.role;
       let actor = null;
       let username = '';
       let logo = null;
+      let linkProfile = '';
       if (role == "ROLE_ADMIN" || role == "ROLE_STARTUP" || role == "ROLE_HEADTRAINING" || role == "ROLE_HEADMASTER") {
         actor = await ApiServices.Get(`/admin/getCurrentUser`);
         if (actor != null) {
           username = actor.name;
           logo = actor.logo;
+          linkProfile = `/account_detail`;
         }
       } else if (role == "ROLE_HR") {
         actor = await ApiServices.Get(`/business/getBusiness`);
         if (actor != null) {
           username = actor.business_eng_name;
           logo = actor.logo;
+          linkProfile = `/Business_Detail/${actor.email}`;
         }
       } else if (role == "ROLE_SUPERVISOR") {
-        actor = await ApiServices.Get(`/supervisor`);
+        let tmpActor = await ApiServices.Get(`/supervisor`);
+        actor = tmpActor.supervisor;
         if (actor != null) {
           username = actor.name;
           logo = actor.logo;
+          linkProfile = `/account_detail`;
         }
       }
       this.setState({
-        // email
+        email: email,
+        role: role,
         username: username,
         logo: logo,
+        linkProfile: linkProfile,
       });
     }
   }
@@ -64,7 +73,7 @@ class DefaultHeader extends Component {
   render() {
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
-    const { username, logo } = this.state;
+    const { username, logo, linkProfile } = this.state;
 
     return (
       <React.Fragment>
@@ -112,6 +121,18 @@ class DefaultHeader extends Component {
               <DropdownItem><i className="fa fa-envelope-o"></i> Messages<Badge color="success">42</Badge></DropdownItem>
               <DropdownItem><i className="fa fa-tasks"></i> Tasks<Badge color="danger">42</Badge></DropdownItem>
               <DropdownItem><i className="fa fa-comments"></i> Comments<Badge color="warning">42</Badge></DropdownItem> */}
+              <DropdownItem>
+                <FormGroup row>
+                  <Col md="2" style={{ height: "7px" }}>
+                    <i className="fa cui-user"></i>
+                  </Col>
+                  <Col md="9.5" style={{ height: "7px" }}>
+                    <NavItem>
+                      <NavLink to={linkProfile} className="nav-link" style={{ color: "Gray" }}>&nbsp;&nbsp;Tài khoản</NavLink>
+                    </NavItem>
+                  </Col>
+                </FormGroup>
+              </DropdownItem>
               <DropdownItem>
                 <FormGroup row>
                   <Col md="2" style={{ height: "7px" }}>

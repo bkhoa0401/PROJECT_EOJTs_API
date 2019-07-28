@@ -13,4 +13,6 @@ public interface ISupervisorService {
     boolean createSupervisor(Supervisor supervisor, String emailBusiness);
 
     boolean updateStateSupervisor(String email, boolean isActive);
+
+    boolean updateSupervisor(Supervisor supervisor);
 }

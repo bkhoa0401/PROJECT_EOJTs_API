@@ -76,6 +76,20 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @PutMapping("/updateAdmin")
+    public ResponseEntity<Void> updateAdmin(@RequestBody Admin profile) {
+        Admin admin = adminService.findAdminByEmail(profile.getEmail());
+        admin.setPhone(profile.getPhone());
+        admin.setLogo(profile.getLogo());
+        admin.setName(profile.getName());
+        admin.setAddress(profile.getAddress());
+        boolean update = adminService.updateAdmin(admin);
+        if (update == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     //get all student to send inform message
     //check semester //ok
     @GetMapping("/students")

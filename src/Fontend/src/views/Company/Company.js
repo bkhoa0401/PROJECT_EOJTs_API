@@ -145,9 +145,7 @@ class Company extends Component {
 
             if (result.status == 200) {
                 Toastify.actionSuccess('Cập nhật thông tin thành công');
-                this.setState({
-                    loading: false
-                })
+                this.props.history.push(`/Business_Detail/${email}`);
             } else {
                 Toastify.actionFail('Cập nhật thông tin thất bại');
                 this.setState({
@@ -193,7 +191,7 @@ class Company extends Component {
                                                 <Col xs="12" md="10">
                                                     <img src={logo} style={{ width: "160px", height: "160px" }} onChange={this.handleInput} type="file" id="img_logo" name="logo" />
                                                     <br /><br />
-                                                    <input onChange={this.handleChange} type="file" />
+                                                    <input onChange={this.handleChange} type="file"/>
                                                     <br /><br />
                                                     <span className="form-error is-visible text-danger">
                                                         {this.validator.message('Logo', logo, 'required')}
@@ -235,6 +233,39 @@ class Company extends Component {
                                             </FormGroup>
                                             <FormGroup row>
                                                 <Col md="2">
+                                                    <h6>SĐT</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={business_phone} onChange={this.handleInput} type="number" id="business_phone" name="business_phone" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Số điện thoại', business_phone, 'required|min:10|max:11|numeric')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Website</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={business_website} onChange={this.handleInput} type="text" id="business_website" name="business_website" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Website của doanh nghiệp', business_website, 'required|min:5|max:20')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <h6>Địa chỉ</h6>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <Input value={business_address} onChange={this.handleInput} type="text" id="business_address" name="business_address" />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Địa chỉ', business_address, 'required|min:7|max:100|alpha_num_dot_splash')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
                                                     <h6>Giới thiệu</h6>
                                                 </Col>
                                                 <Col xs="12" md="10">
@@ -252,40 +283,6 @@ class Company extends Component {
                                                     </span>
                                                 </Col>
                                             </FormGroup>
-                                            <FormGroup row>
-                                                <Col md="2">
-                                                    <h6>Địa chỉ</h6>
-                                                </Col>
-                                                <Col xs="12" md="10">
-                                                    <Input value={business_address} onChange={this.handleInput} type="text" id="business_address" name="business_address" />
-                                                    <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Địa chỉ', business_address, 'required|min:7|max:100|alpha_num_dot_splash')}
-                                                    </span>
-                                                </Col>
-                                            </FormGroup>
-                                            <FormGroup row>
-                                                <Col md="2">
-                                                    <h6>SĐT</h6>
-                                                </Col>
-                                                <Col xs="12" md="10">
-                                                    <Input value={business_phone} onChange={this.handleInput} type="number" id="business_phone" name="business_phone" />
-                                                    <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Số điện thoại', business_phone, 'required|min:10|max:11|numeric')}
-                                                    </span>
-                                                </Col>
-                                            </FormGroup>
-
-                                            <FormGroup row>
-                                                <Col md="2">
-                                                    <h6>Website</h6>
-                                                </Col>
-                                                <Col xs="12" md="10">
-                                                    <Input value={business_website} onChange={this.handleInput} type="text" id="business_website" name="business_website" />
-                                                    <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Website của doanh nghiệp', business_website, 'required|min:5|max:20')}
-                                                    </span>
-                                                </Col>
-                                            </FormGroup>
                                             {/* <FormGroup row>
                                         <Col md="2">
                                             <h6>Image</h6>
@@ -300,12 +297,15 @@ class Company extends Component {
                                         </Form>
                                     </CardBody>
                                     <CardFooter className="p-4">
-                                        <Row style={{ marginLeft: "21%" }}>
+                                        <Row >
+                                            <Col xs="4" sm="4">
+                                                <Button color="secondary" block onClick={() => this.handleDirect(`/Business_Detail/${email}`)}>Trở về</Button>
+                                            </Col>
                                             <Col xs="4" sm="4">
                                                 <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>
                                             </Col>
                                             <Col xs="4" sm="4">
-                                                <Button onClick={() => this.handleSubmit()} type="submit" color="success" block>Xác nhận</Button>
+                                                <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Xác nhận</Button>
                                             </Col>
                                             {/* <Col xs="3" sm="3">
                                         <Button color="success" block onClick={() => this.handleDirect("/company")} type="reset">Trở về</Button>
