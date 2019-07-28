@@ -35,7 +35,7 @@ public class BusinessImportFileService implements IBusinessImportFileService{
                 , businessDTO.getBusiness_address(), businessDTO.getBusiness_overview(), businessDTO.getBusiness_website(), businessDTO.getLogo());
 
 
-        Semester semester = semesterService.getSemesterCurrent();
+        Semester semester = semesterService.getSemesterByName(businessDTO.getNameSemester());
         Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
         ojt_enrollment.setBusiness(business);
         ojt_enrollment.setSemester(semester);

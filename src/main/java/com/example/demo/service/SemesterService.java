@@ -46,6 +46,7 @@ public class SemesterService implements ISemesterService {
             boolean getCurrentSemester = Utils.aDateBetweenTwoDate(minDate, maxDate);
             if (getCurrentSemester == true) {
                 semesterCurrent = semesters.get(i);
+                break;
             }
         }
         return semesterCurrent;
@@ -69,14 +70,14 @@ public class SemesterService implements ISemesterService {
             }
             long getDiff = semesterList.get(i).getStart_choose_option_time().getTime() - dateCurrent.getTime();
             long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);
-            if (getDaysDiff>=0 && getDaysDiff < 8) {
+            if (getDaysDiff >= 0 && getDaysDiff < 8) {
                 semesterCurrentByOption = semesterList.get(i);
                 break;
             }
 
-            long getDiffAfter = dateCurrent.getTime()-semesterList.get(i).getFinish_choose_option_time().getTime();
+            long getDiffAfter = dateCurrent.getTime() - semesterList.get(i).getFinish_choose_option_time().getTime();
             long getDaysDiffAfter = getDiffAfter / (24 * 60 * 60 * 1000);
-            if (getDaysDiffAfter>=0 && getDaysDiffAfter < 8) {
+            if (getDaysDiffAfter >= 0 && getDaysDiffAfter < 8) {
                 semesterCurrentByOption = semesterList.get(i);
                 break;
             }
