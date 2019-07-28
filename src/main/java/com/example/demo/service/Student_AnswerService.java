@@ -66,4 +66,16 @@ public class Student_AnswerService implements IStudent_AnswerService {
     public Student_Answer findStudentAnswerByStudentEmail(String email) {
         return iStudent_answerRepository.findByStudentEmail(email);
     }
+
+    @Override
+    public int countStudentsAnswerByAnswerId(int id) {
+        int student_answers=iStudent_answerRepository.countStudent_AnswersByAnswerId(id);
+        return student_answers;
+    }
+
+    @Override
+    public int countStudent_AnswersGroupByStudentEmail() {
+        int studentsIsAnswer=iStudent_answerRepository.countStudent_AnswersGroupByStudentEmail();
+        return studentsIsAnswer;
+    }
 }

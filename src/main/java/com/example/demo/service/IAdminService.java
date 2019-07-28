@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.Business_ListJobPostDTO;
+import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 
 import java.util.ArrayList;
@@ -17,4 +17,15 @@ public interface IAdminService {
     List<Business> filterListBusinessByStudentSpecialized(int specializedId, List<Business> businessList);
 
     boolean updateAdmin(Admin admin);
+
+    Businesses_OptionsDTO getBusinesses_OptionDTO();
+
+    Businesses_StudentsDTO getBusinesses_StudentsDTO();
+
+    List<Statistical_EvaluationDTO> getListStatistical_EvaluationDTO();
+
+    List<StatisticalQuestionAnswerDTO> getListStatisticalQuestionAnswerDTO();
+
+    List<Integer> percentStudentMakeSurvey();
+
 }

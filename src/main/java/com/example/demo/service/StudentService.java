@@ -4,12 +4,15 @@ import com.example.demo.entity.*;
 import com.example.demo.repository.IStudentRepository;
 import com.example.demo.repository.ISupervisorRepository;
 import com.example.demo.repository.ITaskRepository;
+import com.example.demo.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -110,29 +113,71 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public boolean updateOption1Student(String email, String option1) {
-        Student student = getStudentByEmail(email);
-        if (student != null) {
-            if (option1 != null || !option1.isEmpty()) {
-                student.setOption1(option1);
-            }
-            IStudentRepository.save(student);
-            return true;
-        }
-        return false;
+    public String updateOption1Student(String email, String option1) {
+
+//        Semester semester = semesterService.getSemesterCurrentByTimeChooseOption();
+//        if(semester == null) {
+//            return "Đã quá hạn chọn nguyện vọng";
+//        }
+//        Date date = new Date(Calendar.getInstance().getTime().getTime());
+//
+//        if(date.before(semester.getStart_choose_option_time())){
+//            return "Chưa tới lúc để chọn nguyện vọng!!!";
+//        }else if(date.after(semester.getFinish_choose_option_time())) {
+//            return "Đã quá hạn chọn nguyện vọng";
+//        }
+//        if (semester.getId()!=0) {
+//            Date startChooseOption = semester.getStart_choose_option_time();
+//            Date finishChooseOption = semester.getFinish_choose_option_time();
+//
+//            boolean getCurrentSemester =
+//                    Utils.aDateBetweenTwoDate(String.valueOf(startChooseOption), String.valueOf(finishChooseOption));
+//
+//            if (getCurrentSemester == true) {
+                Student student = getStudentByEmail(email);
+                if (student != null) {
+                    if (option1 != null || !option1.isEmpty()) {
+                        student.setOption1(option1);
+                    }
+                    IStudentRepository.save(student);
+                    return "success";
+                }
+//            }
+//        }
+        return "fail";
     }
 
     @Override
-    public boolean updateOption2Student(String email, String option2) {
-        Student student = getStudentByEmail(email);
-        if (student != null) {
-            if (option2 != null || !option2.isEmpty()) {
-                student.setOption2(option2);
-            }
-            IStudentRepository.save(student);
-            return true;
+    public String updateOption2Student(String email, String option2) {
+        Semester semester = semesterService.getSemesterCurrentByTimeChooseOption();
+
+        Date date = new Date(Calendar.getInstance().getTime().getTime());
+
+        if(date.before(semester.getStart_choose_option_time())){
+            return "Chưa tới lúc để chọn nguyện vọng!!!";
+        }else if(date.after(semester.getFinish_choose_option_time())) {
+            return "Đã quá hạn chọn nguyện vọng";
         }
-        return false;
+        if (semester.getId() != 0) {
+            Date startChooseOption = semester.getStart_choose_option_time();
+            Date finishChooseOption = semester.getFinish_choose_option_time();
+
+            boolean getCurrentSemester =
+                    Utils.aDateBetweenTwoDate(String.valueOf(startChooseOption), String.valueOf(finishChooseOption));
+
+            if (getCurrentSemester == true) {
+
+                Student student = getStudentByEmail(email);
+                if (student != null) {
+                    if (option2 != null || !option2.isEmpty()) {
+                        student.setOption2(option2);
+                    }
+                    IStudentRepository.save(student);
+                    return "success";
+                }
+            }
+        }
+        return "fail";
     }
 
     @Override
@@ -413,12 +458,12 @@ public class StudentService implements IStudentService {
 
     @Override
     public void postFeedBack(String email, String content) {
-        Student student=getStudentByEmail(email);
+        Student student = getStudentByEmail(email);
 
-        Answer answer=new Answer();
+        Answer answer = new Answer();
         answer.setContent(content);
 
         iAnswerService.saveAnswer(answer);
-        iStudent_answerService.saveFeedback(student,answer);
+        iStudent_answerService.saveFeedback(student, answer);
     }
 }

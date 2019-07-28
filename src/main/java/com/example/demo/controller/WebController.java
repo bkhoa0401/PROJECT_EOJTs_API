@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/account")
@@ -66,15 +67,22 @@ public class WebController {
                         Student student = studentService.getStudentByEmail(users.getEmail());
                         StudentDTO studentDTO = new StudentDTO();
                         studentDTO.convertFromStudentEntity(student);
-                        Semester semester = semesterService.getSemesterCurrent();
+//                        Semester semester = semesterService.getSemesterCurrent();
 
-                        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(studentDTO.getEmail(), semester.getId());
+
+
+//                        Ojt_Enrollment ojt_enrollment =
+//                                ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(studentDTO.getEmail(), semester.getId());
+                        Ojt_Enrollment ojt_enrollment=ojt_enrollmentService.findOjt_EnrollmentByStudentEmailAndBusinessIsNull(studentDTO.getEmail());
+                        Semester semester = ojt_enrollment.getSemester();
+                        studentDTO.setSemester(semester);
                         if (ojt_enrollment.getBusiness() != null) {
                             studentDTO.setIntership(true);
                             studentDTO.setBusinessName(ojt_enrollment.getBusiness().getBusiness_eng_name());
                         }else{
                             studentDTO.setIntership(false);
                         }
+
 
                         login.setStudent(studentDTO);
                     }

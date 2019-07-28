@@ -12,4 +12,7 @@ public interface IStudent_AnswerService {
     void saveStudent_Answer(Student student, List<Answer> answer, Map<String,String> mapsOther);
     void saveFeedback(Student student,Answer answer);
     Student_Answer findStudentAnswerByStudentEmail(String email);
+    int countStudentsAnswerByAnswerId(int id);
+
+    int countStudent_AnswersGroupByStudentEmail();
 }

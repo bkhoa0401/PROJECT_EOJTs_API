@@ -11,4 +11,6 @@ public interface ISemesterService {
     List<Semester> getAllSemester();
 
     Semester getSemesterCurrent();
+
+    Semester getSemesterCurrentByTimeChooseOption();
 }

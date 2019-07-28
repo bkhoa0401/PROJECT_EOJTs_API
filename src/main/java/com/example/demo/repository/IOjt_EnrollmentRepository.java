@@ -34,6 +34,11 @@ public interface IOjt_EnrollmentRepository extends JpaRepository<Ojt_Enrollment,
     @Query(value = "select o from Ojt_Enrollment o where  o.student is not null and o.semester.id=?1 and o.business.email=?2")
     List<Ojt_Enrollment> getOjt_EnrollmentsBySemesterIdAndBusinessNotNullAndStudentNotNull(int id,String email);
 
+    @Query(value = "select count (o.student) from Ojt_Enrollment o where o.business.email=?1 and o.semester.id=?2 and o.student is not null")
+    int countOjt_EnrollmentsByBusinessEmailAndSemesterIdAndStudentEmailNotNull(String email,int id);
+
+    Ojt_Enrollment findOjt_EnrollmentByStudentEmailAndBusinessIsNull(String email);
+
 //    @Query(value = "select o from Ojt_Enrollment o where  o.business is not null and o.semester.id=?1 and o.student.email=?2")
 //    Ojt_Enrollment getOjt_EnrollmentBySemesterIdAndStudentEmailAndBusinessNotNull(int id, String email);
 }

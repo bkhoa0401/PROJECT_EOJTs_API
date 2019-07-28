@@ -55,6 +55,7 @@ import {
   BusinessProposed,
   BusinessProposed_Detail,
   BusinessProposed_Update,
+  SiteAdmin
 
 } from './Base';
 
@@ -161,6 +162,7 @@ export {
   BusinessProposed,
   BusinessProposed_Detail,
   BusinessProposed_Update,
+  SiteAdmin,
   
 };
 

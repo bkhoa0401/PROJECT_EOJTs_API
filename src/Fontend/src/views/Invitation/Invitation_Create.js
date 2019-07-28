@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import { Button } from 'reactstrap';
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader, FormGroup } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SmsServices from '../../service/send-sms';
 import { ToastContainer } from 'react-toastify';
@@ -25,9 +25,11 @@ class Invitation_Create extends Component {
             searchSuggestedValue: '',
             isAction: '',
             activeTab: new Array(1).fill('1'),
-            loading: true
+            loading: true,
+            large: false,
+            studentDetail: null
         }
-        this.toggle = this.toggle.bind(this);
+        // this.toggleLarge = this.toggleLarge.bind(this);
     }
 
     async componentDidMount() {
@@ -54,6 +56,102 @@ class Invitation_Create extends Component {
         await this.setState({
             [name]: value.substr(0, 20),
         })
+    }
+
+    toggleLarge = (studentDetail) => {
+        this.setState({
+            large: !this.state.large,
+            studentDetail: studentDetail
+        });
+        console.log(this.state.large);
+    }
+
+    showModal = () => {
+        const { studentDetail } = this.state;
+        if (studentDetail != null && this.state.large) {
+            return (
+                <Modal isOpen={this.state.large} toggle={this.toggleLarge}
+                    className={'modal-lg ' + this.props.className}>
+                    <ModalHeader style={{ backgroundColor: "#20a8d8", color: "#f0f8ff" }} toggle={this.toggleLarge}>Chi tiết sinh viên</ModalHeader>
+                    <ModalBody>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Họ và Tên:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{studentDetail.name}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Mã số sinh viên</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{studentDetail.code}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Chuyên ngành:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{studentDetail.specialized.name}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Giới thiệu bản thân:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{studentDetail.objective}</label>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Bảng điểm:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                {
+                                    studentDetail.transcriptLink && studentDetail.transcriptLink ? (
+                                        <a href={studentDetail.transcriptLink} download>Tải về</a>
+                                    ) :
+                                        (<label>N/A</label>)
+                                }
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>Kỹ năng:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                {
+                                    studentDetail.skills && studentDetail.skills.map((skill, index) => {
+                                        return (
+                                            <div>
+                                                {
+                                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                }
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <h6>GPA:</h6>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <label>{studentDetail.gpa}</label>
+                            </Col>
+                        </FormGroup>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button style={{ marginRight: "42%", width: "100px" }} color="primary" onClick={this.toggleLarge}>Xác nhận</Button>
+                    </ModalFooter>
+                </Modal>
+            )
+        }
     }
 
     tabPane() {
@@ -86,6 +184,9 @@ class Invitation_Create extends Component {
                 SpinnerLoading.showHashLoader(loading)
             ) : (
                     <>
+                        {
+                            this.showModal()
+                        }
                         <TabPane tabId="1">
                             {
                                 <div>
@@ -102,9 +203,9 @@ class Invitation_Create extends Component {
                                                 <th style={{ textAlign: "center" }}>MSSV</th>
                                                 <th style={{ textAlign: "center" }}>Họ và Tên</th>
                                                 <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                <th style={{ textAlign: "center" }}>Kỹ năng</th>
-                                                <th style={{ textAlign: "center" }}>GPA</th>
-                                                <th style={{ textAlign: "center" }}>Bảng điểm</th>
+                                                {/* <th style={{ textAlign: "center" }}>Kỹ năng</th> */}
+                                                {/* <th style={{ textAlign: "center" }}>GPA</th> */}
+                                                {/* <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
                                                 <th style={{ textAlign: "center" }}>Thao tác</th>
                                             </tr>
                                         </thead>
@@ -119,7 +220,7 @@ class Invitation_Create extends Component {
                                                             <td style={{ textAlign: "center" }}>{student.code}</td>
                                                             <td style={{ textAlign: "center" }}>{student.name}</td>
                                                             <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                                                            <td style={{ textAlign: "center" }}>
+                                                            {/* <td style={{ textAlign: "center" }}>
                                                                 {
                                                                     skills && skills.map((skill, index) => {
                                                                         return (
@@ -131,18 +232,23 @@ class Invitation_Create extends Component {
                                                                         )
                                                                     })
                                                                 }
-                                                            </td>
-                                                            <td style={{ textAlign: "center" }}>{student.gpa}</td>
-                                                            <td style={{ textAlign: "center" }}>
+                                                            </td> */}
+                                                            {/* <td style={{ textAlign: "center" }}>{student.gpa}</td> */}
+                                                            {/* <td style={{ textAlign: "center" }}>
                                                                 {
                                                                     student.transcriptLink && student.transcriptLink ? (
-                                                                        <a href={student.transcriptLink} download>Tải</a>
+                                                                        <a href={student.transcriptLink} download>Tải về</a>
                                                                     ) :
                                                                         (<label>N/A</label>)
                                                                 }
-                                                            </td>
+                                                            </td> */}
                                                             <td style={{ textAlign: "center" }}>
+<<<<<<< HEAD
                                                                 <Button onClick={() => this.handleConfirm(student)} type="submit" style={{ marginRight: "1.5px" }} color="primary" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+=======
+                                                                <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(student)}>Chi tiết</Button>
+                                                                <Button onClick={() => this.handleConfirm(student)} type="submit" color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+>>>>>>> master
                                                             </td>
                                                         </tr>
                                                     )
@@ -169,9 +275,9 @@ class Invitation_Create extends Component {
                                                 <th style={{ textAlign: "center" }}>MSSV</th>
                                                 <th style={{ textAlign: "center" }}>Họ và Tên</th>
                                                 <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                <th style={{ textAlign: "center" }}>Kỹ năng</th>
+                                                {/* <th style={{ textAlign: "center" }}>Kỹ năng</th>
                                                 <th style={{ textAlign: "center" }}>GPA</th>
-                                                <th style={{ textAlign: "center" }}>Bảng điểm</th>
+                                                <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
                                                 <th style={{ textAlign: "center" }}>Thao tác</th>
                                             </tr>
                                         </thead>
@@ -186,7 +292,7 @@ class Invitation_Create extends Component {
                                                             <td style={{ textAlign: "center" }}>{suggestedStudent.code}</td>
                                                             <td style={{ textAlign: "center" }}>{suggestedStudent.name}</td>
                                                             <td style={{ textAlign: "center" }}>{suggestedStudent.specialized.name}</td>
-                                                            <td style={{ textAlign: "center" }}>
+                                                            {/* <td style={{ textAlign: "center" }}>
                                                                 {
                                                                     skills && skills.map((skill, index) => {
                                                                         return (
@@ -207,9 +313,14 @@ class Invitation_Create extends Component {
                                                                     ) :
                                                                         (<label>N/A</label>)
                                                                 }
-                                                            </td>
+                                                            </td> */}
                                                             <td style={{ textAlign: "center" }}>
+<<<<<<< HEAD
                                                                 <Button onClick={() => this.handleConfirm(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="primary" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+=======
+                                                                <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(suggestedStudent)}>Chi tiết</Button>
+                                                                <Button onClick={() => this.handleConfirm(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+>>>>>>> master
                                                             </td>
                                                         </tr>
                                                     )
@@ -288,7 +399,7 @@ class Invitation_Create extends Component {
         const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
 
         if (result.status == 201) {
-            Toastify.actionSuccess('Gửi lời mời thành công');            
+            Toastify.actionSuccess('Gửi lời mời thành công');
             this.setState({
                 loading: false
             })

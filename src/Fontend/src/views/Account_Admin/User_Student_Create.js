@@ -48,7 +48,7 @@ class User_Student_Create extends Component {
             specializeds: [],
             specializedItem: {},
             gpa: '',
-            // semester: '',
+            semester: '',
         }
     }
 
@@ -93,12 +93,12 @@ class User_Student_Create extends Component {
             gender: 0,
             specializedItem: this.state.specializeds[0],
             gpa: '',
-            // semester: '',
+            semester: '',
         })
     }
 
     handleSubmit = async () => {
-        const { email, name, phone, address, code, dob, gender, specializedItem, gpa } = this.state;
+        const { email, name, phone, address, code, dob, gender, specializedItem, gpa, semester } = this.state;
         const specialized = {
             id: specializedItem.id
         }
@@ -111,8 +111,8 @@ class User_Student_Create extends Component {
             dob,
             gender,
             specialized,
-            gpa
-            // semester
+            gpa,
+            semester
         }
 
         if (this.validator.allValid()) {
@@ -273,7 +273,7 @@ class User_Student_Create extends Component {
                                                     </Input>
                                                 </Col>
                                             </FormGroup>
-                                            {/* <FormGroup row>
+                                            <FormGroup row>
                                                 <Col md="2">
                                                     <Label htmlFor="semester">Học kì</Label>
                                                 </Col>
@@ -283,7 +283,7 @@ class User_Student_Create extends Component {
                                                         {this.validator.message('Học kì', this.state.semester, 'required|alpha_num_space|min:8|max:10')}
                                                     </span>
                                                 </Col>
-                                            </FormGroup> */}
+                                            </FormGroup>
                                         </Form>
                                         <ToastContainer />
                                     </CardBody>
