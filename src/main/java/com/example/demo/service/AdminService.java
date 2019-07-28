@@ -52,6 +52,16 @@ public class AdminService implements IAdminService {
         return null;
     }
 
+    @Override
+    public boolean updateAdmin(Admin admin) {
+        Admin adminFindByEmail = IAdminRepository.findAdminByEmail(admin.getEmail());
+        if (adminFindByEmail != null) {
+            IAdminRepository.save(admin);
+            return true;
+        }
+        return false;
+    }
+
     //check semester // ok
     @Override
     public List<Business_ListJobPostDTO> getJobPostsOfBusinesses() {

@@ -567,6 +567,9 @@ class BusinessProposed_Detail extends Component {
                                     </CardBody>
                                     <CardFooter className="p-4">
                                         <Row>
+                                            <Col xs="3" sm="3">
+                                                <Button block color="secondary" block onClick={() => this.handleDirect("/business-proposed")}>Trở về</Button>
+                                            </Col>
                                             {
                                                 (role === 'ROLE_STARTUP' && business.isAcceptedByStartupRoom === 'PENDING') ? (
                                                     <Col xs="3" sm="3">
@@ -587,16 +590,6 @@ class BusinessProposed_Detail extends Component {
                                             <Col xs="3" sm="3">
                                                 {/* {
                                                     role === 'ROLE_HEADMASTER' ? (
-                                                        <Button id="btnApprove" onClick={() => this.handleConfirmMaster(true)} type="submit" color="primary" block>Phê duyệt</Button>
-                                                    ) : (
-                                                            <Button id="btnApprove" onClick={() => this.openPopUp(true)} type="submit" color="primary" block>Phê duyệt</Button>
-                                                        )
-                                                } */}
-                                                <Button id="btnApprove" onClick={() => this.toggleSuccess(true)} type="submit" color="success" block>Phê duyệt</Button>
-                                            </Col>
-                                            <Col xs="3" sm="3">
-                                                {/* {
-                                                    role === 'ROLE_HEADMASTER' ? (
                                                         <Button id="btnReject" color="danger" block onClick={() => this.handleConfirmMaster(false)}>Từ chối</Button>
                                                     ) : (
                                                             <Button id="btnReject" color="danger" block onClick={() => this.openPopUp(false)}>Từ chối</Button>
@@ -605,7 +598,14 @@ class BusinessProposed_Detail extends Component {
                                                 <Button id="btnReject" color="danger" block onClick={() => this.toggleDanger(false)}>Từ chối</Button>
                                             </Col>
                                             <Col xs="3" sm="3">
-                                                <Button block color="secondary" block onClick={() => this.handleDirect("/business-proposed")}>Trở về</Button>
+                                                {/* {
+                                                    role === 'ROLE_HEADMASTER' ? (
+                                                        <Button id="btnApprove" onClick={() => this.handleConfirmMaster(true)} type="submit" color="primary" block>Phê duyệt</Button>
+                                                    ) : (
+                                                            <Button id="btnApprove" onClick={() => this.openPopUp(true)} type="submit" color="primary" block>Phê duyệt</Button>
+                                                        )
+                                                } */}
+                                                <Button id="btnApprove" onClick={() => this.toggleSuccess(true)} type="submit" color="success" block>Phê duyệt</Button>
                                             </Col>
                                         </Row>
                                     </CardFooter>
@@ -661,10 +661,10 @@ class BusinessProposed_Detail extends Component {
                                 <CardFooter className="p-3">
                                     <Row style={{ marginLeft: "21%" }}>
                                         <Col xs="4" sm="4">
-                                            <Button onClick={() => this.handleConfirm()} type="submit" color="primary" block>Xác nhận</Button>
+                                            <Button block color="danger" onClick={this.toggleSuccess}>Hủy bỏ</Button>
                                         </Col>
                                         <Col xs="4" sm="4">
-                                            <Button block color="secondary" onClick={this.toggleSuccess}>Hủy bỏ</Button>
+                                            <Button onClick={() => this.handleConfirm()} type="submit" color="primary" block>Xác nhận</Button>
                                         </Col>
                                     </Row>
                                 </CardFooter>
@@ -686,10 +686,10 @@ class BusinessProposed_Detail extends Component {
                                 <CardFooter className="p-3">
                                     <Row style={{ marginLeft: "21%" }}>
                                         <Col xs="4" sm="4">
-                                            <Button onClick={() => this.handleConfirm()} type="submit" color="primary" block>Xác nhận</Button>
+                                            <Button block color="danger" onClick={this.toggleDanger}>Hủy bỏ</Button>
                                         </Col>
                                         <Col xs="4" sm="4">
-                                            <Button block color="secondary" onClick={this.toggleDanger}>Hủy bỏ</Button>
+                                            <Button onClick={() => this.handleConfirm()} type="submit" color="primary" block>Xác nhận</Button>
                                         </Col>
                                     </Row>
                                 </CardFooter>

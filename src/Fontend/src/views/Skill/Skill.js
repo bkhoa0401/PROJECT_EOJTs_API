@@ -112,18 +112,18 @@ class Skill extends Component {
                                                                 <td style={{ textAlign: "center" }}>{skill.specialized.name}</td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {skill.status.toString() == 'true' ? (
-                                                                        <Badge color="success">TRUE</Badge>
+                                                                        <Badge color="success">KÍCH HOẠT</Badge>
                                                                     ) : (
-                                                                            <Badge color="danger">FALSE</Badge>
+                                                                            <Badge color="danger">VÔ HIỆU HOÁ</Badge>
                                                                         )}
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {skill.status.toString() == 'true' ? (
-                                                                        <Button style={{ marginRight: "1.5px" }} color="warning" onClick={() => this.handleConfirm(skill, false)} type="submit">Vô hiệu</Button>
+                                                                        <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(skill, false)} type="submit">Vô hiệu</Button>
                                                                     ) : (
-                                                                            <Button style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleConfirm(skill, true)} type="submit">Kích hoạt</Button>
+                                                                            <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(skill, true)} type="submit">Kích hoạt</Button>
                                                                         )}
-                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/skill/update/${skill.id}`)}>Chỉnh sửa</Button>
+                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/skill/update/${skill.id}`)}>Chỉnh sửa</Button>
                                                                 </td>
                                                             </tr>
                                                         )

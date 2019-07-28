@@ -142,14 +142,14 @@ class Specialized_Create extends Component {
                                     </CardBody>
                                     <CardFooter className="p-4">
                                         <Row>
-                                            <Col xs="3" sm="3">
+                                            <Col xs="4" sm="4">
+                                                <Button color="secondary" block onClick={() => this.handleDirect('/specialized')}>Trở về</Button>
+                                            </Col>
+                                            <Col xs="4" sm="4">
+                                                <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>
+                                            </Col>
+                                            <Col xs="4" sm="4">
                                                 <Button onClick={() => this.handleConfirm()} type="submit" color="primary" block>Tạo chuyên ngành</Button>
-                                            </Col>
-                                            <Col xs="3" sm="3">
-                                                <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
-                                            </Col>
-                                            <Col xs="3" sm="3">
-                                                <Button color="success" block onClick={() => this.handleDirect('/specialized')}>Trở về</Button>
                                             </Col>
                                         </Row>
                                     </CardFooter>

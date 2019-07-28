@@ -101,7 +101,7 @@ class business_list extends Component {
                                                                         onClick={() => this.handleDirect(`/list_management/business_list/Business_Detail/${business.email}`)}
                                                                     >
                                                                         Chi tiết
-                                                        </Button>
+                                                                    </Button>
                                                                     {/* &nbsp;&nbsp;
                                                         <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="danger">Xoá</Button> */}
                                                                 </td>

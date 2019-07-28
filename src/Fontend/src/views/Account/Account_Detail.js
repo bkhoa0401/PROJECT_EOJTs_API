@@ -15,7 +15,7 @@ import {
 } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
+import Toastify from '../Toastify/Toastify';
 import SimpleReactValidator from 'simple-react-validator';
 import firebase from 'firebase/app';
 import 'firebase/storage';
@@ -43,45 +43,62 @@ import decode from 'jwt-decode';
 
 const storage = firebase.storage();
 
-class Company extends Component {
+class Account_Detail extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            business: null,
+            username: '',
+            logo: null,
+            role:'',
+            linkProfile:'',
+            actor: null,
             loading: true,
-            role: '',
-        }
+          }
     }
 
     async componentDidMount() {
-        const businessEmail = window.location.href.split("/").pop();
-        let business = await ApiServices.Get(`/business/business?email=${businessEmail}`);
         const token = localStorage.getItem('id_token');
-        let role = '';
         if (token != null) {
-            const decoded = decode(token);
-            role = decoded.role;
+          const decoded = decode(token);
+          const email = decoded.email;
+          const role = decoded.role;
+          let actor = null;
+          let username = '';
+          let logo = null;
+          let linkProfile = '';
+          if (role == "ROLE_ADMIN" || role == "ROLE_STARTUP" || role == "ROLE_HEADTRAINING" || role == "ROLE_HEADMASTER") {
+            actor = await ApiServices.Get(`/admin/getCurrentUser`);
+            if (actor != null) {
+              username = actor.name;
+              logo = actor.logo;
+            }
+          } else if (role == "ROLE_SUPERVISOR") {
+            let tmpActor = await ApiServices.Get(`/supervisor`);
+            actor = tmpActor.supervisor;
+            if (actor != null) {
+              username = actor.name;
+              logo = actor.logo;
+            }
+          }
+          this.setState({
+            loading: false,
+            email: email,
+            role: role,
+            username: username,
+            logo: logo,
+            linkProfile: linkProfile,
+            actor: actor,
+          });
         }
-        if (role == "ROLE_HR") {
-            business = await ApiServices.Get("/business/getBusiness");
-        }
-        console.log(role);
-        if (business != null) {
-            this.setState({
-                business: business,
-                loading: false, 
-                role: role,
-            });
-        }
-    }
+      }
 
     handleDirect = (uri) => {
         this.props.history.push(uri);
     }
 
     render() {
-        const { business, loading, role } = this.state;
+        const { actor, loading } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -94,11 +111,7 @@ class Company extends Component {
                                     <CardHeader>
                                         {/* <FormGroup row>
                                             <Col md="2"> */}
-                                                <h4>Thông tin công ty &nbsp;&nbsp;
-                                                {role === "ROLE_HR" ?
-                                                    <Button color="primary" onClick={() => this.handleDirect('/company')}>Chỉnh sửa</Button> :
-                                                    <></>
-                                                }</h4>
+                                                <h4>Thông tin tài khoản &nbsp;&nbsp;<Button color="primary" onClick={() => this.handleDirect('/account_detail/account_update')}>Chỉnh sửa</Button></h4>
                                             {/* </Col>
                                             <Col md="10">
                                             </Col>
@@ -111,9 +124,9 @@ class Company extends Component {
                                                     <h6>Logo</h6>
                                                 </Col>
                                                 <Col xs="12" md="10">
-                                                    {business === null ?
+                                                    {actor === null ?
                                                         <></> :
-                                                        <img src={business.logo} style={{ width: "160px", height: "160px" }} />
+                                                        <img src={actor.logo} style={{ width: "160px", height: "160px" }} />
                                                     }
                                                 </Col>
                                             </FormGroup>
@@ -122,31 +135,20 @@ class Company extends Component {
                                                     <h6>Email</h6>
                                                 </Col>
                                                 <Col xs="12" md="10">
-                                                    {business === null ?
+                                                    {actor === null ?
                                                         <></> :
-                                                        <Label>{business.email}</Label>
+                                                        <Label>{actor.email}</Label>
                                                     }
                                                 </Col>
                                             </FormGroup>
                                             <FormGroup row>
                                                 <Col md="2">
-                                                    <h6>Tên doanh nghiệp</h6>
+                                                    <h6>Tên</h6>
                                                 </Col>
                                                 <Col xs="12" md="10">
-                                                    {business === null ?
+                                                    {actor === null ?
                                                         <></> :
-                                                        <Label>{business.business_name}</Label>
-                                                    }
-                                                </Col>
-                                            </FormGroup>
-                                            <FormGroup row>
-                                                <Col md="2">
-                                                    <h6>Tên tiếng Anh</h6>
-                                                </Col>
-                                                <Col xs="12" md="10">
-                                                    {business === null ?
-                                                        <></> :
-                                                        <Label>{business.business_eng_name}</Label>
+                                                        <Label>{actor.name}</Label>
                                                     }
                                                 </Col>
                                             </FormGroup>
@@ -155,20 +157,9 @@ class Company extends Component {
                                                     <h6>SĐT</h6>
                                                 </Col>
                                                 <Col xs="12" md="10">
-                                                    {business === null ?
+                                                    {actor === null ?
                                                         <></> :
-                                                        <Label>{business.business_phone}</Label>
-                                                    }
-                                                </Col>
-                                            </FormGroup>
-                                            <FormGroup row>
-                                                <Col md="2">
-                                                    <h6>Website</h6>
-                                                </Col>
-                                                <Col xs="12" md="10">
-                                                    {business === null ?
-                                                        <></> :
-                                                        <Label>{business.business_website}</Label>
+                                                        <Label>{actor.phone}</Label>
                                                     }
                                                 </Col>
                                             </FormGroup>
@@ -177,38 +168,15 @@ class Company extends Component {
                                                     <h6>Địa chỉ</h6>
                                                 </Col>
                                                 <Col xs="12" md="10">
-                                                    {business === null ?
+                                                    {actor === null ?
                                                         <></> :
-                                                        <Label>{business.business_address}</Label>
+                                                        <Label>{actor.address}</Label>
                                                     }
                                                 </Col>
                                             </FormGroup>
-                                            <FormGroup row>
-                                                <Col md="2">
-                                                    <h6>Giới thiệu</h6>
-                                                </Col>
-                                                <Col xs="12" md="10">
-                                                    {business === null ?
-                                                        <></> :
-                                                        <Label>{business.business_overview}</Label>
-                                                    }
-                                                </Col>
-                                            </FormGroup>
-                                            {/* <FormGroup row>
-                                        <Col md="2">
-                                            <h6>Image</h6>
-                                        </Col>
-                                        <Col xs="12" md="10">
-                                            <Input value="Đây là 1 gallery" onChange={this.handleInput} type="text" id="timeStartOJT" name="timeStartOJT" />
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('timeStartOJT', this.state.timeStartOJT, 'required')}
-                                            </span>
-                                        </Col>
-                                    </FormGroup> */}
                                         </Form>
                                     </CardBody>
-                                    { role === "ROLE_ADMIN" ?
-                                    <CardFooter className="p-4">
+                                    {/* <CardFooter className="p-4">
                                         <FormGroup row>
                                             <Col xs="4" md="4">
                                                 <Button block color="secondary" onClick={() => this.handleDirect('/list_management/business_list')}>
@@ -216,8 +184,7 @@ class Company extends Component {
                                                 </Button>
                                             </Col>
                                         </FormGroup>
-                                    </CardFooter>
-                                    : <></>}
+                                    </CardFooter> */}
                                 </Card>
                             </Col>
                         </Row>
@@ -227,4 +194,4 @@ class Company extends Component {
     }
 }
 
-export default Company;
+export default Account_Detail;

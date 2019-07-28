@@ -295,18 +295,18 @@ class CV extends Component {
                                             {
                                                 role && role === 'ROLE_ADMIN' ?
                                                     (<Col xs="3" sm="3">
-                                                        <Button onClick={() => this.handleSubmit()} type="submit" color="success" block>Xác nhận</Button>
+                                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/list_management/student_list")} type="submit" color="secondary" block>Trở về</Button>
                                                     </Col>) :
-                                                    (<label></label>)
+                                                    (<Col xs="3" sm="3">
+                                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/ojt_registration")} type="submit" color="secondary" block>Trở về</Button>
+                                                    </Col>)
                                             }
                                             {
                                                 role && role === 'ROLE_ADMIN' ?
                                                     (<Col xs="3" sm="3">
-                                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/list_management/student_list")} type="submit" color="primary" block>Trở về</Button>
+                                                        <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Xác nhận</Button>
                                                     </Col>) :
-                                                    (<Col xs="3" sm="3">
-                                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/ojt_registration")} type="submit" color="primary" block>Trở về</Button>
-                                                    </Col>)
+                                                    (<label></label>)
                                             }
                                         </Row>
                                     </CardFooter>

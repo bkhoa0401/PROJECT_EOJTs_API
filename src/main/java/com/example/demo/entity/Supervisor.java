@@ -23,6 +23,9 @@ public class Supervisor implements Serializable {
     @Column(name = "phone")
     private String phone;
 
+    @Column(name = "logo")
+    private String logo;
+
     @Column(name = "address",columnDefinition = "NVARCHAR(150)")
     private String address;
 
@@ -134,5 +137,13 @@ public class Supervisor implements Serializable {
 
     public void setBusiness(Business business) {
         this.business = business;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
     }
 }

@@ -200,9 +200,9 @@ class Ojt_Registration extends Component {
                                                                     <strong>{numberOfOption}</strong>
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect(`/student/${student.email}`)}>Chi tiết</Button>
-                                                                    <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleConfirm(student, numberOfOption, true)}>Duyệt</Button>
+                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}>Chi tiết</Button>
                                                                     <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(student, numberOfOption, false)}>Từ chối</Button>
+                                                                    <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(student, numberOfOption, true)}>Duyệt</Button>
                                                                 </td>
                                                             </tr>
                                                         )
