@@ -243,12 +243,8 @@ class Invitation_Create extends Component {
                                                                 }
                                                             </td> */}
                                                             <td style={{ textAlign: "center" }}>
-<<<<<<< HEAD
-                                                                <Button onClick={() => this.handleConfirm(student)} type="submit" style={{ marginRight: "1.5px" }} color="primary" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
-=======
                                                                 <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(student)}>Chi tiết</Button>
                                                                 <Button onClick={() => this.handleConfirm(student)} type="submit" color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
->>>>>>> master
                                                             </td>
                                                         </tr>
                                                     )
@@ -315,12 +311,8 @@ class Invitation_Create extends Component {
                                                                 }
                                                             </td> */}
                                                             <td style={{ textAlign: "center" }}>
-<<<<<<< HEAD
-                                                                <Button onClick={() => this.handleConfirm(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="primary" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
-=======
                                                                 <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(suggestedStudent)}>Chi tiết</Button>
                                                                 <Button onClick={() => this.handleConfirm(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
->>>>>>> master
                                                             </td>
                                                         </tr>
                                                     )
