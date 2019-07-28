@@ -1,7 +1,20 @@
 import React, { Component } from 'react';
 import { Button, Card, CardBody, CardFooter, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
+import { async } from '@firebase/util';
+import ApiServices from '../../../service/api-service';
+import { ToastContainer } from 'react-toastify';
+import Toastify from '../../Toastify/Toastify';
+import crypto from 'crypto';
 
 class FotgotPassword extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      emailReset: '',
+      messageError: '',
+    };
+  }
 
   handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -10,11 +23,36 @@ class FotgotPassword extends Component {
     }
   }
 
+  handleInput = async (event) => {
+    let messageError = '';
+    const { name, value } = event.target;
+    await this.setState({
+      [name]: value,
+      messageError: messageError,
+    })
+  }
+
   handleBack = async () => {
     this.props.history.push('/login');
   }
 
+  handleReset = async () => {
+    const emailReset = this.state.emailReset;
+    let messageError = '';
+    const result = await ApiServices.GetWithoutToken(`/account/check?email=${emailReset}`);
+    console.log(result);
+    if (result.status == 200) {
+      Toastify.actionSuccess("Một email vừa được gửi đến tài khoản của bạn! Vui lòng kiểm tra!");
+    } else {
+      messageError = "Email không tồn tại trong hệ thống!";
+      this.setState({
+        messageError: messageError,
+      })
+    }
+  }
+
   render() {
+    const { messageError } = this.state;
     return (
       <div className="app flex-row align-items-center">
         <Container>
@@ -31,8 +69,11 @@ class FotgotPassword extends Component {
                           <i className="icon-user"></i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input type="text" onKeyDown={this.handleKeyDown} placeholder="Email" autoComplete="Email" />
+                      <Input type="text" onChange={this.handleInput} onKeyDown={this.handleKeyDown} name="emailReset" placeholder="Email" autoComplete="Email" />
                     </InputGroup>
+                    <span className="form-error is-visible text-danger">
+                      {messageError}
+                    </span>
                     {/* <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>@</InputGroupText>
@@ -56,14 +97,15 @@ class FotgotPassword extends Component {
                       <Input type="password" placeholder="Repeat password" autoComplete="new-password" />
                     </InputGroup> */}
                   </Form>
+                  <ToastContainer />
                 </CardBody>
                 <CardFooter className="p-4">
                   <Row>
                     <Col xs="12" sm="6">
-                      <Button color="success" block>Đặt lại mật khẩu</Button>
+                      <Button color="secondary" onClick={this.handleBack} block><span>Trở về</span></Button>
                     </Col>
                     <Col xs="12" sm="6">
-                      <Button color="primary" onClick={this.handleBack} block><span>Trở về</span></Button>
+                      <Button color="success" onClick={this.handleReset} block>Đặt lại mật khẩu</Button>
                     </Col>
                   </Row>
                 </CardFooter>

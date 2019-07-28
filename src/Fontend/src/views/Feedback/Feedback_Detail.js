@@ -139,7 +139,7 @@ class Feedback_Detail extends Component {
                                                 <row>
                                                     &emsp;<u><b>Câu 1:</b></u> Bạn đánh giá như thế nào về nơi thực tập
                                                 </row>
-                                                <row style={{paddingTop:"20px"}}>
+                                                <row style={{ paddingTop: "20px" }}>
                                                     <br />&emsp;&emsp;Điều kiện làm việc tại công ty (Máy móc, trang thiết bị phục vụ cho công việc, nội thất văn phòng):
                                                     </row>
                                                 <row>
@@ -178,15 +178,17 @@ class Feedback_Detail extends Component {
                                         </Pagination>
                                     </CardBody>
                                     <CardFooter>
+                                        <Row>
+                                            <Col xs="4" sm="4">
+                                                <Button block color="secondary" onClick={() => this.handleDirect('/Feedback/Feedback')}>
+                                                    Trở về
+                                                </Button>
+                                            </Col>
+                                        </Row>
                                     </CardFooter>
                                 </Card>
                             </Col>
                         </Row>
-                        <div style={{ paddingLeft: '45%' }}>
-                            <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/Feedback/Feedback')}>
-                                Trở về
-                            </Button>
-                        </div>
                     </div>
                 )
         );

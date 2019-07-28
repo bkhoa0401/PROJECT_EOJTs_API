@@ -90,4 +90,14 @@ public class SupervisorService implements ISupervisorService {
         }
         return false;
     }
+
+    @Override
+    public boolean updateSupervisor(Supervisor supervisor) {
+        Supervisor supervisorFindByEmail = ISupervisorRepository.findByEmail(supervisor.getEmail());
+        if (supervisorFindByEmail != null) {
+            ISupervisorRepository.save(supervisor);
+            return true;
+        }
+        return false;
+    }
 }

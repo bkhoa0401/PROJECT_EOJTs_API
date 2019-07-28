@@ -40,4 +40,6 @@ public interface IOjt_EnrollmentService {
     List<Ojt_Enrollment> getOjt_EnrollmentsBySemesterIdAndBusinessNotNullAndStudentNotNull(int id, String email);
 
     int countOjt_EnrollmentsByBusinessEmailAndSemesterIdAndStudentEmailNotNull(String email,int id);
+
+    Ojt_Enrollment findOjt_EnrollmentByStudentEmailAndBusinessIsNull(String email);
 }

@@ -110,19 +110,18 @@ class Specialized extends Component {
                                                                 <td style={{ textAlign: "center" }}>{specialized.name}</td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {specialized.status.toString() == 'true' ? (
-                                                                        <Badge color="success">TRUE</Badge>
+                                                                        <Badge color="success">KÍCH HOẠT</Badge>
                                                                     ) : (
-                                                                            <Badge color="danger">FALSE</Badge>
+                                                                            <Badge color="danger">VÔ HIỆU HOÁ</Badge>
                                                                         )}
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {specialized.status.toString() == 'true' ? (
-                                                                        <Button style={{ marginRight: "1.5px" }} color="warning" onClick={() => this.handleConfirm(specialized, false)} type="submit">Vô hiệu</Button>
+                                                                        <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(specialized, false)} type="submit">Vô hiệu</Button>
                                                                     ) : (
-                                                                            <Button style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleConfirm(specialized, true)} type="submit">Kích hoạt</Button>
+                                                                            <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(specialized, true)} type="submit">Kích hoạt</Button>
                                                                         )}
-                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/specialized/update/${specialized.id}`)}>Chỉnh sửa</Button>
-
+                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/specialized/update/${specialized.id}`)}>Chỉnh sửa</Button>
                                                                 </td>
                                                             </tr>
                                                         )

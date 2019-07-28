@@ -7,10 +7,15 @@ import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/account")
@@ -62,15 +67,22 @@ public class WebController {
                         Student student = studentService.getStudentByEmail(users.getEmail());
                         StudentDTO studentDTO = new StudentDTO();
                         studentDTO.convertFromStudentEntity(student);
-                        Semester semester = semesterService.getSemesterCurrent();
+//                        Semester semester = semesterService.getSemesterCurrent();
 
-                        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(studentDTO.getEmail(), semester.getId());
+
+
+//                        Ojt_Enrollment ojt_enrollment =
+//                                ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(studentDTO.getEmail(), semester.getId());
+                        Ojt_Enrollment ojt_enrollment=ojt_enrollmentService.findOjt_EnrollmentByStudentEmailAndBusinessIsNull(studentDTO.getEmail());
+                        Semester semester = ojt_enrollment.getSemester();
+                        studentDTO.setSemester(semester);
                         if (ojt_enrollment.getBusiness() != null) {
                             studentDTO.setIntership(true);
                             studentDTO.setBusinessName(ojt_enrollment.getBusiness().getBusiness_eng_name());
                         }else{
                             studentDTO.setIntership(false);
                         }
+
 
                         login.setStudent(studentDTO);
                     }
@@ -84,5 +96,45 @@ public class WebController {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return new ResponseEntity<LoginDTO>(login, httpStatus);
+    }
+
+    //check account existed
+    @GetMapping("/check")
+    @ResponseBody
+    private ResponseEntity<Void> checkAccountExisted(@RequestParam String email) {
+        boolean isExisted = false;
+        List<Users> listAllUser = usersService.getAllUsers();
+        for (int i = 0; i < listAllUser.size(); i++) {
+            if (listAllUser.get(i).getEmail().equals(email)) {
+                isExisted = true;
+            }
+        }
+        if (isExisted) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    //check account existed
+    @GetMapping("/getCurrentAccount")
+    @ResponseBody
+    private ResponseEntity<Users> getCurrentAccount() {
+        String email = getEmailFromToken();
+        Users account = usersService.findUserByEmail(email);
+        if (account != null) {
+            return new ResponseEntity<Users>(account, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    private String getEmailFromToken() {
+        String email = "";
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            email = ((UserDetails) principal).getUsername();
+        } else {
+            email = principal.toString();
+        }
+        return email;
     }
 }

@@ -16,6 +16,8 @@ public interface IAdminService {
 
     List<Business> filterListBusinessByStudentSpecialized(int specializedId, List<Business> businessList);
 
+    boolean updateAdmin(Admin admin);
+
     Businesses_OptionsDTO getBusinesses_OptionDTO();
 
     Businesses_StudentsDTO getBusinesses_StudentsDTO();

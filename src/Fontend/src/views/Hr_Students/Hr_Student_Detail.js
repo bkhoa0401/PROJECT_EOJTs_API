@@ -163,12 +163,12 @@ class Hr_Students_Detail extends Component {
                                     </CardBody>
                                     <CardFooter className="p-4">
                                         <Row>
-                                            <Col xs="3" sm="3">
+                                            <Col xs="4" sm="4">
                                                 {
                                                     role === 'ROLE_SUPERVISOR' ? (
-                                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr-student-list")} type="submit" color="primary" block>Trở về</Button>
+                                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr-student-list")} type="submit" color="secondary" block>Trở về</Button>
                                                     ) : (
-                                                            <Button id="submitBusinesses" onClick={() => this.handleDirect("/list_management/student_list")} type="submit" color="primary" block>Trở về</Button>
+                                                            <Button id="submitBusinesses" onClick={() => this.handleDirect("/list_management/student_list")} type="submit" color="secondary" block>Trở về</Button>
                                                         )
                                                 }
                                             </Col>

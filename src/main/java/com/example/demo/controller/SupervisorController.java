@@ -56,6 +56,21 @@ public class SupervisorController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //update supervisor
+    @PutMapping("/updateSupervisor")
+    public ResponseEntity<Void> updateSupervisor(@RequestBody Supervisor profile) {
+        Supervisor supervisor = supervisorService.findByEmail(profile.getEmail());
+        supervisor.setPhone(profile.getPhone());
+        supervisor.setLogo(profile.getLogo());
+        supervisor.setName(profile.getName());
+        supervisor.setAddress(profile.getAddress());
+        boolean update = supervisorService.updateSupervisor(supervisor);
+        if (update == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     //check semester // ok
     @PostMapping("")
     public ResponseEntity<Void> createNewTask(@RequestBody Task task, @RequestParam String emailStudent) {

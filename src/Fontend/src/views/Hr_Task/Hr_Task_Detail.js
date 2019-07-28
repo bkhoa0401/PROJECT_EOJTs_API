@@ -291,8 +291,8 @@ class Hr_Task_Detail extends Component {
                                     </CardBody>
                                     <CardFooter className="p-4">
                                         <Row>
-                                            <Col xs="3" sm="3">
-                                                <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr-task")} type="submit" color="primary" block>Trở về</Button>
+                                            <Col xs="4" sm="4">
+                                                <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr-task")} type="submit" color="secondary" block>Trở về</Button>
                                             </Col>
                                         </Row>
                                     </CardFooter>

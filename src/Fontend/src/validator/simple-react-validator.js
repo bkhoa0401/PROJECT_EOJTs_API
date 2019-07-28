@@ -36,7 +36,7 @@ class SimpleReactValidator {
         numeric              : {message: ':attribute must be a number.',                                      rule: val => this.helpers.numeric(val)},
         phone                : {message: ':attribute must be a valid phone number.',                          rule: val => this.helpers.testRegex(val,/^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/)},
         regex                : {message: ':attribute must match required pattern.',                           rule: (val, params) => this.helpers.testRegex(val, typeof params[0] === 'string' || params[0] instanceof String ? new RegExp(params[0]) : params[0])},
-        required             : {message: ':attribute không hợp lệ.',                                   rule: val => !this.helpers.isBlank(val), required: true },
+        required             : {message: ':attribute không hợp lệ.',                                          rule: val => !this.helpers.isBlank(val), required: true },
         size                 : {message: ':attribute không hợp lệ.',                                          rule: (val, params) => this.helpers.size(val, params[1]) > parseFloat(params[0]), messageReplace: (message, params) => message.replace(':size', params[0]).replace(':type', this.helpers.sizeText(params[1]))},
         string               : {message: ':attribute must be a string.',                                      rule: val => typeof(val) === typeof('string')},
         typeof               : {message: ':attribute is not correct type of :type.',                          rule: (val, params) => typeof(val) === typeof(params[0]), messageReplace: (message, params) => message.replace(':type', typeof(params[0]))},

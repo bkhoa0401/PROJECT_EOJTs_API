@@ -155,7 +155,7 @@ class Details_Task extends Component {
                   <CardFooter className="p-4">
                     <Row>
                       <Col xs="3" sm="3">
-                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/official_list")} type="submit" color="primary" block>Trở về</Button>
+                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/official_list")} type="submit" color="secondary" block>Trở về</Button>
                       </Col>
                     </Row>
                   </CardFooter>

@@ -120,14 +120,18 @@ class InformMessage_Detail extends Component {
                                             {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
                                         </Pagination>
                                     </CardBody>
+                                    <CardFooter className="p-3">
+                                        <Row>
+                                            <Col xs="4" sm="4">
+                                                <Button block color="secondary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
+                                                    Trở về
+                                                </Button>
+                                            </Col>
+                                        </Row>
+                                    </CardFooter>
                                 </Card>
                             </Col>
                         </Row>
-                        <div style={{ paddingLeft: '45%' }}>
-                            <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
-                                Trở về
-                            </Button>
-                        </div>
                     </div>
                 )
         );

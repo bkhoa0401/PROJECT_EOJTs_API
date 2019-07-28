@@ -118,7 +118,7 @@ class student_list extends Component {
         })
 
         const result = await ApiServices.Put(`/admin/setBusinessForStudent?emailOfBusiness=${businessEmail}&emailOfStudent=${studentSelect.email}`);
-        console.log(result);
+        // console.log(result);
 
         if (result.status == 200) {
             Toastify.actionSuccess(`Đăng ký thành công!`);
@@ -192,9 +192,9 @@ class student_list extends Component {
                                                         </td>
                                                         {/* <td style={{ textAlign: "center" }}>{student.gpa}</td> */}
                                                         <td style={{ textAlign: "center" }}>
-                                                            <Button style={{ width: "80px" }} color="success" onClick={() => this.handleDirect(`/student/${student.student.email}`)}>Chi tiết</Button>
+                                                            <Button style={{ width: "80px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.student.email}`)}>Chi tiết</Button>
                                                             &nbsp;
-                                                            <Button style={{ width: "90px" }} color="primary" onClick={() => this.handleDirect(`/hr-student-list/details/${student.student.email}`)}>Nhiệm vụ</Button>
+                                                            <Button style={{ width: "90px" }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.student.email}`)}>Nhiệm vụ</Button>
                                                             &nbsp;
                                                     {/* <Button style={{ width: "70px" }} color="danger">Xoá</Button> */}
                                                         </td>

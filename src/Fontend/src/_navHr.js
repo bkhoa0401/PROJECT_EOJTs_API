@@ -1,10 +1,10 @@
 export default {
   items: [
-    {
-      name: 'Công ty',
-      url: '/company',
-      icon: 'icon-star',
-    },
+    // {
+    //   name: 'Công ty',
+    //   url: '/company',
+    //   icon: 'icon-star',
+    // },
     {
       name: 'Quản lí tài khoản',
       url: '/manage_account',

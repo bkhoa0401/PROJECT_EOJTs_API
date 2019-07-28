@@ -253,8 +253,8 @@ class Official_List extends Component {
 
                                 </td>
                                 <td style={{ textAlign: "center" }}>
-                                  <Button style={{ width: '100px', marginRight: '2px' }} color="success" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}>Chi tiết</Button>
-                                  <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleDirect(`/details_task/${student.email}`)}>Nhiệm vụ</Button>
+                                  <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}>Chi tiết</Button>
+                                  <Button style={{ width: '100px' }} color="success" onClick={() => this.handleDirect(`/details_task/${student.email}`)}>Nhiệm vụ</Button>
                                 </td>
                               </tr>
                             )
