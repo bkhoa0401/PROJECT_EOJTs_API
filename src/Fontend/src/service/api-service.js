@@ -17,7 +17,7 @@ const Get = async function (api, query = '') {
     method: 'GET',
   }
   const response = await fetch(API + api, setting);
-  if (response.status == 204 || response.status == 401) {
+  if (response.status == 204 || response.status == 401 || response.status == 417) {
     return null;
   }
   const data = await response.json();

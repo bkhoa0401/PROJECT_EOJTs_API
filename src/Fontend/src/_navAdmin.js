@@ -80,5 +80,10 @@ export default {
       url: '/Feedback/Feedback',
       icon: 'icon-star',
     },
+    {
+      name: 'Thống kê khảo sát',
+      url: '/answer-statistics',
+      icon: 'icon-star',
+    },
   ]
 };

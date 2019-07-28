@@ -254,34 +254,37 @@ public class AdminService implements IAdminService {
         List<Statistical_EvaluationDTO> statisticalEvaluationDTOList = new ArrayList<>();
 
         List<Evaluation> evaluationListReport_1 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT1);
-        if (evaluationListReport_1 != null) {
+        if (evaluationListReport_1.size() != 0) {
             statistical_evaluationDTOReport_1 = statistical_evaluationDTO(evaluationListReport_1);
             if (statistical_evaluationDTOReport_1 != null) {
                 statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_1);
             }
         }
         List<Evaluation> evaluationListReport_2 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT2);
-        if (evaluationListReport_2 != null) {
+        if (evaluationListReport_2.size() != 0) {
             statistical_evaluationDTOReport_2 = statistical_evaluationDTO(evaluationListReport_2);
             if (statistical_evaluationDTOReport_2 != null) {
                 statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_2);
             }
         }
         List<Evaluation> evaluationListReport_3 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT3);
-        if (evaluationListReport_3 != null) {
+        if (evaluationListReport_3.size() != 0) {
             statistical_evaluationDTOReport_3 = statistical_evaluationDTO(evaluationListReport_3);
             if (statistical_evaluationDTOReport_3 != null) {
                 statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_3);
             }
         }
         List<Evaluation> evaluationListReport_4 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT4);
-        if (evaluationListReport_4 != null) {
+        if (evaluationListReport_4.size() != 0) {
             statistical_evaluationDTOReport_4 = statistical_evaluationDTO(evaluationListReport_4);
             if (statistical_evaluationDTOReport_4 != null) {
                 statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_4);
             }
         }
 
+        if (statisticalEvaluationDTOList.size() == 0) {
+            return null;
+        }
         return statisticalEvaluationDTOList;
     }
 
@@ -297,8 +300,15 @@ public class AdminService implements IAdminService {
 
         for (int i = 0; i < questions.size(); i++) {
             Question question = questions.get(i);
+            List<String> answerStringList = new ArrayList<>();
+            List<Answer> answer = question.getAnswers();
+
+            for (int j = 0; j < answer.size(); j++) {
+                answerStringList.add(answer.get(j).getContent());
+            }
+
             statisticalQuestionAnswerDTO.setQuestion(question.getContent());
-            statisticalQuestionAnswerDTO.setAnswers(question.getAnswers());
+            statisticalQuestionAnswerDTO.setAnswers(answerStringList);
             statisticalQuestionAnswerDTO.setManyOption(question.isManyOption());
 
             countAnswer = countAnswerOfQuestion(question);
