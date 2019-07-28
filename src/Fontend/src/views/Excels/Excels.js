@@ -334,7 +334,7 @@ class Excels extends Component {
                             name: student[8]
                         },
                         gpa: student[9],
-                        semester: student[10],
+                        semesterName: student[10],
                     };
                     listStudents.push(student);
                 })

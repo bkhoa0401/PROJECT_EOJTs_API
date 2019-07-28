@@ -101,7 +101,7 @@ class AnswerStatistics extends Component {
                                             return (
                                                 <CardBody>
                                                     <FormGroup row>
-                                                        <h4 style={{ textDecoration: "underline" }}>{data.question}</h4><br />
+                                                        <h4>{data.question}</h4><br />
                                                     </FormGroup>
                                                     <FormGroup row style={{ width: "100%" }}>
                                                         {
