@@ -70,7 +70,7 @@ class Company extends Component {
         if (business != null) {
             this.setState({
                 business: business,
-                loading: false, 
+                loading: false,
                 role: role,
             });
         }
@@ -94,12 +94,12 @@ class Company extends Component {
                                     <CardHeader>
                                         {/* <FormGroup row>
                                             <Col md="2"> */}
-                                                <h4>Thông tin công ty &nbsp;&nbsp;
+                                        <h4>Thông tin công ty &nbsp;&nbsp;
                                                 {role === "ROLE_HR" ?
-                                                    <Button color="primary" onClick={() => this.handleDirect('/company')}>Chỉnh sửa</Button> :
-                                                    <></>
-                                                }</h4>
-                                            {/* </Col>
+                                                <Button color="primary" onClick={() => this.handleDirect('/company')}>Chỉnh sửa</Button> :
+                                                <></>
+                                            }</h4>
+                                        {/* </Col>
                                             <Col md="10">
                                             </Col>
                                         </FormGroup> */}
@@ -113,7 +113,10 @@ class Company extends Component {
                                                 <Col xs="12" md="10">
                                                     {business === null ?
                                                         <></> :
-                                                        <img src={business.logo} style={{ width: "160px", height: "160px" }} />
+                                                        (business.logo === null ?
+                                                            <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "160px", height: "160px" }} alt="usericon" /> :
+                                                            <img src={business.logo} className="img-avatar" style={{ width: "160px", height: "160px" }} />
+                                                        )
                                                     }
                                                 </Col>
                                             </FormGroup>
@@ -207,17 +210,17 @@ class Company extends Component {
                                     </FormGroup> */}
                                         </Form>
                                     </CardBody>
-                                    { role === "ROLE_ADMIN" ?
-                                    <CardFooter className="p-4">
-                                        <FormGroup row>
-                                            <Col xs="4" md="4">
-                                                <Button block color="secondary" onClick={() => this.handleDirect('/list_management/business_list')}>
-                                                    Trở về
+                                    {role === "ROLE_ADMIN" ?
+                                        <CardFooter className="p-4">
+                                            <FormGroup row>
+                                                <Col xs="4" md="4">
+                                                    <Button block color="secondary" onClick={() => this.handleDirect('/list_management/business_list')}>
+                                                        Trở về
                                                 </Button>
-                                            </Col>
-                                        </FormGroup>
-                                    </CardFooter>
-                                    : <></>}
+                                                </Col>
+                                            </FormGroup>
+                                        </CardFooter>
+                                        : <></>}
                                 </Card>
                             </Col>
                         </Row>

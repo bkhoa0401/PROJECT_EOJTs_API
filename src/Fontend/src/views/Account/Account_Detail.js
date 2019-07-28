@@ -50,48 +50,48 @@ class Account_Detail extends Component {
         this.state = {
             username: '',
             logo: null,
-            role:'',
-            linkProfile:'',
+            role: '',
+            linkProfile: '',
             actor: null,
             loading: true,
-          }
+        }
     }
 
     async componentDidMount() {
         const token = localStorage.getItem('id_token');
         if (token != null) {
-          const decoded = decode(token);
-          const email = decoded.email;
-          const role = decoded.role;
-          let actor = null;
-          let username = '';
-          let logo = null;
-          let linkProfile = '';
-          if (role == "ROLE_ADMIN" || role == "ROLE_STARTUP" || role == "ROLE_HEADTRAINING" || role == "ROLE_HEADMASTER") {
-            actor = await ApiServices.Get(`/admin/getCurrentUser`);
-            if (actor != null) {
-              username = actor.name;
-              logo = actor.logo;
+            const decoded = decode(token);
+            const email = decoded.email;
+            const role = decoded.role;
+            let actor = null;
+            let username = '';
+            let logo = null;
+            let linkProfile = '';
+            if (role == "ROLE_ADMIN" || role == "ROLE_STARTUP" || role == "ROLE_HEADTRAINING" || role == "ROLE_HEADMASTER") {
+                actor = await ApiServices.Get(`/admin/getCurrentUser`);
+                if (actor != null) {
+                    username = actor.name;
+                    logo = actor.logo;
+                }
+            } else if (role == "ROLE_SUPERVISOR") {
+                let tmpActor = await ApiServices.Get(`/supervisor`);
+                actor = tmpActor.supervisor;
+                if (actor != null) {
+                    username = actor.name;
+                    logo = actor.logo;
+                }
             }
-          } else if (role == "ROLE_SUPERVISOR") {
-            let tmpActor = await ApiServices.Get(`/supervisor`);
-            actor = tmpActor.supervisor;
-            if (actor != null) {
-              username = actor.name;
-              logo = actor.logo;
-            }
-          }
-          this.setState({
-            loading: false,
-            email: email,
-            role: role,
-            username: username,
-            logo: logo,
-            linkProfile: linkProfile,
-            actor: actor,
-          });
+            this.setState({
+                loading: false,
+                email: email,
+                role: role,
+                username: username,
+                logo: logo,
+                linkProfile: linkProfile,
+                actor: actor,
+            });
         }
-      }
+    }
 
     handleDirect = (uri) => {
         this.props.history.push(uri);
@@ -111,8 +111,8 @@ class Account_Detail extends Component {
                                     <CardHeader>
                                         {/* <FormGroup row>
                                             <Col md="2"> */}
-                                                <h4>Thông tin tài khoản &nbsp;&nbsp;<Button color="primary" onClick={() => this.handleDirect('/account_detail/account_update')}>Chỉnh sửa</Button></h4>
-                                            {/* </Col>
+                                        <h4>Thông tin tài khoản &nbsp;&nbsp;<Button color="primary" onClick={() => this.handleDirect('/account_detail/account_update')}>Chỉnh sửa</Button></h4>
+                                        {/* </Col>
                                             <Col md="10">
                                             </Col>
                                         </FormGroup> */}
@@ -126,7 +126,10 @@ class Account_Detail extends Component {
                                                 <Col xs="12" md="10">
                                                     {actor === null ?
                                                         <></> :
-                                                        <img src={actor.logo} style={{ width: "160px", height: "160px" }} />
+                                                        (actor.logo === null ?
+                                                            <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "160px", height: "160px" }} alt={actor.name} /> :
+                                                            <img src={actor.logo} className="img-avatar" style={{ width: "160px", height: "160px" }} />
+                                                        )
                                                     }
                                                 </Col>
                                             </FormGroup>

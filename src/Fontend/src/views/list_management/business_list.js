@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../Toastify/Toastify';
@@ -14,7 +14,11 @@ class business_list extends Component {
         this.state = {
             businesses: null,
             searchValue: '',
-            loading: true
+            loading: true,
+
+            modalDetail: false,
+            business: null,
+            role: '',
         };
     }
 
@@ -22,8 +26,23 @@ class business_list extends Component {
         const businesses = await ApiServices.Get('/business/getAllBusiness');
         if (businesses != null) {
             this.setState({
-                businesses,
+                businesses: businesses,
                 loading: false
+            });
+        }
+    }
+
+    toggleModalDetail = async (businessEmail) => {
+        let business = null;
+        if (this.state.modalDetail == false) {
+            business = await ApiServices.Get(`/business/business?email=${businessEmail}`);
+            this.setState({
+                business: business,
+                modalDetail: !this.state.modalDetail,
+            });
+        } else {
+            this.setState({
+                modalDetail: !this.state.modalDetail,
             });
         }
     }
@@ -40,7 +59,7 @@ class business_list extends Component {
     }
 
     render() {
-        const { businesses, searchValue, loading } = this.state;
+        const { businesses, business, searchValue, loading } = this.state;
         let filteredListBusinesses;
         if (businesses != null) {
             filteredListBusinesses = businesses.filter(
@@ -74,8 +93,8 @@ class business_list extends Component {
                                                     <tr>
                                                         <th style={{ textAlign: "center" }}>STT</th>
                                                         <th style={{ textAlign: "center" }}>Tên doanh nghiệp</th>
-                                                        <th style={{ textAlign: "center" }}>Tên Tiếng Anh</th>
-                                                        <th style={{ textAlign: "center" }}>Địa chỉ</th>
+                                                        <th style={{ textAlign: "center" }}>Tên tiếng Anh</th>
+                                                        {/* <th style={{ textAlign: "center" }}>Địa chỉ</th> */}
                                                         <th style={{ textAlign: "center" }}>Website</th>
                                                         <th style={{ textAlign: "center" }}>Liên hệ</th>
                                                         <th style={{ textAlign: "center" }}></th>
@@ -88,20 +107,21 @@ class business_list extends Component {
                                                                 <td style={{ textAlign: "center" }}>{index + 1}</td>
                                                                 <td style={{ textAlign: "center" }}>{business.business_name}</td>
                                                                 <td style={{ textAlign: "center" }}>{business.business_eng_name}</td>
-                                                                <td style={{ textAlign: "center" }}>{business.business_address}</td>
+                                                                {/* <td style={{ textAlign: "center" }}>{business.business_address}</td> */}
                                                                 <td style={{ textAlign: "center" }}>{business.business_website}</td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     Email: {business.email}<br />
                                                                     SĐT: {business.business_phone}
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    <Button
+                                                                    <Button style={{ width: "80px" }} color="primary" onClick={() => this.toggleModalDetail(business.email)}>Chi tiết</Button>
+                                                                    {/* <Button
                                                                         style={{ fontWeight: "bold", borderWidth: 0 }}
                                                                         color="primary"
                                                                         onClick={() => this.handleDirect(`/list_management/business_list/Business_Detail/${business.email}`)}
                                                                     >
                                                                         Chi tiết
-                                                                    </Button>
+                                                                    </Button> */}
                                                                     {/* &nbsp;&nbsp;
                                                         <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="danger">Xoá</Button> */}
                                                                 </td>
@@ -126,6 +146,117 @@ class business_list extends Component {
                                 </Card>
                             </Col>
                         </Row>
+                        <Modal isOpen={this.state.modalDetail} toggle={this.toggleModalDetail} className={'modal-primary ' + this.props.className}>
+                            <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
+                            <ModalBody>
+                                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Logo</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            {business === null ?
+                                                <></> :
+                                                (business.logo === null ?
+                                                    <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "160px", height: "160px" }} alt="usericon" /> :
+                                                    <img src={business.logo} className="img-avatar" style={{ width: "160px", height: "160px" }} />
+                                                )
+                                            }
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Email</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            {business === null ?
+                                                <></> :
+                                                <Label>{business.email}</Label>
+                                            }
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Tên doanh nghiệp</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            {business === null ?
+                                                <></> :
+                                                <Label>{business.business_name}</Label>
+                                            }
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Tên tiếng Anh</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            {business === null ?
+                                                <></> :
+                                                <Label>{business.business_eng_name}</Label>
+                                            }
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>SĐT</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            {business === null ?
+                                                <></> :
+                                                <Label>{business.business_phone}</Label>
+                                            }
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Website</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            {business === null ?
+                                                <></> :
+                                                <Label>{business.business_website}</Label>
+                                            }
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Địa chỉ</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            {business === null ?
+                                                <></> :
+                                                <Label>{business.business_address}</Label>
+                                            }
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Giới thiệu</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            {business === null ?
+                                                <></> :
+                                                <Label>{business.business_overview}</Label>
+                                            }
+                                        </Col>
+                                    </FormGroup>
+                                    {/* <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Image</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <Input value="Đây là 1 gallery" onChange={this.handleInput} type="text" id="timeStartOJT" name="timeStartOJT" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('timeStartOJT', this.state.timeStartOJT, 'required')}
+                                            </span>
+                                        </Col>
+                                    </FormGroup> */}
+                                </Form>
+                            </ModalBody>
+                            {/* <ModalFooter>
+                            </ModalFooter> */}
+                        </Modal>
                     </div>
                 )
         );
