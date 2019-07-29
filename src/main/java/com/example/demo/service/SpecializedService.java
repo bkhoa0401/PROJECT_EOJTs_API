@@ -139,6 +139,7 @@ public class SpecializedService implements ISpecializedService {
     }
 
     @CachePut(key = "'all'")
+    @CacheEvict(allEntries = true)
     public List<Specialized> updateSpecialized(Specialized specialized) {
         Specialized specializedFound = ISpecializedRepository.findSpecializedById(specialized.getId());
         if (specializedFound != null) {

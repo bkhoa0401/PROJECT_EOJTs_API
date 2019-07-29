@@ -253,28 +253,28 @@ public class AdminService implements IAdminService {
 
         List<Statistical_EvaluationDTO> statisticalEvaluationDTOList = new ArrayList<>();
 
-        List<Evaluation> evaluationListReport_1 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT1);
+        List<Evaluation> evaluationListReport_1 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION1);
         if (evaluationListReport_1 != null) {
             statistical_evaluationDTOReport_1 = statistical_evaluationDTO(evaluationListReport_1);
             if (statistical_evaluationDTOReport_1 != null) {
                 statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_1);
             }
         }
-        List<Evaluation> evaluationListReport_2 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT2);
+        List<Evaluation> evaluationListReport_2 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION2);
         if (evaluationListReport_2 != null) {
             statistical_evaluationDTOReport_2 = statistical_evaluationDTO(evaluationListReport_2);
             if (statistical_evaluationDTOReport_2 != null) {
                 statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_2);
             }
         }
-        List<Evaluation> evaluationListReport_3 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT3);
+        List<Evaluation> evaluationListReport_3 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION3);
         if (evaluationListReport_3 != null) {
             statistical_evaluationDTOReport_3 = statistical_evaluationDTO(evaluationListReport_3);
             if (statistical_evaluationDTOReport_3 != null) {
                 statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_3);
             }
         }
-        List<Evaluation> evaluationListReport_4 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT4);
+        List<Evaluation> evaluationListReport_4 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION4);
         if (evaluationListReport_4 != null) {
             statistical_evaluationDTOReport_4 = statistical_evaluationDTO(evaluationListReport_4);
             if (statistical_evaluationDTOReport_4 != null) {
@@ -408,5 +408,10 @@ public class AdminService implements IAdminService {
         } else {
             return ReportType.Least;
         }
+    }
+
+    @Override
+    public List<BusinessOptionsBySemesterDTO> getBusinessOptionsBySemester() {
+        return null;
     }
 }
