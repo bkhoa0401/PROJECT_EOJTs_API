@@ -43,6 +43,9 @@ public class AdminService implements IAdminService {
     @Autowired
     IAnswerService iAnswerService;
 
+    @Autowired
+    ISemesterService iSemesterService;
+
     @Override
     public Admin findAdminByEmail(String email) {
         Admin admin = IAdminRepository.findAdminByEmail(email);
@@ -246,54 +249,51 @@ public class AdminService implements IAdminService {
     @Override
     public List<Statistical_EvaluationDTO> getListStatistical_EvaluationDTO() {
 
-        Statistical_EvaluationDTO statistical_evaluationDTOReport_1 = null;
-        Statistical_EvaluationDTO statistical_evaluationDTOReport_2 = null;
-        Statistical_EvaluationDTO statistical_evaluationDTOReport_3 = null;
-        Statistical_EvaluationDTO statistical_evaluationDTOReport_4 = null;
+        Statistical_EvaluationDTO statistical_evaluationDTOEvaluation_1 = null;
+        Statistical_EvaluationDTO statistical_evaluationDTOEvaluation_2 = null;
+        Statistical_EvaluationDTO statistical_evaluationDTOEvaluation_3 = null;
+        Statistical_EvaluationDTO statistical_evaluationDTOEvaluation_4 = null;
 
         List<Statistical_EvaluationDTO> statisticalEvaluationDTOList = new ArrayList<>();
 
 
         List<Evaluation> evaluationListReport_1 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION1);
-        if (evaluationListReport_1 != null) {
-
-            if (evaluationListReport_1.size() != 0) {
-
-                statistical_evaluationDTOReport_1 = statistical_evaluationDTO(evaluationListReport_1);
-                if (statistical_evaluationDTOReport_1 != null) {
-                    statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_1);
-                }
-            }
-
-            List<Evaluation> evaluationListReport_2 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION2);
-            if (evaluationListReport_2.size() != 0) {
-
-                statistical_evaluationDTOReport_2 = statistical_evaluationDTO(evaluationListReport_2);
-                if (statistical_evaluationDTOReport_2 != null) {
-                    statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_2);
-                }
-            }
-
-            List<Evaluation> evaluationListReport_3 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION3);
-            if (evaluationListReport_3.size() != 0) {
-
-                statistical_evaluationDTOReport_3 = statistical_evaluationDTO(evaluationListReport_3);
-                if (statistical_evaluationDTOReport_3 != null) {
-                    statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_3);
-                }
-            }
-            List<Evaluation> evaluationListReport_4 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION4);
-            if (evaluationListReport_4.size() != 0) {
-                statistical_evaluationDTOReport_4 = statistical_evaluationDTO(evaluationListReport_4);
-                if (statistical_evaluationDTOReport_4 != null) {
-                    statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_4);
-                }
-            }
-
-            if (statisticalEvaluationDTOList.size() == 0) {
-                return null;
+        if (evaluationListReport_1.size() != 0) {
+            statistical_evaluationDTOEvaluation_1 = statistical_evaluationDTO(evaluationListReport_1);
+            if (statistical_evaluationDTOEvaluation_1 != null) {
+                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_1);
             }
         }
+
+
+        List<Evaluation> evaluationListReport_2 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION2);
+        if (evaluationListReport_2.size() != 0) {
+            statistical_evaluationDTOEvaluation_2 = statistical_evaluationDTO(evaluationListReport_2);
+            if (statistical_evaluationDTOEvaluation_2 != null) {
+                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_2);
+            }
+        }
+
+        List<Evaluation> evaluationListReport_3 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION3);
+        if (evaluationListReport_3.size() != 0) {
+
+            statistical_evaluationDTOEvaluation_3 = statistical_evaluationDTO(evaluationListReport_3);
+            if (statistical_evaluationDTOEvaluation_3 != null) {
+                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_3);
+            }
+        }
+        List<Evaluation> evaluationListReport_4 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION4);
+        if (evaluationListReport_4.size() != 0) {
+            statistical_evaluationDTOEvaluation_4 = statistical_evaluationDTO(evaluationListReport_4);
+            if (statistical_evaluationDTOEvaluation_4 != null) {
+                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_4);
+            }
+        }
+
+        if (statisticalEvaluationDTOList.size() == 0) {
+            return null;
+        }
+
         return statisticalEvaluationDTOList;
     }
 
@@ -432,7 +432,142 @@ public class AdminService implements IAdminService {
     }
 
     @Override
-    public List<BusinessOptionsBySemesterDTO> getBusinessOptionsBySemester() {
-        return null;
+    public BusinessOptionsBySemesterDTO getBusinessOptionsBySemester(String businessEmail) {
+        String semesterName;
+
+        List<String> listSemesterName = new ArrayList<>();
+        List<Integer> countOptions = new ArrayList<>();
+
+        BusinessOptionsBySemesterDTO businessOptionsBySemesterDTO = new BusinessOptionsBySemesterDTO();
+
+        Business business = businessService.getBusinessByEmail(businessEmail);
+
+        List<Semester> semesters = iSemesterService.getAllSemester();
+        for (int i = 0; i < semesters.size(); i++) {
+            semesterName = semesters.get(i).getName();
+            listSemesterName.add(semesterName);
+            List<Ojt_Enrollment> ojt_enrollmentList =
+                    ojt_enrollmentService.getOjt_EnrollmentsBySemesterIdAndStudentEmailNotNull(semesters.get(i).getId());
+
+            int count = countOptionOfBusinessBySemester(ojt_enrollmentList, business.getBusiness_eng_name());
+            countOptions.add(count);
+        }
+        businessOptionsBySemesterDTO.setSemester(listSemesterName);
+        businessOptionsBySemesterDTO.setCountStudentRegisterBusiness(countOptions);
+
+        return businessOptionsBySemesterDTO;
+    }
+
+    @Override
+    public BusinessOptionsBySemesterDTO countStudentInternAtBusinessBySemester(String businessEmail) {
+        String semesterName;
+
+        List<String> listSemesterName = new ArrayList<>();
+        List<Integer> countOptions = new ArrayList<>();
+
+        BusinessOptionsBySemesterDTO businessOptionsBySemesterDTO = new BusinessOptionsBySemesterDTO();
+
+        List<Semester> semesters = iSemesterService.getAllSemester();
+        for (int i = 0; i < semesters.size(); i++) {
+            semesterName = semesters.get(i).getName();
+            listSemesterName.add(semesterName);
+            List<Ojt_Enrollment> ojt_enrollmentList =
+                    ojt_enrollmentService.getOjt_EnrollmentsBySemesterIdAndStudentEmailNotNull(semesters.get(i).getId());
+
+            int count = countStudentInternAtBusinessBySemester(ojt_enrollmentList, businessEmail);
+            countOptions.add(count);
+        }
+        businessOptionsBySemesterDTO.setSemester(listSemesterName);
+        businessOptionsBySemesterDTO.setCountStudentRegisterBusiness(countOptions);
+
+        return businessOptionsBySemesterDTO;
+    }
+
+    @Override
+    public List<Statistical_EvaluationDTO> getListStatistical_EvaluationDTOOfABusiness(String email) {
+
+        List<Evaluation> evaluationList = iEvaluationService.getEvaluationsByBusinessEmail(email);
+
+
+        Statistical_EvaluationDTO statistical_evaluationDTOEvaluation_1;
+        Statistical_EvaluationDTO statistical_evaluationDTOEvaluation_2;
+        Statistical_EvaluationDTO statistical_evaluationDTOEvaluation_3;
+        Statistical_EvaluationDTO statistical_evaluationDTOEvaluation_4;
+
+        List<Evaluation> evaluationListByTitle_1=getEvaluationByTitle(evaluationList,ReportName.EVALUATION1);
+        List<Evaluation> evaluationListByTitle_2=getEvaluationByTitle(evaluationList,ReportName.EVALUATION2);
+        List<Evaluation> evaluationListByTitle_3=getEvaluationByTitle(evaluationList,ReportName.EVALUATION3);
+        List<Evaluation> evaluationListByTitle_4=getEvaluationByTitle(evaluationList,ReportName.EVALUATION4);
+
+        List<Statistical_EvaluationDTO> statisticalEvaluationDTOList = new ArrayList<>();
+
+
+        if (evaluationListByTitle_1.size() != 0) {
+            statistical_evaluationDTOEvaluation_1 = statistical_evaluationDTO(evaluationListByTitle_1);
+            if (statistical_evaluationDTOEvaluation_1 != null) {
+                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_1);
+            }
+        }
+
+        if (evaluationListByTitle_2.size() != 0) {
+            statistical_evaluationDTOEvaluation_2 = statistical_evaluationDTO(evaluationListByTitle_2);
+            if (statistical_evaluationDTOEvaluation_2 != null) {
+                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_2);
+            }
+        }
+        if (evaluationListByTitle_3.size() != 0) {
+            statistical_evaluationDTOEvaluation_3 = statistical_evaluationDTO(evaluationListByTitle_3);
+            if (statistical_evaluationDTOEvaluation_3 != null) {
+                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_3);
+            }
+        }
+        if (evaluationListByTitle_4.size() != 0) {
+            statistical_evaluationDTOEvaluation_4 = statistical_evaluationDTO(evaluationListByTitle_4);
+            if (statistical_evaluationDTOEvaluation_4 != null) {
+                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_4);
+            }
+        }
+
+        return statisticalEvaluationDTOList;
+    }
+
+    public List<Evaluation> getEvaluationByTitle(List<Evaluation> evaluationList, ReportName title) {
+        List<Evaluation> evaluationListByTitle = new ArrayList<>();
+        for (int i = 0; i < evaluationList.size(); i++) {
+            Evaluation evaluation = evaluationList.get(i);
+            if(evaluation.getTitle().equals(title)){
+                evaluationListByTitle.add(evaluation);
+            }
+        }
+        return evaluationListByTitle;
+    }
+
+
+    public int countStudentInternAtBusinessBySemester(List<Ojt_Enrollment> ojt_enrollments, String email) {
+        int count = 0;
+        for (int i = 0; i < ojt_enrollments.size(); i++) {
+            Business business = ojt_enrollments.get(i).getBusiness();
+            if (business != null) {
+                if (business.getEmail().equals(email)) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public int countOptionOfBusinessBySemester(List<Ojt_Enrollment> ojt_enrollments, String businessEngName) {
+        Student student;
+        int count = 0;
+        for (int i = 0; i < ojt_enrollments.size(); i++) {
+            student = ojt_enrollments.get(i).getStudent();
+            String option1 = student.getOption1();
+            String option2 = student.getOption2();
+
+            if (option1.equals(businessEngName) || option2.equals(businessEngName)) {
+                count++;
+            }
+        }
+        return count;
     }
 }

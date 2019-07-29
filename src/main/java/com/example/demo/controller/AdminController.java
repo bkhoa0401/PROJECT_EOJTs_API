@@ -283,4 +283,45 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //thống kê số lượng sinh viên set nguyện vọng vào công ty qua các kì
+    @GetMapping("/businessOptionsBySemester")
+    @ResponseBody
+    public ResponseEntity<BusinessOptionsBySemesterDTO> getBusinessOptionsBySemester() {
+        String email = getEmailFromToken();
+
+        BusinessOptionsBySemesterDTO businessOptionsBySemesterDTO = adminService.getBusinessOptionsBySemester(email);
+
+        if (businessOptionsBySemesterDTO != null) {
+            return new ResponseEntity<>(businessOptionsBySemesterDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    // thống kê số lượng sinh viên đc nhận thực tập tại doanh nghiệp qua các kì
+    @GetMapping("/studentInternAtBusiness")
+    @ResponseBody
+    public ResponseEntity<BusinessOptionsBySemesterDTO> countStudentInternAtBusinessBySemester(){
+        String email = getEmailFromToken();
+        BusinessOptionsBySemesterDTO countStudent = adminService.countStudentInternAtBusinessBySemester(email);
+
+        if (countStudent != null) {
+            return new ResponseEntity<>(countStudent, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    //thống kê đánh giá các report của sinh viên thực tập tại doanh nghiệp
+    @GetMapping("/statisticalEvaluationsBusiness")
+    @ResponseBody
+    public ResponseEntity<List<Statistical_EvaluationDTO>> getListStatistical_EvaluationDTOOfABusiness(){
+        String email=getEmailFromToken();
+
+        List<Statistical_EvaluationDTO> evaluationDTOs=adminService.getListStatistical_EvaluationDTOOfABusiness(email);
+
+        if(evaluationDTOs!=null){
+            return new ResponseEntity<List<Statistical_EvaluationDTO>>(evaluationDTOs,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+
+    }
 }

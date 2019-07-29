@@ -29,6 +29,9 @@ public class EvaluationService implements IEvaluationService {
     @Autowired
     ISemesterService semesterService;
 
+    @Autowired
+    IBusinessService iBusinessService;
+
     //check semester //ok
     @Override
     public void createNewEvaluation(Evaluation evaluation, String studentEmail) {
@@ -70,6 +73,33 @@ public class EvaluationService implements IEvaluationService {
             return evaluationList;
         }
         return null;
+    }
+
+    //get all evaluation of business at semester
+    @Override
+    public List<Evaluation> getEvaluationsByBusinessEmail(String email) {
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
+
+
+        Business business =iBusinessService.getBusinessByEmail(email);
+        List<Supervisor> supervisors = business.getSupervisors();
+
+        List<Evaluation> evaluationList = new ArrayList<>();
+        for (int i = 0; i < supervisors.size(); i++) {
+            Supervisor supervisor = supervisors.get(i);
+            List<Evaluation> evaluationListOfSupervisor = supervisor.getEvaluations();
+            evaluationList.addAll(evaluationListOfSupervisor);
+        } //get all evaluation of a business
+
+        List<Evaluation> evaluationListResult = new ArrayList<>();
+        for (int i = 0; i < evaluationList.size(); i++) {
+            Evaluation evaluation = evaluationList.get(i);
+            if(evaluation.getOjt_enrollment().getSemester().getId()==semesterCurrent.getId()){
+                evaluationListResult.add(evaluation);
+            }
+        } //get evaluation of a business by semester
+
+        return evaluationListResult;
     }
 
     //check semester // ok
@@ -196,8 +226,8 @@ public class EvaluationService implements IEvaluationService {
     public List<Evaluation> checkSemesterOfListEvaluation(List<Evaluation> evaluationList) {
         Semester semester = semesterService.getSemesterCurrent();
         for (int i = 0; i < evaluationList.size(); i++) {
-            Evaluation evaluation=evaluationList.get(i);
-            if(evaluation!=null){
+            Evaluation evaluation = evaluationList.get(i);
+            if (evaluation != null) {
                 if (evaluation.getOjt_enrollment().getSemester().getId() != semester.getId()) {
                     evaluationList.set(i, null);
                 }
@@ -208,14 +238,14 @@ public class EvaluationService implements IEvaluationService {
 
     @Override
     public List<Evaluation> getEvaluations() {
-        Semester semester=semesterService.getSemesterCurrent();
-        List<Evaluation> evaluationList=IEvaluationRepository.findEvaluationsByOjt_enrollmentSemesterId(semester.getId());
+        Semester semester = semesterService.getSemesterCurrent();
+        List<Evaluation> evaluationList = IEvaluationRepository.findEvaluationsByOjt_enrollmentSemesterId(semester.getId());
         return evaluationList;
     }
 
     @Override
     public List<Evaluation> getEvaluationsByTitle(ReportName title) {
-        List<Evaluation> evaluationList=IEvaluationRepository.findEvaluationsByTitle(title);
+        List<Evaluation> evaluationList = IEvaluationRepository.findEvaluationsByTitle(title);
         return evaluationList;
     }
 
