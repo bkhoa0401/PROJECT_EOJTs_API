@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table } from 'reactstrap';
-import { Button } from 'reactstrap';
+import { Button, ModalFooter, FormGroup, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../Toastify/Toastify';
@@ -20,7 +20,12 @@ class Ojt_Registration extends Component {
             business_name: '',
             business_eng_name: '',
             searchValue: '',
-            loading: true
+            loading: true,
+            listInvitation: null,
+
+            modal: false,
+            studentDetail: null,
+            invitationDetail: null,
         }
     }
 
@@ -28,12 +33,25 @@ class Ojt_Registration extends Component {
     async componentDidMount() {
         const students = await ApiServices.Get('/student/getListStudentByOptionAndStatusOption');
         const business = await ApiServices.Get('/business/getBusiness');
+        const invitations = await ApiServices.Get('/student/getListStudentIsInvited');
+        let listInvitation = [];
         if (students != null) {
+            for (let index = 0; index < students.length; index++) {
+                listInvitation.push(false);
+                for (let index1 = 0; index1 < invitations.length; index1++) {
+                    if (invitations[index1].student.email == students[index].email) {
+                        listInvitation.splice(index, 1);
+                        listInvitation.push(true);
+                        break;
+                    }
+                }
+            }
             this.setState({
                 students,
                 business_name: business.business_name,
                 business_eng_name: business.business_eng_name,
-                loading: false
+                loading: false,
+                listInvitation: listInvitation,
             });
         }
     }
@@ -129,8 +147,26 @@ class Ojt_Registration extends Component {
         }
     }
 
+    toggleModalDetail = async (studentDetail) => {
+        let invitationDetail = null;
+        let invitation = null;
+        if (this.state.modal == false) {
+            invitation = await ApiServices.Get(`/business/getInvitationOfStudent?emailStudent=${studentDetail.email}`);
+            invitationDetail = invitation.description;
+            this.setState({
+                modal: !this.state.modal,
+                studentDetail: studentDetail,
+                invitationDetail: invitationDetail,
+            });
+        } else {
+            this.setState({
+                modal: !this.state.modal,
+            })
+        }
+    }
+
     render() {
-        const { students, business_eng_name, searchValue, loading } = this.state;
+        const { students, business_eng_name, searchValue, loading, studentDetail, invitationDetail, listInvitation } = this.state;
 
         let filteredListStudents;
 
@@ -154,7 +190,7 @@ class Ojt_Registration extends Component {
                                 <Card>
                                     <CardHeader>
                                         <i className="fa fa-align-justify"></i> Danh sách sinh viên đăng kí thực tập tại công ty
-                            </CardHeader>
+                                    </CardHeader>
                                     <CardBody>
                                         <nav className="navbar navbar-light bg-light justify-content-between">
                                             <form className="form-inline">
@@ -169,6 +205,7 @@ class Ojt_Registration extends Component {
                                                     <th style={{ textAlign: "center" }}>MSSV</th>
                                                     <th style={{ textAlign: "center" }}>Họ và Tên</th>
                                                     <th style={{ textAlign: "center" }}>Chuyên ngành</th>
+                                                    <th style={{ textAlign: "center" }}>Gửi lời mời</th>
                                                     <th style={{ textAlign: "center" }}>Nguyện vọng</th>
                                                     <th style={{ textAlign: "center" }}>Thao tác</th>
                                                 </tr>
@@ -197,10 +234,17 @@ class Ojt_Registration extends Component {
                                                                 <td style={{ textAlign: "center" }}>{student.name}</td>
                                                                 <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
                                                                 <td style={{ textAlign: "center" }}>
+                                                                    {listInvitation && listInvitation[index] === true ?
+                                                                        <Badge color="success" style={{fontSize:'12px'}}>Có</Badge> :
+                                                                        <Badge color="danger" style={{fontSize:'12px'}}>Không</Badge>
+                                                                    }
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }}>
                                                                     <strong>{numberOfOption}</strong>
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}>Chi tiết</Button>
+                                                                    {/* <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}>Chi tiết</Button> */}
+                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.toggleModalDetail(student)}>Chi tiết</Button>
                                                                     <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(student, numberOfOption, false)}>Từ chối</Button>
                                                                     <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(student, numberOfOption, true)}>Duyệt</Button>
                                                                 </td>
@@ -225,6 +269,96 @@ class Ojt_Registration extends Component {
                                 </Card>
                             </Col>
                         </Row>
+                        {studentDetail !== null ?
+                            <Modal isOpen={this.state.modal} toggle={this.toggleModalDetail}
+                                className={'modal-primary ' + this.props.className}>
+                                <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
+                                <ModalBody>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Họ và Tên</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <label>{studentDetail.name}</label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Mã số sinh viên</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <label>{studentDetail.code}</label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Chuyên ngành</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <label>{studentDetail.specialized.name}</label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Giới thiệu bản thân</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <label>{studentDetail.objective}</label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Bảng điểm</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            {
+                                                studentDetail.transcriptLink && studentDetail.transcriptLink ? (
+                                                    <a href={studentDetail.transcriptLink} download>Tải về</a>
+                                                ) :
+                                                    (<label>N/A</label>)
+                                            }
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Kỹ năng</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            {
+                                                studentDetail.skills && studentDetail.skills.map((skill, index) => {
+                                                    return (
+                                                        <div>
+                                                            {
+                                                                <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                            }
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>GPA</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <label>{studentDetail.gpa}</label>
+                                        </Col>
+                                    </FormGroup>
+                                </ModalBody>
+                                <ModalFooter>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Chi tiết lời mời</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <label>{invitationDetail}</label>
+                                        </Col>
+                                    </FormGroup>
+                                </ModalFooter>
+                            </Modal> :
+                            <></>
+                        }
                     </div>
                 )
         );

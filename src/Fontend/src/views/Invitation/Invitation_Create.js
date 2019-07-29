@@ -357,6 +357,9 @@ class Invitation_Create extends Component {
                     },
                     {
                         label: 'Hủy bỏ',
+                        onClick: () => this.setState({
+                            modal: !this.state.modal,
+                        })
                     }
                 ]
             });

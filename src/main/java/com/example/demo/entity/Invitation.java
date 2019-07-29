@@ -122,4 +122,5 @@ public class Invitation implements Serializable {
     public void setRead(boolean read) {
         isRead = read;
     }
+
 }

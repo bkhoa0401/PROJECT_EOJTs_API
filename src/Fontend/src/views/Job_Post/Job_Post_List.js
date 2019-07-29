@@ -32,13 +32,13 @@ class Job_Post_List extends Component {
         // const skillList = jobPostList.job_post_skills;
         // let countJobPostList = [];
         // let countJobPostSkillList = [];
-        if (businesses != null) {  
+        if (businesses != null) {
             for (let i = 0; i < businesses.length; i++) {
                 // countJobPostList.push(businesses[i].job_postList.length);
                 // for (let j = 0; j < businesses[i].job_postList.length; j++) {
                 //     countJobPostSkillList.push(businesses[i].job_postList[j].job_post_skills.length);
                 // }
-                accordion.push(false);
+                accordion.push(true);
             }
             this.setState({
                 businesses: businesses,
@@ -55,21 +55,38 @@ class Job_Post_List extends Component {
         }
     }
 
-    toggleAccordion(tab) {
-
-        const prevState = this.state.accordion;
-        const state = prevState.map((x, index) => tab === index ? !x : false);
-    
+    toggleAccordion(indexTab) {
+        const businesses = this.state.businesses;
+        const accordion = this.state.accordion;
+        const prevState = [];
+        for (let index = 0; index < businesses.length; index++) {
+            if (indexTab == index) {
+                prevState.push(!accordion[index]);
+            } else {
+                prevState.push(accordion[index]);
+            }
+        }
         this.setState({
-          accordion: state,
+            accordion: prevState,
         });
-      }
+    }
 
     handleInput = async (event) => {
         const { name, value } = event.target;
         await this.setState({
             [name]: value.substr(0, 20),
         })
+    }
+
+    handleHideAll = () => {
+        const businesses = this.state.businesses;
+        const prevState = [];
+        for (let index = 0; index < businesses.length; index++) {
+            prevState.push(false);
+        }
+        this.setState({
+            accordion: prevState,
+        });
     }
 
     render() {
@@ -102,90 +119,97 @@ class Job_Post_List extends Component {
                                         </form>
                                     </nav>
                                     <br />
-                                    {filteredListBusinesses && filteredListBusinesses.map((business, index) => {
-                                        // let tmpJobPost;
-                                        // tmpJobPost = business.job_postList;
-                                        // for (let index = 0; index < business.job_postList.length; index++) {
-                                        //     tmpJobPost.push(business.job_postList[index]);
-                                        // }
-                                        return (
-                                            <div id="accordion">
-                                                <Card className="mb-0">
-                                                    <CardHeader id={business.business.business_name} style={{ color: "white", backgroundColor: "DeepSkyBlue" }}>
-                                                        <Button style={{ color: "white", backgroundColor: "DeepSkyBlue", border:"0", textAlign:"center" }} block onClick={() => this.toggleAccordion(index)} aria-expanded={this.state.accordion[index]} aria-controls={business.business.business_eng_name}>
-                                                            <h5 style={{fontWeight:'bold'}}>{business.business.business_name}</h5>
-                                                        </Button>
-                                                    </CardHeader>
-                                                    <Collapse isOpen={this.state.accordion[index]} data-parent="#accordion" id={business.business.business_eng_name} aria-labelledby={business.business.business_name}>
-                                                        <CardBody>
-                                                            {business.job_postList.map((job_post, index1) => {
-                                                                {/* {tmpJobPost && tmpJobPost.map((job_post, index1) => {
+                                    <Row style={{paddingLeft:"45%"}}>
+                                        <Button onClick={this.handleHideAll} type="submit" color="secondary">Ẩn hết</Button>
+                                    </Row>
+                                    <br/>
+                                    <div id="accordionParrent" data-children=".accordion">
+                                        {filteredListBusinesses && filteredListBusinesses.map((business, index) => {
+                                            // let tmpJobPost;
+                                            // tmpJobPost = business.job_postList;
+                                            // for (let index = 0; index < business.job_postList.length; index++) {
+                                            //     tmpJobPost.push(business.job_postList[index]);
+                                            // }
+                                            return (
+                                                <div id="accordion">
+                                                    <Card className="mb-0">
+                                                        <CardHeader id={business.business.business_name} style={{ color: "white", backgroundColor: "DeepSkyBlue" }}>
+                                                            <Button style={{ color: "white", backgroundColor: "DeepSkyBlue", border: "0", textAlign: "center" }} block onClick={() => this.toggleAccordion(index)} aria-expanded={this.state.accordion[index]} aria-controls={business.business.business_eng_name}>
+                                                                <h5 style={{ fontWeight: 'bold' }}>{business.business.business_name}</h5>
+                                                            </Button>
+                                                        </CardHeader>
+                                                        <Collapse isOpen={this.state.accordion[index]} data-parent="#accordionParrent" id={business.business.business_eng_name} aria-labelledby={business.business.business_name}>
+                                                            <CardBody>
+                                                                {business.job_postList.map((job_post, index1) => {
+                                                                    {/* {tmpJobPost && tmpJobPost.map((job_post, index1) => {
                                                                     let tmpSkill;
                                                                     tmpSkill = job_post.job_post_skills; */}
-                                                                // for (let index = 0; index < job_post.job_post_skills.length; index++) {
-                                                                //     tmpSkill.push(job_post.job_post_skills[index]);
-                                                                // }
-                                                                return (
-                                                                    <tr>
-                                                                        <td>
-                                                                            <p> - Quy trình tuyển: {job_post.interview_process}</p>
-                                                                            <p> - Chính sách công ty: {job_post.interest}</p>
-                                                                            <p> - Liên hệ: {job_post.contact}</p>
-                                                                            <p> - Vị trí - Số lượng:</p>
-                                                                            {job_post.job_post_skills.map((skill, index2) => {
-                                                                                return (<p>&nbsp;&nbsp;&nbsp;&nbsp;+ {skill.skill.name} ({skill.skill.specialized.name}): {skill.number}</p>)
-                                                                            })}
-                                                                            <p> - Mô tả công việc: {job_post.description}</p>
-                                                                        </td>
-                                                                    </tr>
-                                                                )
-                                                                // }
-                                                                // )}
-                                                            }
-                                                            )}
-                                                        </CardBody>
-                                                    </Collapse>
-                                                </Card>
-                                                <br/>
-                                                <br/>
-                                            </div>
-                                            // <Table responsive bordered>
-                                            //     <thead style={{ color: "white", backgroundColor: "DeepSkyBlue" }}>
-                                            //         <tr>
-                                            //             <th style={{ textAlign: "center" }}>{business.business.business_name}</th>
-                                            //         </tr>
-                                            //     </thead>
-                                            //     <tbody>
-                                            //         {business.job_postList.map((job_post, index1) => {
-                                            //             {/* {tmpJobPost && tmpJobPost.map((job_post, index1) => {
-                                            //             let tmpSkill;
-                                            //             tmpSkill = job_post.job_post_skills; */}
-                                            //             // for (let index = 0; index < job_post.job_post_skills.length; index++) {
-                                            //             //     tmpSkill.push(job_post.job_post_skills[index]);
-                                            //             // }
-                                            //             return (
-                                            //                 <tr>
-                                            //                     <td>
-                                            //                         <p> - Quy trình tuyển: {job_post.interview_process}</p>
-                                            //                         <p> - Chính sách công ty: {job_post.interest}</p>
-                                            //                         <p> - Liên hệ: {job_post.contact}</p>
-                                            //                         <p> - Vị trí - Số lượng:</p>
-                                            //                         {job_post.job_post_skills.map((skill, index2) => {
-                                            //                             return (<p>&nbsp;&nbsp;&nbsp;&nbsp;+ {skill.skill.name} ({skill.skill.specialized.name}): {skill.number}</p>)
-                                            //                         })}
-                                            //                         <p> - Mô tả công việc: {job_post.description}</p>
-                                            //                     </td>
-                                            //                 </tr>
-                                            //             )
-                                            //             // }
-                                            //             // )}
-                                            //         }
-                                            //         )}
-                                            //         <tr></tr>
-                                            //     </tbody>
-                                            // </Table>
-                                        )
-                                    })}
+                                                                    // for (let index = 0; index < job_post.job_post_skills.length; index++) {
+                                                                    //     tmpSkill.push(job_post.job_post_skills[index]);
+                                                                    // }
+                                                                    return (
+                                                                        <tr>
+                                                                            <td>
+                                                                                <p> - Quy trình tuyển: {job_post.interview_process}</p>
+                                                                                <p> - Chính sách công ty: {job_post.interest}</p>
+                                                                                <p> - Liên hệ: {job_post.contact}</p>
+                                                                                <p> - Vị trí - Số lượng:</p>
+                                                                                {job_post.job_post_skills.map((skill, index2) => {
+                                                                                    return (<p>&nbsp;&nbsp;&nbsp;&nbsp;+ {skill.skill.name} ({skill.skill.specialized.name}): {skill.number}</p>)
+                                                                                })}
+                                                                                <p> - Mô tả công việc: {job_post.description}</p>
+                                                                            </td>
+                                                                        </tr>
+                                                                    )
+                                                                    // }
+                                                                    // )}
+                                                                }
+                                                                )}
+                                                            </CardBody>
+                                                        </Collapse>
+                                                    </Card>
+                                                    <br />
+                                                    <br />
+                                                </div>
+                                                // <Table responsive bordered>
+                                                //     <thead style={{ color: "white", backgroundColor: "DeepSkyBlue" }}>
+                                                //         <tr>
+                                                //             <th style={{ textAlign: "center" }}>{business.business.business_name}</th>
+                                                //         </tr>
+                                                //     </thead>
+                                                //     <tbody>
+                                                //         {business.job_postList.map((job_post, index1) => {
+                                                //             {/* {tmpJobPost && tmpJobPost.map((job_post, index1) => {
+                                                //             let tmpSkill;
+                                                //             tmpSkill = job_post.job_post_skills; */}
+                                                //             // for (let index = 0; index < job_post.job_post_skills.length; index++) {
+                                                //             //     tmpSkill.push(job_post.job_post_skills[index]);
+                                                //             // }
+                                                //             return (
+                                                //                 <tr>
+                                                //                     <td>
+                                                //                         <p> - Quy trình tuyển: {job_post.interview_process}</p>
+                                                //                         <p> - Chính sách công ty: {job_post.interest}</p>
+                                                //                         <p> - Liên hệ: {job_post.contact}</p>
+                                                //                         <p> - Vị trí - Số lượng:</p>
+                                                //                         {job_post.job_post_skills.map((skill, index2) => {
+                                                //                             return (<p>&nbsp;&nbsp;&nbsp;&nbsp;+ {skill.skill.name} ({skill.skill.specialized.name}): {skill.number}</p>)
+                                                //                         })}
+                                                //                         <p> - Mô tả công việc: {job_post.description}</p>
+                                                //                     </td>
+                                                //                 </tr>
+                                                //             )
+                                                //             // }
+                                                //             // )}
+                                                //         }
+                                                //         )}
+                                                //         <tr></tr>
+                                                //     </tbody>
+                                                // </Table>
+                                            )
+                                        })}
+
+                                    </div>
                                 </div>
                                 <ToastContainer />
                                 <Pagination>
