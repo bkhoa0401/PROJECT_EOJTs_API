@@ -201,6 +201,24 @@ public class BusinessController {
         }
     }
 
+    @GetMapping("/getInvitationOfStudent")
+    @ResponseBody
+    public ResponseEntity<Invitation> getInvitationOfStudent(@RequestParam String emailStudent) {
+        String email = getEmailFromToken();
+        List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);
+        Invitation invitation = new Invitation();
+        for (int i = 0; i < invitationList.size(); i++) {
+            if (invitationList.get(i).getStudent().getEmail().equals(emailStudent)){
+                invitation = invitationList.get(i);
+                break;
+            }
+        }
+        if (invitation != null) {
+            return new ResponseEntity<Invitation>(invitation, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
 
     //get job post details by id
     @GetMapping("/getJobPost")

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Badge, Card, CardBody, CardHeader, Col, Pagination, Row, Table } from 'reactstrap';
-import { Button } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import orderBy from "lodash/orderBy";
@@ -8,6 +8,7 @@ import Toastify from '../../views/Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import { async } from '@firebase/util';
 
 const invertDirection = {
     asc: 'desc',
@@ -23,7 +24,10 @@ class Invitation extends Component {
             searchValue: '',
             columnToSort: '',
             sortDirection: 'desc',
-            loading: true
+            loading: true,
+            modal: false,
+            studentDetail: null,
+            invitationDetail: null,
         }
     }
 
@@ -53,6 +57,24 @@ class Invitation extends Component {
         })
     }
 
+    toggleModalDetail = async (studentDetail) => {
+        let invitationDetail = null;
+        let invitation = null;
+        if (this.state.modal == false) {
+            invitation = await ApiServices.Get(`/business/getInvitationOfStudent?emailStudent=${studentDetail.email}`);
+            invitationDetail = invitation.description;
+            this.setState({
+                modal: !this.state.modal,
+                studentDetail: studentDetail,
+                invitationDetail: invitationDetail,
+            });
+        } else {
+            this.setState({
+                modal: !this.state.modal,
+            })
+        }
+    }
+
 
     // handleSort = (columnName) => {
     //     this.setState({
@@ -63,7 +85,7 @@ class Invitation extends Component {
     // }
 
     render() {
-        const { students, business_eng_name, searchValue, columnToSort, sortDirection, loading } = this.state;
+        const { students, business_eng_name, searchValue, columnToSort, sortDirection, loading, studentDetail, invitationDetail } = this.state;
         let filteredListStudents = orderBy(students, columnToSort, sortDirection);
 
         if (students != null) {
@@ -87,7 +109,7 @@ class Invitation extends Component {
                                 <Card>
                                     <CardHeader>
                                         <i className="fa fa-align-justify"></i> Danh sách các lời mời đã gửi hiện tại
-                            </CardHeader>
+                                    </CardHeader>
                                     <CardBody>
                                         <Button color="primary" onClick={() => this.handleDirect('/invitation/new')}>Gửi lời mời cho sinh viên</Button>
                                         <br />
@@ -107,10 +129,11 @@ class Invitation extends Component {
                                                     <th style={{ textAlign: "center" }}>Họ và Tên</th>
                                                     <th style={{ textAlign: "center" }}>Chuyên ngành</th>
                                                     {/* <th style={{ textAlign: "center" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
-                                                    <th style={{ textAlign: "center" }}>Kỹ năng</th>
-                                                    <th style={{ textAlign: "center" }}>GPA</th>
+                                                    {/* <th style={{ textAlign: "center" }}>Kỹ năng</th>
+                                                    <th style={{ textAlign: "center" }}>GPA</th> */}
+                                                    {/* <th style={{ textAlign: "center" }}>Nguyện vọng của sinh viên</th> */}
                                                     <th style={{ textAlign: "center" }}>Trạng thái lời mời</th>
-                                                    <th style={{ textAlign: "center" }}>Nguyện vọng của sinh viên</th>
+                                                    <th style={{ textAlign: "center" }}>Thao tác</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -145,7 +168,7 @@ class Invitation extends Component {
                                                                 <td style={{ textAlign: "center" }}>{student.student.code}</td>
                                                                 <td style={{ textAlign: "center" }}>{student.student.name}</td>
                                                                 <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
-                                                                <td style={{ textAlign: "center" }}>
+                                                                {/* <td style={{ textAlign: "center" }}>
                                                                     {
                                                                         skills && skills.map((skill, index) => {
                                                                             return (
@@ -158,22 +181,25 @@ class Invitation extends Component {
                                                                         })
                                                                     }
                                                                 </td>
-                                                                <td style={{ textAlign: "center" }}>{student.student.gpa}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.student.gpa}</td> */}
+                                                                {/* <td style={{ textAlign: "center" }}>
+                                                                    <strong>
+                                                                        {tmp}
+                                                                    </strong>
+                                                                </td> */}
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {
                                                                         invitationDetail && (
                                                                             invitationDetail.state.toString() == 'true' ? (
-                                                                                <Badge color="success">Đã chấp nhận</Badge>
+                                                                                <Badge color="success" style={{fontSize:'12px'}}>Đã chấp nhận</Badge>
                                                                             ) : (
-                                                                                    <Badge color="danger">Đang chờ</Badge>
+                                                                                    <Badge color="danger" style={{fontSize:'12px'}}>Đang chờ</Badge>
                                                                                 )
                                                                         )
                                                                     }
                                                                 </td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    <strong>
-                                                                        {tmp}
-                                                                    </strong>
+                                                                <td>
+                                                                    <Button style={{ width: "80px" }} color="primary" onClick={() => this.toggleModalDetail(student.student)}>Chi tiết</Button>
                                                                 </td>
                                                             </tr>
                                                         )
@@ -189,6 +215,96 @@ class Invitation extends Component {
                                 </Card>
                             </Col>
                         </Row>
+                        {studentDetail !== null ?
+                            <Modal isOpen={this.state.modal} toggle={this.toggleModalDetail}
+                                className={'modal-primary ' + this.props.className}>
+                                <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
+                                <ModalBody>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Họ và Tên</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <label>{studentDetail.name}</label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Mã số sinh viên</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <label>{studentDetail.code}</label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Chuyên ngành</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <label>{studentDetail.specialized.name}</label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Giới thiệu bản thân</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <label>{studentDetail.objective}</label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Bảng điểm</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            {
+                                                studentDetail.transcriptLink && studentDetail.transcriptLink ? (
+                                                    <a href={studentDetail.transcriptLink} download>Tải về</a>
+                                                ) :
+                                                    (<label>N/A</label>)
+                                            }
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Kỹ năng</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            {
+                                                studentDetail.skills && studentDetail.skills.map((skill, index) => {
+                                                    return (
+                                                        <div>
+                                                            {
+                                                                <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                            }
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>GPA</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <label>{studentDetail.gpa}</label>
+                                        </Col>
+                                    </FormGroup>
+                                </ModalBody>
+                                <ModalFooter>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Chi tiết lời mời</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <label>{invitationDetail}</label>
+                                        </Col>
+                                    </FormGroup>
+                                </ModalFooter>
+                            </Modal> :
+                            <></>
+                        }
                     </div>
                 )
         );
