@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader, FormGroup } from 'reactstrap';
+import { Label, Input, Button, Modal, ModalBody, ModalFooter, ModalHeader, FormGroup } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SmsServices from '../../service/send-sms';
 import { ToastContainer } from 'react-toastify';
@@ -13,11 +13,14 @@ import firebase from 'firebase';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import SimpleReactValidator from '../../validator/simple-react-validator';
 
 class Invitation_Create extends Component {
     constructor(props) {
         super(props);
+        this.validator = new SimpleReactValidator();
         this.state = {
+            modal: false,
             students: null,
             suggestedStudents: null,
             business_name: '',
@@ -27,7 +30,9 @@ class Invitation_Create extends Component {
             activeTab: new Array(1).fill('1'),
             loading: true,
             large: false,
-            studentDetail: null
+            studentDetail: null,
+            invitationContent: '',
+            student: null,
         }
         // this.toggleLarge = this.toggleLarge.bind(this);
     }
@@ -58,6 +63,13 @@ class Invitation_Create extends Component {
         })
     }
 
+    handleInputInvite = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value,
+        })
+    }
+
     toggleLarge = (studentDetail) => {
         this.setState({
             large: !this.state.large,
@@ -71,8 +83,8 @@ class Invitation_Create extends Component {
         if (studentDetail != null && this.state.large) {
             return (
                 <Modal isOpen={this.state.large} toggle={this.toggleLarge}
-                    className={'modal-lg ' + this.props.className}>
-                    <ModalHeader style={{ backgroundColor: "#20a8d8", color: "#f0f8ff", textAlign:'center', fontWeight:'bold' }} toggle={this.toggleLarge}>Chi tiết sinh viên</ModalHeader>
+                    className={'modal-primary ' + this.props.className}>
+                    <ModalHeader toggle={this.toggleLarge}>Chi tiết sinh viên</ModalHeader>
                     <ModalBody>
                         <FormGroup row>
                             <Col md="3">
@@ -146,9 +158,9 @@ class Invitation_Create extends Component {
                             </Col>
                         </FormGroup>
                     </ModalBody>
-                    <ModalFooter>
+                    {/* <ModalFooter>
                         <Button style={{ marginRight: "42%", width: "100px" }} color="primary" onClick={this.toggleLarge}>Xác nhận</Button>
-                    </ModalFooter>
+                    </ModalFooter> */}
                 </Modal>
             )
         }
@@ -244,7 +256,7 @@ class Invitation_Create extends Component {
                                                             </td> */}
                                                             <td style={{ textAlign: "center" }}>
                                                                 <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(student)}>Chi tiết</Button>
-                                                                <Button onClick={() => this.handleConfirm(student)} type="submit" color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+                                                                <Button onClick={() => this.toggleModal(student)} type="submit" color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                             </td>
                                                         </tr>
                                                     )
@@ -312,7 +324,7 @@ class Invitation_Create extends Component {
                                                             </td> */}
                                                             <td style={{ textAlign: "center" }}>
                                                                 <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(suggestedStudent)}>Chi tiết</Button>
-                                                                <Button onClick={() => this.handleConfirm(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+                                                                <Button onClick={() => this.toggleModal(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                             </td>
                                                         </tr>
                                                     )
@@ -329,27 +341,37 @@ class Invitation_Create extends Component {
     }
 
 
-    handleConfirm = (student) => {
+    handleConfirm = (invitation) => {
+        const student = this.state.student;
+        if (this.validator.allValid()) {
+            this.setState({
+                modal: !this.state.modal,
+            });
+            confirmAlert({
+                title: 'Xác nhận',
+                message: `Bạn có chắc chắn muốn gửi lời mời thực tập đến sinh viên '${student.name}' ?`,
+                buttons: [
+                    {
+                        label: 'Đồng ý',
+                        onClick: () => this.handleSubmit(invitation)
+                    },
+                    {
+                        label: 'Hủy bỏ',
+                    }
+                ]
+            });
+        } else {
+            this.validator.showMessages();
+            this.forceUpdate();
+        }
 
-        confirmAlert({
-            title: 'Xác nhận',
-            message: `Bạn có chắc chắn muốn gửi lời mời thực tập đến sinh viên '${student.name}' ?`,
-            buttons: [
-                {
-                    label: 'Đồng ý',
-                    onClick: () => this.handleSubmit(student)
-                },
-                {
-                    label: 'Hủy bỏ',
-                }
-            ]
-        });
     };
 
-    handleSubmit = async (student) => {
+    handleSubmit = async (invitationContent) => {
         this.setState({
             loading: true
         })
+        const student = this.state.student;
         const { business_name } = this.state;
         const studentName = student.name;
         const email = student.email;
@@ -366,11 +388,11 @@ class Invitation_Create extends Component {
 
         var sms = {
             receiverNumber: `${studentNumber}`,
-            content: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`
+            content: invitationContent,
         }
 
         const invitation = {
-            description: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
+            description: invitationContent,
             state: 0,
             timeCreated: "2019-09-09",
             title: `Lời mời thực tập từ công ty ${business_name}`
@@ -381,7 +403,7 @@ class Invitation_Create extends Component {
         const notificationDTO = {
             data: {
                 title: `Lời mời thực tập từ công ty ${business_name}`,
-                body: `Xin chào ${studentName}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`,
+                body: invitationContent,
                 click_action: "http://localhost:3000/#/invitation/new",
                 icon: "http://url-to-an-icon/icon.png"
             },
@@ -464,7 +486,18 @@ class Invitation_Create extends Component {
         });
     }
 
+    toggleModal = async (suggestedStudent) => {
+        const { business_name } = this.state;
+        let invitationContent = `Xin chào ${suggestedStudent.name}! Chúng tôi có lời mời bạn tham gia phỏng vấn tại công ty ${business_name}!`;
+        this.setState({
+            modal: !this.state.modal,
+            invitationContent: invitationContent,
+            student: suggestedStudent,
+        });
+    }
+
     render() {
+        const { invitationContent, student } = this.state;
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -510,6 +543,31 @@ class Invitation_Create extends Component {
                         </Card>
                     </Col>
                 </Row>
+                <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={'modal-primary ' + this.props.className}>
+                    <ModalHeader toggle={this.toggleModal}>Gửi lời mời cho sinh viên</ModalHeader>
+                    <ModalBody>
+                        <FormGroup row>
+                            <Col md="1">
+                                <Label style={{ fontWeight:"bold", fontSize:"18px"}}>Tới: </Label>
+                            </Col>
+                            <Col md="11">
+                                {student === null ?
+                                    <></> :
+                                    <Input type="text" value={student.name} disabled></Input>
+                                }
+                            </Col>
+                        </FormGroup>
+                        <hr />
+                        <Input type="textarea" name="invitationContent" id="invitationContent" rows="9" value={invitationContent} onChange={this.handleInputInvite} />
+                        <span className="form-error is-visible text-danger">
+                            {this.validator.message('Chi tiết lời mời', invitationContent, 'required')}
+                        </span>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={this.toggleModal}>Huỷ</Button>{' '}
+                        <Button color="primary" onClick={() => this.handleConfirm(invitationContent)}>Gửi</Button>
+                    </ModalFooter>
+                </Modal>
             </div>
         );
     }
