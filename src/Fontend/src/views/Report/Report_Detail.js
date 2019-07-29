@@ -32,6 +32,7 @@ class Report_Detail extends Component {
             busniessName: '',
             supervisorName: '',
             role: '',
+            titleHeader: '',
             // data: null,
         };
     }
@@ -41,6 +42,7 @@ class Report_Detail extends Component {
         var param = window.location.href.split("/").pop();
         var needId = param.split('~');
         const report = await ApiServices.Get(`/supervisor/getEvaluation?id=${needId[0]}`);
+        let titleHeader = '';
         let timeStart = report.timeStart;
         let formatTimeStart = timeStart.split('-');
         report.timeStart = formatTimeStart[2] + "/" + formatTimeStart[1] + "/" + formatTimeStart[0];
@@ -80,6 +82,15 @@ class Report_Detail extends Component {
             onScreenRate = 4;
         }
         if (report != null) {
+            if (report.title == "EVALUATION1") {
+                titleHeader = "Đánh giá tháng #1";
+            } else if (report.title == "EVALUATION2") {
+                titleHeader = "Đánh giá tháng #2";
+            } else if (report.title == "EVALUATION3") {
+                titleHeader = "Đánh giá tháng #3";
+            } else if (report.title == "EVALUATION4") {
+                titleHeader = "Đánh giá tháng #4";
+            }
             let averageScore = (report.score_work * 0.5 + report.score_activity * 0.1 + report.score_discipline * 0.4);
             let rating = '';
             if (averageScore > 9) {
@@ -117,6 +128,7 @@ class Report_Detail extends Component {
                 role: role,
                 businessName: businessName,
                 supervisorName: supervisorName,
+                titleHeader: titleHeader,
                 reportDownload: [{
                     MSSV: student.code,
                     name: student.name,
@@ -151,7 +163,7 @@ class Report_Detail extends Component {
     }
 
     render() {
-        const { loading, reportColor, rate, report, role, student, onScreenRate, businessName, supervisorName, reportDownload } = this.state;
+        const { loading, reportColor, rate, report, role, student, onScreenRate, businessName, supervisorName, reportDownload, titleHeader } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -161,13 +173,13 @@ class Report_Detail extends Component {
                             <Col xs="12" lg="12">
                                 <Card>
                                     <CardHeader style={{ fontWeight: "bold" }}>
-                                        <i className="fa fa-align-justify"></i>{report === null ? "" : report.title}
+                                        <i className="fa fa-align-justify"></i>{report === null ? "" : titleHeader}
                                         {report === null ? (<></>) :
                                             (role && role === 'ROLE_SUPERVISOR' ?
                                                 <>
                                                     &nbsp;&nbsp;
                                             <Button color="primary" onClick={() => this.handleDirect(`/Report/Update_Report/${report.id}~${student.email}`)}>
-                                                        Chỉnh sửa
+                                                Chỉnh sửa
                                             </Button>
                                                 </> :
                                                 <></>
