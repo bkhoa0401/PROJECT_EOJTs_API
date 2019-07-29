@@ -4,17 +4,17 @@ import java.io.Serializable;
 import java.util.List;
 
 public class BusinessOptionsBySemesterDTO implements Serializable {
-    private String semester;
+    private List<String> semester;
     private List<Integer> countStudentRegisterBusiness;
 
     public BusinessOptionsBySemesterDTO() {
     }
 
-    public String getSemester() {
+    public List<String> getSemester() {
         return semester;
     }
 
-    public void setSemester(String semester) {
+    public void setSemester(List<String> semester) {
         this.semester = semester;
     }
 

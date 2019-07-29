@@ -31,4 +31,6 @@ public interface IEvaluationService {
     List<Evaluation> getEvaluations();//get by semester
 
     List<Evaluation> getEvaluationsByTitle(ReportName title);
+
+    List<Evaluation> getEvaluationsByBusinessEmail(String email);
 }
