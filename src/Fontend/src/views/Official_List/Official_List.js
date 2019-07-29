@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Pagination, Row, Table, Input } from 'reactstrap';
+import { Badge, Card, CardBody, CardFooter, CardHeader, Col, Pagination, Row, Table, Input } from 'reactstrap';
 import { Button } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
@@ -265,10 +265,16 @@ class Official_List extends Component {
                     <ToastContainer />
 
                   </CardBody>
+                  <CardFooter className="p-4">
+                    <Row style={{paddingLeft:'45%'}}>
+                      <Col xs="4" sm="4">
+                        <Button onClick={() => this.handleConfirm()} block color="primary" type="submit" id="btnSave">Lưu</Button>
+                      </Col>
+                    </Row>
+                  </CardFooter>
                 </Card>
               </Col>
             </Row>
-            <div style={rowSave}><Button onClick={() => this.handleConfirm()} style={{ width: '100px' }} color="primary" type="submit" id="btnSave">Lưu</Button></div>
           </div>
         )
     );

@@ -72,7 +72,7 @@ class Invitation_Create extends Component {
             return (
                 <Modal isOpen={this.state.large} toggle={this.toggleLarge}
                     className={'modal-lg ' + this.props.className}>
-                    <ModalHeader style={{ backgroundColor: "#20a8d8", color: "#f0f8ff" }} toggle={this.toggleLarge}>Chi tiết sinh viên</ModalHeader>
+                    <ModalHeader style={{ backgroundColor: "#20a8d8", color: "#f0f8ff", textAlign:'center', fontWeight:'bold' }} toggle={this.toggleLarge}>Chi tiết sinh viên</ModalHeader>
                     <ModalBody>
                         <FormGroup row>
                             <Col md="3">

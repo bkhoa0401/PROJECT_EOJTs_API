@@ -16,7 +16,7 @@ import {
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../Toastify/Toastify';
-import SimpleReactValidator from 'simple-react-validator';
+import SimpleReactValidator from '../../validator/simple-react-validator';
 import firebase from 'firebase/app';
 import 'firebase/storage';
 import { async } from 'q';

@@ -113,7 +113,7 @@ class Job_Post_List_HR extends Component {
                                                                     }
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    <Button type="submit" onClick={() => this.handleDirect(`/job-post/${job_post.id}`)} color="success">Chi tiết</Button>
+                                                                    <Button type="submit" onClick={() => this.handleDirect(`/job-post/${job_post.id}`)} color="primary">Chi tiết</Button>
                                                                     {/* <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/product/update/${job_post.id}`)}>Update</Button> */}
                                                                 </td>
                                                             </tr>

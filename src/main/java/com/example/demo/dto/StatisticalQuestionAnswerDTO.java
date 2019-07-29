@@ -7,7 +7,7 @@ import java.util.List;
 
 public class StatisticalQuestionAnswerDTO implements Serializable {
     private String question;
-    private List<Answer> answers;
+    private List<String> answers;
     private List<Integer> countAnswer;
     private boolean isManyOption;
     private List<String> others;
@@ -20,11 +20,11 @@ public class StatisticalQuestionAnswerDTO implements Serializable {
         this.question = question;
     }
 
-    public List<Answer> getAnswers() {
+    public List<String> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(List<Answer> answers) {
+    public void setAnswers(List<String> answers) {
         this.answers = answers;
     }
 

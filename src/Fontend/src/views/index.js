@@ -55,7 +55,8 @@ import {
   BusinessProposed,
   BusinessProposed_Detail,
   BusinessProposed_Update,
-  SiteAdmin
+  SiteAdmin,
+  AnswerStatistics
 
 } from './Base';
 
@@ -163,6 +164,6 @@ export {
   BusinessProposed_Detail,
   BusinessProposed_Update,
   SiteAdmin,
-  
+  AnswerStatistics
 };
 

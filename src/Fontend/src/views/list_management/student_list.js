@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Popup from "reactjs-popup";
-import { FormGroup, Modal, ModalHeader, ModalBody, ModalFooter, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import { Form, Label, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../Toastify/Toastify';
@@ -10,7 +10,10 @@ import { forEach } from '@firebase/util';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import firebase from 'firebase/app';
+import decode from 'jwt-decode';
 
+const storage = firebase.storage();
 
 class student_list extends Component {
 
@@ -20,6 +23,7 @@ class student_list extends Component {
         this.toggle = this.toggle.bind(this);
         this.state = {
             modal: false,
+            modalDetail: false,
             activeTab: new Array(1).fill('1'),
             // open: false,
             students: null,
@@ -28,6 +32,23 @@ class student_list extends Component {
             suggestedBusiness: null,
             otherBusiness: null,
             studentSelect: null,
+            isUploadTranscriptLink: false,
+
+
+            student: null,
+            name: '',
+            code: '',
+            email: '',
+            phone: '',
+            address: '',
+            specialized: '',
+            objective: '',
+            gpa: '',
+            resumeLink: '',
+            transcriptLink: '',
+            file: null,
+            skills: [],
+            role: '',
         };
         // this.toggleModal = this.toggleModal.bind(this);
     }
@@ -65,6 +86,101 @@ class student_list extends Component {
             otherBusiness: otherBusiness,
             studentSelect: studentSelect,
         });
+    }
+
+    toggleModalDetail = async (email) => {
+        let students = null;
+        let role = '';
+        if (this.state.modalDetail == false) {
+            students = await ApiServices.Get(`/student/student/${email}`);
+
+            const token = localStorage.getItem('id_token');
+            if (token != null) {
+                const decoded = decode(token);
+                role = decoded.role;
+            }
+
+            this.setState({
+                student: students,
+                name: students.name,
+                code: students.code,
+                email: students.email,
+                phone: students.phone,
+                address: students.address,
+                specialized: students.specialized.name,
+                objective: students.objective,
+                gpa: students.gpa,
+                skills: students.skills,
+                resumeLink: students.resumeLink,
+                transcriptLink: students.transcriptLink,
+                role: role,
+                modalDetail: !this.state.modalDetail,
+            });
+        } else {
+            this.setState({
+                modalDetail: !this.state.modalDetail,
+            });
+        }
+    }
+
+    uploadTranscriptToFireBase = async () => {
+        let { file } = this.state;
+
+        const uploadTask = await storage.ref(`transcripts/${file.name}`).put(file);
+        await storage.ref('transcripts').child(file.name).getDownloadURL().then(url => {
+            this.setState({
+                transcriptLink: url
+            })
+        })
+    }
+
+    saveTranscript = async () => {
+        const { student, transcriptLink } = this.state;
+        student.transcriptLink = transcriptLink;
+        const result = await ApiServices.Put('/business/updateLinkTranscript', student);
+
+        if (result.status == 200) {
+            Toastify.actionSuccess('Cập nhật bảng điểm thành công');
+            this.setState({
+                loading: false,
+                modalDetail: !this.state.modalDetail,
+            })
+        } else {
+            Toastify.actionFail('Cập nhật bảng điểm thất bại');
+            this.setState({
+                loading: false
+            })
+        }
+    }
+
+    handleChange = (event) => {
+        if (event.target.files[0]) {
+            const file = event.target.files[0];
+            this.setState({
+                file: file,
+                isUploadTranscriptLink: true,
+            })
+        }
+    }
+
+    handleSubmit = async () => {
+        this.setState({
+            loading: true
+        })
+        await this.uploadTranscriptToFireBase();
+        await this.saveTranscript();
+    }
+
+    showTranscript(transcriptLink) {
+        if (transcriptLink != null) {
+            return (
+                <a href={transcriptLink}>Tải về</a>
+            )
+        } else {
+            return (
+                <label>N/A</label>
+            )
+        }
     }
 
     handleInput = async (event) => {
@@ -136,6 +252,9 @@ class student_list extends Component {
 
     tabPane() {
         const { students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect } = this.state;
+
+        const { name, code, email, phone, address, specialized, objective, gpa, skills, resumeLink, transcriptLink, role, isUploadTranscriptLink } = this.state;
+        const linkDownCV = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
         let filteredListStudents;
 
         if (students != null) {
@@ -168,7 +287,7 @@ class student_list extends Component {
                                                 <th style={{ textAlign: "center" }}>Họ và Tên</th>
                                                 <th style={{ textAlign: "center" }}>Email</th>
                                                 <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                <th style={{ textAlign: "center" }}>Bảng điểm</th>
+                                                {/* <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
                                                 {/* <th style={{ textAlign: "center" }}>GPA</th> */}
                                                 <th style={{ textAlign: "center" }}>Thao tác</th>
                                             </tr>
@@ -182,17 +301,18 @@ class student_list extends Component {
                                                         <td style={{ textAlign: "center" }}>{student.student.name}</td>
                                                         <td style={{ textAlign: "center" }}>{student.student.email}</td>
                                                         <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
-                                                        <td style={{ textAlign: "center" }}>
+                                                        {/* <td style={{ textAlign: "center" }}>
                                                             {
                                                                 student.transcriptLink && student.transcriptLink ? (
                                                                     <a href={student.student.transcriptLink} download>Tải về</a>
                                                                 ) :
                                                                     (<label>N/A</label>)
                                                             }
-                                                        </td>
+                                                        </td> */}
                                                         {/* <td style={{ textAlign: "center" }}>{student.gpa}</td> */}
                                                         <td style={{ textAlign: "center" }}>
-                                                            <Button style={{ width: "80px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.student.email}`)}>Chi tiết</Button>
+                                                            {/* <Button style={{ width: "80px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.student.email}`)}>Chi tiết</Button> */}
+                                                            <Button style={{ width: "80px" }} color="primary" onClick={() => this.toggleModalDetail(student.student.email)}>Chi tiết</Button>
                                                             &nbsp;
                                                             <Button style={{ width: "90px" }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.student.email}`)}>Nhiệm vụ</Button>
                                                             &nbsp;
@@ -207,6 +327,148 @@ class student_list extends Component {
                                 </div>
                             }
                         </TabPane>
+                        <Modal isOpen={this.state.modalDetail} toggle={this.toggleModalDetail} className={'modal-primary ' + this.props.className}>
+                            <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
+                            <ModalBody>
+                                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Họ và Tên</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <Label id="" name="">{name}</Label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>MSSV</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <Label id="" name="">{code}</Label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Email</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <Label id="" name="">{email}</Label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>SĐT</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <Label id="" name="">{phone}</Label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Chuyên ngành</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <Label id="" name="">{specialized}</Label>
+                                        </Col>
+                                    </FormGroup>
+                                    {/* <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Học kỳ</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <Label id="" name="">{}</Label>
+                                        </Col>
+                                    </FormGroup> */}
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Địa chỉ</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <Label id="" name="">{address}</Label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Mục tiêu</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <Label id="" name="">{objective}</Label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>GPA</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            <Label id="" name="">{gpa}</Label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Kỹ năng</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            {
+                                                skills && skills.map((skill, index) => {
+                                                    return (
+                                                        <div>
+                                                            {
+                                                                skill.name && skill.name ? (
+                                                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                ) : (
+                                                                        <label style={{ marginRight: "15px" }}>N/A</label>
+                                                                    )
+                                                            }
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>CV</h6>
+                                        </Col>
+                                        {
+                                            resumeLink && resumeLink ?
+                                                (<Col xs="12" md="8">
+                                                    <a target="_blank" href={linkDownCV} download>Tải về</a>
+                                                </Col>)
+                                                :
+                                                (
+                                                    <Col xs="12" md="8">
+                                                        <label>N/A</label>
+                                                    </Col>)
+                                        }
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Bảng điểm</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            {
+                                                role && role === 'ROLE_HR' ?
+                                                    (
+                                                        this.showTranscript(transcriptLink)
+                                                    ) :
+                                                    (<input onChange={this.handleChange} type="file" />)
+                                            }
+                                        </Col>
+                                    </FormGroup>
+                                </Form>
+                            </ModalBody>
+                            {isUploadTranscriptLink === true ?
+                                <ModalFooter>
+                                    {role && role === 'ROLE_ADMIN' ?
+                                        (
+                                            <Button onClick={() => this.handleSubmit()} type="submit" color="primary">Xác nhận</Button>
+                                        ) :
+                                        (<></>)
+                                    }
+                                </ModalFooter> :
+                                <></>
+                            }
+                        </Modal>
                         <TabPane tabId="2">
                             {
                                 <div>
@@ -240,7 +502,11 @@ class student_list extends Component {
                                                         <td style={{ textAlign: "center" }}>{student.student.option2 === null ? 'N/A' : student.student.option2}</td>
                                                         <td style={{ textAlign: "center" }}>{student.businessEnroll === null ? 'N/A' : student.businessEnroll}</td>
                                                         <td style={{ textAlign: "center" }}>
-                                                            <Button onClick={() => this.toggleModal(student.student)} color="primary">Đăng ký</Button>
+                                                            {
+                                                                student.businessEnroll === null ?
+                                                                    <Button onClick={() => this.toggleModal(student.student)} color="primary">Đăng ký</Button> :
+                                                                    <></>
+                                                            }
                                                         </td>
                                                     </tr>
                                                 )
@@ -280,10 +546,10 @@ class student_list extends Component {
                                     </FormGroup>
                                 )}
                             </ModalBody>
-                            <ModalFooter>
+                            {/* <ModalFooter>
                                 <Button color="primary" onClick={this.toggleModal}>Do Something</Button>{' '}
                                 <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
-                            </ModalFooter>
+                            </ModalFooter> */}
                         </Modal>
                     </>
                 )

@@ -83,8 +83,7 @@ class SiteAdmin extends Component {
     const statisticalEvaluations = await ApiServices.Get('/admin/statisticalEvaluations');
     const statisticalStudentIsAnswer = await ApiServices.Get('/admin/statisticalStudentIsAnswer');
 
-    if (studentOptionPerBusiness != null && studentInternPerBusiness != null && statisticalEvaluations != null
-      && statisticalStudentIsAnswer != null) {
+    if (studentOptionPerBusiness != null) {
       var line = {
         labels: studentOptionPerBusiness.businessListEngName,
         datasets: [
@@ -111,6 +110,12 @@ class SiteAdmin extends Component {
           },
         ],
       }
+      this.setState({
+        line: line
+      });
+    }
+
+    if (studentInternPerBusiness != null) {
       var bar = {
         labels: studentInternPerBusiness.businessListEngName,
         datasets: [
@@ -125,6 +130,12 @@ class SiteAdmin extends Component {
           },
         ],
       }
+      this.setState({
+        bar: bar
+      });
+    }
+
+    if (statisticalEvaluations != null) {
       var radar = {
         labels: ['Xuất sắc', 'Tốt', 'Khá', 'Trung Bình', 'Yếu'],
         datasets: [
@@ -170,6 +181,12 @@ class SiteAdmin extends Component {
           },
         ],
       }
+      this.setState({
+        radar: radar,
+      });
+    }
+
+    if (statisticalStudentIsAnswer != null) {
       var doughnut = {
         labels: [
           'Đã trả lời',
@@ -189,13 +206,14 @@ class SiteAdmin extends Component {
           }],
       }
       this.setState({
-        loading: false,
-        line: line,
-        bar: bar,
-        radar: radar,
         doughnut: doughnut
       });
     }
+
+    this.setState({
+      loading: false,
+    });
+
   }
 
   render() {
