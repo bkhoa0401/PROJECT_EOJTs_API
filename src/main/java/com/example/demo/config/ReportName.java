@@ -1,8 +1,8 @@
 package com.example.demo.config;
 
 public enum ReportName {
-    REPORT1,
-    REPORT2,
-    REPORT3,
-    REPORT4
+    EVALUATION1,
+    EVALUATION2,
+    EVALUATION3,
+    EVALUATION4
 }

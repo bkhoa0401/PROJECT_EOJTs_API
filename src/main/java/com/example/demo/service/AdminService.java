@@ -253,92 +253,50 @@ public class AdminService implements IAdminService {
 
         List<Statistical_EvaluationDTO> statisticalEvaluationDTOList = new ArrayList<>();
 
-        List<Evaluation> evaluationListReport_1 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT1);
-        if (evaluationListReport_1.size() != 0) {
-            statistical_evaluationDTOReport_1 = statistical_evaluationDTO(evaluationListReport_1);
-            if (statistical_evaluationDTOReport_1 != null) {
-                statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_1);
-            }
-        }
-        List<Evaluation> evaluationListReport_2 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT2);
-        if (evaluationListReport_2.size() != 0) {
-            statistical_evaluationDTOReport_2 = statistical_evaluationDTO(evaluationListReport_2);
-            if (statistical_evaluationDTOReport_2 != null) {
-                statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_2);
-            }
-        }
-        List<Evaluation> evaluationListReport_3 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT3);
-        if (evaluationListReport_3.size() != 0) {
-            statistical_evaluationDTOReport_3 = statistical_evaluationDTO(evaluationListReport_3);
-            if (statistical_evaluationDTOReport_3 != null) {
-                statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_3);
-            }
-        }
-        List<Evaluation> evaluationListReport_4 = iEvaluationService.getEvaluationsByTitle(ReportName.REPORT4);
-        if (evaluationListReport_4.size() != 0) {
-            statistical_evaluationDTOReport_4 = statistical_evaluationDTO(evaluationListReport_4);
-            if (statistical_evaluationDTOReport_4 != null) {
-                statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_4);
-            }
-        }
 
-        if (statisticalEvaluationDTOList.size() == 0) {
-            return null;
+        List<Evaluation> evaluationListReport_1 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION1);
+        if (evaluationListReport_1 != null) {
+
+            if (evaluationListReport_1.size() != 0) {
+
+                statistical_evaluationDTOReport_1 = statistical_evaluationDTO(evaluationListReport_1);
+                if (statistical_evaluationDTOReport_1 != null) {
+                    statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_1);
+                }
+            }
+
+            List<Evaluation> evaluationListReport_2 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION2);
+            if (evaluationListReport_2.size() != 0) {
+
+                statistical_evaluationDTOReport_2 = statistical_evaluationDTO(evaluationListReport_2);
+                if (statistical_evaluationDTOReport_2 != null) {
+                    statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_2);
+                }
+            }
+
+            List<Evaluation> evaluationListReport_3 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION3);
+            if (evaluationListReport_3.size() != 0) {
+
+                statistical_evaluationDTOReport_3 = statistical_evaluationDTO(evaluationListReport_3);
+                if (statistical_evaluationDTOReport_3 != null) {
+                    statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_3);
+                }
+            }
+            List<Evaluation> evaluationListReport_4 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION4);
+            if (evaluationListReport_4.size() != 0) {
+                statistical_evaluationDTOReport_4 = statistical_evaluationDTO(evaluationListReport_4);
+                if (statistical_evaluationDTOReport_4 != null) {
+                    statisticalEvaluationDTOList.add(statistical_evaluationDTOReport_4);
+                }
+            }
+
+            if (statisticalEvaluationDTOList.size() == 0) {
+                return null;
+            }
         }
         return statisticalEvaluationDTOList;
     }
 
-    @Override
-    public List<StatisticalQuestionAnswerDTO> getListStatisticalQuestionAnswerDTO() {
-        List<StatisticalQuestionAnswerDTO> statisticalQuestionAnswerDTOS = new ArrayList<>();
-
-        List<Question> questions = iQuestionService.getAllQuestion();
-
-        StatisticalQuestionAnswerDTO statisticalQuestionAnswerDTO = new StatisticalQuestionAnswerDTO();
-
-        List<Integer> countAnswer;
-
-        for (int i = 0; i < questions.size(); i++) {
-            Question question = questions.get(i);
-            List<String> answerStringList = new ArrayList<>();
-            List<Answer> answer = question.getAnswers();
-
-            for (int j = 0; j < answer.size(); j++) {
-                answerStringList.add(answer.get(j).getContent());
-            }
-
-            statisticalQuestionAnswerDTO.setQuestion(question.getContent());
-            statisticalQuestionAnswerDTO.setAnswers(answerStringList);
-            statisticalQuestionAnswerDTO.setManyOption(question.isManyOption());
-
-            countAnswer = countAnswerOfQuestion(question);
-            statisticalQuestionAnswerDTO.setCountAnswer(countAnswer);
-
-            List<Answer> answers = iAnswerService.findAnswerByOtherIsTrueAndQuestionId(question.getId());
-            List<String> others = getListOtherOfQuestion(answers);
-
-            statisticalQuestionAnswerDTO.setOthers(others);
-
-            statisticalQuestionAnswerDTOS.add(statisticalQuestionAnswerDTO);
-
-            statisticalQuestionAnswerDTO = new StatisticalQuestionAnswerDTO();
-        }
-
-        return statisticalQuestionAnswerDTOS;
-    }
-
-    @Override
-    public List<Integer> percentStudentMakeSurvey() {
-        int studentsSize = iStudentService.getAllStudentsBySemesterId().size();
-
-        int studentIsAnswer = iStudent_answerService.countStudent_AnswersGroupByStudentEmail();
-
-        List<Integer> percentStudentIsAnswer = new ArrayList<>();
-        percentStudentIsAnswer.add(studentIsAnswer);
-        percentStudentIsAnswer.add(studentsSize - studentIsAnswer);
-
-        return percentStudentIsAnswer;
-    }
 
     public List<String> getListOtherOfQuestion(List<Answer> answers) {
         List<String> others = new ArrayList<>();
@@ -418,5 +376,63 @@ public class AdminService implements IAdminService {
         } else {
             return ReportType.Least;
         }
+    }
+
+
+    @Override
+    public List<StatisticalQuestionAnswerDTO> getListStatisticalQuestionAnswerDTO() {
+        List<StatisticalQuestionAnswerDTO> statisticalQuestionAnswerDTOS = new ArrayList<>();
+
+        List<Question> questions = iQuestionService.getAllQuestion();
+
+        StatisticalQuestionAnswerDTO statisticalQuestionAnswerDTO = new StatisticalQuestionAnswerDTO();
+
+        List<Integer> countAnswer;
+
+        for (int i = 0; i < questions.size(); i++) {
+            Question question = questions.get(i);
+            List<String> answerStringList = new ArrayList<>();
+            List<Answer> answer = question.getAnswers();
+
+            for (int j = 0; j < answer.size(); j++) {
+                answerStringList.add(answer.get(j).getContent());
+            }
+
+            statisticalQuestionAnswerDTO.setQuestion(question.getContent());
+            statisticalQuestionAnswerDTO.setAnswers(answerStringList);
+            statisticalQuestionAnswerDTO.setManyOption(question.isManyOption());
+
+            countAnswer = countAnswerOfQuestion(question);
+            statisticalQuestionAnswerDTO.setCountAnswer(countAnswer);
+
+            List<Answer> answers = iAnswerService.findAnswerByOtherIsTrueAndQuestionId(question.getId());
+            List<String> others = getListOtherOfQuestion(answers);
+
+            statisticalQuestionAnswerDTO.setOthers(others);
+
+            statisticalQuestionAnswerDTOS.add(statisticalQuestionAnswerDTO);
+
+            statisticalQuestionAnswerDTO = new StatisticalQuestionAnswerDTO();
+        }
+
+        return statisticalQuestionAnswerDTOS;
+    }
+
+    @Override
+    public List<Integer> percentStudentMakeSurvey() {
+        int studentsSize = iStudentService.getAllStudentsBySemesterId().size();
+
+        int studentIsAnswer = iStudent_answerService.countStudent_AnswersGroupByStudentEmail();
+
+        List<Integer> percentStudentIsAnswer = new ArrayList<>();
+        percentStudentIsAnswer.add(studentIsAnswer);
+        percentStudentIsAnswer.add(studentsSize - studentIsAnswer);
+
+        return percentStudentIsAnswer;
+    }
+
+    @Override
+    public List<BusinessOptionsBySemesterDTO> getBusinessOptionsBySemester() {
+        return null;
     }
 }

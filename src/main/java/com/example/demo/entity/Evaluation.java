@@ -37,9 +37,9 @@ public class Evaluation implements Comparable<Evaluation>, Serializable {
     //    @Column(name = "student_code")
 //    private String student_code;
     @Enumerated(EnumType.STRING)
-    @Check(constraints = "title IN ('REPORT1' ,'REPORT2', 'REPORT3','REPORT4')")
+    @Check(constraints = "title IN ('EVALUATION1' ,'EVALUATION2', 'EVALUATION3','EVALUATION4')")
     @Column(name = "title", columnDefinition = "NVARCHAR(255)")
-    private ReportName title = ReportName.REPORT1;
+    private ReportName title = ReportName.EVALUATION1;
 
 
     @Column(name = "timeCreated")
