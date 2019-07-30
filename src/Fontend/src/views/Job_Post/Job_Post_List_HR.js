@@ -81,7 +81,7 @@ class Job_Post_List_HR extends Component {
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Quy trình tuyển</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Thời gian đăng</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Phúc lợi</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Thông tin liên hệ</th>
+                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Thông tin liên hệ</th> */}
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Thao tác</th>
                                                 </tr>
                                             </thead>
@@ -107,11 +107,11 @@ class Job_Post_List_HR extends Component {
                                                                         job_post.interest.length > 30 ? (job_post.interest.replace(job_post.interest.substr(31, job_post.interest.length), " ...")) : (job_post.interest)
                                                                     }
                                                                 </td>
-                                                                <td style={{ textAlign: "center" }}>
+                                                                {/* <td style={{ textAlign: "center" }}>
                                                                     {
                                                                         job_post.contact.length > 30 ? (job_post.contact.replace(job_post.contact.substr(31, job_post.contact.length), " ...")) : (job_post.contact)
                                                                     }
-                                                                </td>
+                                                                </td> */}
                                                                 <td style={{ textAlign: "center" }}>
                                                                     <Button type="submit" onClick={() => this.handleDirect(`/job-post/${job_post.id}`)} color="primary">Chi tiết</Button>
                                                                     {/* <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/product/update/${job_post.id}`)}>Update</Button> */}

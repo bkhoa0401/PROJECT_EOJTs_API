@@ -467,10 +467,10 @@ class Invitation_Create extends Component {
                         console.log(seconds);
 
                         if (type === 'offline') {
-                            const result = ApiServices.Post('/business/sms', sms)
+                            const result = ApiServices.Post('/business/sms', sms);
                         } else if (type === 'online') {
                             if (seconds > 12) {
-                                const result = ApiServices.Post('/business/sms', sms)
+                                const result = ApiServices.Post('/business/sms', sms);
                             }
                         }
                     }

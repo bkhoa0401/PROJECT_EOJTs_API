@@ -68,7 +68,7 @@ class Create_Report extends Component {
         var needParam = param.split('~');
         let title = '';
         let emailStudent = '';
-        title = "Đánh giá tháng #" + needParam[0];
+        title = "EVALUATION" + needParam[0];
         emailStudent = needParam[1];
         const student = await ApiServices.Get(`/student/student/${needParam[1]}`);
         const ojtEnrollment = await ApiServices.Get(`/enrollment/getSelectedStuEnrollment?email=${needParam[1]}`);
