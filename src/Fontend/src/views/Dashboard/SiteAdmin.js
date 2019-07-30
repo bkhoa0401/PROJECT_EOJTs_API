@@ -136,50 +136,63 @@ class SiteAdmin extends Component {
     }
 
     if (statisticalEvaluations != null) {
+      var datasets = [];
+
+      if (statisticalEvaluations[0] != null) {
+        let data1 = {
+          label: 'Báo cáo 1',
+          backgroundColor: 'rgba(179,181,198,0.2)',
+          borderColor: 'rgba(179,181,198,1)',
+          pointBackgroundColor: 'rgba(179,181,198,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(179,181,198,1)',
+          data: statisticalEvaluations[0].statisticalTypeEvaluation,
+        }
+        datasets.push(data1);
+      }
+      if (statisticalEvaluations[1] != null) {
+        let data2 = {
+          label: 'Báo cáo 2',
+          backgroundColor: 'rgba(255,99,132,0.2)',
+          borderColor: 'rgba(255,99,132,1)',
+          pointBackgroundColor: 'rgba(255,99,132,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(255,99,132,1)',
+          data: statisticalEvaluations[1].statisticalTypeEvaluation,
+        }
+        datasets.push(data2);
+      }
+      if (statisticalEvaluations[2] != null) {
+        let data3 = {
+          label: 'Báo cáo 3',
+          backgroundColor: '#CCFFFF',
+          borderColor: '#00FFFF',
+          pointBackgroundColor: '#00FFFF',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#00FFFF',
+          data: statisticalEvaluations[2].statisticalTypeEvaluation,
+        }
+        datasets.push(data3);
+      }
+      if (statisticalEvaluations[3] != null) {
+        let data4 = {
+          label: 'Báo cáo 4',
+          backgroundColor: '#FFF68F',
+          borderColor: '#CDAD00',
+          pointBackgroundColor: '#CDAD00',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#CDAD00',
+          data: statisticalEvaluations[3].statisticalTypeEvaluation,
+        }
+        datasets.push(data4);
+      }
       var radar = {
         labels: ['Xuất sắc', 'Tốt', 'Khá', 'Trung Bình', 'Yếu'],
-        datasets: [
-          {
-            label: 'Report 1',
-            backgroundColor: 'rgba(179,181,198,0.2)',
-            borderColor: 'rgba(179,181,198,1)',
-            pointBackgroundColor: 'rgba(179,181,198,1)',
-            pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgba(179,181,198,1)',
-            data: statisticalEvaluations[0].statisticalTypeEvaluation,
-          },
-          {
-            label: 'Report 2',
-            backgroundColor: 'rgba(255,99,132,0.2)',
-            borderColor: 'rgba(255,99,132,1)',
-            pointBackgroundColor: 'rgba(255,99,132,1)',
-            pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgba(255,99,132,1)',
-            data: statisticalEvaluations[1].statisticalTypeEvaluation,
-          },
-          {
-            label: 'Report 3',
-            backgroundColor: '#CCFFFF',
-            borderColor: '#00FFFF',
-            pointBackgroundColor: '#00FFFF',
-            pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: '#00FFFF',
-            data: statisticalEvaluations[2].statisticalTypeEvaluation,
-          },
-          {
-            label: 'Report 4',
-            backgroundColor: '#FFF68F',
-            borderColor: '#CDAD00',
-            pointBackgroundColor: '#CDAD00',
-            pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: '#CDAD00',
-            data: statisticalEvaluations[3].statisticalTypeEvaluation,
-          },
-        ],
+        datasets: datasets
       }
       this.setState({
         radar: radar,
