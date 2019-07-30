@@ -334,6 +334,7 @@ class BusinessProposed_Detail extends Component {
                             <Col xs="12" sm="12">
                                 <Card>
                                     <CardHeader>
+                                        <h4>Công ty đề xuất</h4>
                                     </CardHeader>
                                     <CardBody>
                                         <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">

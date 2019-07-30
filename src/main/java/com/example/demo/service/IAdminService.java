@@ -28,6 +28,11 @@ public interface IAdminService {
 
     List<Integer> percentStudentMakeSurvey();
 
-    List<BusinessOptionsBySemesterDTO> getBusinessOptionsBySemester();
+    BusinessOptionsBySemesterDTO getBusinessOptionsBySemester(String businessEmail);
+
+    BusinessOptionsBySemesterDTO countStudentInternAtBusinessBySemester(String businessEmail);
+
+    List<Statistical_EvaluationDTO> getListStatistical_EvaluationDTOOfABusiness(String businessEmail);
+
 
 }
