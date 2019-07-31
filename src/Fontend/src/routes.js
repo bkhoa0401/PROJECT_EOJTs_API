@@ -90,6 +90,7 @@ const BusinessProposed = React.lazy(() => import('./views/BusinessProposed/Busin
 const BusinessProposed_Detail = React.lazy(() => import('./views/BusinessProposed/BusinessProposed_Detail.js'));
 const BusinessProposed_Update = React.lazy(() => import('./views/BusinessProposed/BusinessProposed_Update.js'));
 const SiteAdmin = React.lazy(() => import('./views/Dashboard/SiteAdmin.js'));
+const SiteHr = React.lazy(() => import('./views/Dashboard/SiteHr.js'));
 const AnswerStatistics = React.lazy(() => import('./views/AnswerStatistics/AnswerStatistics.js'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -157,6 +158,7 @@ const routes = [
   { path: '/job_post/update_job/:id', exact: true, name: 'Chi tiết bài đăng tuyển dụng', component: Update_Job },
   { path: '/job_post_list_hr/add_job_post', exact: true, name: 'Tạo bài đăng tuyển dụng mới', component: Add_Job },
   { path: '/admin', exact: true, name: 'Admin', component: SiteAdmin },
+  { path: '/hr', exact: true, name: 'Hr', component: SiteHr },
   { path: '/hr', exact: true, name: 'Hr', component: Dashboard },
   { path: '/supervisor', exact: true, name: 'Supervisor', component: Dashboard },
   { path: '/specialized', exact: true, name: 'Danh sách ngành', component: Specialized },

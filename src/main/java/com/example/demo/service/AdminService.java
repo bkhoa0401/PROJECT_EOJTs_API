@@ -559,11 +559,17 @@ public class AdminService implements IAdminService {
     public int countOptionOfBusinessBySemester(List<Ojt_Enrollment> ojt_enrollments, String businessEngName) {
         Student student;
         int count = 0;
+        String option1 = "";
+        String option2 = "";
+
         for (int i = 0; i < ojt_enrollments.size(); i++) {
             student = ojt_enrollments.get(i).getStudent();
-            String option1 = student.getOption1();
-            String option2 = student.getOption2();
-
+            if (student.getOption1() != null) {
+                option1 = student.getOption1();
+            }
+            if (student.getOption2() != null) {
+                option2 = student.getOption2();
+            }
             if (option1.equals(businessEngName) || option2.equals(businessEngName)) {
                 count++;
             }
