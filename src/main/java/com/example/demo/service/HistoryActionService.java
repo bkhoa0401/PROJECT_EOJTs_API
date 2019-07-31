@@ -12,7 +12,7 @@ public class HistoryActionService implements IHistoryActionService{
     IHistoryActionRepository historyActionRepository;
 
     @Override
-    public boolean saveHistory(HistoryAction historyAction) {
+    public boolean createHistory(HistoryAction historyAction) {
         return historyActionRepository.save(historyAction) == null;
     }
 }

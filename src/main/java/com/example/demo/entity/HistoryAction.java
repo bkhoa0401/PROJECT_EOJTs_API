@@ -1,4 +1,5 @@
 package com.example.demo.entity;
+import com.example.demo.config.ActionEnum;
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -28,7 +29,7 @@ public class HistoryAction implements Serializable {
     @Enumerated(EnumType.STRING)
     @Check(constraints = "function_type IN ('INSERT' ,'UPDATE', 'DELETE')")
     @Column(name = "function_type")
-    private String function_type;
+    private ActionEnum function_type;
 
     @Column(name = "controller")
     private String controller;
@@ -46,7 +47,7 @@ public class HistoryAction implements Serializable {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<HistoryDetail> details = new ArrayList<>();
 
-    public HistoryAction(String email, String role, String function_type, String controller, String function_name, String targetEmail, Date actionTime, HistoryDetail detail) {
+    public HistoryAction(String email, String role, ActionEnum function_type, String controller, String function_name, String targetEmail, Date actionTime, HistoryDetail detail) {
         this.email = email;
         this.role = role;
         this.function_type = function_type;
@@ -57,7 +58,7 @@ public class HistoryAction implements Serializable {
         details.add(detail);
     }
 
-    public HistoryAction(String email, String role, String function_type, String controller, String function_name, String targetEmail, Date actionTime, List<HistoryDetail> details) {
+    public HistoryAction(String email, String role, ActionEnum function_type, String controller, String function_name, String targetEmail, Date actionTime, List<HistoryDetail> details) {
         this.email = email;
         this.role = role;
         this.function_type = function_type;
@@ -95,11 +96,11 @@ public class HistoryAction implements Serializable {
         this.role = role;
     }
 
-    public String getFunction_type() {
+    public ActionEnum getFunction_type() {
         return function_type;
     }
 
-    public void setFunction_type(String function_type) {
+    public void setFunction_type(ActionEnum function_type) {
         this.function_type = function_type;
     }
 

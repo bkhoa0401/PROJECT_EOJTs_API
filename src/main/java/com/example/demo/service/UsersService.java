@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class UsersService implements IUsersService {
     @Autowired
-    IUsersRepository IUsersRepository;
+    IUsersRepository usersRepository;
 
     @Autowired
     private JavaMailSender sender;
@@ -71,7 +71,7 @@ public class UsersService implements IUsersService {
 
     @Override
     public Users findUserByEmail(String email) {
-        Users users = IUsersRepository.findUserByEmail(email);
+        Users users = usersRepository.findUserByEmail(email);
         if (users != null) {
             return users;
         }
@@ -80,7 +80,7 @@ public class UsersService implements IUsersService {
 
     @Override
     public Users findUserByEmailAndPassWord(String email, String password) {
-        Users users = IUsersRepository.findUserByEmailAndPassword(email, password);
+        Users users = usersRepository.findUserByEmailAndPassword(email, password);
         if (users != null) {
             return users;
         }
@@ -89,19 +89,19 @@ public class UsersService implements IUsersService {
 
     @Override
     public boolean saveListUser(List<Users> usersList) {
-        IUsersRepository.saveAll(usersList);
+        usersRepository.saveAll(usersList);
         return true;
     }
 
     @Override
     public boolean saveUser(Users users) {
-        IUsersRepository.save(users);
+        usersRepository.save(users);
         return true;
     }
 
     @Override
     public List<Users> getAllUsers() {
-        return IUsersRepository.findAll();
+        return usersRepository.findAll();
     }
 
     @Override
@@ -109,7 +109,7 @@ public class UsersService implements IUsersService {
         Users users = findUserByEmail(email);
         if (users != null) {
             users.setPassword(password);
-            IUsersRepository.save(users);
+            usersRepository.save(users);
             return true;
         }
         return false;
@@ -117,10 +117,10 @@ public class UsersService implements IUsersService {
 
     @Override
     public boolean updateStatus(String email, boolean isActive) {
-        Users users = IUsersRepository.findUserByEmail(email);
+        Users users = usersRepository.findUserByEmail(email);
         if (users != null) {
             users.setActive(isActive);
-            IUsersRepository.save(users);
+            usersRepository.save(users);
             return true;
         }
         return false;
@@ -132,7 +132,7 @@ public class UsersService implements IUsersService {
         List<Role> roleList = new ArrayList<>();
         roleList.add(role);
 
-        List<Users> usersList = IUsersRepository.findUsersByRoles(roleList);
+        List<Users> usersList = usersRepository.findUsersByRoles(roleList);
 
 
         return usersList;
