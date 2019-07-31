@@ -157,7 +157,7 @@ class Report extends Component {
                                                         <tr>
                                                             <td style={{ textAlign: "center" }}>{index + 1}</td>
                                                             <td style={{ textAlign: "center" }}>{student.code}</td>
-                                                            <td style={{ textAlign: "center" }}>{student.email}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.name}</td>
                                                             <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
                                                             <td style={{ textAlign: "center" }}>
                                                                 {onScreenStatus[index * 4] === null ?

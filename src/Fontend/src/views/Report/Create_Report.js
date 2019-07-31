@@ -31,6 +31,8 @@ class Create_Report extends Component {
             score_activity: '0',
             project_name: '',
             workDays: 0,
+            titleHeader: '',
+            titleReport: '',
 
             emailStudent: '',
 
@@ -67,10 +69,18 @@ class Create_Report extends Component {
         var param = window.location.href.split("/").pop();
         var needParam = param.split('~');
         let title = '';
+        let titleHeader = '';
+        let titleReport = '';
         let emailStudent = '';
-        title = "Đánh giá tháng #" + needParam[0];
+        title = "EVALUATION" + needParam[0];
+        titleHeader = "Đánh giá tháng #" + needParam[0];
+        titleReport = "Bảng đánh giá thực tập tháng " + needParam[0];
         emailStudent = needParam[1];
         const student = await ApiServices.Get(`/student/student/${needParam[1]}`);
+        const numOfEvaluations = await ApiServices.Get(`/supervisor/getNumOfEvaluationsOfStudent?stuEmail=${needParam[1]}`);
+        if (needParam[0] > (numOfEvaluations + 1)) {
+            this.props.history.push("/Report/Report");
+        }
         const ojtEnrollment = await ApiServices.Get(`/enrollment/getSelectedStuEnrollment?email=${needParam[1]}`);
         var dateEnroll = ojtEnrollment.timeEnroll;
         var splitDate = dateEnroll.split('-');
@@ -156,6 +166,8 @@ class Create_Report extends Component {
             //dd-MM-yyyy
             timeEndShow: timeEndShow,
             maxWorkDays: maxWorkDays,
+            titleHeader: titleHeader,
+            titleReport: titleReport,
         });
     }
 
@@ -318,7 +330,7 @@ class Create_Report extends Component {
     }
 
     render() {
-        const { maxWorkDays, validatorMaxWorkDays, validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, workDays, remark, project_name, onScore, timeStartShow, timeEndShow } = this.state;
+        const { titleReport, titleHeader, maxWorkDays, validatorMaxWorkDays, validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, workDays, remark, project_name, onScore, timeStartShow, timeEndShow } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -328,9 +340,15 @@ class Create_Report extends Component {
                             <Col xs="12" lg="12">
                                 <Card>
                                     <CardHeader style={{ fontWeight: "bold" }}>
-                                        <i className="fa fa-align-justify"></i>{title}
+                                        <i className="fa fa-align-justify"></i>{titleHeader}
                                     </CardHeader>
                                     <CardBody>
+                                        <div style={{ paddingLeft: "3%", paddingRight: "3%", textAlign: "center" }}>
+                                            <img src="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410" />
+                                            <br /><br /><br />
+                                            <h2 style={{ fontWeight: "bold" }}>{titleReport}</h2>
+                                        </div>
+                                        <hr/>
                                         <FormGroup row>
                                             <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Doanh nghiệp:</h6>

@@ -32,6 +32,8 @@ class Report_Detail extends Component {
             busniessName: '',
             supervisorName: '',
             role: '',
+            titleHeader: '',
+            titleReport: '',
             // data: null,
         };
     }
@@ -41,6 +43,8 @@ class Report_Detail extends Component {
         var param = window.location.href.split("/").pop();
         var needId = param.split('~');
         const report = await ApiServices.Get(`/supervisor/getEvaluation?id=${needId[0]}`);
+        let titleHeader = '';
+        let titleReport = '';
         let timeStart = report.timeStart;
         let formatTimeStart = timeStart.split('-');
         report.timeStart = formatTimeStart[2] + "/" + formatTimeStart[1] + "/" + formatTimeStart[0];
@@ -80,6 +84,19 @@ class Report_Detail extends Component {
             onScreenRate = 4;
         }
         if (report != null) {
+            if (report.title == "EVALUATION1") {
+                titleHeader = "Đánh giá tháng #1";
+                titleReport = "Bảng đánh giá thực tập tháng 1";
+            } else if (report.title == "EVALUATION2") {
+                titleHeader = "Đánh giá tháng #2";
+                titleReport = "Bảng đánh giá thực tập tháng 2";
+            } else if (report.title == "EVALUATION3") {
+                titleHeader = "Đánh giá tháng #3";
+                titleReport = "Bảng đánh giá thực tập tháng 3";
+            } else if (report.title == "EVALUATION4") {
+                titleHeader = "Đánh giá tháng #4";
+                titleReport = "Bảng đánh giá thực tập tháng 4";
+            }
             let averageScore = (report.score_work * 0.5 + report.score_activity * 0.1 + report.score_discipline * 0.4);
             let rating = '';
             if (averageScore > 9) {
@@ -117,6 +134,8 @@ class Report_Detail extends Component {
                 role: role,
                 businessName: businessName,
                 supervisorName: supervisorName,
+                titleHeader: titleHeader,
+                titleReport: titleReport,
                 reportDownload: [{
                     MSSV: student.code,
                     name: student.name,
@@ -151,7 +170,7 @@ class Report_Detail extends Component {
     }
 
     render() {
-        const { loading, reportColor, rate, report, role, student, onScreenRate, businessName, supervisorName, reportDownload } = this.state;
+        const { loading, reportColor, rate, report, role, student, onScreenRate, businessName, supervisorName, reportDownload, titleHeader, titleReport } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -161,7 +180,7 @@ class Report_Detail extends Component {
                             <Col xs="12" lg="12">
                                 <Card>
                                     <CardHeader style={{ fontWeight: "bold" }}>
-                                        <i className="fa fa-align-justify"></i>{report === null ? "" : report.title}
+                                        <i className="fa fa-align-justify"></i>{report === null ? "" : titleHeader}
                                         {report === null ? (<></>) :
                                             (role && role === 'ROLE_SUPERVISOR' ?
                                                 <>
@@ -221,6 +240,12 @@ class Report_Detail extends Component {
                                                 </>
                                             }
                                         </FormGroup>
+                                        <div style={{ paddingLeft: "3%", paddingRight: "3%", textAlign: "center" }}>
+                                            <img src="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410" />
+                                            <br /><br /><br />
+                                            <h2 style={{ fontWeight: "bold" }}>{titleReport}</h2>
+                                        </div>
+                                        <hr />
                                         <FormGroup row>
                                             <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Người tạo:</h6>

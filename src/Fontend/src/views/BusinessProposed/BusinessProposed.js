@@ -137,7 +137,7 @@ class BusinessProposed extends Component {
                                 <Card>
                                     <CardHeader style={{ fontWeight: "bold" }}>
                                         <i className="fa fa-align-justify"></i>Danh sách doanh nghiệp đề xuất
-                            </CardHeader>
+                                    </CardHeader>
                                     <CardBody>
                                         <div>
                                             <nav className="navbar navbar-light bg-light justify-content-between">

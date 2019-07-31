@@ -25,27 +25,69 @@ class ScheduleParameters extends Component {
         super(props);
         this.validator = new SimpleReactValidator();
         this.state = {
-            timeRegisterAspirations: '',
-            timeCompleteInterview: '',
-            timeCompanySelection: '',
-            timeProcessRemainCase: '',
-            timeStartOJT: ''
+            finish_choose_option_time: '',
+            finish_interview_time: '',
+            finish_choose_business_time: '',
+            end_date: '',
+            start_date: '',
+            start_choose_option_time: '',
+            virgin: false,
+            name: '',
         }
     }
 
-    // async componentDidMount() {
-    //     const parameters = await ApiService.Get("/");
-
-    //     this.setState({
-
-    //     });    
-    // }
+    async componentDidMount() {
+        var month = new Date().getMonth() + 1; //Current Month.
+        var year = new Date(). getFullYear(); //Current Year.
+        // console.log(month);
+        let semesterName = "";
+        if ( parseInt(month) == 1 || parseInt(month) == 2 || parseInt(month) == 3 || parseInt(month) == 4 ) {
+            semesterName = "SPRING" + year;
+        } else if ( parseInt(month) == 5 || parseInt(month) == 6 || parseInt(month) == 7 || parseInt(month) == 8 ) {
+            semesterName = "SUMMER" + year;
+        } else if ( parseInt(month) == 9 || parseInt(month) == 10 || parseInt(month) == 11 || parseInt(month) == 12 ) {
+            semesterName = "FALL" + year;
+        }
+        const isExisted = await ApiServices.Get(`/admin/checkSemester?semesterName=${semesterName}`);
+        if (isExisted == false ) {
+            this.setState({
+                virgin: true,
+                name: semesterName,
+            })
+        } else {
+            const semester = await ApiServices.Get(`/admin/getSemesterByName?semesterName=${semesterName}`);
+            console.log(semester);
+            this.setState({
+                start_choose_option_time: semester.start_choose_option_time,
+                finish_choose_option_time: semester.finish_choose_option_time,
+                finish_interview_time: semester.finish_interview_time,
+                finish_choose_business_time: semester.finish_choose_business_time,
+                start_date: semester.start_date,
+                end_date: semester.end_date,
+                name: semesterName,
+            })
+        }
+        // console.log(this.state.start_choose_option_time);
+    }
 
     handleInput = async (event) => {
         const { name, value } = event.target;
-        await this.setState({
-            [name]: value,
-        })
+        let virgin = this.state.virgin;
+        if ( name == 'start_choose_option_time' && virgin == true ) {
+            await this.setState({
+                [name]: value,
+                virgin: !virgin,
+            })
+        } else if (virgin == true) {
+            await this.setState({
+                [name]: value,
+                virgin: !virgin,
+            })
+        } else {
+            await this.setState({
+                [name]: value,
+            })
+        }
     }
 
     handleDirect = (uri) => {
@@ -54,30 +96,33 @@ class ScheduleParameters extends Component {
 
     handleReset = async () => {
         this.setState({
-            timeRegisterAspirations: '',
-            timeCompleteInterview: '',
-            timeCompanySelection: '',
-            timeProcessRemainCase: '',
-            timeStartOJT: ''
+            finish_choose_option_time: '',
+            finish_interview_time: '',
+            finish_choose_business_time: '',
+            end_date: '',
+            start_date: '',
+            start_choose_option_time: '',
         })
     }
 
     handleSubmit = async () => {
-        const { timeRegisterAspirations, timeCompleteInterview, timeCompanySelection, timeProcessRemainCase, timeStartOJT } = this.state;
+        const { name, finish_choose_option_time, finish_interview_time, finish_choose_business_time, end_date, start_date, start_choose_option_time } = this.state;
 
         if (this.validator.allValid()) {
             const ScheduleParameters = {
-                timeRegisterAspirations,
-                timeCompleteInterview,
-                timeCompanySelection,
-                timeProcessRemainCase,
-                timeStartOJT
+                finish_choose_option_time,
+                finish_interview_time,
+                finish_choose_business_time,
+                end_date,
+                start_date,
+                start_choose_option_time,
+                name
             }
 
             console.log("ScheduleParameters", ScheduleParameters);
 
-            const result = await ApiServices.Post('/scheduleparameters/', ScheduleParameters);
-            if (result != null) {
+            const result = await ApiServices.Post('/admin/saveSemester', ScheduleParameters);
+            if (result.status == 200) {
                 Toastify.actionSuccess('Tạo các tham số thành công');
             } else {
                 Toastify.actionFail('Tạo các tham số thất bại');
@@ -90,6 +135,7 @@ class ScheduleParameters extends Component {
     }
 
     render() {
+        const { name, finish_choose_option_time, finish_interview_time, finish_choose_business_time, end_date, start_date, start_choose_option_time } = this.state;
         return (
             <div className="animated fadeIn">
                 <ToastContainer />
@@ -97,26 +143,37 @@ class ScheduleParameters extends Component {
                     <Col xs="12" sm="12">
                         <Card>
                             <CardHeader>
-                                <h4>Tạo các tham số cho quá trình đăng kí OJT</h4>
+                                <h4>Lập lịch cho quá trình OJT</h4>
                             </CardHeader>
                             <CardBody>
                                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
                                     <FormGroup row>
                                         <Col md="1">
-                                            <h6>Học kỳ:</h6>
+                                            <h4>Học kỳ:</h4>
                                         </Col>
                                         <Col xs="12" md="11">
-                                            <Label style={{fontWeight:"bold"}}>SUMMER2019</Label>
+                                            <Label style={{ fontWeight: "bold", fontSize:'21px' }}>{name}</Label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="3">
+                                            <h6>Thời gian bắt đầu đăng ký nguyện vọng</h6>
+                                        </Col>
+                                        <Col xs="12" md="9">
+                                            <Input value={start_choose_option_time} onChange={this.handleInput} type="date" date-daid="start_choose_option_time" name="start_choose_option_time" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Thời gian bắt đầu đăng ký nguyện vọng', start_choose_option_time, 'required')}
+                                            </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
                                         <Col md="3">
                                             <h6>Hạn cuối đăng ký nguyện vọng</h6>
                                         </Col>
-                                        <Col xs="12" md="11">
-                                            <Input value={this.state.timeRegisterAspirations} onChange={this.handleInput} type="date" id="timeRegisterAspirations" name="timeRegisterAspirations" />
+                                        <Col xs="12" md="9">
+                                            <Input value={finish_choose_option_time} onChange={this.handleInput} type="date" date-daid="finish_choose_option_time" name="finish_choose_option_time" />
                                             <span className="form-error is-visible text-danger">
-                                                {this.validator.message('timeRegisterAspirations', this.state.timeRegisterAspirations, 'required')}
+                                                {this.validator.message('Hạn cuối đăng ký nguyện vọng', finish_choose_option_time, 'required')}
                                             </span>
                                         </Col>
                                     </FormGroup>
@@ -124,32 +181,21 @@ class ScheduleParameters extends Component {
                                         <Col md="3">
                                             <h6>Hạn cuối hoàn tất kết quả phỏng vấn</h6>
                                         </Col>
-                                        <Col xs="12" md="11">
-                                            <Input value={this.state.timeCompleteInterview} onChange={this.handleInput} type="date" id="timeCompleteInterview" name="timeCompleteInterview" />
+                                        <Col xs="12" md="9">
+                                            <Input value={finish_interview_time} onChange={this.handleInput} type="date" id="finish_interview_time" name="finish_interview_time" />
                                             <span className="form-error is-visible text-danger">
-                                                {this.validator.message('timeCompleteInterview', this.state.timeCompleteInterview, 'required')}
+                                                {this.validator.message('Hạn cuối hoàn tất kết quả phỏng vấn', finish_interview_time, 'required')}
                                             </span>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
-                                        <Col md="4">
+                                        <Col md="3">
                                             <h6>Hạn cuối thời gian hoàn tất lựa chọn công ty</h6>
                                         </Col>
-                                        <Col xs="12" md="11">
-                                            <Input value={this.state.timeCompanySelection} onChange={this.handleInput} type="date" id="timeCompanySelection" name="timeCompanySelection" />
+                                        <Col xs="12" md="9">
+                                            <Input value={finish_choose_business_time} onChange={this.handleInput} type="date" id="finish_choose_business_time" name="finish_choose_business_time" />
                                             <span className="form-error is-visible text-danger">
-                                                {this.validator.message('timeCompanySelection', this.state.timeCompanySelection, 'required')}
-                                            </span>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Hạn cuối thời gian xử lý trường hợp còn lại</h6>
-                                        </Col>
-                                        <Col xs="12" md="11">
-                                            <Input value={this.state.timeProcessRemainCase} onChange={this.handleInput} type="date" id="timeProcessRemainCase" name="timeProcessRemainCase" />
-                                            <span className="form-error is-visible text-danger">
-                                                {this.validator.message('timeProcessRemainCase', this.state.timeProcessRemainCase, 'required')}
+                                                {this.validator.message('Hạn cuối thời gian hoàn tất lựa chọn công ty', finish_choose_business_time, 'required')}
                                             </span>
                                         </Col>
                                     </FormGroup>
@@ -157,21 +203,32 @@ class ScheduleParameters extends Component {
                                         <Col md="3">
                                             <h6>Thời gian bắt đầu OJT</h6>
                                         </Col>
-                                        <Col xs="12" md="11">
-                                            <Input value={this.state.timeStartOJT} onChange={this.handleInput} type="date" id="timeStartOJT" name="timeStartOJT" />
+                                        <Col xs="12" md="9">
+                                            <Input value={start_date} onChange={this.handleInput} type="date" id="start_date" name="start_date" />
                                             <span className="form-error is-visible text-danger">
-                                                {this.validator.message('timeStartOJT', this.state.timeStartOJT, 'required')}
+                                                {this.validator.message('Thời gian bắt đầu OJT', start_date, 'required')}
+                                            </span>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="3">
+                                            <h6>Thời gian kết thúc kỳ OJT</h6>
+                                        </Col>
+                                        <Col xs="12" md="9">
+                                            <Input value={end_date} onChange={this.handleInput} type="date" id="end_date" name="end_date" />
+                                            <span className="form-error is-visible text-danger">
+                                                {this.validator.message('Thời gian kết thúc kỳ OJT', end_date, 'required')}
                                             </span>
                                         </Col>
                                     </FormGroup>
                                 </Form>
                             </CardBody>
                             <CardFooter className="p-4">
-                                <Row>
-                                    <Col xs="3" sm="3">
+                                <Row style={{paddingLeft: "23%"}}>
+                                    <Col xs="4" sm="4">
                                         <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>
                                     </Col>
-                                    <Col xs="3" sm="3">
+                                    <Col xs="4" sm="4">
                                         <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Xác nhận</Button>
                                     </Col>
                                 </Row>

@@ -6,6 +6,11 @@ export default {
     //   icon: 'icon-star',
     // },
     {
+      name: 'Dashboard',
+      url: '/hr',
+      icon: 'icon-star',
+    },
+    {
       name: 'Quản lí tài khoản',
       url: '/manage_account',
       icon: 'icon-puzzle',

@@ -5,74 +5,6 @@ import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import ApiServices from '../../service/api-service';
 
-const doughnut = {
-  labels: [
-    'Đã trả lời',
-    'Chưa trả lời',
-    // 'Yellow',
-  ],
-  datasets: [
-    {
-      data: [300, 100],
-      backgroundColor: [
-        '#FF6384',
-        '#36A2EB',
-        // '#FFCE56',
-      ],
-      hoverBackgroundColor: [
-        '#FF6384',
-        '#36A2EB',
-        // '#FFCE56',
-      ],
-    }],
-};
-
-const radar = {
-  labels: ['Xuất sắc', 'Tốt', 'Khá', 'Trung Bình', 'Yếu'],
-  datasets: [
-    {
-      label: 'Report 1',
-      backgroundColor: 'rgba(179,181,198,0.2)',
-      borderColor: 'rgba(179,181,198,1)',
-      pointBackgroundColor: 'rgba(179,181,198,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(179,181,198,1)',
-      data: [65, 59, 90, 81, 56],
-    },
-    {
-      label: 'Report 2',
-      backgroundColor: 'rgba(255,99,132,0.2)',
-      borderColor: 'rgba(255,99,132,1)',
-      pointBackgroundColor: 'rgba(255,99,132,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(255,99,132,1)',
-      data: [28, 48, 40, 19, 96],
-    },
-    {
-      label: 'Report 3',
-      backgroundColor: '#CCFFFF',
-      borderColor: '#00FFFF',
-      pointBackgroundColor: '#00FFFF',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#00FFFF',
-      data: [10, 20, 30, 40, 50],
-    },
-    {
-      label: 'Report 4',
-      backgroundColor: '#FFF68F',
-      borderColor: '#CDAD00',
-      pointBackgroundColor: '#CDAD00',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: '#CDAD00',
-      data: [99, 88, 77, 66, 55],
-    },
-  ],
-};
-
 const pie = {
   labels: [
     'Red',
@@ -95,34 +27,6 @@ const pie = {
     }],
 };
 
-const polar = {
-  datasets: [
-    {
-      data: [
-        15,
-        26,
-        37,
-        33,
-        14,
-      ],
-      backgroundColor: [
-        '#FF6384',
-        '#4BC0C0',
-        '#FFCE56',
-        '#E7E9ED',
-        '#36A2EB',
-      ],
-      label: 'My dataset' // for legend
-    }],
-  labels: [
-    'Xuất sắc',
-    'Tốt',
-    'Khá',
-    'Trung Bình',
-    'Yếu',
-  ],
-};
-
 const options = {
   tooltips: {
     enabled: false,
@@ -139,18 +43,21 @@ class SiteAdmin extends Component {
       loading: true,
       line: {},
       bar: {},
+      radar: {},
+      doughnut: {},
 
     };
   }
 
   async componentDidMount() {
-    const studentOptionPerBusiness = await ApiServices.Get('/admin/studentOptionPerBusiness');
-    const studentInternPerBusiness = await ApiServices.Get('/admin/business-students');
+    const businessOptionsBySemester = await ApiServices.Get('/admin/businessOptionsBySemester');
+    const studentInternAtBusiness = await ApiServices.Get('/admin/studentInternAtBusiness');
+    const statisticalEvaluationsBusiness = await ApiServices.Get('/admin/statisticalEvaluationsBusiness');
+    const statisticalStudentIsAnswer = await ApiServices.Get('/admin/statisticalStudentIsAnswer');
 
-
-    if (studentOptionPerBusiness != null && studentInternPerBusiness != null) {
+    if (businessOptionsBySemester != null) {
       var line = {
-        labels: studentOptionPerBusiness.businessListEngName,
+        labels: businessOptionsBySemester.semester,
         datasets: [
           {
             label: 'Số lượng sinh viên',
@@ -171,12 +78,82 @@ class SiteAdmin extends Component {
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            data: studentOptionPerBusiness.countStudentRegisterBusiness,
+            data: businessOptionsBySemester.countStudentRegisterBusiness,
           },
         ],
       }
+      this.setState({
+        line: line
+      });
+    }
+
+    if (statisticalEvaluationsBusiness != null) {
+      var datasets = [];
+
+      if (statisticalEvaluationsBusiness[0] != null) {
+        let data1 = {
+          label: 'Báo cáo 1',
+          backgroundColor: 'rgba(179,181,198,0.2)',
+          borderColor: 'rgba(179,181,198,1)',
+          pointBackgroundColor: 'rgba(179,181,198,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(179,181,198,1)',
+          data: statisticalEvaluationsBusiness[0].statisticalTypeEvaluation,
+        }
+        datasets.push(data1);
+      }
+      if (statisticalEvaluationsBusiness[1] != null) {
+        let data2 = {
+          label: 'Báo cáo 2',
+          backgroundColor: 'rgba(255,99,132,0.2)',
+          borderColor: 'rgba(255,99,132,1)',
+          pointBackgroundColor: 'rgba(255,99,132,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(255,99,132,1)',
+          data: statisticalEvaluationsBusiness[1].statisticalTypeEvaluation,
+        }
+        datasets.push(data2);
+      }
+      if (statisticalEvaluationsBusiness[2] != null) {
+        let data3 = {
+          label: 'Báo cáo 3',
+          backgroundColor: '#CCFFFF',
+          borderColor: '#00FFFF',
+          pointBackgroundColor: '#00FFFF',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#00FFFF',
+          data: statisticalEvaluationsBusiness[2].statisticalTypeEvaluation,
+        }
+        datasets.push(data3);
+      }
+      if (statisticalEvaluationsBusiness[3] != null) {
+        let data4 = {
+          label: 'Báo cáo 4',
+          backgroundColor: '#FFF68F',
+          borderColor: '#CDAD00',
+          pointBackgroundColor: '#CDAD00',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: '#CDAD00',
+          data: statisticalEvaluationsBusiness[3].statisticalTypeEvaluation,
+        }
+        datasets.push(data4);
+      }
+      var radar = {
+        labels: ['Xuất sắc', 'Tốt', 'Khá', 'Trung Bình', 'Yếu'],
+        datasets: datasets
+      }
+      this.setState({
+        radar: radar,
+      });
+    }
+
+    if (studentInternAtBusiness != null) {
       var bar = {
-        labels: studentInternPerBusiness.businessListEngName,
+        labels: studentInternAtBusiness.semester,
         datasets: [
           {
             label: 'Số lượng sinh viên',
@@ -185,21 +162,47 @@ class SiteAdmin extends Component {
             borderWidth: 1,
             hoverBackgroundColor: 'rgba(255,99,132,0.4)',
             hoverBorderColor: 'rgba(255,99,132,1)',
-            data: studentInternPerBusiness.numberOfStudentInternAtBusiness
+            data: studentInternAtBusiness.countStudentRegisterBusiness
           },
         ],
       }
       this.setState({
-        loading: false,
-        line: line,
-        bar: bar,
-
+        bar: bar
       });
     }
+
+    if (statisticalStudentIsAnswer != null) {
+      var doughnut = {
+        labels: [
+          'Đã trả lời',
+          'Chưa trả lời',
+        ],
+        datasets: [
+          {
+            data: statisticalStudentIsAnswer,
+            backgroundColor: [
+              '#FF6384',
+              '#36A2EB',
+            ],
+            hoverBackgroundColor: [
+              '#FF6384',
+              '#36A2EB',
+            ],
+          }],
+      }
+      this.setState({
+        doughnut: doughnut
+      });
+    }
+
+    this.setState({
+      loading: false,
+    });
+
   }
 
   render() {
-    const { loading, line, bar } = this.state;
+    const { loading, line, bar, radar, doughnut } = this.state;
     return (
       loading.toString() === 'true' ? (
         SpinnerLoading.showHashLoader(loading)
@@ -211,16 +214,11 @@ class SiteAdmin extends Component {
                   <td>
                     <Card>
                       <CardHeader>
-                        <h6>Thống kê kết quả các report</h6>
-                        {/* <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div> */}
+                        <h6>Thống kê đánh giá các evaluation của sinh viên thực tập tại doanh nghiệp</h6>
                       </CardHeader>
                       <CardBody>
                         <div className="chart-wrapper">
-                          <Radar data={radar} />
+                          <Radar data={radar} options={options} />
                         </div>
                       </CardBody>
                     </Card>
@@ -228,12 +226,7 @@ class SiteAdmin extends Component {
                   <td>
                     <Card>
                       <CardHeader>
-                        <h6>Tỉ lệ sinh viên trả lời khảo sát</h6>
-                        {/* <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div> */}
+                        <h6>Thống kê tỉ lệ về trạng thái task của sinh viên</h6>
                       </CardHeader>
                       <CardBody>
                         <div className="chart-wrapper">
@@ -247,12 +240,7 @@ class SiteAdmin extends Component {
                   <div style={{ width: "1100px" }}>
                     <Card>
                       <CardHeader>
-                        <h6>Số lượng sinh viên đăng kí nguyện vọng vào doanh nghiệp</h6>
-                        {/* <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div> */}
+                        <h6>Thống kê số lượng sinh viên set nguyện vọng vào công ty qua các kì</h6>
                       </CardHeader>
                       <CardBody>
                         <div className="chart-wrapper">
@@ -266,7 +254,7 @@ class SiteAdmin extends Component {
                   <div style={{ width: "1100px" }}>
                     <Card>
                       <CardHeader>
-                        <h6>Số lượng sinh viên đang thực tập tại doanh nghiệp</h6>
+                        <h6>Thống kê số lượng sinh viên đc nhận thực tập tại doanh nghiệp qua các kì</h6>
                         {/* <div className="card-header-actions">
                 <a href="http://www.chartjs.org" className="card-header-action">
                   <small className="text-muted">docs</small>
@@ -281,16 +269,16 @@ class SiteAdmin extends Component {
                     </Card>
                   </div>
                 </tr>
-                <tr>
+                {/* <tr>
                   <td>
                     <Card>
                       <CardHeader>
                         <h6>Thống kê kết quả thực tập của sinh viên</h6>
-                        {/* <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div> */}
+                        <div className="card-header-actions">
+                          <a href="http://www.chartjs.org" className="card-header-action">
+                            <small className="text-muted">docs</small>
+                          </a>
+                        </div>
                         <Input type="select" style={{ width: "150px" }}>
                           <option>SPRING2019</option>
                           <option>SUMMER2019</option>
@@ -304,108 +292,9 @@ class SiteAdmin extends Component {
                       </CardBody>
                     </Card>
                   </td>
-                </tr>
+                </tr> */}
               </tbody>
             </Table>
-
-
-            {/* <CardColumns className="cols-2">
-              <Card>
-                <CardHeader>
-                  <h6>Số lượng sinh viên đăng kí nguyện vọng vào doanh nghiệp</h6>
-                  <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div>
-                </CardHeader>
-                <CardBody>
-                  <div className="chart-wrapper">
-                    <Line data={line} options={options} />
-                  </div>
-                </CardBody>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <h6>Số lượng sinh viên đang thực tập tại doanh nghiệp</h6>
-                  <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div>
-                </CardHeader>
-                <CardBody>
-                  <div className="chart-wrapper">
-                    <Bar data={bar} options={options} />
-                  </div>
-                </CardBody>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <h6>Thống kê kết quả thực tập của sinh viên</h6>
-                  <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div>
-                  <Input type="select" style={{ width: "150px" }}>
-                    <option>SPRING2019</option>
-                    <option>SUMMER2019</option>
-                    <option>WINTER2019</option>
-                  </Input>
-                </CardHeader>
-                <CardBody>
-                  <div className="chart-wrapper">
-                    <Polar data={polar} options={options} />
-                  </div>
-                </CardBody>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <h6>Thống kê kết quả các report</h6>
-                  <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div>
-                </CardHeader>
-                <CardBody>
-                  <div className="chart-wrapper">
-                    <Radar data={radar} />
-                  </div>
-                </CardBody>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <h6>Tỉ lệ sinh viên trả lời khảo sát</h6>
-                  <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div>
-                </CardHeader>
-                <CardBody>
-                  <div className="chart-wrapper">
-                    <Doughnut data={doughnut} />
-                  </div>
-                </CardBody>
-              </Card>
-              <Card>
-            <CardHeader>
-              Pie Chart
-              <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div>
-            </CardHeader>
-            <CardBody>
-              <div className="chart-wrapper">
-                <Pie data={pie} />
-              </div>
-            </CardBody>
-          </Card>
-            </CardColumns> */}
           </div>
         )
     );

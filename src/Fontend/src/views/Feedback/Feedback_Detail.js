@@ -47,6 +47,8 @@ class Feedback_Detail extends Component {
                                     </CardHeader>
                                     <CardBody>
                                         <div style={{ paddingLeft: "3%", paddingRight: "3%", textAlign: "center" }}>
+                                            <img src="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410" />
+                                            <br /><br /><br />
                                             <h2 style={{ fontWeight: "bold" }}>PHIẾU KHẢO SÁT NƠI THỰC TẬP</h2>
                                         </div>
                                         <div style={{ paddingLeft: "2%", paddingRight: "2%", paddingTop: "10px" }}>
