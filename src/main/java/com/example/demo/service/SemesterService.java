@@ -85,4 +85,17 @@ public class SemesterService implements ISemesterService {
         }
         return semesterCurrentByOption;
     }
+
+    @Override
+    public boolean saveSemester(Semester ScheduleParameters) {
+        Semester semester = ISemesterRepository.findSemesterByName(ScheduleParameters.getName());
+        if (ScheduleParameters != null) {
+            if (semester != null) {
+                ScheduleParameters.setId(semester.getId());
+            }
+            ISemesterRepository.save(ScheduleParameters);
+            return true;
+        }
+        return false;
+    }
 }

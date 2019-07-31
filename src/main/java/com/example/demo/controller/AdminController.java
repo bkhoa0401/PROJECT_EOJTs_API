@@ -324,4 +324,37 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 
     }
+
+    @GetMapping("/checkSemester")
+    @ResponseBody
+    private ResponseEntity<Boolean> checkSemesterExisted(@RequestParam String semesterName) {
+        boolean isExisted = false;
+        List<Semester> semesterList = semesterService.getAllSemester();
+        for (int i = 0; i < semesterList.size(); i++) {
+            if (semesterList.get(i).getName().equals(semesterName)) {
+                isExisted = true;
+                break;
+            }
+        }
+        return new ResponseEntity<Boolean>(isExisted, HttpStatus.OK);
+    }
+
+    @GetMapping("/getSemesterByName")
+    @ResponseBody
+    public ResponseEntity<Semester> getSemesterByName(@RequestParam String semesterName) {
+        Semester semester = semesterService.getSemesterByName(semesterName);
+        if (semester!= null) {
+            return new ResponseEntity<Semester>(semester, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PostMapping("/saveSemester")
+    public ResponseEntity<Semester> getSemesterByName(@RequestBody Semester ScheduleParameters) {
+        boolean save = semesterService.saveSemester(ScheduleParameters);
+        if (save == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 }
