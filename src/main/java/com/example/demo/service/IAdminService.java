@@ -34,5 +34,5 @@ public interface IAdminService {
 
     List<Statistical_EvaluationDTO> getListStatistical_EvaluationDTOOfABusiness(String businessEmail);
 
-
+    List<MonthNumberTaskDTO> numberTaskOfStudent(Business business);
 }
