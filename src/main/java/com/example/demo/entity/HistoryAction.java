@@ -1,9 +1,11 @@
 package com.example.demo.entity;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +25,8 @@ public class HistoryAction implements Serializable {
     @Column(name = "role")
     private String role;
 
+    @Enumerated(EnumType.STRING)
+    @Check(constraints = "function_type IN ('INSERT' ,'UPDATE', 'DELETE')")
     @Column(name = "function_type")
     private String function_type;
 
@@ -40,9 +44,20 @@ public class HistoryAction implements Serializable {
 
     @OneToMany(mappedBy = "historyAction")
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<History_Details> details;
+    private List<HistoryDetail> details = new ArrayList<>();
 
-    public HistoryAction(String email, String role, String function_type, String controller, String function_name, String targetEmail, Date actionTime, List<History_Details> details) {
+    public HistoryAction(String email, String role, String function_type, String controller, String function_name, String targetEmail, Date actionTime, HistoryDetail detail) {
+        this.email = email;
+        this.role = role;
+        this.function_type = function_type;
+        this.controller = controller;
+        this.function_name = function_name;
+        this.targetEmail = targetEmail;
+        this.actionTime = actionTime;
+        details.add(detail);
+    }
+
+    public HistoryAction(String email, String role, String function_type, String controller, String function_name, String targetEmail, Date actionTime, List<HistoryDetail> details) {
         this.email = email;
         this.role = role;
         this.function_type = function_type;

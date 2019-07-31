@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.ActionEnum;
 import com.example.demo.config.Status;
 import com.example.demo.dto.*;
 import com.example.demo.entity.*;
@@ -15,15 +16,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
 import java.sql.Date;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
 @RestController
 @RequestMapping("/api/student")
 public class StudentController {
+    private final String TAG = "StudentController";
 
     @Autowired
     IStudentService studentService;
@@ -69,6 +69,9 @@ public class StudentController {
 
     @Autowired
     IStudent_AnswerService iStudent_answerService;
+
+    @Autowired
+    IHistoryActionService iHistoryActionService;
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -331,6 +334,18 @@ public class StudentController {
     public ResponseEntity<String> updateOption1OfStudent(@RequestParam String option1) {
         String email = getEmailFromToken();
         String update = studentService.updateOption1Student(email, option1);
+//        if(update.equals("success")) {
+//            HistoryDetail historyDetail = new HistoryDetail(Student.class.getName(), "option1", email, option1);
+//            HistoryAction action =
+//                    new HistoryAction(email
+//                            , "ROLE_STUDENT", ActionEnum.UPDATE.name(), TAG, new Object() {}
+//                            .getClass()
+//                            .getEnclosingMethod()
+//                            .getName(), null, new java.util.Date(), historyDetail);
+//            iHistoryActionService.saveHistory(action);
+//        }
+
+
         return new ResponseEntity<>(update, HttpStatus.OK);
     }
 
@@ -339,6 +354,16 @@ public class StudentController {
     public ResponseEntity<String> updateOption2OfStudent(@RequestParam String option2) {
         String email = getEmailFromToken();
         String update = studentService.updateOption2Student(email, option2);
+//        if(update.equals("success")) {
+//            HistoryDetail historyDetail = new HistoryDetail(Student.class.getName(), "option2", email, option2);
+//            HistoryAction action =
+//                    new HistoryAction(email
+//                            , "ROLE_STUDENT", ActionEnum.UPDATE.name(), TAG, new Object() {}
+//                            .getClass()
+//                            .getEnclosingMethod()
+//                            .getName(), null, new java.util.Date(), historyDetail);
+//            iHistoryActionService.saveHistory(action);
+//        }
         return new ResponseEntity<>(update, HttpStatus.OK);
     }
 

@@ -114,26 +114,6 @@ public class StudentService implements IStudentService {
 
     @Override
     public String updateOption1Student(String email, String option1) {
-
-//        Semester semester = semesterService.getSemesterCurrentByTimeChooseOption();
-//        if(semester == null) {
-//            return "Đã quá hạn chọn nguyện vọng";
-//        }
-//        Date date = new Date(Calendar.getInstance().getTime().getTime());
-//
-//        if(date.before(semester.getStart_choose_option_time())){
-//            return "Chưa tới lúc để chọn nguyện vọng!!!";
-//        }else if(date.after(semester.getFinish_choose_option_time())) {
-//            return "Đã quá hạn chọn nguyện vọng";
-//        }
-//        if (semester.getId()!=0) {
-//            Date startChooseOption = semester.getStart_choose_option_time();
-//            Date finishChooseOption = semester.getFinish_choose_option_time();
-//
-//            boolean getCurrentSemester =
-//                    Utils.aDateBetweenTwoDate(String.valueOf(startChooseOption), String.valueOf(finishChooseOption));
-//
-//            if (getCurrentSemester == true) {
                 Student student = getStudentByEmail(email);
                 if (student != null) {
                     if (option1 != null || !option1.isEmpty()) {
@@ -142,31 +122,12 @@ public class StudentService implements IStudentService {
                     IStudentRepository.save(student);
                     return "success";
                 }
-//            }
-//        }
+
         return "fail";
     }
 
     @Override
     public String updateOption2Student(String email, String option2) {
-        Semester semester = semesterService.getSemesterCurrentByTimeChooseOption();
-
-        Date date = new Date(Calendar.getInstance().getTime().getTime());
-
-        if(date.before(semester.getStart_choose_option_time())){
-            return "Chưa tới lúc để chọn nguyện vọng!!!";
-        }else if(date.after(semester.getFinish_choose_option_time())) {
-            return "Đã quá hạn chọn nguyện vọng";
-        }
-        if (semester.getId() != 0) {
-            Date startChooseOption = semester.getStart_choose_option_time();
-            Date finishChooseOption = semester.getFinish_choose_option_time();
-
-            boolean getCurrentSemester =
-                    Utils.aDateBetweenTwoDate(String.valueOf(startChooseOption), String.valueOf(finishChooseOption));
-
-            if (getCurrentSemester == true) {
-
                 Student student = getStudentByEmail(email);
                 if (student != null) {
                     if (option2 != null || !option2.isEmpty()) {
@@ -175,8 +136,6 @@ public class StudentService implements IStudentService {
                     IStudentRepository.save(student);
                     return "success";
                 }
-            }
-        }
         return "fail";
     }
 
