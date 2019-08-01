@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 
+import com.example.demo.dto.SpecializedPagingDTO;
 import com.example.demo.entity.Specialized;
 import com.example.demo.repository.ISpecializedRepository;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -86,40 +87,60 @@ public class SpecializedService implements ISpecializedService {
         return null;
     }
 
-    @Cacheable(key="{#page,#pageSize}")
-    public List<Specialized> pagingSpecialized(int page, int pageSize) {
+    @Cacheable(key = "{#currentPage,#rowsPerPage}")
+    public SpecializedPagingDTO pagingSpecialized(int currentPage, int rowsPerPage) {
         if (specializedListAll == null || specializedListAll.size() == 0) {
             specializedListAll = ISpecializedRepository.findAll();
         }
 
-        int length = specializedListAll.size();
+//        int length = specializedListAll.size();
+//
+//        double pageCount = Math.ceil((double) length / (double) pageSize);
+//
+//        int currentItemStart;
+//
+//        if (page == 1) {
+//            currentItemStart = 0;
+//        } else {
+//            currentItemStart = ((page - 1) * pageSize);
+//        }
+//
+//        int count = 0;
+//        List<Specialized> listPaging = new ArrayList<>();
+//        for (int i = currentItemStart; i < specializedListAll.size(); i++) {
+//            if (count < pageSize) {
+//                Specialized specialized = specializedListAll.get(i);
+//                if (specialized != null) {
+//                    listPaging.add(specialized);
+//                    count++;
+//                } else {
+//                    break;
+//                }
+//            } else {
+//                break;
+//            }
+//        }
+//        return listPaging;
 
-        double pageCount = Math.ceil((double) length / (double) pageSize);
+        int pageNumber = (int) Math.ceil((double) specializedListAll.size() / (double) rowsPerPage);
 
-        int currentItemStart;
+        int nextPageNumber = (currentPage + 1) * rowsPerPage;
 
-        if (page == 1) {
-            currentItemStart = 0;
-        } else {
-            currentItemStart = ((page - 1) * pageSize);
-        }
+        int currentPageNumber = (currentPage * rowsPerPage);
 
-        int count = 0;
-        List<Specialized> listPaging = new ArrayList<>();
-        for (int i = currentItemStart; i < specializedListAll.size(); i++) {
-            if (count < pageSize) {
-                Specialized specialized = specializedListAll.get(i);
-                if (specialized != null) {
-                    listPaging.add(specialized);
-                    count++;
-                } else {
-                    break;
-                }
-            } else {
-                break;
+        List<Specialized> specializedsPagination = new ArrayList<>();
+
+        for (int i = 0; i < specializedListAll.size(); i++) {
+            if (i >= currentPageNumber && i < nextPageNumber) {
+                specializedsPagination.add(specializedListAll.get(i));
             }
         }
-        return listPaging;
+
+        SpecializedPagingDTO specializedPagingDTO = new SpecializedPagingDTO();
+        specializedPagingDTO.setPageNumber(pageNumber);
+        specializedPagingDTO.setSpecializedList(specializedsPagination);
+
+        return specializedPagingDTO;
     }
 
     @Override
