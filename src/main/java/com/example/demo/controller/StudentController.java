@@ -222,6 +222,43 @@ public class StudentController {
         return new ResponseEntity<>(student_ojtenrollmentDTOList, HttpStatus.OK);
     }
 
+    @GetMapping("/getStudentsWithNoCompany")
+    @ResponseBody
+    public ResponseEntity<List<Student_OjtenrollmentDTO>> getStudentsWithNoCompany() throws Exception {
+//        LOG.info("Getting all student");
+        Semester semester = semesterService.getSemesterCurrent();
+        List<Student> studentList = studentService.getAllStudentsBySemesterId();;
+        List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOList = new ArrayList<>();
+        List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOWithNoCompanyList = new ArrayList<>();
+        try {
+            for (int i = 0; i < studentList.size(); i++) {
+                Student_OjtenrollmentDTO student_ojtenrollmentDTO = new Student_OjtenrollmentDTO();
+                student_ojtenrollmentDTO.setStudent(studentList.get(i));
+                Ojt_Enrollment ojt_enrollment =
+                        ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(studentList.get(i).getEmail(), semester.getId());
+                if (ojt_enrollment.getBusiness() != null) {
+                    student_ojtenrollmentDTO.setBusinessEnroll(ojt_enrollment.getBusiness().getBusiness_eng_name());
+                } else {
+                    if (studentList.get(i).isInterviewed1() == true && studentList.get(i).isInterviewed2() == true) {
+                        if (studentList.get(i).isAcceptedOption1() == false && studentList.get(i).isAcceptedOption2() == false) {
+                            student_ojtenrollmentDTO.setBusinessEnroll("Rớt");
+                        }
+                    }
+                }
+                student_ojtenrollmentDTOList.add(student_ojtenrollmentDTO);
+            }
+            for (int i = 0; i < student_ojtenrollmentDTOList.size(); i++) {
+                if (student_ojtenrollmentDTOList.get(i).getBusinessEnroll() == null || student_ojtenrollmentDTOList.get(i).getBusinessEnroll().equals("Rớt")) {
+                    student_ojtenrollmentDTOWithNoCompanyList.add(student_ojtenrollmentDTOList.get(i));
+                }
+            }
+        } catch (Exception ex) {
+            LOG.info(ex.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(student_ojtenrollmentDTOWithNoCompanyList, HttpStatus.OK);
+    }
+
     //get list skill by specialzed
     @GetMapping("/specialized")
     public ResponseEntity<List<Specialized>> getSpecializedList() {

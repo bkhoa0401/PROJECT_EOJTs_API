@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Popup from "reactjs-popup";
-import { Form, Label, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import { Input, Form, Label, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../Toastify/Toastify';
@@ -12,6 +12,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import firebase from 'firebase/app';
 import decode from 'jwt-decode';
+import { async } from 'q';
 
 const storage = firebase.storage();
 
@@ -20,7 +21,7 @@ class student_list extends Component {
     constructor(props) {
         super(props);
 
-        this.toggle = this.toggle.bind(this);
+        // this.toggle = this.toggle.bind(this);
         this.state = {
             modal: false,
             modalDetail: false,
@@ -53,6 +54,9 @@ class student_list extends Component {
 
             listStudentTask: null,
             studentDetail: null,
+
+            typesOfStudent: ['Tổng', 'Rớt'],
+            typeSelected: 1,
         };
         // this.toggleModal = this.toggleModal.bind(this);
     }
@@ -67,12 +71,25 @@ class student_list extends Component {
         }
     }
 
-    toggle(tabPane, tab) {
-        const newArray = this.state.activeTab.slice()
-        newArray[tabPane] = tab
+    toggle = async (tabPane, tab) => {
+        const newArray = this.state.activeTab.slice();
+        newArray[tabPane] = tab;
+        let students = null;
+        let typeSelected;
+        if (tab == 1) {
+            students = await ApiServices.Get('/student/getAllStudent');
+        } else if (tab == 2) {
+            students = await ApiServices.Get('/student/getStudentsWithNoCompany');
+            typeSelected = 1;
+        }
         this.setState({
             activeTab: newArray,
+            students: students,
+            typeSelected: typeSelected,
         });
+        // console.log(tabPane);
+        // console.log(tab);
+        // console.log(this.state.activeTab);
     }
 
     toggleModal = async (studentSelect) => {
@@ -197,7 +214,7 @@ class student_list extends Component {
             )
         } else if (taskLevel === 'NORMAL') {
             return (
-                <Badge color="warning">Bình thường</Badge>
+                <Badge color="warning">Trung bình</Badge>
             )
         }
     }
@@ -206,11 +223,11 @@ class student_list extends Component {
         console.log(taskStatus);
         if (taskStatus === 'NOTSTART') {
             return (
-                <Badge color="danger">Chưa bắt đầu</Badge>
+                <Badge color="secondary">Chưa bắt đầu</Badge>
             )
         } else if (taskStatus === 'PENDING') {
             return (
-                <Badge color="warning">Chưa hoàn thành</Badge>
+                <Badge color="warning">Chưa xong</Badge>
             )
         } else if (taskStatus === 'DONE') {
             return (
@@ -219,6 +236,19 @@ class student_list extends Component {
         }
     }
 
+    formatDate(inputDate, flag) {
+        var date = inputDate.split('-');
+        let formattedDate = date[2] + "/" + date[1] + "/" + date[0];
+        if (flag == true) {
+            return (
+                <Badge color="primary">{formattedDate}</Badge>
+            )
+        } else if (flag == false) {
+            return (
+                <Badge color="danger">{formattedDate}</Badge>
+            )
+        }
+    }
 
     handleSubmit = async () => {
         this.setState({
@@ -245,6 +275,27 @@ class student_list extends Component {
         await this.setState({
             [name]: value.substr(0, 20),
         })
+    }
+
+    handleInputSelect = async (event) => {
+        const { name, value } = event.target;
+        let typeSelected = this.state.typeSelected;
+        let students = null;
+        // console.log(name);
+        // console.log(value);
+        if (value == 0) {
+            typeSelected = 0;
+            students = await ApiServices.Get('/student/getAllStudent');
+        } else if (value == 1) {
+            typeSelected = 1;
+            students = await ApiServices.Get('/student/getStudentsWithNoCompany');
+        }
+        await this.setState({
+            typeSelected: typeSelected,
+            students: students,
+        })
+        // console.log(this.state.typeSelected);
+        // console.log(this.state.students);
     }
 
     handleDirect = (uri) => {
@@ -310,7 +361,7 @@ class student_list extends Component {
     }
 
     tabPane() {
-        const { students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail } = this.state;
+        const { students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail, typesOfStudent } = this.state;
 
         const { name, code, email, phone, address, specialized, objective, gpa, skills, resumeLink, transcriptLink, role, isUploadTranscriptLink } = this.state;
         const linkDownCV = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
@@ -538,7 +589,7 @@ class student_list extends Component {
                                             <h6>Người hướng dẫn</h6>
                                         </Col>
                                         <Col xs="12" md="9">
-                                            <label>{studentDetail.supervisor.name}</label>
+                                            <Label>{studentDetail.supervisor === null ? <></> : (studentDetail.supervisor.name)}</Label>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -554,12 +605,12 @@ class student_list extends Component {
                                             <tr>
                                                 <th style={{ textAlign: "center" }}>STT</th>
                                                 <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                                                <th style={{ textAlign: "center" }}>Trạng thái</th>
                                                 <th style={{ textAlign: "center" }}>Giao bởi</th>
+                                                <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
+                                                <th style={{ textAlign: "center" }}>Độ khó</th>
                                                 <th style={{ textAlign: "center" }}>Ngày tạo</th>
                                                 <th style={{ textAlign: "center" }}>Hạn cuối</th>
-                                                <th style={{ textAlign: "center" }}>Mức độ</th>
-                                                <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
+                                                <th style={{ textAlign: "center" }}>Trạng thái</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -569,20 +620,20 @@ class student_list extends Component {
                                                         <tr>
                                                             <td style={{ textAlign: "center" }}>{index + 1}</td>
                                                             <td style={{ textAlign: "center" }}>{task.title}</td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                {
-                                                                    this.showTaskState(task.status)
-                                                                }
-                                                            </td>
                                                             <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
-                                                            <td style={{ textAlign: "center" }}>{task.time_created}</td>
-                                                            <td style={{ textAlign: "center" }}>{task.time_end}</td>
+                                                            <td style={{ textAlign: "center" }}>{task.priority}</td>
                                                             <td style={{ textAlign: "center" }}>
                                                                 {
                                                                     this.showTaskLevel(task.level_task)
                                                                 }
                                                             </td>
-                                                            <td style={{ textAlign: "center" }}>{task.priority}</td>
+                                                            <td style={{ textAlign: "center" }}>{this.formatDate(task.time_created, true)}</td>
+                                                            <td style={{ textAlign: "center" }}>{this.formatDate(task.time_end, false)}</td>
+                                                            <td style={{ textAlign: "center" }}>
+                                                                {
+                                                                    this.showTaskState(task.status)
+                                                                }
+                                                            </td>
                                                         </tr>
                                                     )
                                                 })
@@ -598,6 +649,15 @@ class student_list extends Component {
                         <TabPane tabId="2">
                             {
                                 <div>
+                                    <FormGroup row style={{ paddingLeft: "45%" }}>
+                                        <Input style={{width:'100px'}} onChange={e => { this.handleInputSelect(e) }} type="select" name="typeStudent">
+                                            {typesOfStudent && typesOfStudent.map((typeStudent, i) => {
+                                                return (
+                                                    <option value={i} selected={i === this.state.typeSelected}>{typeStudent}</option>
+                                                )
+                                            })}
+                                        </Input>
+                                    </FormGroup>
                                     <nav className="navbar navbar-light bg-light justify-content-between">
                                         <form className="form-inline">
                                             <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
