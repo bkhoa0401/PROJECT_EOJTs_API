@@ -256,6 +256,7 @@ class Invitation_Create extends Component {
                                                             </td> */}
                                                             <td style={{ textAlign: "center" }}>
                                                                 <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(student)}>Chi tiết</Button>
+                                                                &nbsp;&nbsp;
                                                                 <Button onClick={() => this.toggleModal(student)} type="submit" color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                             </td>
                                                         </tr>
@@ -324,6 +325,7 @@ class Invitation_Create extends Component {
                                                             </td> */}
                                                             <td style={{ textAlign: "center" }}>
                                                                 <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(suggestedStudent)}>Chi tiết</Button>
+                                                                &nbsp;&nbsp;
                                                                 <Button onClick={() => this.toggleModal(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                             </td>
                                                         </tr>

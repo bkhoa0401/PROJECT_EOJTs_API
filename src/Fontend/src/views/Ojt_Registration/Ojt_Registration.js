@@ -235,8 +235,8 @@ class Ojt_Registration extends Component {
                                                                 <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {listInvitation && listInvitation[index] === true ?
-                                                                        <Badge color="success" style={{fontSize:'12px'}}>Có</Badge> :
-                                                                        <Badge color="danger" style={{fontSize:'12px'}}>Không</Badge>
+                                                                        <Badge color="success" style={{ fontSize: '12px' }}>Có</Badge> :
+                                                                        <Badge color="danger" style={{ fontSize: '12px' }}>Không</Badge>
                                                                     }
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
@@ -274,6 +274,17 @@ class Ojt_Registration extends Component {
                                 className={'modal-primary ' + this.props.className}>
                                 <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
                                 <ModalBody>
+                                    <FormGroup row>
+                                        <Col md="4">
+                                            <h6>Ảnh đại diện</h6>
+                                        </Col>
+                                        <Col xs="12" md="8">
+                                            {studentDetail.avatarLink === null ?
+                                                <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "100px", height: "100px" }} alt="usericon" /> :
+                                                <img src={studentDetail.avatarLink} className="img-avatar" style={{ width: "100px", height: "100px" }} />
+                                            }
+                                        </Col>
+                                    </FormGroup>
                                     <FormGroup row>
                                         <Col md="4">
                                             <h6>Họ và Tên</h6>

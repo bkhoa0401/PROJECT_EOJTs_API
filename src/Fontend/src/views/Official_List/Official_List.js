@@ -50,6 +50,10 @@ class Official_List extends Component {
       isSelect: [],
       preSupervisor: '',
       modal: false,
+      modalDetail: false,
+      modalTask: false,
+      studentDetail: null,
+      listStudentTask: null,
     }
   }
 
@@ -268,6 +272,67 @@ class Official_List extends Component {
     }
   }
 
+  toggleModalDetail = async (studentDetail) => {
+    if (this.state.modalDetail == false) {
+      this.setState({
+        modalDetail: !this.state.modalDetail,
+        studentDetail: studentDetail,
+      });
+    } else {
+      this.setState({
+        modalDetail: !this.state.modalDetail,
+      })
+    }
+  }
+
+  toggleModalTask = async (studentDetail) => {
+    if (this.state.modalTask == false) {
+      const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}`);
+      this.setState({
+        modalTask: !this.state.modalTask,
+        studentDetail: studentDetail,
+        listStudentTask: listStudentTask,
+      });
+    } else {
+      this.setState({
+        modalTask: !this.state.modalTask,
+      })
+    }
+  }
+
+  showTaskLevel(taskLevel) {
+    if (taskLevel === 'DIFFICULT') {
+      return (
+        <Badge color="danger">Khó</Badge>
+      )
+    } else if (taskLevel === 'EASY') {
+      return (
+        <Badge color="primary">Dễ</Badge>
+      )
+    } else if (taskLevel === 'NORMAL') {
+      return (
+        <Badge color="warning">Bình thường</Badge>
+      )
+    }
+  }
+
+  showTaskState(taskStatus) {
+    console.log(taskStatus);
+    if (taskStatus === 'NOTSTART') {
+      return (
+        <Badge color="danger">Chưa bắt đầu</Badge>
+      )
+    } else if (taskStatus === 'PENDING') {
+      return (
+        <Badge color="warning">Chưa hoàn thành</Badge>
+      )
+    } else if (taskStatus === 'DONE') {
+      return (
+        <Badge color="success">Hoàn Thành</Badge>
+      )
+    }
+  }
+
   handleSubmit = async () => {
     this.setState({
       loading: true
@@ -278,10 +343,21 @@ class Official_List extends Component {
 
     if (result.status == 200) {
       Toastify.actionSuccess("Thao tác thành công!");
-      this.setState({
-        loading: false,
-      })
+      const students = await ApiServices.Get('/business/getStudentsByBusiness');
+      const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness');
+      const supervisors_FirstBlank = await ApiServices.Get('/business/getAllSupervisorABusiness');
 
+      const supervisors_FirstBlank_Obj = {
+        email: '',
+        name: ''
+      }
+      supervisors_FirstBlank.unshift(supervisors_FirstBlank_Obj);
+      this.setState({
+        students: students,
+        supervisors: supervisors,
+        supervisors_FirstBlank: supervisors_FirstBlank,
+        loading: false
+      });
     } else {
       Toastify.actionFail("Thao tác thất bại!");
       this.setState({
@@ -291,7 +367,7 @@ class Official_List extends Component {
   }
 
   render() {
-    const { students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection, loading, suggestedStudents, isSelect, colorBackSelect, colorTextSelect } = this.state;
+    const { studentDetail, students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection, loading, suggestedStudents, isSelect, colorBackSelect, colorTextSelect } = this.state;
     let filteredListStudents = orderBy(students, columnToSort, sortDirection);
     if (students != null) {
       filteredListStudents = students.filter(
@@ -317,8 +393,8 @@ class Official_List extends Component {
                   <CardBody>
                     {filteredListStudents === null ?
                       <></> :
-                      <FormGroup row style={{ paddingLeft: '45%' }}>
-                        <Button color="primary" onClick={() => this.toggleModal()}>Phân nhóm</Button>
+                      <FormGroup row style={{ paddingLeft: '90%' }}>
+                        <Button color="primary" outline onClick={() => this.toggleModal()}>Phân nhóm</Button>
                       </FormGroup>
                     }
                     <nav className="navbar navbar-light bg-light justify-content-between">
@@ -402,8 +478,10 @@ class Official_List extends Component {
 
                                 </td>
                                 <td style={{ textAlign: "center" }}>
-                                  <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}>Chi tiết</Button>
-                                  <Button style={{ width: '100px' }} color="success" onClick={() => this.handleDirect(`/details_task/${student.email}`)}>Nhiệm vụ</Button>
+                                  {/* <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}>Chi tiết</Button> */}
+                                  <Button style={{ width: '100px', marginRight: "2px" }} color="primary" onClick={() => this.toggleModalDetail(student)}>Chi tiết</Button>
+                                  {/* <Button style={{ width: '100px' }} color="success" onClick={() => this.handleDirect(`/details_task/${student.email}`)}>Nhiệm vụ</Button> */}
+                                  <Button style={{ width: '100px' }} color="success" onClick={() => this.toggleModalTask(student)}>Nhiệm vụ</Button>
                                 </td>
                               </tr>
                             )
@@ -476,6 +554,166 @@ class Official_List extends Component {
                 <Button color="primary" onClick={this.toggleModalWithConfirm}>Xác nhận</Button>
               </ModalFooter>
             </Modal>
+            {studentDetail !== null ?
+              <Modal isOpen={this.state.modalDetail} toggle={this.toggleModalDetail}
+                className={'modal-primary ' + this.props.className}>
+                <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
+                <ModalBody>
+                  <FormGroup row>
+                    <Col md="4">
+                      <h6>Ảnh đại diện</h6>
+                    </Col>
+                    <Col xs="12" md="8">
+                      {studentDetail.avatarLink === null ?
+                        <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "100px", height: "100px" }} alt="usericon" /> :
+                        <img src={studentDetail.avatarLink} className="img-avatar" style={{ width: "100px", height: "100px" }} />
+                      }
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="4">
+                      <h6>Họ và Tên</h6>
+                    </Col>
+                    <Col xs="12" md="8">
+                      <label>{studentDetail.name}</label>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="4">
+                      <h6>Mã số sinh viên</h6>
+                    </Col>
+                    <Col xs="12" md="8">
+                      <label>{studentDetail.code}</label>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="4">
+                      <h6>Chuyên ngành</h6>
+                    </Col>
+                    <Col xs="12" md="8">
+                      <label>{studentDetail.specialized.name}</label>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="4">
+                      <h6>Giới thiệu bản thân</h6>
+                    </Col>
+                    <Col xs="12" md="8">
+                      <label>{studentDetail.objective}</label>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="4">
+                      <h6>Bảng điểm</h6>
+                    </Col>
+                    <Col xs="12" md="8">
+                      {
+                        studentDetail.transcriptLink && studentDetail.transcriptLink ? (
+                          <a href={studentDetail.transcriptLink} download>Tải về</a>
+                        ) :
+                          (<label>N/A</label>)
+                      }
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="4">
+                      <h6>Kỹ năng</h6>
+                    </Col>
+                    <Col xs="12" md="8">
+                      {
+                        studentDetail.skills && studentDetail.skills.map((skill, index) => {
+                          return (
+                            <div>
+                              {
+                                <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                              }
+                            </div>
+                          )
+                        })
+                      }
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="4">
+                      <h6>GPA</h6>
+                    </Col>
+                    <Col xs="12" md="8">
+                      <label>{studentDetail.gpa}</label>
+                    </Col>
+                  </FormGroup>
+                </ModalBody>
+                {/* <ModalFooter>
+                </ModalFooter> */}
+              </Modal> :
+              <></>
+            }
+            {studentDetail !== null ?
+              <Modal isOpen={this.state.modalTask} toggle={this.toggleModalTask}
+                className={'modal-lg ' + this.props.className}>
+                <ModalHeader style={{ backgroundColor: "#4DBD74", color: "white" }} toggle={this.toggleModalTask}>Nhiệm vụ của sinh viên</ModalHeader>
+                <ModalBody>
+                  <FormGroup row>
+                    <Col md="3">
+                      <h6>Người hướng dẫn</h6>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <label>{studentDetail.supervisor.name}</label>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <h6>Sinh viên</h6>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <label>{studentDetail.name}</label>
+                    </Col>
+                  </FormGroup>
+                  <Table responsive striped>
+                    <thead>
+                      <tr>
+                        <th style={{ textAlign: "center" }}>STT</th>
+                        <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
+                        <th style={{ textAlign: "center" }}>Trạng thái</th>
+                        <th style={{ textAlign: "center" }}>Giao bởi</th>
+                        <th style={{ textAlign: "center" }}>Ngày tạo</th>
+                        <th style={{ textAlign: "center" }}>Hạn cuối</th>
+                        <th style={{ textAlign: "center" }}>Mức độ</th>
+                        <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {
+                        this.state.listStudentTask && this.state.listStudentTask.map((task, index) => {
+                          return (
+                            <tr>
+                              <td style={{ textAlign: "center" }}>{index + 1}</td>
+                              <td style={{ textAlign: "center" }}>{task.title}</td>
+                              <td style={{ textAlign: "center" }}>
+                                {
+                                  this.showTaskState(task.status)
+                                }
+                              </td>
+                              <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
+                              <td style={{ textAlign: "center" }}>{task.time_created}</td>
+                              <td style={{ textAlign: "center" }}>{task.time_end}</td>
+                              <td style={{ textAlign: "center" }}>
+                                {
+                                  this.showTaskLevel(task.level_task)
+                                }
+                              </td>
+                              <td style={{ textAlign: "center" }}>{task.priority}</td>
+                            </tr>
+                          )
+                        })
+                      }
+                    </tbody>
+                  </Table>
+                </ModalBody>
+                {/* <ModalFooter>
+                </ModalFooter> */}
+              </Modal> :
+              <></>
+            }
           </div>
         )
     );
