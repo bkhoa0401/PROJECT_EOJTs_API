@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.SpecializedPagingDTO;
+import com.example.demo.dto.PagingDTO;
+import com.example.demo.dto.PagingDTO;
 import com.example.demo.entity.Specialized;
 
 import java.util.List;
@@ -17,11 +18,11 @@ public interface ISpecializedService {
 
     List<Specialized> updateSpecialized(Specialized specialized);
 
-    boolean updateStatusSpecialized(int specializedId, boolean status);
+    List<Specialized> updateStatusSpecialized(int specializedId, boolean status);
 
     Specialized getSpecializedById(int id);
 
 //    List<Specialized> pagingSpecialized(int page, int pageSize);
 
-    SpecializedPagingDTO pagingSpecialized(int currentPage, int rowsPerPage);
+    PagingDTO pagingSpecialized(int currentPage, int rowsPerPage);
 }

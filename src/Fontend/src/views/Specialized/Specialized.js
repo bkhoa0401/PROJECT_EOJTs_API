@@ -73,7 +73,7 @@ class Specialized extends Component {
         const specializeds = await ApiServices.Get(`/specialized/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         if (specializeds != null) {
             this.setState({
-                specializeds: specializeds.specializedList,
+                specializeds: specializeds.listData,
                 currentPage,
                 pageNumber: specializeds.pageNumber
             })
@@ -90,7 +90,7 @@ class Specialized extends Component {
             // const pageNumber = getPaginationPageNumber(specializeds.length, rowsPerPage);
             // const specializedsPagination = specializeds.slice(getPaginationCurrentPageNumber(currentPage, rowsPerPage), getPaginationNextPageNumber(currentPage, rowsPerPage));
             this.setState({
-                specializeds: specializeds.specializedList,
+                specializeds: specializeds.listData,
                 pageNumber: specializeds.pageNumber,
                 // specializedsPagination,
                 loading: false
@@ -108,7 +108,7 @@ class Specialized extends Component {
             // const specializedsPagination = specializeds.slice(getPaginationCurrentPageNumber(currentPage, rowsPerPage), getPaginationNextPageNumber(currentPage, rowsPerPage));
             this.setState({
                 //specializedsPagination,
-                specializeds: specializeds.specializedList,
+                specializeds: specializeds.listData,
                 currentPage,
                 pageNumber: specializeds.pageNumber
             })
@@ -125,7 +125,7 @@ class Specialized extends Component {
             // const specializedsPagination = specializeds.slice(getPaginationCurrentPageNumber(currentPage, rowsPerPage), getPaginationNextPageNumber(currentPage, rowsPerPage));
             this.setState({
                 //specializedsPagination,
-                specializeds: specializeds.specializedList,
+                specializeds: specializeds.listData,
                 currentPage,
                 pageNumber: specializeds.pageNumber
             })
@@ -154,7 +154,7 @@ class Specialized extends Component {
             // const specializedsPagination = specializeds.slice(getPaginationCurrentPageNumber(currentPage, rowsPerPage), getPaginationNextPageNumber(currentPage, rowsPerPage));
             this.setState({
                 //specializedsPagination,
-                specializeds: specializeds.specializedList,
+                specializeds: specializeds.listData,
                 currentPage,
                 pageNumber: specializeds.pageNumber
             })
@@ -188,7 +188,7 @@ class Specialized extends Component {
             // const specializedsPagination = specializeds.slice(getPaginationCurrentPageNumber(currentPage, rowsPerPage), getPaginationNextPageNumber(currentPage, rowsPerPage));
             this.setState({
                 //specializedsPagination,
-                specializeds: specializeds.specializedList,
+                specializeds: specializeds.listData,
                 currentPage: 0,
                 pageNumber: specializeds.pageNumber
             })

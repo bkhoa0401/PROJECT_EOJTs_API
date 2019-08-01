@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 
-import com.example.demo.dto.SpecializedPagingDTO;
+import com.example.demo.dto.PagingDTO;
 import com.example.demo.entity.Specialized;
 import com.example.demo.repository.ISpecializedRepository;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -88,7 +88,7 @@ public class SpecializedService implements ISpecializedService {
     }
 
     @Cacheable(key = "{#currentPage,#rowsPerPage}")
-    public SpecializedPagingDTO pagingSpecialized(int currentPage, int rowsPerPage) {
+    public PagingDTO pagingSpecialized(int currentPage, int rowsPerPage) {
         if (specializedListAll == null || specializedListAll.size() == 0) {
             specializedListAll = ISpecializedRepository.findAll();
         }
@@ -136,9 +136,9 @@ public class SpecializedService implements ISpecializedService {
             }
         }
 
-        SpecializedPagingDTO specializedPagingDTO = new SpecializedPagingDTO();
+        PagingDTO specializedPagingDTO = new PagingDTO();
         specializedPagingDTO.setPageNumber(pageNumber);
-        specializedPagingDTO.setSpecializedList(specializedsPagination);
+        specializedPagingDTO.setListData(specializedsPagination);
 
         return specializedPagingDTO;
     }
@@ -177,14 +177,21 @@ public class SpecializedService implements ISpecializedService {
 
 
     @Override
-    public boolean updateStatusSpecialized(int specializedId, boolean status) {
+    @CachePut(key = "'all'")
+    @CacheEvict(allEntries = true)
+    public List<Specialized> updateStatusSpecialized(int specializedId, boolean status) {
         Specialized specializedFound = ISpecializedRepository.findSpecializedById(specializedId);
         if (specializedFound != null) {
             specializedFound.setStatus(status);
             ISpecializedRepository.save(specializedFound);
-            return true;
+
+            if (this.specializedListAll.size() == 0) {
+                this.specializedListAll = ISpecializedRepository.findAll();
+            }
+            this.specializedListAll.set(specializedId - 1, specializedFound); // save redis
+            return specializedListAll;
         }
-        return false;
+        return null;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.SpecializedPagingDTO;
+import com.example.demo.dto.PagingDTO;
 import com.example.demo.entity.Business;
 import com.example.demo.entity.Specialized;
 import com.example.demo.entity.Users;
@@ -104,18 +104,18 @@ public class SpecializedController {
 
     @PutMapping("/status")
     @ResponseBody
-    public ResponseEntity<Boolean> updateStatusSpecialized(@RequestParam int id, @RequestParam boolean status) {
-        boolean result = specializedService.updateStatusSpecialized(id, status);
-        if (result == true) {
-            return new ResponseEntity<Boolean>(result, HttpStatus.OK);
+    public ResponseEntity<List<Specialized>> updateStatusSpecialized(@RequestParam int id, @RequestParam boolean status) {
+        List<Specialized> result = specializedService.updateStatusSpecialized(id, status);
+        if (result != null) {
+            return new ResponseEntity<>(result, HttpStatus.OK);
         }
-        return new ResponseEntity<Boolean>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/pagination")
     @ResponseBody
-    public ResponseEntity<SpecializedPagingDTO> getSpecializedPaging(@RequestParam int currentPage, @RequestParam int rowsPerPage) {
-        SpecializedPagingDTO specializedList = specializedService.pagingSpecialized(currentPage, rowsPerPage);
+    public ResponseEntity<PagingDTO> getSpecializedPaging(@RequestParam int currentPage, @RequestParam int rowsPerPage) {
+        PagingDTO specializedList = specializedService.pagingSpecialized(currentPage, rowsPerPage);
         return new ResponseEntity<>(specializedList, HttpStatus.OK);
     }
 }
