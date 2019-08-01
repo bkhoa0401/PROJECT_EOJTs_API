@@ -13,4 +13,9 @@ public interface ISemesterService {
     Semester getSemesterCurrent();
 
     Semester getSemesterCurrentByTimeChooseOption();
+
+    Semester getSemesterByStartDateAndEndDate();
+
+    boolean saveSemester(Semester semester);
+
 }

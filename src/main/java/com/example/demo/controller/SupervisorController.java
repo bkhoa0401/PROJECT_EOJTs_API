@@ -133,7 +133,20 @@ public class SupervisorController {
     @ResponseBody
     public ResponseEntity<Evaluation> getEvaluationById(@RequestParam int id) {
         Evaluation evaluation = evaluationService.getEvaluationById(id);
-        return new ResponseEntity<Evaluation>(evaluation, HttpStatus.OK);
+        if (evaluation != null) {
+            return new ResponseEntity<Evaluation>(evaluation, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/getNumOfEvaluationsOfStudent")
+    @ResponseBody
+    public ResponseEntity<Integer> getNumOfEvaluationsOfStudent(@RequestParam String stuEmail) {
+        List<Evaluation> evaluations = evaluationService.getEvaluationsByStudentEmail(stuEmail);
+        if (evaluations != null) {
+            return new ResponseEntity<Integer>(evaluations.size(), HttpStatus.OK);
+        }
+        return new ResponseEntity<Integer>(0, HttpStatus.OK);
     }
 
     //get all evaluations of a supervisor by semester

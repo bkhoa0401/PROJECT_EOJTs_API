@@ -77,6 +77,10 @@ class Create_Report extends Component {
         titleReport = "Bảng đánh giá thực tập tháng " + needParam[0];
         emailStudent = needParam[1];
         const student = await ApiServices.Get(`/student/student/${needParam[1]}`);
+        const numOfEvaluations = await ApiServices.Get(`/supervisor/getNumOfEvaluationsOfStudent?stuEmail=${needParam[1]}`);
+        if (needParam[0] > (numOfEvaluations + 1)) {
+            this.props.history.push("/Report/Report");
+        }
         const ojtEnrollment = await ApiServices.Get(`/enrollment/getSelectedStuEnrollment?email=${needParam[1]}`);
         var dateEnroll = ojtEnrollment.timeEnroll;
         var splitDate = dateEnroll.split('-');

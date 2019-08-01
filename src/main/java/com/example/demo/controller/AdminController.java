@@ -300,7 +300,7 @@ public class AdminController {
     // thống kê số lượng sinh viên đc nhận thực tập tại doanh nghiệp qua các kì
     @GetMapping("/studentInternAtBusiness")
     @ResponseBody
-    public ResponseEntity<BusinessOptionsBySemesterDTO> countStudentInternAtBusinessBySemester(){
+    public ResponseEntity<BusinessOptionsBySemesterDTO> countStudentInternAtBusinessBySemester() {
         String email = getEmailFromToken();
         BusinessOptionsBySemesterDTO countStudent = adminService.countStudentInternAtBusinessBySemester(email);
 
@@ -313,15 +313,63 @@ public class AdminController {
     //thống kê đánh giá các report của sinh viên thực tập tại doanh nghiệp
     @GetMapping("/statisticalEvaluationsBusiness")
     @ResponseBody
-    public ResponseEntity<List<Statistical_EvaluationDTO>> getListStatistical_EvaluationDTOOfABusiness(){
-        String email=getEmailFromToken();
+    public ResponseEntity<List<Statistical_EvaluationDTO>> getListStatistical_EvaluationDTOOfABusiness() {
+        String email = getEmailFromToken();
 
-        List<Statistical_EvaluationDTO> evaluationDTOs=adminService.getListStatistical_EvaluationDTOOfABusiness(email);
+        List<Statistical_EvaluationDTO> evaluationDTOs = adminService.getListStatistical_EvaluationDTOOfABusiness(email);
 
-        if(evaluationDTOs!=null){
-            return new ResponseEntity<List<Statistical_EvaluationDTO>>(evaluationDTOs,HttpStatus.OK);
+        if (evaluationDTOs != null) {
+            return new ResponseEntity<List<Statistical_EvaluationDTO>>(evaluationDTOs, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 
+
+    //thống kê tỉ lệ về trạng thái task của sinh viên trong 1 doanh nghiệp
+    @GetMapping("/numberStatusTaskStudent")
+    @ResponseBody
+    public ResponseEntity<List<MonthNumberTaskDTO>> numberStatusTaskOfStudent() {
+        String email = getEmailFromToken();
+
+        Business business = businessService.getBusinessByEmail(email);
+
+        List<MonthNumberTaskDTO> numberStatus = adminService.numberTaskOfStudent(business);
+        if (numberStatus != null) {
+            return new ResponseEntity<List<MonthNumberTaskDTO>>(numberStatus, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/checkSemester")
+    @ResponseBody
+    private ResponseEntity<Boolean> checkSemesterExisted(@RequestParam String semesterName) {
+        boolean isExisted = false;
+        List<Semester> semesterList = semesterService.getAllSemester();
+        for (int i = 0; i < semesterList.size(); i++) {
+            if (semesterList.get(i).getName().equals(semesterName)) {
+                isExisted = true;
+                break;
+            }
+        }
+        return new ResponseEntity<Boolean>(isExisted, HttpStatus.OK);
+    }
+
+    @GetMapping("/getSemesterByName")
+    @ResponseBody
+    public ResponseEntity<Semester> getSemesterByName(@RequestParam String semesterName) {
+        Semester semester = semesterService.getSemesterByName(semesterName);
+        if (semester!= null) {
+            return new ResponseEntity<Semester>(semester, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PostMapping("/saveSemester")
+    public ResponseEntity<Semester> getSemesterByName(@RequestBody Semester ScheduleParameters) {
+        boolean save = semesterService.saveSemester(ScheduleParameters);
+        if (save == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 }
