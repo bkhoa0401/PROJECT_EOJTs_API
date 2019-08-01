@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import com.example.demo.config.StudentStatus;
 import com.example.demo.entity.Specialized;
 
 import java.io.Serializable;
@@ -16,6 +17,7 @@ public class Student_ImportFileDTO implements Serializable {
     private Specialized specialized;
     private float gpa;
     private String semesterName;
+
 
     public String getCode() {
         return code;
@@ -96,4 +98,5 @@ public class Student_ImportFileDTO implements Serializable {
     public void setSemesterName(String semesterName) {
         this.semesterName = semesterName;
     }
+
 }

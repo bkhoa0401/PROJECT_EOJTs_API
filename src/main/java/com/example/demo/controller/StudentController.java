@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.config.ActionEnum;
 import com.example.demo.config.Status;
+import com.example.demo.config.StudentStatus;
 import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
@@ -110,12 +111,14 @@ public class StudentController {
             specialized.setId(specializedID);
             studentList.get(i).setSpecialized(specialized);
 
+
             usersList.add(users);
 
             Semester semester = semesterService.getSemesterByName(studentList.get(i).getSemesterName());
 
             Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
             Student student = studentService.getStudentByEmail(studentList.get(i).getEmail());
+            student.setStatus(StudentStatus.NOTSTART);
             ojt_enrollment.setStudent(student);
             ojt_enrollment.setSemester(semester);
 
