@@ -658,11 +658,12 @@ public class AdminService implements IAdminService {
         for (int i = 0; i < studentList.size(); i++) {
             Student student = studentList.get(i);
             String emailOfStudent = student.getEmail();
+            String nameOfStudent = student.getName();
 
             Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(emailOfStudent, semester.getId());
             List<Task> taskList = ojt_enrollment.getTasks();
 
-            emailList.add(emailOfStudent);
+            emailList.add(nameOfStudent);
             tasksOfStudent.add(taskList.size());
         }
         students_tasksDTO.setStudentEmail(emailList);
@@ -684,14 +685,15 @@ public class AdminService implements IAdminService {
         for (int i = 0; i < studentList.size(); i++) {
             Student student = studentList.get(i);
             String emailOfStudent = student.getEmail();
+            String nameOfStudent = student.getName();
 
             Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(emailOfStudent, semester.getId());
             List<Task> taskList = ojt_enrollment.getTasks();
 
             int countTaskDone = countTasksDone(taskList);
-            double percentTaskDOne = (double) countTaskDone / (double) taskList.size();
+            double percentTaskDOne = ((double) countTaskDone / (double) taskList.size()) * 100;
 
-            emailList.add(emailOfStudent);
+            emailList.add(nameOfStudent);
             percentTasksDoneOfStudent.add(percentTaskDOne);
         }
         students_tasksDoneDTO.setStudentEmail(emailList);
@@ -770,7 +772,9 @@ public class AdminService implements IAdminService {
             List<Evaluation> evaluationList = ojt_enrollment.getEvaluations();
 
             Evaluation evaluationFinalOfStudent = getEvaluationFinalFromListOfStudent(evaluationList);
-            evaluationFinalListOfStudentsInSemester.add(evaluationFinalOfStudent);
+            if (evaluationFinalOfStudent != null) {
+                evaluationFinalListOfStudentsInSemester.add(evaluationFinalOfStudent);
+            }
         }
 
         //ra duoc bn thang xuat sac kha gioi
@@ -778,7 +782,7 @@ public class AdminService implements IAdminService {
         statisticalStudentInSemesterDTO.setCountStudentByType(statistical_evaluationDTO.getStatisticalTypeEvaluation());
 
         //ra duoc bn thang pass fail
-        List<Integer> getStudentPassOrFail=getStudentPassOrFail(evaluationFinalListOfStudentsInSemester);
+        List<Integer> getStudentPassOrFail = getStudentPassOrFail(evaluationFinalListOfStudentsInSemester);
         statisticalStudentInSemesterDTO.setCountStudentByStatus(getStudentPassOrFail);
 
         return statisticalStudentInSemesterDTO;
@@ -800,7 +804,7 @@ public class AdminService implements IAdminService {
                 countStudentFail++;
             }
         }
-        List<Integer> listResult=new ArrayList<>();
+        List<Integer> listResult = new ArrayList<>();
         listResult.add(countStudentPass);
         listResult.add(countStudentFail);
 
