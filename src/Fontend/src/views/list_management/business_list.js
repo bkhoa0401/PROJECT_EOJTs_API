@@ -158,8 +158,8 @@ class business_list extends Component {
                                             {business === null ?
                                                 <></> :
                                                 (business.logo === null ?
-                                                    <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "160px", height: "160px" }} alt="usericon" /> :
-                                                    <img src={business.logo} className="img-avatar" style={{ width: "160px", height: "160px" }} />
+                                                    <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "100px", height: "100px" }} alt="usericon" /> :
+                                                    <img src={business.logo} className="img-avatar" style={{ width: "100px", height: "100px" }} />
                                                 )
                                             }
                                         </Col>
