@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Badge, Card, CardBody, CardFooter, CardHeader, Col, Pagination, Row, Table, Input } from 'reactstrap';
-import { Button } from 'reactstrap';
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader, FormGroup, Label, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import orderBy from "lodash/orderBy";
@@ -39,7 +39,17 @@ class Official_List extends Component {
       searchValue: '',
       columnToSort: '',
       sortDirection: 'desc',
-      loading: true
+      loading: true,
+
+      suggestedStudents: null,
+
+      colorTextSelect: ['Black', 'White'],
+      colorBackSelect: ['White', 'DeepSkyBlue'],
+      listStudentEmail: [],
+      preListStudentEmail: [],
+      isSelect: [],
+      preSupervisor: '',
+      modal: false,
     }
   }
 
@@ -74,6 +84,14 @@ class Official_List extends Component {
     const { name, value } = event.target;
     await this.setState({
       [name]: value.substr(0, 20),
+    })
+  }
+
+  handleSelectSupervisor = async (event) => {
+    const { name, value } = event.target;
+    let { supervisors_FirstBlank } = this.state;
+    await this.setState({
+      preSupervisor: supervisors_FirstBlank[value]
     })
   }
 
@@ -125,6 +143,131 @@ class Official_List extends Component {
     }
   };
 
+  handleSelectAll = () => {
+    let suggestedStudents = this.state.suggestedStudents;
+    let preListStudentEmail = [];
+    let isSelect = [];
+    for (let index = 0; index < suggestedStudents.length; index++) {
+      isSelect.push(1);
+      preListStudentEmail.push(suggestedStudents[index]);
+    }
+    this.setState({
+      preListStudentEmail: preListStudentEmail,
+      isSelect: isSelect,
+    })
+  }
+
+  handleDeSelect = () => {
+    let suggestedStudents = this.state.suggestedStudents;
+    let preListStudentEmail = [];
+    let isSelect = [];
+    for (let index = 0; index < suggestedStudents.length; index++) {
+      isSelect.push(0);
+    }
+    this.setState({
+      preListStudentEmail: preListStudentEmail,
+      isSelect: isSelect,
+    })
+  }
+
+  handleSelect = (studentEmail) => {
+    let suggestedStudents = this.state.suggestedStudents;
+    let isSelected = -1;
+    let preListStudentEmail = this.state.preListStudentEmail;
+    let isSelect = this.state.isSelect;
+    for (let index = 0; index < preListStudentEmail.length; index++) {
+      if (preListStudentEmail[index].email == studentEmail) {
+        isSelected = index;
+      }
+    }
+    if (isSelected != -1) {
+      preListStudentEmail.splice(isSelected, 1);
+    }
+    for (let index = 0; index < suggestedStudents.length; index++) {
+      if (suggestedStudents[index].email == studentEmail) {
+        if (isSelected != -1) {
+          isSelect[index] = 0;
+        } else {
+          isSelect[index] = 1;
+          preListStudentEmail[index] = suggestedStudents[index];
+        }
+      }
+    }
+    this.setState({
+      preListStudentEmail: preListStudentEmail,
+      isSelect: isSelect,
+    })
+  }
+
+  toggleModal = async () => {
+    let suggestedStudents = null;
+    let isSelect = [];
+    if (this.state.modal == false) {
+      this.setState({
+        loading: true,
+      })
+      suggestedStudents = await ApiServices.Get(`/business/getStudentsByBusinessWithNoSupervisor`);
+
+      // console.log(suggestedStudents);
+      if (suggestedStudents != null) {
+        for (let index = 0; index < suggestedStudents.length; index++) {
+          isSelect.push(0);
+        }
+      }
+      this.setState({
+        modal: !this.state.modal,
+        suggestedStudents: suggestedStudents,
+        isSelect: isSelect,
+        loading: false,
+      });
+    } else {
+      this.setState({
+        modal: !this.state.modal,
+      })
+    }
+  }
+
+  toggleModalWithConfirm = async () => {
+    let { listDataEdited, preListStudentEmail, suggestedStudents } = this.state;
+    if (preListStudentEmail.length == 0 || this.state.preSupervisor == '') {
+      this.setState({
+        modal: !this.state.modal,
+      })
+    } else {
+      for (let index = 0; index < suggestedStudents.length; index++) {
+        listDataEdited.push(suggestedStudents[index]);
+        for (let i = 0; i < preListStudentEmail.length; i++) {
+          if (preListStudentEmail[i].email == listDataEdited[index].email) {
+            listDataEdited[index].supervisor = this.state.preSupervisor;
+          }
+        }
+      }
+      this.setState({
+        listDataEdited: listDataEdited,
+        modal: !this.state.modal,
+      })
+      // console.log(preListStudentEmail);
+      // console.log(this.state.preSupervisor);
+      // console.log(listDataEdited);
+      confirmAlert({
+        title: 'Xác nhận',
+        message: 'Bạn đã chắc chắn với những sự lựa chọn của mình?',
+        buttons: [
+          {
+            label: 'Đồng ý',
+            onClick: () => this.handleSubmit()
+          },
+          {
+            label: 'Hủy bỏ',
+            onClick: () => this.setState({
+              modal: !this.state.modal,
+            })
+          }
+        ]
+      });
+    }
+  }
+
   handleSubmit = async () => {
     this.setState({
       loading: true
@@ -136,7 +279,7 @@ class Official_List extends Component {
     if (result.status == 200) {
       Toastify.actionSuccess("Thao tác thành công!");
       this.setState({
-        loading: false
+        loading: false,
       })
 
     } else {
@@ -148,7 +291,7 @@ class Official_List extends Component {
   }
 
   render() {
-    const { students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection, loading } = this.state;
+    const { students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection, loading, suggestedStudents, isSelect, colorBackSelect, colorTextSelect } = this.state;
     let filteredListStudents = orderBy(students, columnToSort, sortDirection);
     if (students != null) {
       filteredListStudents = students.filter(
@@ -172,6 +315,12 @@ class Official_List extends Component {
                     <i className="fa fa-align-justify"></i> <b>Danh sách sinh viên thực tập tại doanh nghiệp</b>
                   </CardHeader>
                   <CardBody>
+                    {filteredListStudents === null ?
+                      <></> :
+                      <FormGroup row style={{ paddingLeft: '45%' }}>
+                        <Button color="primary" onClick={() => this.toggleModal()}>Phân nhóm</Button>
+                      </FormGroup>
+                    }
                     <nav className="navbar navbar-light bg-light justify-content-between">
                       <form className="form-inline">
                         <input onChange={this.handleInputSearch} name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
@@ -179,7 +328,7 @@ class Official_List extends Component {
                       <div style={{ marginRight: "70px" }}>
                         <b>Sắp xếp theo: </b>
                         &nbsp;&nbsp;&nbsp;
-                    <select>
+                        <select>
                           <option value="olala">olala</option>
                           <option value="olala">olala 2</option>
                           <option value="olala">olala 3</option>
@@ -198,7 +347,7 @@ class Official_List extends Component {
                           {/* <th style={{ textAlign: "center" }}>GPA</th>
                       <th style={{ textAlign: "center" }}>CV</th>
                       <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
-                          <th style={{ textAlign: "center" }}>Supervisor</th>
+                          <th style={{ textAlign: "center" }}>Người hướng dẫn</th>
                           <th style={{ textAlign: "center" }}>Thao tác</th>
                         </tr>
                       </thead>
@@ -263,10 +412,9 @@ class Official_List extends Component {
                       </tbody>
                     </Table>
                     <ToastContainer />
-
                   </CardBody>
                   <CardFooter className="p-4">
-                    <Row style={{paddingLeft:'45%'}}>
+                    <Row style={{ paddingLeft: '45%' }}>
                       <Col xs="4" sm="4">
                         <Button onClick={() => this.handleConfirm()} block color="primary" type="submit" id="btnSave">Lưu</Button>
                       </Col>
@@ -275,6 +423,59 @@ class Official_List extends Component {
                 </Card>
               </Col>
             </Row>
+            <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={'modal-primary ' + this.props.className}>
+              <ModalHeader toggle={this.toggleModal}>Phân nhóm</ModalHeader>
+              <ModalBody>
+                <FormGroup row>
+                  <Col md='4'>
+                    <Label>Người hướng dẫn</Label>
+                  </Col>
+                  <Col xs='12' md='8'>
+                    <Input onChange={e => { this.handleSelectSupervisor(e) }} type="select" name="withBlank">
+                      {supervisors_FirstBlank && supervisors_FirstBlank.map((supervisor, i) => {
+                        return (
+                          <option value={i}>{supervisor.name}</option>
+                        )
+                      })}
+                    </Input>
+                  </Col>
+                </FormGroup>
+                <FormGroup row>
+                  <Col xs="12" md="6">
+                    <Label>Sinh viên:</Label>
+                  </Col>
+                  <Col xs="12" md="6">
+                    <Button color="primary" onClick={() => this.handleSelectAll()}>Chọn tất cả</Button>
+                    &nbsp;&nbsp;
+                    <Button color="primary" onClick={() => this.handleDeSelect()}>Huỷ chọn</Button>
+                  </Col>
+                </FormGroup>
+                <hr />
+                <ListGroup>
+                  <div style={{ height: '400px', overflowY: 'scroll' }}>
+                    {suggestedStudents && suggestedStudents.map((student, index) =>
+                      <ListGroupItem action onClick={() => this.handleSelect(student.email)} style={{ color: colorTextSelect[isSelect[index]], backgroundColor: colorBackSelect[isSelect[index]] }}>
+                        <ListGroupItemHeading style={{ fontWeight: 'bold' }}>{student.name}</ListGroupItemHeading>
+                        <ListGroupItemText>
+                          - Chuyên ngành: {student.specialized.name}
+                          <br />- Kỹ năng:<br />
+                          {student.skills.map((skill, index1) => {
+                            return (
+                              <>
+                                &emsp;{index1 + 1}. {skill.name}<br />
+                              </>
+                            )
+                          })}
+                        </ListGroupItemText>
+                      </ListGroupItem>
+                    )}
+                  </div>
+                </ListGroup>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" onClick={this.toggleModalWithConfirm}>Xác nhận</Button>
+              </ModalFooter>
+            </Modal>
           </div>
         )
     );

@@ -320,6 +320,23 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/getStudentsByBusinessWithNoSupervisor")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getStudentsByBusinessWithNoSupervisor() {
+        String emailBusiness = getEmailFromToken();
+        List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
+        List<Student> students = new ArrayList<>();
+        for (int i = 0; i < studentList.size(); i++) {
+            if (studentList.get(i).getSupervisor() == null) {
+                students.add(studentList.get(i));
+            }
+        }
+        if (students != null) {
+            return new ResponseEntity<List<Student>>(students, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     //upload link transcript
     @PutMapping("/updateLinkTranscript")
     public ResponseEntity<Void> updateLinkTranscript(@RequestBody Student student) {
