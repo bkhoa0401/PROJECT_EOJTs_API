@@ -43,7 +43,7 @@ public class HistoryAction implements Serializable {
     @Column(name = "actionTime")
     Date actionTime;
 
-    @OneToMany(mappedBy = "historyAction")
+    @OneToMany(mappedBy = "historyAction", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<HistoryDetail> details = new ArrayList<>();
 
@@ -134,5 +134,13 @@ public class HistoryAction implements Serializable {
 
     public void setActionTime(Date actionTime) {
         this.actionTime = actionTime;
+    }
+
+    public List<HistoryDetail> getDetails() {
+        return details;
+    }
+
+    public void setDetails(List<HistoryDetail> details) {
+        this.details = details;
     }
 }

@@ -22,7 +22,7 @@ public class HistoryDetail implements Serializable {
     @Column(name = "newValue", columnDefinition = "NVARCHAR(MAX)")
     private String newValue;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "action_history_id")
     private HistoryAction historyAction;
@@ -35,6 +35,14 @@ public class HistoryDetail implements Serializable {
         this.columnName = columnName;
         this.targetId = targetId;
         this.newValue = newValue;
+    }
+
+    public HistoryDetail(String tableName, String columnName, String targetId, String newValue, HistoryAction historyAction) {
+        this.tableName = tableName;
+        this.columnName = columnName;
+        this.targetId = targetId;
+        this.newValue = newValue;
+        this.historyAction = historyAction;
     }
 
     public int getId() {
@@ -84,4 +92,6 @@ public class HistoryDetail implements Serializable {
     public void setHistoryAction(HistoryAction historyAction) {
         this.historyAction = historyAction;
     }
+
+
 }
