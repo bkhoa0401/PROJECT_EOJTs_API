@@ -947,6 +947,10 @@ public class StudentController {
     public ResponseEntity<Void> createBusinessPropose(@RequestBody Business_Proposed business_proposed) {
         String email = getEmailFromToken();
         if (business_proposed != null) {
+            Student student=studentService.getStudentByEmail(email);
+
+            business_proposed.setStudent_proposed(student);
+            business_proposed.setContactLink(email);
             iBusiness_proposedService.createBusinessPropose(business_proposed);
             HistoryDetail historyDetail = new HistoryDetail(Business_Proposed.class.getName(), null, email, business_proposed.toString());
             HistoryAction action =
