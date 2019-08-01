@@ -186,7 +186,6 @@ public class Business_ProposedService implements IBusiness_ProposedService {
             business.setBusiness_website(business_proposed.getBusiness_website());
             business.setLogo(business_proposed.getLogo());
 
-
             ojt_enrollment.setBusiness(business);
             ojt_enrollment.setSemester(semester);
             ojtEnrollmentList.add(ojt_enrollment);
@@ -215,5 +214,23 @@ public class Business_ProposedService implements IBusiness_ProposedService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean checkBusinessProposeIsReject(String email) {
+        Student student = iStudentService.getStudentByEmail(email);
+        List<Business_Proposed> business_proposeds = iBusiness_proposedRepository.findBusiness_ProposedsByStudent_proposed(student);
+        if (business_proposeds.size() == 0 || business_proposeds == null) {
+            return true;
+        }
+        for (int i = 0; i < business_proposeds.size(); i++) {
+            Business_Proposed bus = business_proposeds.get(i);
+            if(bus.getIsAcceptedByStartupRoom() != BusinessProposedStatus.REJECTED
+                    && bus.getIsAcceptedByHeadOfTraining()!= BusinessProposedStatus.REJECTED
+                    && bus.getIsAcceptedByHeadMaster()!= BusinessProposedStatus.REJECTED) {
+                return false;
+            }
+        }
+        return true;
     }
 }

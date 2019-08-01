@@ -947,7 +947,7 @@ public class StudentController {
     public ResponseEntity<Void> createBusinessPropose(@RequestBody Business_Proposed business_proposed) {
         String email = getEmailFromToken();
         if (business_proposed != null) {
-            Student student=studentService.getStudentByEmail(email);
+            Student student = studentService.getStudentByEmail(email);
 
             business_proposed.setStudent_proposed(student);
             business_proposed.setContactLink(email);
@@ -1003,6 +1003,15 @@ public class StudentController {
 
         return new ResponseEntity<Integer>(countEventIsNotRead, HttpStatus.OK);
     }
+
+    @GetMapping("/businessIsReject")
+    @ResponseBody
+    public ResponseEntity<Boolean> getStatusOfBusinessProposeOfStudent() {
+        String email = getEmailFromToken();
+        boolean result = iBusiness_proposedService.checkBusinessProposeIsReject(email);
+        return new ResponseEntity<Boolean>(result, HttpStatus.OK);
+    }
+
 
     //get email from token
     private String getEmailFromToken() {
