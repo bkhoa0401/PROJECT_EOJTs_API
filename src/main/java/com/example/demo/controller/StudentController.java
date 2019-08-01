@@ -146,7 +146,7 @@ public class StudentController {
 
     //check semester //ok
     @PostMapping("/new")
-    public ResponseEntity<Void> createNewStudent(@RequestBody Student student) throws Exception {
+    public ResponseEntity<Void> createNewStudent(@RequestBody Student_ImportFileDTO student) throws Exception {
 
         List<Role> roleList = new ArrayList<>();
         Role role = new Role();
@@ -161,12 +161,14 @@ public class StudentController {
         users.setPassword(password);
         users.setActive(true);
 
-        Semester semester = semesterService.getSemesterCurrent();
+        Semester semester = semesterService.getSemesterByName(student.getSemesterName());
 
-        ojt_enrollment.setStudent(student);
+        Student studentGetByEmail=studentService.getStudentByEmail(student.getEmail());
+
+        ojt_enrollment.setStudent(studentGetByEmail);
         ojt_enrollment.setSemester(semester);
         try {
-            studentService.saveStudent(student);
+            studentService.saveStudent(studentGetByEmail);
             usersService.saveUser(users);
             ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);
 
