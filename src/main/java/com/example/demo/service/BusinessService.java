@@ -7,12 +7,13 @@ import com.example.demo.repository.IEvaluationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @Service
-public class BusinessService implements IBusinessService{
+public class BusinessService implements IBusinessService {
     @Autowired
     IBusinessRepository IBusinessRepository;
 
@@ -27,6 +28,9 @@ public class BusinessService implements IBusinessService{
 
     @Autowired
     ISemesterService semesterService;
+
+    @Autowired
+    ISupervisorService iSupervisorService;
 
     @Override
     public void saveBusiness(Business business) {
@@ -249,5 +253,33 @@ public class BusinessService implements IBusinessService{
         List<Job_Post> job_postList = ojt_enrollment.getJob_posts();
 
         return job_postList;
+    }
+
+    @Override
+    public List<Evaluation> getEvaluationsOfSupervisor(String email) {
+        List<Evaluation> evaluationListResult = new ArrayList<>();
+
+        Supervisor supervisor=iSupervisorService.findByEmail(email);
+        List<Evaluation> evaluationList = supervisor.getEvaluations();
+        Semester semester = semesterService.getSemesterByStartDateAndEndDate();
+
+        for (int i = 0; i < evaluationList.size(); i++) {
+            Evaluation evaluation = evaluationList.get(i);
+            boolean result = checkEvaluationListIsInSemester(semester, evaluation);
+            if(result==true){
+                evaluationListResult.add(evaluation);
+            }
+        }
+        return evaluationListResult;
+    }
+
+    public boolean checkEvaluationListIsInSemester(Semester semester, Evaluation evaluation) {
+        Date dateStart = semester.getStart_date();
+
+        Date dateEnd = semester.getEnd_date();
+
+        Date taskDate = evaluation.getTimeCreated();
+
+        return taskDate.after(dateStart) && taskDate.before(dateEnd);
     }
 }

@@ -4,6 +4,7 @@ import com.example.demo.dto.*;
 
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
+import com.nimbusds.jwt.JWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -364,6 +366,29 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/statisticalEvaluationOfSupervisor")
+    @ResponseBody
+    public ResponseEntity<List<Statistical_EvaluationDTO>> getStatistical_EvaluationDTOSBySupervisor() {
+        String email = getEmailFromToken();
+
+        List<Statistical_EvaluationDTO> evaluationDTOS = adminService.getListStatistical_EvaluationOfSupervisorDTO(email);
+        if (evaluationDTOS != null) {
+            return new ResponseEntity<List<Statistical_EvaluationDTO>>(evaluationDTOS, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+
+    @GetMapping("/statisticalStudentInSemester")
+    @ResponseBody
+    public ResponseEntity<StatisticalStudentInSemesterDTO> getStatisticalStudentInSemester(@RequestParam String semesterName) {
+        StatisticalStudentInSemesterDTO statisticalStudentInSemesterDTO =
+                adminService.getStatisticalStudentInSemester(semesterName);
+        if (statisticalStudentInSemesterDTO != null) {
+            return new ResponseEntity<StatisticalStudentInSemesterDTO>(statisticalStudentInSemesterDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 
     @GetMapping("/checkSemester")
     @ResponseBody
