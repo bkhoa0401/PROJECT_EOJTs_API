@@ -129,6 +129,14 @@ public class EvaluationService implements IEvaluationService {
                 ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email, semesterCurrent.getId());
 
         List<Evaluation> evaluationList = IEvaluationRepository.findEvaluationsByOjt_enrollment(ojt_enrollment);
+
+        for (int i = 0; i < evaluationList.size(); i++) {
+            Evaluation evaluation = evaluationList.get(i);
+            if (evaluation.getTitle().equals(ReportName.EVALUATIONFINAL)) {
+                evaluationList.remove(evaluation);
+                break;
+            }
+        }
         if (evaluationList != null) {
             return evaluationList;
         }
