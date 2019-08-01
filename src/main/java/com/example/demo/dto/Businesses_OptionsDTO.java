@@ -2,9 +2,10 @@ package com.example.demo.dto;
 
 import com.example.demo.entity.Business;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Businesses_OptionsDTO {
+public class Businesses_OptionsDTO implements Serializable {
     List<String> businessListEngName;
     List<Integer> countStudentRegisterBusiness;
 

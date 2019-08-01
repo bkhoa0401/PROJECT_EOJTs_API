@@ -600,7 +600,7 @@ public class AdminService implements IAdminService {
             List<Task> listTaskOfMonth = new ArrayList<>();
             for (int j = 0; j < taskList.size(); j++) {
                 Task task = taskList.get(j);
-                if ((task.getTime_created().getMonth()+1)==monthList.get(i)) {
+                if ((task.getTime_created().getMonth() + 1) == monthList.get(i)) {
                     listTaskOfMonth.add(task);
                 }
             }
@@ -638,11 +638,77 @@ public class AdminService implements IAdminService {
             Date dateOfTask = task.getTime_created();
             int monthOfTask = dateOfTask.getMonth();
             if (monthList.size() == 0) {
-                monthList.add(monthOfTask+1);
-            } else if (!monthList.contains(monthOfTask+1)) {
-                monthList.add(monthOfTask+1);
+                monthList.add(monthOfTask + 1);
+            } else if (!monthList.contains(monthOfTask + 1)) {
+                monthList.add(monthOfTask + 1);
             }
         }
         return monthList;
+    }
+
+    @Override
+    public Students_TasksDTO getStudentsAndTasksOfSupervisor(String email) {
+        List<String> emailList = new ArrayList<>();
+        List<Integer> tasksOfStudent = new ArrayList<>();
+
+        Semester semester = semesterService.getSemesterByStartDateAndEndDate();
+
+        Students_TasksDTO students_tasksDTO = new Students_TasksDTO();
+
+        List<Student> studentList = iStudentService.getAllStudentOfASupervisor(email);
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            String emailOfStudent = student.getEmail();
+
+            Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(emailOfStudent, semester.getId());
+            List<Task> taskList = ojt_enrollment.getTasks();
+
+            emailList.add(emailOfStudent);
+            tasksOfStudent.add(taskList.size());
+        }
+        students_tasksDTO.setStudentEmail(emailList);
+        students_tasksDTO.setCountTaskOfStudent(tasksOfStudent);
+
+        return students_tasksDTO;
+    }
+
+    @Override
+    public Students_TasksDoneDTO getStudentAndTasksDoneOfSupervisor(String email) {
+        List<String> emailList = new ArrayList<>();
+        List<Double> percentTasksDoneOfStudent = new ArrayList<>();
+
+        Semester semester = semesterService.getSemesterByStartDateAndEndDate();
+        Students_TasksDoneDTO students_tasksDoneDTO = new Students_TasksDoneDTO();
+
+        List<Student> studentList = iStudentService.getAllStudentOfASupervisor(email);
+
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            String emailOfStudent = student.getEmail();
+
+            Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(emailOfStudent, semester.getId());
+            List<Task> taskList = ojt_enrollment.getTasks();
+
+            int countTaskDone = countTasksDone(taskList);
+            double percentTaskDOne=(double) countTaskDone/(double) taskList.size();
+
+            emailList.add(emailOfStudent);
+            percentTasksDoneOfStudent.add(percentTaskDOne);
+        }
+        students_tasksDoneDTO.setStudentEmail(emailList);
+        students_tasksDoneDTO.setCountTaskDoneOfStudent(percentTasksDoneOfStudent);
+
+        return students_tasksDoneDTO;
+    }
+
+    public int countTasksDone(List<Task> tasks) {
+        int count = 0;
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (task.getStatus().equals(Status.DONE)) {
+                count++;
+            }
+        }
+        return count;
     }
 }

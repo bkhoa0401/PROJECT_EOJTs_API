@@ -340,6 +340,31 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/studentsTasks")
+    @ResponseBody
+    public ResponseEntity<Students_TasksDTO> getStudentsTasks() {
+        String email = getEmailFromToken();
+
+        Students_TasksDTO students_tasksDTO = adminService.getStudentsAndTasksOfSupervisor(email);
+        if (students_tasksDTO != null) {
+            return new ResponseEntity<Students_TasksDTO>(students_tasksDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/studentsTasksDone")
+    @ResponseBody
+    public ResponseEntity<Students_TasksDoneDTO> getStudentsTasksDone() {
+        String email = getEmailFromToken();
+
+        Students_TasksDoneDTO students_tasksDoneDTO = adminService.getStudentAndTasksDoneOfSupervisor(email);
+        if (students_tasksDoneDTO != null) {
+            return new ResponseEntity<Students_TasksDoneDTO>(students_tasksDoneDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+
     @GetMapping("/checkSemester")
     @ResponseBody
     private ResponseEntity<Boolean> checkSemesterExisted(@RequestParam String semesterName) {
@@ -358,7 +383,7 @@ public class AdminController {
     @ResponseBody
     public ResponseEntity<Semester> getSemesterByName(@RequestParam String semesterName) {
         Semester semester = semesterService.getSemesterByName(semesterName);
-        if (semester!= null) {
+        if (semester != null) {
             return new ResponseEntity<Semester>(semester, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -372,4 +397,6 @@ public class AdminController {
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
+
+
 }
