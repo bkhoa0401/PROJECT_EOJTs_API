@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.config.Status;
+import com.example.demo.entity.Business;
+import com.example.demo.entity.Supervisor;
 import com.example.demo.entity.Task;
 
 import java.util.List;
@@ -26,4 +28,6 @@ public interface ITaskService {
     float getPercentTaskDoneOfStudent(String email);
 
     List<Task> findTasksOfStudentByStatus(String email, Status status);
+
+    List<Task> findTasksOfBusinessAndSemester(Business business);
 }

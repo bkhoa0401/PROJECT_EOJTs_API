@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.SpecializedPagingDTO;
 import com.example.demo.entity.Business;
 import com.example.demo.entity.Specialized;
 import com.example.demo.entity.Users;
@@ -109,5 +110,12 @@ public class SpecializedController {
             return new ResponseEntity<Boolean>(result, HttpStatus.OK);
         }
         return new ResponseEntity<Boolean>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("/pagination")
+    @ResponseBody
+    public ResponseEntity<SpecializedPagingDTO> getSpecializedPaging(@RequestParam int currentPage, @RequestParam int rowsPerPage) {
+        SpecializedPagingDTO specializedList = specializedService.pagingSpecialized(currentPage, rowsPerPage);
+        return new ResponseEntity<>(specializedList, HttpStatus.OK);
     }
 }

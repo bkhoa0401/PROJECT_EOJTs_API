@@ -46,7 +46,7 @@ public class SemesterService implements ISemesterService {
             boolean getCurrentSemester = Utils.aDateBetweenTwoDate(minDate, maxDate);
             if (getCurrentSemester == true) {
                 semesterCurrent = semesters.get(i);
-               //        break;
+                //        break;
             }
         }
         return semesterCurrent;
@@ -87,6 +87,23 @@ public class SemesterService implements ISemesterService {
     }
 
     @Override
+    public Semester getSemesterByStartDateAndEndDate() {
+        List<Semester> semesters = getAllSemester();
+        Semester semesterByStartDateAndEndDate = new Semester();
+
+        for (int i = 0; i < semesters.size(); i++) {
+            String startDate = semesters.get(i).getStart_date().toString();
+            String endDate = semesters.get(i).getEnd_date().toString();
+
+            boolean getSemesterByStartDateAndEndDate = Utils.aDateBetweenTwoDate(startDate, endDate);
+            if (getSemesterByStartDateAndEndDate == true) {
+                semesterByStartDateAndEndDate = semesters.get(i);
+                break;
+            }
+        }
+        return semesterByStartDateAndEndDate;
+    }
+
     public boolean saveSemester(Semester ScheduleParameters) {
         Semester semester = ISemesterRepository.findSemesterByName(ScheduleParameters.getName());
         if (ScheduleParameters != null) {
@@ -97,5 +114,6 @@ public class SemesterService implements ISemesterService {
             return true;
         }
         return false;
+
     }
 }

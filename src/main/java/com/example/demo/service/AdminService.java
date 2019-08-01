@@ -2,12 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.config.ReportName;
 import com.example.demo.config.ReportType;
+import com.example.demo.config.Status;
 import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IAdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +47,9 @@ public class AdminService implements IAdminService {
 
     @Autowired
     ISemesterService iSemesterService;
+
+    @Autowired
+    ITaskService iTaskService;
 
     @Override
     public Admin findAdminByEmail(String email) {
@@ -494,10 +499,10 @@ public class AdminService implements IAdminService {
         Statistical_EvaluationDTO statistical_evaluationDTOEvaluation_3;
         Statistical_EvaluationDTO statistical_evaluationDTOEvaluation_4;
 
-        List<Evaluation> evaluationListByTitle_1=getEvaluationByTitle(evaluationList,ReportName.EVALUATION1);
-        List<Evaluation> evaluationListByTitle_2=getEvaluationByTitle(evaluationList,ReportName.EVALUATION2);
-        List<Evaluation> evaluationListByTitle_3=getEvaluationByTitle(evaluationList,ReportName.EVALUATION3);
-        List<Evaluation> evaluationListByTitle_4=getEvaluationByTitle(evaluationList,ReportName.EVALUATION4);
+        List<Evaluation> evaluationListByTitle_1 = getEvaluationByTitle(evaluationList, ReportName.EVALUATION1);
+        List<Evaluation> evaluationListByTitle_2 = getEvaluationByTitle(evaluationList, ReportName.EVALUATION2);
+        List<Evaluation> evaluationListByTitle_3 = getEvaluationByTitle(evaluationList, ReportName.EVALUATION3);
+        List<Evaluation> evaluationListByTitle_4 = getEvaluationByTitle(evaluationList, ReportName.EVALUATION4);
 
         List<Statistical_EvaluationDTO> statisticalEvaluationDTOList = new ArrayList<>();
 
@@ -535,7 +540,7 @@ public class AdminService implements IAdminService {
         List<Evaluation> evaluationListByTitle = new ArrayList<>();
         for (int i = 0; i < evaluationList.size(); i++) {
             Evaluation evaluation = evaluationList.get(i);
-            if(evaluation.getTitle().equals(title)){
+            if (evaluation.getTitle().equals(title)) {
                 evaluationListByTitle.add(evaluation);
             }
         }
@@ -571,6 +576,136 @@ public class AdminService implements IAdminService {
                 option2 = student.getOption2();
             }
             if (option1.equals(businessEngName) || option2.equals(businessEngName)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public List<MonthNumberTaskDTO> numberTaskOfStudent(Business business) {
+
+        int countTaskDone = 0;
+        int countTaskPending = 0;
+        int countTaskNotStart = 0;
+
+        List<MonthNumberTaskDTO> monthNumberTaskDTOS = new ArrayList<>();
+
+        List<Integer> number = new ArrayList<>();
+        List<Task> taskList = iTaskService.findTasksOfBusinessAndSemester(business);
+
+        List<Integer> monthList = monthListOfTaskList(taskList);
+
+        for (int i = 0; i < monthList.size(); i++) {
+            List<Task> listTaskOfMonth = new ArrayList<>();
+            for (int j = 0; j < taskList.size(); j++) {
+                Task task = taskList.get(j);
+                if ((task.getTime_created().getMonth() + 1) == monthList.get(i)) {
+                    listTaskOfMonth.add(task);
+                }
+            }
+            for (int k = 0; k < listTaskOfMonth.size(); k++) {
+                Task task = listTaskOfMonth.get(k);
+                if (task.getStatus().equals(Status.DONE)) {
+                    countTaskDone++;
+                } else if (task.getStatus().equals(Status.PENDING)) {
+                    countTaskPending++;
+                } else {
+                    countTaskNotStart++;
+                }
+            }
+            number.add(countTaskDone);
+            number.add(countTaskPending);
+            number.add(countTaskNotStart);
+
+            MonthNumberTaskDTO monthNumberTaskDTO = new MonthNumberTaskDTO();
+            monthNumberTaskDTO.setMonth(monthList.get(i));
+            monthNumberTaskDTO.setCountStatusTaskInMonth(number);
+            monthNumberTaskDTOS.add(monthNumberTaskDTO);
+
+            number = new ArrayList<>();
+            countTaskDone = 0;
+            countTaskPending = 0;
+            countTaskNotStart = 0;
+        }
+        return monthNumberTaskDTOS;
+    }
+
+    public List<Integer> monthListOfTaskList(List<Task> tasks) {
+        List<Integer> monthList = new ArrayList<>();
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            Date dateOfTask = task.getTime_created();
+            int monthOfTask = dateOfTask.getMonth();
+            if (monthList.size() == 0) {
+                monthList.add(monthOfTask + 1);
+            } else if (!monthList.contains(monthOfTask + 1)) {
+                monthList.add(monthOfTask + 1);
+            }
+        }
+        return monthList;
+    }
+
+    @Override
+    public Students_TasksDTO getStudentsAndTasksOfSupervisor(String email) {
+        List<String> emailList = new ArrayList<>();
+        List<Integer> tasksOfStudent = new ArrayList<>();
+
+        Semester semester = semesterService.getSemesterByStartDateAndEndDate();
+
+        Students_TasksDTO students_tasksDTO = new Students_TasksDTO();
+
+        List<Student> studentList = iStudentService.getAllStudentOfASupervisor(email);
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            String emailOfStudent = student.getEmail();
+
+            Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(emailOfStudent, semester.getId());
+            List<Task> taskList = ojt_enrollment.getTasks();
+
+            emailList.add(emailOfStudent);
+            tasksOfStudent.add(taskList.size());
+        }
+        students_tasksDTO.setStudentEmail(emailList);
+        students_tasksDTO.setCountTaskOfStudent(tasksOfStudent);
+
+        return students_tasksDTO;
+    }
+
+    @Override
+    public Students_TasksDoneDTO getStudentAndTasksDoneOfSupervisor(String email) {
+        List<String> emailList = new ArrayList<>();
+        List<Double> percentTasksDoneOfStudent = new ArrayList<>();
+
+        Semester semester = semesterService.getSemesterByStartDateAndEndDate();
+        Students_TasksDoneDTO students_tasksDoneDTO = new Students_TasksDoneDTO();
+
+        List<Student> studentList = iStudentService.getAllStudentOfASupervisor(email);
+
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            String emailOfStudent = student.getEmail();
+
+            Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(emailOfStudent, semester.getId());
+            List<Task> taskList = ojt_enrollment.getTasks();
+
+            int countTaskDone = countTasksDone(taskList);
+            double percentTaskDOne=(double) countTaskDone/(double) taskList.size();
+
+            emailList.add(emailOfStudent);
+            percentTasksDoneOfStudent.add(percentTaskDOne);
+        }
+        students_tasksDoneDTO.setStudentEmail(emailList);
+        students_tasksDoneDTO.setCountTaskDoneOfStudent(percentTasksDoneOfStudent);
+
+        return students_tasksDoneDTO;
+    }
+
+    public int countTasksDone(List<Task> tasks) {
+        int count = 0;
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (task.getStatus().equals(Status.DONE)) {
                 count++;
             }
         }
