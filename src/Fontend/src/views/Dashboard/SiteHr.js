@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Bar, Doughnut, Line, Pie, Polar, Radar } from 'react-chartjs-2';
-import { Card, CardBody, CardColumns, CardHeader, Input, Table } from 'reactstrap';
+import { Card, CardBody, CardColumns, CardHeader, Input, Table, Col, FormGroup } from 'reactstrap';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import ApiServices from '../../service/api-service';
+import { element } from 'prop-types';
 
 const pie = {
   labels: [
@@ -35,7 +36,7 @@ const options = {
   maintainAspectRatio: false
 }
 
-class SiteAdmin extends Component {
+class SiteHr extends Component {
 
   constructor(props) {
     super(props);
@@ -45,7 +46,9 @@ class SiteAdmin extends Component {
       bar: {},
       radar: {},
       doughnut: {},
-
+      countStatusTaskInMonth: [],
+      countStatusTaskInMonthItem: {},
+      month: []
     };
   }
 
@@ -53,7 +56,7 @@ class SiteAdmin extends Component {
     const businessOptionsBySemester = await ApiServices.Get('/admin/businessOptionsBySemester');
     const studentInternAtBusiness = await ApiServices.Get('/admin/studentInternAtBusiness');
     const statisticalEvaluationsBusiness = await ApiServices.Get('/admin/statisticalEvaluationsBusiness');
-    const statisticalStudentIsAnswer = await ApiServices.Get('/admin/statisticalStudentIsAnswer');
+    const numberStatusTaskStudent = await ApiServices.Get('/admin/numberStatusTaskStudent');
 
     if (businessOptionsBySemester != null) {
       var line = {
@@ -171,38 +174,105 @@ class SiteAdmin extends Component {
       });
     }
 
-    if (statisticalStudentIsAnswer != null) {
+    if (numberStatusTaskStudent != null) {
+      var month = [];
+      var countStatusTaskInMonth = [];
+      var countStatusTaskInMonthItem = {};
+      var doughnut = {};
+      numberStatusTaskStudent && numberStatusTaskStudent.map((data, index) => {
+        if (index == 0) {
+          countStatusTaskInMonthItem = data.countStatusTaskInMonth;
+        }
+        month.push(data.month);
+        countStatusTaskInMonth.push(data.countStatusTaskInMonth);
+      })
+      this.setState({
+        countStatusTaskInMonth: countStatusTaskInMonth,
+        countStatusTaskInMonthItem: countStatusTaskInMonthItem,
+        month: month,
+        loading: false,
+      });
+
       var doughnut = {
         labels: [
-          'Đã trả lời',
-          'Chưa trả lời',
+          'Hoàn thành',
+          'Chưa hoàn thành',
+          'Chưa bắt đầu'
         ],
         datasets: [
           {
-            data: statisticalStudentIsAnswer,
+            data: countStatusTaskInMonthItem,
             backgroundColor: [
-              '#FF6384',
               '#36A2EB',
+              '#FFF68F',
+              '#FF6384'
             ],
             hoverBackgroundColor: [
-              '#FF6384',
               '#36A2EB',
+              '#FFF68F',
+              '#FF6384'
             ],
           }],
       }
+
       this.setState({
         doughnut: doughnut
       });
+      console.log("AAAAAAAAAAA", this.state.countStatusTaskInMonth);
     }
-
-    this.setState({
-      loading: false,
-    });
-
   }
 
+  handleInput = async (event) => {
+    const { value } = event.target;
+    const { countStatusTaskInMonth } = this.state;
+    console.log("countStatusTaskInMonth", countStatusTaskInMonth);
+    console.log("countStatusTaskInMonth[value]", countStatusTaskInMonth[value]);
+
+    if (countStatusTaskInMonth != null) {
+      await this.setState({
+        countStatusTaskInMonthItem: countStatusTaskInMonth[value]
+      })
+    }
+
+    console.log(this.state.countStatusTaskInMonthItem);
+
+    var doughnut = {
+      labels: [
+        'Hoàn thành',
+        'Chưa hoàn thành',
+        'Chưa bắt đầu'
+      ],
+      datasets: [
+        {
+          data: this.state.countStatusTaskInMonthItem,
+          backgroundColor: [
+            '#36A2EB',
+            '#FFF68F',
+            '#FF6384'
+          ],
+          hoverBackgroundColor: [
+            '#36A2EB',
+            '#FFF68F',
+            '#FF6384'
+          ],
+        }],
+    }
+
+    console.log("doughnut", doughnut.datasets[0].data);
+    // console.log(countStatusTaskInMonth);
+    // console.log("doughnut", this.state.doughnut.datasets[0].data);
+
+    await this.setState({
+      // countStatusTaskInMonth: countStatusTaskInMonth,
+      doughnut: doughnut,
+    });
+
+    console.log("countStatusTaskInMonth", countStatusTaskInMonth);
+  }
+
+
   render() {
-    const { loading, line, bar, radar, doughnut } = this.state;
+    const { loading, line, bar, radar, doughnut, month } = this.state;
     return (
       loading.toString() === 'true' ? (
         SpinnerLoading.showHashLoader(loading)
@@ -214,7 +284,7 @@ class SiteAdmin extends Component {
                   <td>
                     <Card>
                       <CardHeader>
-                        <h6>Thống kê đánh giá các evaluation của sinh viên thực tập tại doanh nghiệp</h6>
+                        <h6>Thống kê các đánh giá của sinh viên thực tập tại doanh nghiệp</h6>
                       </CardHeader>
                       <CardBody>
                         <div className="chart-wrapper">
@@ -226,7 +296,20 @@ class SiteAdmin extends Component {
                   <td>
                     <Card>
                       <CardHeader>
-                        <h6>Thống kê tỉ lệ về trạng thái task của sinh viên</h6>
+                        <FormGroup row>
+                          <Col md="8">
+                            <h6>Thống kê tỉ lệ về trạng thái task của sinh viên</h6>
+                          </Col>
+                          <Col md="3" style={{ width: "150px", marginLeft: "1%" }}>
+                            <Input onChange={this.handleInput} type="select" name="month" style={{ width: "100px" }}>
+                              {month && month.map((mth, i) => {
+                                return (
+                                  <option value={i}>{'Tháng ' + `${mth}`}</option>
+                                )
+                              })}
+                            </Input>
+                          </Col>
+                        </FormGroup>
                       </CardHeader>
                       <CardBody>
                         <div className="chart-wrapper">
@@ -301,4 +384,4 @@ class SiteAdmin extends Component {
   }
 }
 
-export default SiteAdmin;
+export default SiteHr;

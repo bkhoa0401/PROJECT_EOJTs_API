@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.config.ReportName;
+import com.example.demo.config.StudentStatus;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IBusinessRepository;
 import com.example.demo.repository.IEvaluationRepository;
@@ -32,6 +33,9 @@ public class EvaluationService implements IEvaluationService {
     @Autowired
     IBusinessService iBusinessService;
 
+    @Autowired
+    IStudentService iStudentService;
+
     //check semester //ok
     @Override
     public void createNewEvaluation(Evaluation evaluation, String studentEmail) {
@@ -42,7 +46,63 @@ public class EvaluationService implements IEvaluationService {
         Date date = new Date(Calendar.getInstance().getTime().getTime());
         evaluation.setOjt_enrollment(ojt_enrollment);
         evaluation.setTimeCreated(date);
+
         IEvaluationRepository.save(evaluation);
+
+        //generate final report
+        if (evaluation.getTitle().equals(ReportName.EVALUATION4)) {
+            List<Evaluation> evaluationList = ojt_enrollment.getEvaluations();
+            Evaluation evaluationFinal = generateFinalEvaluation(evaluationList);
+            evaluationFinal.setOjt_enrollment(ojt_enrollment);
+            evaluationFinal.setTimeCreated(date);
+            evaluationFinal.setSupervisor(evaluation.getSupervisor());
+            IEvaluationRepository.save(evaluationFinal);
+
+            boolean studentPassOrFail = checkStudentPassOrFail(evaluationFinal);
+
+            Student student = evaluationFinal.getOjt_enrollment().getStudent();
+            if (studentPassOrFail == true) {
+                student.setStatus(StudentStatus.PASS);
+            } else {
+                student.setStatus(StudentStatus.FAIL);
+            }
+            iStudentService.saveStudent(student);
+        }
+    }
+
+    public boolean checkStudentPassOrFail(Evaluation evaluation) {
+        float scoreActivity = evaluation.getScore_activity();
+        float scoreDiscipline = evaluation.getScore_discipline();
+        float scoreWork = evaluation.getScore_work();
+
+        float result = (scoreActivity + scoreDiscipline + scoreWork) / (float) 3;
+        if (result >= 5) {
+            return true;
+        } else {
+            return false;
+
+        }
+    }
+
+    public Evaluation generateFinalEvaluation(List<Evaluation> evaluations) {
+        float scoreActivity = 0;
+        float scoreDiscipline = 0;
+        float scoreWork = 0;
+
+        for (int i = 0; i < evaluations.size(); i++) {
+            Evaluation evaluation = evaluations.get(i);
+            scoreActivity += evaluation.getScore_activity();
+            scoreDiscipline += evaluation.getScore_discipline();
+            scoreWork += evaluation.getScore_work();
+        }
+
+        Evaluation evaluation = new Evaluation();
+        evaluation.setScore_activity(scoreActivity / (float) 4);
+        evaluation.setScore_discipline(scoreDiscipline / (float) 4);
+        evaluation.setScore_work(scoreWork / (float) 4);
+        evaluation.setTitle(ReportName.EVALUATIONFINAL);
+
+        return evaluation;
     }
 
     //check semester // ok
@@ -69,6 +129,14 @@ public class EvaluationService implements IEvaluationService {
                 ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email, semesterCurrent.getId());
 
         List<Evaluation> evaluationList = IEvaluationRepository.findEvaluationsByOjt_enrollment(ojt_enrollment);
+
+        for (int i = 0; i < evaluationList.size(); i++) {
+            Evaluation evaluation = evaluationList.get(i);
+            if (evaluation.getTitle().equals(ReportName.EVALUATIONFINAL)) {
+                evaluationList.remove(evaluation);
+                break;
+            }
+        }
         if (evaluationList != null) {
             return evaluationList;
         }
@@ -81,7 +149,7 @@ public class EvaluationService implements IEvaluationService {
         Semester semesterCurrent = semesterService.getSemesterCurrent();
 
 
-        Business business =iBusinessService.getBusinessByEmail(email);
+        Business business = iBusinessService.getBusinessByEmail(email);
         List<Supervisor> supervisors = business.getSupervisors();
 
         List<Evaluation> evaluationList = new ArrayList<>();
@@ -94,7 +162,7 @@ public class EvaluationService implements IEvaluationService {
         List<Evaluation> evaluationListResult = new ArrayList<>();
         for (int i = 0; i < evaluationList.size(); i++) {
             Evaluation evaluation = evaluationList.get(i);
-            if(evaluation.getOjt_enrollment().getSemester().getId()==semesterCurrent.getId()){
+            if (evaluation.getOjt_enrollment().getSemester().getId() == semesterCurrent.getId()) {
                 evaluationListResult.add(evaluation);
             }
         } //get evaluation of a business by semester

@@ -7,8 +7,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "history_details")
-public class History_Details implements Serializable {
+@Table(name = "history_detail")
+public class HistoryDetail implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -19,24 +19,28 @@ public class History_Details implements Serializable {
     private String columnName;
     @Column(name = "targetId")
     private String targetId;
-    @Column(name = "oldValue", columnDefinition = "NVARCHAR(MAX)")
-    private String oldValue;
     @Column(name = "newValue", columnDefinition = "NVARCHAR(MAX)")
     private String newValue;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "action_history_id")
     private HistoryAction historyAction;
 
-    public History_Details() {
+    public HistoryDetail() {
     }
 
-    public History_Details(String tableName, String columnName, String targetId, String oldValue, String newValue, HistoryAction historyAction) {
+    public HistoryDetail(String tableName, String columnName, String targetId, String newValue) {
         this.tableName = tableName;
         this.columnName = columnName;
         this.targetId = targetId;
-        this.oldValue = oldValue;
+        this.newValue = newValue;
+    }
+
+    public HistoryDetail(String tableName, String columnName, String targetId, String newValue, HistoryAction historyAction) {
+        this.tableName = tableName;
+        this.columnName = columnName;
+        this.targetId = targetId;
         this.newValue = newValue;
         this.historyAction = historyAction;
     }
@@ -73,14 +77,6 @@ public class History_Details implements Serializable {
         this.targetId = targetId;
     }
 
-    public String getOldValue() {
-        return oldValue;
-    }
-
-    public void setOldValue(String oldValue) {
-        this.oldValue = oldValue;
-    }
-
     public String getNewValue() {
         return newValue;
     }
@@ -96,4 +92,6 @@ public class History_Details implements Serializable {
     public void setHistoryAction(HistoryAction historyAction) {
         this.historyAction = historyAction;
     }
+
+
 }

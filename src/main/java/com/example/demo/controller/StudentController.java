@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.ActionEnum;
 import com.example.demo.config.Status;
+import com.example.demo.config.StudentStatus;
 import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
@@ -11,19 +13,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.util.TextEscapeUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.sql.Date;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
 @RestController
 @RequestMapping("/api/student")
 public class StudentController {
+    private final String TAG = "StudentController";
 
     @Autowired
     IStudentService studentService;
@@ -70,13 +74,16 @@ public class StudentController {
     @Autowired
     IStudent_AnswerService iStudent_answerService;
 
+    @Autowired
+    IHistoryActionService iHistoryActionService;
+
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     //check semester //ok
     @PostMapping
     public ResponseEntity<Void> addListStudent(@RequestBody List<Student_ImportFileDTO> studentList) throws Exception {
 
-        List<Student> students=new ArrayList<>();
+        List<Student> students = new ArrayList<>();
 
         List<Role> roleList = new ArrayList<>();
         Role role = new Role();
@@ -104,12 +111,14 @@ public class StudentController {
             specialized.setId(specializedID);
             studentList.get(i).setSpecialized(specialized);
 
+
             usersList.add(users);
 
             Semester semester = semesterService.getSemesterByName(studentList.get(i).getSemesterName());
 
             Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
-            Student student=studentService.getStudentByEmail(studentList.get(i).getEmail());
+            Student student = studentService.getStudentByEmail(studentList.get(i).getEmail());
+            student.setStatus(StudentStatus.NOTSTART);
             ojt_enrollment.setStudent(student);
             ojt_enrollment.setSemester(semester);
 
@@ -140,7 +149,7 @@ public class StudentController {
 
     //check semester //ok
     @PostMapping("/new")
-    public ResponseEntity<Void> createNewStudent(@RequestBody Student student) throws Exception {
+    public ResponseEntity<Void> createNewStudent(@RequestBody Student_ImportFileDTO student) throws Exception {
 
         List<Role> roleList = new ArrayList<>();
         Role role = new Role();
@@ -155,12 +164,14 @@ public class StudentController {
         users.setPassword(password);
         users.setActive(true);
 
-        Semester semester = semesterService.getSemesterCurrent();
+        Semester semester = semesterService.getSemesterByName(student.getSemesterName());
 
-        ojt_enrollment.setStudent(student);
+        Student studentGetByEmail=studentService.getStudentByEmail(student.getEmail());
+
+        ojt_enrollment.setStudent(studentGetByEmail);
         ojt_enrollment.setSemester(semester);
         try {
-            studentService.saveStudent(student);
+            studentService.saveStudent(studentGetByEmail);
             usersService.saveUser(users);
             ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);
 
@@ -303,6 +314,38 @@ public class StudentController {
         String email = getEmailFromToken();
         boolean updateInfor = studentService.updateInforStudent(email, objective, skillList);
         if (updateInfor == false) {
+            List<HistoryDetail> details = new ArrayList<>();
+            Method someMethod = null;
+            try {
+                someMethod = new Object() {
+                }
+                        .getClass()
+                        .getEnclosingMethod();
+                Parameter[] parameters = someMethod.getParameters();
+                for (Parameter parameter : parameters) {
+                    HistoryDetail historyDetail = null;
+                    if (parameter.getName().contains("0")) {
+                        historyDetail = new HistoryDetail(Student.class.getName(), "objective", email, objective);
+                    } else {
+                        historyDetail = new HistoryDetail(Student.class.getName(), "student_skill", email, skillList.toString());
+                    }
+                    details.add(historyDetail);
+
+                }
+                HistoryAction action =
+                        new HistoryAction(email
+                                , "ROLE_STUDENT", ActionEnum.UPDATE, TAG, new Object() {
+                        }
+                                .getClass()
+                                .getEnclosingMethod()
+                                .getName(), null, new java.util.Date(), details);
+                for (HistoryDetail detail : details) {
+                    detail.setHistoryAction(action);
+                }
+                iHistoryActionService.createHistory(action);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return new ResponseEntity<String>("fail", HttpStatus.EXPECTATION_FAILED);
         }
         return new ResponseEntity<String>("success", HttpStatus.OK);
@@ -368,6 +411,20 @@ public class StudentController {
     public ResponseEntity<String> updateOption1OfStudent(@RequestParam String option1) {
         String email = getEmailFromToken();
         String update = studentService.updateOption1Student(email, option1);
+        if (update.equals("success")) {
+            HistoryDetail historyDetail = new HistoryDetail(Student.class.getName(), "option1", email, option1);
+            HistoryAction action =
+                    new HistoryAction(email
+                            , "ROLE_STUDENT", ActionEnum.UPDATE, TAG, new Object() {
+                    }
+                            .getClass()
+                            .getEnclosingMethod()
+                            .getName(), null, new java.util.Date(), historyDetail);
+            historyDetail.setHistoryAction(action);
+            iHistoryActionService.createHistory(action);
+        }
+
+
         return new ResponseEntity<>(update, HttpStatus.OK);
     }
 
@@ -376,6 +433,19 @@ public class StudentController {
     public ResponseEntity<String> updateOption2OfStudent(@RequestParam String option2) {
         String email = getEmailFromToken();
         String update = studentService.updateOption2Student(email, option2);
+        if (update.equals("success")) {
+            HistoryDetail historyDetail = new HistoryDetail(Student.class.getName(), "option2", email, option2);
+            HistoryAction action =
+                    new HistoryAction(email
+                            , "ROLE_STUDENT", ActionEnum.UPDATE, TAG, new Object() {
+                    }
+                            .getClass()
+                            .getEnclosingMethod()
+                            .getName(), null, new java.util.Date(), historyDetail);
+            historyDetail.setHistoryAction(action);
+            iHistoryActionService.createHistory(action);
+
+        }
         return new ResponseEntity<>(update, HttpStatus.OK);
     }
 
@@ -674,7 +744,7 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-        @PutMapping("/stateInvitation")
+    @PutMapping("/stateInvitation")
     public ResponseEntity<Void> setInvitationForOption(@RequestParam int id,
                                                        @RequestParam int numberOfOption) {
         String studentEmail = getEmailFromToken();
@@ -772,7 +842,30 @@ public class StudentController {
 
     @PutMapping("/taskStatus")
     public ResponseEntity<Void> updateTaskStatus(@RequestParam int id, @RequestParam int typeStatus) {
-        taskService.updateStatusTask(id, typeStatus);
+        String email = getEmailFromToken();
+        boolean result = taskService.updateStatusTask(id, typeStatus);
+        if (result) {
+            HistoryDetail historyDetail = null;
+            switch (typeStatus) {
+                case 2:
+                    historyDetail = new HistoryDetail(Task.class.getName(), "status", String.valueOf(id), Status.PENDING.toString());
+                    break;
+                case 3:
+                    historyDetail = new HistoryDetail(Task.class.getName(), "status", String.valueOf(id), Status.DONE.toString());
+                    break;
+            }
+
+            HistoryAction action =
+                    new HistoryAction(email
+                            , "ROLE_STUDENT", ActionEnum.UPDATE, TAG, new Object() {
+                    }
+                            .getClass()
+                            .getEnclosingMethod()
+                            .getName(), null, new java.util.Date(), historyDetail);
+            historyDetail.setHistoryAction(action);
+            iHistoryActionService.createHistory(action);
+
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -790,6 +883,43 @@ public class StudentController {
         String email = getEmailFromToken();
         boolean update = studentService.updateInformationStudent(email, name, phone, gender, address, birthDate);
         if (update == true) {
+            List<HistoryDetail> details = new ArrayList<>();
+            Method someMethod = null;
+            try {
+                someMethod = new Object() {
+                }
+                        .getClass()
+                        .getEnclosingMethod();
+                Parameter[] parameters = someMethod.getParameters();
+                for (Parameter parameter : parameters) {
+                    HistoryDetail historyDetail = null;
+                    if (parameter.getName().contains("0")) {
+                        historyDetail = new HistoryDetail(Student.class.getName(), "phone", email, phone);
+                    } else if (parameter.getName().contains("1")) {
+                        historyDetail = new HistoryDetail(Student.class.getName(), "gender", email, String.valueOf(gender));
+                    } else if (parameter.getName().contains("2")) {
+                        historyDetail = new HistoryDetail(Student.class.getName(), "address", email, address);
+                    } else {
+                        historyDetail = new HistoryDetail(Student.class.getName(), "birthDate", email, String.valueOf(birthDate));
+                    }
+                    details.add(historyDetail);
+
+                }
+                HistoryAction action =
+                        new HistoryAction(email
+                                , "ROLE_STUDENT", ActionEnum.UPDATE, TAG, new Object() {
+                        }
+                                .getClass()
+                                .getEnclosingMethod()
+                                .getName(), null, new java.util.Date(), details);
+                for (HistoryDetail detail : details) {
+                    detail.setHistoryAction(action);
+                }
+                iHistoryActionService.createHistory(action);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -857,8 +987,24 @@ public class StudentController {
 
     @PostMapping("/businessPropose")
     public ResponseEntity<Void> createBusinessPropose(@RequestBody Business_Proposed business_proposed) {
+        String email = getEmailFromToken();
         if (business_proposed != null) {
+            Student student = studentService.getStudentByEmail(email);
+
+            business_proposed.setStudent_proposed(student);
+            business_proposed.setContactLink(email);
             iBusiness_proposedService.createBusinessPropose(business_proposed);
+            HistoryDetail historyDetail = new HistoryDetail(Business_Proposed.class.getName(), null, email, business_proposed.toString());
+            HistoryAction action =
+                    new HistoryAction(email
+                            , "ROLE_STUDENT", ActionEnum.INSERT, TAG, new Object() {
+                    }
+                            .getClass()
+                            .getEnclosingMethod()
+                            .getName(), null, new java.util.Date(), historyDetail);
+            historyDetail.setHistoryAction(action);
+            iHistoryActionService.createHistory(action);
+
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -899,6 +1045,15 @@ public class StudentController {
 
         return new ResponseEntity<Integer>(countEventIsNotRead, HttpStatus.OK);
     }
+
+    @GetMapping("/businessIsReject")
+    @ResponseBody
+    public ResponseEntity<Boolean> getStatusOfBusinessProposeOfStudent() {
+        String email = getEmailFromToken();
+        boolean result = iBusiness_proposedService.checkBusinessProposeIsReject(email);
+        return new ResponseEntity<Boolean>(result, HttpStatus.OK);
+    }
+
 
     //get email from token
     private String getEmailFromToken() {

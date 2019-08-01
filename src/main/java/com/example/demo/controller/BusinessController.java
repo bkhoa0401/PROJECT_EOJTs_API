@@ -88,7 +88,7 @@ public class BusinessController {
 
     //check semester //ok
     @PostMapping("/new")
-    public ResponseEntity<Void> createNewBusiness(@RequestBody Business business) throws Exception {
+    public ResponseEntity<Void> createNewBusiness(@RequestBody BusinessDTO businessDTO) throws Exception {
 
         List<Role> roleList = new ArrayList<>();
         Role role = new Role();
@@ -100,11 +100,13 @@ public class BusinessController {
         role.setId(3);
         roleList.add(role);
         users.setRoles(roleList);
-        users.setEmail(business.getEmail());
+        users.setEmail(businessDTO.getEmail());
         users.setPassword(password);
         users.setActive(true);
 
-        Semester semester = semesterService.getSemesterCurrent();
+        Semester semester = semesterService.getSemesterByName(businessDTO.getNameSemester());
+
+        Business business=businessService.getBusinessByEmail(businessDTO.getEmail());
 
         ojt_enrollment.setBusiness(business);
         ojt_enrollment.setSemester(semester);
