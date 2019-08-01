@@ -270,7 +270,6 @@ public class AdminService implements IAdminService {
             }
         }
 
-
         List<Evaluation> evaluationListReport_2 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION2);
         if (evaluationListReport_2.size() != 0) {
             statistical_evaluationDTOEvaluation_2 = statistical_evaluationDTO(evaluationListReport_2);
@@ -281,12 +280,12 @@ public class AdminService implements IAdminService {
 
         List<Evaluation> evaluationListReport_3 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION3);
         if (evaluationListReport_3.size() != 0) {
-
             statistical_evaluationDTOEvaluation_3 = statistical_evaluationDTO(evaluationListReport_3);
             if (statistical_evaluationDTOEvaluation_3 != null) {
                 statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_3);
             }
         }
+
         List<Evaluation> evaluationListReport_4 = iEvaluationService.getEvaluationsByTitle(ReportName.EVALUATION4);
         if (evaluationListReport_4.size() != 0) {
             statistical_evaluationDTOEvaluation_4 = statistical_evaluationDTO(evaluationListReport_4);
@@ -690,7 +689,7 @@ public class AdminService implements IAdminService {
             List<Task> taskList = ojt_enrollment.getTasks();
 
             int countTaskDone = countTasksDone(taskList);
-            double percentTaskDOne=(double) countTaskDone/(double) taskList.size();
+            double percentTaskDOne = (double) countTaskDone / (double) taskList.size();
 
             emailList.add(emailOfStudent);
             percentTasksDoneOfStudent.add(percentTaskDOne);
@@ -711,4 +710,113 @@ public class AdminService implements IAdminService {
         }
         return count;
     }
+
+    @Override
+    public List<Statistical_EvaluationDTO> getListStatistical_EvaluationOfSupervisorDTO(String email) {
+        List<Evaluation> evaluationListOfSupervisor = businessService.getEvaluationsOfSupervisor(email);
+
+        Statistical_EvaluationDTO statistical_evaluationDTOEvaluation_1;
+        Statistical_EvaluationDTO statistical_evaluationDTOEvaluation_2;
+        Statistical_EvaluationDTO statistical_evaluationDTOEvaluation_3;
+        Statistical_EvaluationDTO statistical_evaluationDTOEvaluation_4;
+
+        List<Evaluation> evaluationListByTitle_1 = getEvaluationByTitle(evaluationListOfSupervisor, ReportName.EVALUATION1);
+        List<Evaluation> evaluationListByTitle_2 = getEvaluationByTitle(evaluationListOfSupervisor, ReportName.EVALUATION2);
+        List<Evaluation> evaluationListByTitle_3 = getEvaluationByTitle(evaluationListOfSupervisor, ReportName.EVALUATION3);
+        List<Evaluation> evaluationListByTitle_4 = getEvaluationByTitle(evaluationListOfSupervisor, ReportName.EVALUATION4);
+
+        List<Statistical_EvaluationDTO> statisticalEvaluationDTOList = new ArrayList<>();
+
+        if (evaluationListByTitle_1.size() != 0) {
+            statistical_evaluationDTOEvaluation_1 = statistical_evaluationDTO(evaluationListByTitle_1);
+            if (statistical_evaluationDTOEvaluation_1 != null) {
+                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_1);
+            }
+        }
+
+        if (evaluationListByTitle_2.size() != 0) {
+            statistical_evaluationDTOEvaluation_2 = statistical_evaluationDTO(evaluationListByTitle_2);
+            if (statistical_evaluationDTOEvaluation_2 != null) {
+                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_2);
+            }
+        }
+        if (evaluationListByTitle_3.size() != 0) {
+            statistical_evaluationDTOEvaluation_3 = statistical_evaluationDTO(evaluationListByTitle_3);
+            if (statistical_evaluationDTOEvaluation_3 != null) {
+                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_3);
+            }
+        }
+        if (evaluationListByTitle_4.size() != 0) {
+            statistical_evaluationDTOEvaluation_4 = statistical_evaluationDTO(evaluationListByTitle_4);
+            if (statistical_evaluationDTOEvaluation_4 != null) {
+                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_4);
+            }
+        }
+
+        return statisticalEvaluationDTOList;
+    }
+
+    @Override
+    public StatisticalStudentInSemesterDTO getStatisticalStudentInSemester(String semesterName) {
+        StatisticalStudentInSemesterDTO statisticalStudentInSemesterDTO = new StatisticalStudentInSemesterDTO();
+        Semester semester = semesterService.getSemesterByName(semesterName);
+
+        List<Ojt_Enrollment> ojt_enrollmentOfStudentsAtSemester =
+                ojt_enrollmentService.getOjt_EnrollmentsBySemesterIdAndStudentEmailNotNull(semester.getId());
+        List<Evaluation> evaluationFinalListOfStudentsInSemester = new ArrayList<>();
+
+        for (int i = 0; i < ojt_enrollmentOfStudentsAtSemester.size(); i++) {
+            Ojt_Enrollment ojt_enrollment = ojt_enrollmentOfStudentsAtSemester.get(i);
+            List<Evaluation> evaluationList = ojt_enrollment.getEvaluations();
+
+            Evaluation evaluationFinalOfStudent = getEvaluationFinalFromListOfStudent(evaluationList);
+            evaluationFinalListOfStudentsInSemester.add(evaluationFinalOfStudent);
+        }
+
+        //ra duoc bn thang xuat sac kha gioi
+        Statistical_EvaluationDTO statistical_evaluationDTO = statistical_evaluationDTO(evaluationFinalListOfStudentsInSemester);
+        statisticalStudentInSemesterDTO.setCountStudentByType(statistical_evaluationDTO.getStatisticalTypeEvaluation());
+
+        //ra duoc bn thang pass fail
+        List<Integer> getStudentPassOrFail=getStudentPassOrFail(evaluationFinalListOfStudentsInSemester);
+        statisticalStudentInSemesterDTO.setCountStudentByStatus(getStudentPassOrFail);
+
+        return statisticalStudentInSemesterDTO;
+    }
+
+    public List<Integer> getStudentPassOrFail(List<Evaluation> evaluations) {
+        int countStudentPass = 0;
+        int countStudentFail = 0;
+        for (int i = 0; i < evaluations.size(); i++) {
+            Evaluation evaluation = evaluations.get(i);
+            float scoreActivity = evaluation.getScore_activity();
+            float scoreDiscipline = evaluation.getScore_discipline();
+            float scoreWork = evaluation.getScore_work();
+
+            float result = (scoreActivity + scoreDiscipline + scoreWork) / (float) 3;
+            if (result >= 5) {
+                countStudentPass++;
+            } else {
+                countStudentFail++;
+            }
+        }
+        List<Integer> listResult=new ArrayList<>();
+        listResult.add(countStudentPass);
+        listResult.add(countStudentFail);
+
+        return listResult;
+    }
+
+    public Evaluation getEvaluationFinalFromListOfStudent(List<Evaluation> evaluations) {
+
+        for (int i = 0; i < evaluations.size(); i++) {
+            Evaluation evaluation = evaluations.get(i);
+            if (evaluation.getTitle().equals(ReportName.EVALUATIONFINAL)) {
+                return evaluation;
+            }
+        }
+        return null;
+    }
+
+
 }

@@ -39,4 +39,8 @@ public interface IAdminService {
     Students_TasksDTO getStudentsAndTasksOfSupervisor(String email);
 
     Students_TasksDoneDTO getStudentAndTasksDoneOfSupervisor(String email);
+
+    List<Statistical_EvaluationDTO> getListStatistical_EvaluationOfSupervisorDTO(String email);
+
+    StatisticalStudentInSemesterDTO getStatisticalStudentInSemester(String semesterName);
 }

@@ -29,4 +29,6 @@ public interface IBusinessService {
     List<Business_JobPostDTO> getAllJobPostOfBusinesses();
 
     List<Job_Post> getAllJobPostOfBusiness(String email);
+
+    List<Evaluation> getEvaluationsOfSupervisor(String email);
 }
