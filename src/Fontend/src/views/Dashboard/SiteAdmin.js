@@ -1,59 +1,9 @@
 import React, { Component } from 'react';
 import { Bar, Doughnut, Line, Pie, Polar, Radar } from 'react-chartjs-2';
-import { Card, CardBody, CardColumns, CardHeader, Input, Table } from 'reactstrap';
+import { Card, CardBody, CardColumns, CardHeader, Input, Table, FormGroup, Col } from 'reactstrap';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import ApiServices from '../../service/api-service';
-
-const pie = {
-  labels: [
-    'Red',
-    'Green',
-    'Yellow',
-  ],
-  datasets: [
-    {
-      data: [300, 50, 100],
-      backgroundColor: [
-        '#FF6384',
-        '#36A2EB',
-        '#FFCE56',
-      ],
-      hoverBackgroundColor: [
-        '#FF6384',
-        '#36A2EB',
-        '#FFCE56',
-      ],
-    }],
-};
-
-const polar = {
-  datasets: [
-    {
-      data: [
-        15,
-        26,
-        37,
-        33,
-        14,
-      ],
-      backgroundColor: [
-        '#FF6384',
-        '#4BC0C0',
-        '#FFCE56',
-        '#E7E9ED',
-        '#36A2EB',
-      ],
-      label: 'My dataset' // for legend
-    }],
-  labels: [
-    'Xuất sắc',
-    'Tốt',
-    'Khá',
-    'Trung Bình',
-    'Yếu',
-  ],
-};
 
 const options = {
   tooltips: {
@@ -72,16 +22,80 @@ class SiteAdmin extends Component {
       line: {},
       bar: {},
       radar: {},
+      polar: {},
+      pie: {},
       doughnut: {},
-
+      semesters: [],
+      semesterItem: {},
+      semesterItemResult: {}
     };
   }
 
   async componentDidMount() {
+    const semesters = await ApiServices.Get('/admin/getAllSemester');
     const studentOptionPerBusiness = await ApiServices.Get('/admin/studentOptionPerBusiness');
     const studentInternPerBusiness = await ApiServices.Get('/admin/business-students');
     const statisticalEvaluations = await ApiServices.Get('/admin/statisticalEvaluations');
     const statisticalStudentIsAnswer = await ApiServices.Get('/admin/statisticalStudentIsAnswer');
+
+    if (semesters != null) {
+      this.setState({
+        semesters: semesters,
+        semesterItem: semesters[semesters.length - 1],
+        semesterItemResult: semesters[semesters.length - 1]
+      })
+
+      var defaultSemeter = semesters[semesters.length - 1].name;
+      const statisticalStudentInSemester = await ApiServices.Get(`/admin/statisticalStudentInSemester?semesterName=${defaultSemeter}`);
+
+      if (statisticalStudentInSemester != null) {
+        var polar = {
+          datasets: [
+            {
+              data: statisticalStudentInSemester.countStudentByType,
+              backgroundColor: [
+                '#FF6384',
+                '#4BC0C0',
+                '#FFCE56',
+                '#E7E9ED',
+                '#36A2EB',
+              ],
+              label: 'My dataset'
+            }],
+          labels: [
+            'Xuất sắc',
+            'Tốt',
+            'Khá',
+            'Trung Bình',
+            'Yếu',
+          ],
+        }
+
+        var pie = {
+          labels: [
+            'Pass',
+            'Fail',
+          ],
+          datasets: [
+            {
+              data: statisticalStudentInSemester.countStudentByStatus,
+              backgroundColor: [
+                '#FF6384',
+                '#36A2EB'
+              ],
+              hoverBackgroundColor: [
+                '#FF6384',
+                '#36A2EB'
+              ],
+            }],
+        }
+        this.setState({
+          polar: polar,
+          pie: pie
+        })
+      }
+
+    }
 
     if (studentOptionPerBusiness != null) {
       var line = {
@@ -229,8 +243,82 @@ class SiteAdmin extends Component {
 
   }
 
+  handleInput = async (event) => {
+    const { value, name } = event.target;
+    const { semesters } = this.state;
+
+    if (name.includes('statisticalStudentInSemester')) {
+      await this.setState({
+        semesterItem: semesters[value]
+      })
+      var semesterName = this.state.semesterItem.name;
+
+      const statisticalStudentInSemester = await ApiServices.Get(`/admin/statisticalStudentInSemester?semesterName=${semesterName}`);
+
+      if (statisticalStudentInSemester != null) {
+        var polar = {
+          datasets: [
+            {
+              data: statisticalStudentInSemester.countStudentByType,
+              backgroundColor: [
+                '#FF6384',
+                '#4BC0C0',
+                '#FFCE56',
+                '#E7E9ED',
+                '#36A2EB',
+              ],
+              label: 'My dataset'
+            }],
+          labels: [
+            'Xuất sắc',
+            'Tốt',
+            'Khá',
+            'Trung Bình',
+            'Yếu',
+          ],
+        }
+
+        this.setState({
+          polar: polar
+        })
+      }
+    } else if (name.includes('result')) {
+      await this.setState({
+        semesterItemResult: semesters[value]
+      })
+      var semesterName = this.state.semesterItemResult.name;
+
+      const statisticalStudentInSemester = await ApiServices.Get(`/admin/statisticalStudentInSemester?semesterName=${semesterName}`);
+
+      if (statisticalStudentInSemester != null) {
+        var pie = {
+          labels: [
+            'Pass',
+            'Fail',
+          ],
+          datasets: [
+            {
+              data: statisticalStudentInSemester.countStudentByStatus,
+              backgroundColor: [
+                '#FF6384',
+                '#36A2EB'
+              ],
+              hoverBackgroundColor: [
+                '#FF6384',
+                '#36A2EB'
+              ],
+            }],
+        }
+
+        this.setState({
+          pie: pie
+        })
+      }
+    }
+  }
+
   render() {
-    const { loading, line, bar, radar, doughnut } = this.state;
+    const { loading, line, bar, radar, doughnut, polar, pie, semesters, semesterItem } = this.state;
     return (
       loading.toString() === 'true' ? (
         SpinnerLoading.showHashLoader(loading)
@@ -316,21 +404,49 @@ class SiteAdmin extends Component {
                   <td>
                     <Card>
                       <CardHeader>
-                        <h6>Thống kê kết quả thực tập của sinh viên</h6>
-                        {/* <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div> */}
-                        {/* <Input type="select" style={{ width: "150px" }}>
-                          <option>SPRING2019</option>
-                          <option>SUMMER2019</option>
-                          <option>WINTER2019</option>
-                        </Input> */}
+                        <FormGroup row>
+                          <Col md="8">
+                            <h6>Thống kê kết quả đánh giá phản hồi của sinh viên qua các kì</h6>
+                          </Col>
+                          <Col md="3" style={{ width: "150px", marginLeft: "1%" }}>
+                            <Input onChange={this.handleInput} type="select" name="statisticalStudentInSemester" style={{ width: "140px" }}>
+                              {semesters && semesters.map((semester, i) => {
+                                return (
+                                  <option value={i} selected={semesterItem.id === semester.id}>{semester.name}</option>
+                                )
+                              })}
+                            </Input>
+                          </Col>
+                        </FormGroup>
                       </CardHeader>
                       <CardBody>
                         <div className="chart-wrapper">
                           <Polar data={polar} options={options} />
+                        </div>
+                      </CardBody>
+                    </Card>
+                  </td>
+                  <td>
+                    <Card>
+                      <CardHeader>
+                        <FormGroup row>
+                          <Col md="8">
+                            <h6>Thống kê kết quả thực tập của sinh viên qua các kì</h6>
+                          </Col>
+                          <Col md="3" style={{ width: "150px", marginLeft: "1%" }}>
+                            <Input onChange={this.handleInput} type="select" name="result" style={{ width: "140px" }}>
+                              {semesters && semesters.map((semester, i) => {
+                                return (
+                                  <option value={i} selected={semesterItem.id === semester.id}>{semester.name}</option>
+                                )
+                              })}
+                            </Input>
+                          </Col>
+                        </FormGroup>
+                      </CardHeader>
+                      <CardBody>
+                        <div className="chart-wrapper">
+                          <Polar data={pie} options={options} />
                         </div>
                       </CardBody>
                     </Card>
