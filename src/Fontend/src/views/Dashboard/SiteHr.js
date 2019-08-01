@@ -36,7 +36,7 @@ const options = {
   maintainAspectRatio: false
 }
 
-class SiteAdmin extends Component {
+class SiteHr extends Component {
 
   constructor(props) {
     super(props);
@@ -182,37 +182,41 @@ class SiteAdmin extends Component {
       numberStatusTaskStudent && numberStatusTaskStudent.map((data, index) => {
         if (index == 0) {
           countStatusTaskInMonthItem = data.countStatusTaskInMonth;
-          doughnut = {
-            labels: [
-              'Hoàn thành',
-              'Chưa hoàn thành',
-              'Chưa bắt đầu'
-            ],
-            datasets: [
-              {
-                data: countStatusTaskInMonthItem,
-                backgroundColor: [
-                  '#36A2EB',
-                  '#FFF68F',
-                  '#FF6384'
-                ],
-                hoverBackgroundColor: [
-                  '#36A2EB',
-                  '#FFF68F',
-                  '#FF6384'
-                ],
-              }],
-          }
         }
         month.push(data.month);
         countStatusTaskInMonth.push(data.countStatusTaskInMonth);
       })
       this.setState({
-        doughnut: doughnut,
         countStatusTaskInMonth: countStatusTaskInMonth,
         countStatusTaskInMonthItem: countStatusTaskInMonthItem,
         month: month,
         loading: false,
+      });
+
+      var doughnut = {
+        labels: [
+          'Hoàn thành',
+          'Chưa hoàn thành',
+          'Chưa bắt đầu'
+        ],
+        datasets: [
+          {
+            data: countStatusTaskInMonthItem,
+            backgroundColor: [
+              '#36A2EB',
+              '#FFF68F',
+              '#FF6384'
+            ],
+            hoverBackgroundColor: [
+              '#36A2EB',
+              '#FFF68F',
+              '#FF6384'
+            ],
+          }],
+      }
+
+      this.setState({
+        doughnut: doughnut
       });
       console.log("AAAAAAAAAAA", this.state.countStatusTaskInMonth);
     }
@@ -229,6 +233,8 @@ class SiteAdmin extends Component {
         countStatusTaskInMonthItem: countStatusTaskInMonth[value]
       })
     }
+
+    console.log(this.state.countStatusTaskInMonthItem);
 
     var doughnut = {
       labels: [
@@ -258,7 +264,7 @@ class SiteAdmin extends Component {
 
     await this.setState({
       // countStatusTaskInMonth: countStatusTaskInMonth,
-      doughnut: doughnut
+      doughnut: doughnut,
     });
 
     console.log("countStatusTaskInMonth", countStatusTaskInMonth);
@@ -378,4 +384,4 @@ class SiteAdmin extends Component {
   }
 }
 
-export default SiteAdmin;
+export default SiteHr;
