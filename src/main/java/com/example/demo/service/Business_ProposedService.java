@@ -218,19 +218,20 @@ public class Business_ProposedService implements IBusiness_ProposedService {
 
     @Override
     public boolean checkBusinessProposeIsReject(String email) {
-        Student student = iStudentService.getStudentByEmail(email);
-        List<Business_Proposed> business_proposeds = iBusiness_proposedRepository.findBusiness_ProposedsByStudent_proposed(student);
+
+        List<Business_Proposed> business_proposeds = iBusiness_proposedRepository.findBusiness_ProposedsByStudent_proposed(email);
         if (business_proposeds.size() == 0 || business_proposeds == null) {
-            return true;
+            return false;
         }
         for (int i = 0; i < business_proposeds.size(); i++) {
             Business_Proposed bus = business_proposeds.get(i);
-            if(bus.getIsAcceptedByStartupRoom() != BusinessProposedStatus.REJECTED
-                    && bus.getIsAcceptedByHeadOfTraining()!= BusinessProposedStatus.REJECTED
-                    && bus.getIsAcceptedByHeadMaster()!= BusinessProposedStatus.REJECTED) {
-                return false;
-            }
+            if(bus.getIsAcceptedByStartupRoom() == BusinessProposedStatus.REJECTED
+                    || bus.getIsAcceptedByHeadOfTraining()== BusinessProposedStatus.REJECTED
+                    || bus.getIsAcceptedByHeadMaster()== BusinessProposedStatus.REJECTED) {
+
+                return true;
+            } 
         }
-        return true;
+        return false;
     }
 }
