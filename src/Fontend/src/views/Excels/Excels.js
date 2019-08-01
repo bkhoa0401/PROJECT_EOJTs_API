@@ -272,14 +272,12 @@ class Excels extends Component {
 
         confirmAlert({
             title: 'Lưu ý',
-            message: `Những kỹ năng: ${skill} chưa tồn tại trong hệ thống và sẽ được thêm vào "Ngành chung"!
-            Bạn có chắc chắn muốn thêm tệp?
-            `,
+            message: `Những kỹ năng: ${skill} chưa tồn tại trong hệ thống! Vui lòng tạo mới những kỹ năng này và thử lại sau!`,
             buttons: [
-                {
-                    label: 'Xác nhận',
-                    onClick: () => this.importListBusiness(this.state.listBusinessesForSave, listIndexNotFound)
-                },
+                // {
+                //     label: 'Xác nhận',
+                //     onClick: () => this.importListBusiness(this.state.listBusinessesForSave, listIndexNotFound)
+                // },
                 {
                     label: 'Quản lí kỹ năng',
                     onClick: () => this.handleDirect('/skill')

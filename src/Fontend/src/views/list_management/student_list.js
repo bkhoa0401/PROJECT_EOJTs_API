@@ -24,6 +24,7 @@ class student_list extends Component {
         this.state = {
             modal: false,
             modalDetail: false,
+            modalTask: false,
             activeTab: new Array(1).fill('1'),
             // open: false,
             students: null,
@@ -49,6 +50,9 @@ class student_list extends Component {
             file: null,
             skills: [],
             role: '',
+
+            listStudentTask: null,
+            studentDetail: null,
         };
         // this.toggleModal = this.toggleModal.bind(this);
     }
@@ -75,6 +79,9 @@ class student_list extends Component {
         let suggestedBusiness = null;
         let otherBusiness = null;
         if (this.state.modal == false) {
+            this.setState({
+                loading: true,
+            })
             suggestedBusiness = await ApiServices.Get(`/admin/getSuggestedBusinessForFail?email=${studentSelect.email}`);
             otherBusiness = await ApiServices.Get(`/admin/getOtherBusiness?email=${studentSelect.email}`);
         }
@@ -85,6 +92,7 @@ class student_list extends Component {
             suggestedBusiness: suggestedBusiness,
             otherBusiness: otherBusiness,
             studentSelect: studentSelect,
+            loading: false,
         });
     }
 
@@ -120,6 +128,21 @@ class student_list extends Component {
             this.setState({
                 modalDetail: !this.state.modalDetail,
             });
+        }
+    }
+
+    toggleModalTask = async (studentDetail) => {
+        if (this.state.modalTask == false) {
+            const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}`);
+            this.setState({
+                modalTask: !this.state.modalTask,
+                studentDetail: studentDetail,
+                listStudentTask: listStudentTask,
+            });
+        } else {
+            this.setState({
+                modalTask: !this.state.modalTask,
+            })
         }
     }
 
@@ -162,6 +185,40 @@ class student_list extends Component {
             })
         }
     }
+
+    showTaskLevel(taskLevel) {
+        if (taskLevel === 'DIFFICULT') {
+            return (
+                <Badge color="danger">Khó</Badge>
+            )
+        } else if (taskLevel === 'EASY') {
+            return (
+                <Badge color="primary">Dễ</Badge>
+            )
+        } else if (taskLevel === 'NORMAL') {
+            return (
+                <Badge color="warning">Bình thường</Badge>
+            )
+        }
+    }
+
+    showTaskState(taskStatus) {
+        console.log(taskStatus);
+        if (taskStatus === 'NOTSTART') {
+            return (
+                <Badge color="danger">Chưa bắt đầu</Badge>
+            )
+        } else if (taskStatus === 'PENDING') {
+            return (
+                <Badge color="warning">Chưa hoàn thành</Badge>
+            )
+        } else if (taskStatus === 'DONE') {
+            return (
+                <Badge color="success">Hoàn Thành</Badge>
+            )
+        }
+    }
+
 
     handleSubmit = async () => {
         this.setState({
@@ -239,7 +296,9 @@ class student_list extends Component {
         if (result.status == 200) {
             Toastify.actionSuccess(`Đăng ký thành công!`);
             const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
+            const students = await ApiServices.Get('/student/getAllStudent');
             this.setState({
+                students: students,
                 loading: false
             })
         } else {
@@ -251,7 +310,7 @@ class student_list extends Component {
     }
 
     tabPane() {
-        const { students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect } = this.state;
+        const { students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail } = this.state;
 
         const { name, code, email, phone, address, specialized, objective, gpa, skills, resumeLink, transcriptLink, role, isUploadTranscriptLink } = this.state;
         const linkDownCV = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
@@ -313,10 +372,10 @@ class student_list extends Component {
                                                         <td style={{ textAlign: "center" }}>
                                                             {/* <Button style={{ width: "80px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.student.email}`)}>Chi tiết</Button> */}
                                                             <Button style={{ width: "80px" }} color="primary" onClick={() => this.toggleModalDetail(student.student.email)}>Chi tiết</Button>
-                                                            &nbsp;
-                                                            <Button style={{ width: "90px" }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.student.email}`)}>Nhiệm vụ</Button>
-                                                            &nbsp;
-                                                    {/* <Button style={{ width: "70px" }} color="danger">Xoá</Button> */}
+                                                            &nbsp;&nbsp;
+                                                            {/* <Button style={{ width: "90px" }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.student.email}`)}>Nhiệm vụ</Button> */}
+                                                            <Button style={{ width: '90px' }} color="success" onClick={() => this.toggleModalTask(student.student)}>Nhiệm vụ</Button>
+                                                            {/* <Button style={{ width: "70px" }} color="danger">Xoá</Button> */}
                                                         </td>
                                                     </tr>
                                                 )
@@ -469,6 +528,73 @@ class student_list extends Component {
                                 <></>
                             }
                         </Modal>
+                        {studentDetail !== null ?
+                            <Modal isOpen={this.state.modalTask} toggle={this.toggleModalTask}
+                                className={'modal-lg ' + this.props.className}>
+                                <ModalHeader style={{ backgroundColor: "#4DBD74", color: "white" }} toggle={this.toggleModalTask}>Nhiệm vụ của sinh viên</ModalHeader>
+                                <ModalBody>
+                                    <FormGroup row>
+                                        <Col md="3">
+                                            <h6>Người hướng dẫn</h6>
+                                        </Col>
+                                        <Col xs="12" md="9">
+                                            <label>{studentDetail.supervisor.name}</label>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="3">
+                                            <h6>Sinh viên</h6>
+                                        </Col>
+                                        <Col xs="12" md="9">
+                                            <label>{studentDetail.name}</label>
+                                        </Col>
+                                    </FormGroup>
+                                    <Table responsive striped>
+                                        <thead>
+                                            <tr>
+                                                <th style={{ textAlign: "center" }}>STT</th>
+                                                <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
+                                                <th style={{ textAlign: "center" }}>Trạng thái</th>
+                                                <th style={{ textAlign: "center" }}>Giao bởi</th>
+                                                <th style={{ textAlign: "center" }}>Ngày tạo</th>
+                                                <th style={{ textAlign: "center" }}>Hạn cuối</th>
+                                                <th style={{ textAlign: "center" }}>Mức độ</th>
+                                                <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.state.listStudentTask && this.state.listStudentTask.map((task, index) => {
+                                                    return (
+                                                        <tr>
+                                                            <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                            <td style={{ textAlign: "center" }}>{task.title}</td>
+                                                            <td style={{ textAlign: "center" }}>
+                                                                {
+                                                                    this.showTaskState(task.status)
+                                                                }
+                                                            </td>
+                                                            <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
+                                                            <td style={{ textAlign: "center" }}>{task.time_created}</td>
+                                                            <td style={{ textAlign: "center" }}>{task.time_end}</td>
+                                                            <td style={{ textAlign: "center" }}>
+                                                                {
+                                                                    this.showTaskLevel(task.level_task)
+                                                                }
+                                                            </td>
+                                                            <td style={{ textAlign: "center" }}>{task.priority}</td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                        </tbody>
+                                    </Table>
+                                </ModalBody>
+                                {/* <ModalFooter>
+                                </ModalFooter> */}
+                            </Modal> :
+                            <></>
+                        }
                         <TabPane tabId="2">
                             {
                                 <div>

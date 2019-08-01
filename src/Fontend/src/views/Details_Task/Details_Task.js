@@ -100,7 +100,7 @@ class Details_Task extends Component {
                 <Card>
                   <CardHeader>
                     <i className="fa fa-align-justify"></i> Danh sách nhiệm vụ
-              </CardHeader>
+                  </CardHeader>
                   <CardBody>
                     <ToastContainer />
                     <br />

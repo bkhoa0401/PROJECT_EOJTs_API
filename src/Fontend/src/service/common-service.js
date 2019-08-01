@@ -2,18 +2,18 @@ const isNullOrUndefined = (obj) => {
     return obj == null || obj === undefined || obj.Lenth < 1;
 }
 
-const ROW_PER_PAGE = 5;
+// const ROW_PER_PAGE = 5;
 
 
-const getPaginationPageNumber = (total) => {
+const getPaginationPageNumber = (total, ROW_PER_PAGE) => {
     return Math.ceil(total / ROW_PER_PAGE);
 }
 
-const getPaginationNextPageNumber = (currentPage) => {
+const getPaginationNextPageNumber = (currentPage, ROW_PER_PAGE) => {
     return (currentPage + 1) * ROW_PER_PAGE;
 }
 
-const getPaginationCurrentPageNumber = (currentPage) => {
+const getPaginationCurrentPageNumber = (currentPage, ROW_PER_PAGE) => {
     return currentPage * ROW_PER_PAGE;
 }
 

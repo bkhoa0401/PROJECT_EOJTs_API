@@ -110,8 +110,8 @@ class Create_InformMessage extends Component {
             preListStudentEmail: listStudentEmail,
             preIsSelect: this.state.isSelect,
         })
-        console.log("preIsSelect: " + this.state.preIsSelect);
-        console.log("isSelect: " + this.state.isSelect);
+        // console.log("preIsSelect: " + this.state.preIsSelect);
+        // console.log("isSelect: " + this.state.isSelect);
     }
 
     closePopupWithConfirm() {
@@ -132,9 +132,9 @@ class Create_InformMessage extends Component {
             listStudentEmail: listStudentEmail,
             informTo: informTo,
         })
-        console.log(this.state.isSelect);
-        console.log(this.state.listStudentEmail);
-        console.log(this.state.informTo);
+        // console.log(this.state.isSelect);
+        // console.log(this.state.listStudentEmail);
+        // console.log(this.state.informTo);
     }
 
     handleInput = async (event) => {
@@ -185,9 +185,9 @@ class Create_InformMessage extends Component {
             preIsSelect: preIsSelect,
             informTo: informTo,
         })
-        console.log("preIsSelect: " + this.state.preIsSelect);
-        console.log("isSelect: " + this.state.isSelect);
-        console.log(this.state.preListStudentEmail);
+        // console.log("preIsSelect: " + this.state.preIsSelect);
+        // console.log("isSelect: " + this.state.isSelect);
+        // console.log(this.state.preListStudentEmail);
     }
 
     handleSelectAll = () => {
@@ -221,8 +221,8 @@ class Create_InformMessage extends Component {
             preIsSelect: preIsSelect,
             informTo: informTo,
         })
-        console.log(this.state.preIsSelect);
-        console.log(this.state.preListStudentEmail);
+        // console.log(this.state.preIsSelect);
+        // console.log(this.state.preListStudentEmail);
     }
 
     handleDeSelect = () => {

@@ -1,9 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.config.Status;
-import com.example.demo.entity.Ojt_Enrollment;
-import com.example.demo.entity.Semester;
-import com.example.demo.entity.Task;
+import com.example.demo.entity.*;
 import com.example.demo.repository.ITaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +36,7 @@ public class TaskService implements ITaskService {
         Semester semesterCurrent = semesterService.getSemesterCurrent();
 
         List<Task> taskList = ITaskRepository.findTasksBySupervisorEmail(email);
-        List<Task> taskListCurrentSemester=new ArrayList<>();
+        List<Task> taskListCurrentSemester = new ArrayList<>();
 
         for (int i = 0; i < taskList.size(); i++) {
             int idSemesterOfTask = taskList.get(i).getOjt_enrollment().getSemester().getId();
@@ -146,5 +144,40 @@ public class TaskService implements ITaskService {
             return taskList;
         }
         return null;
+    }
+
+    @Override
+    public List<Task> findTasksOfBusinessAndSemester(Business business) {
+        Semester semester = semesterService.getSemesterByStartDateAndEndDate();
+
+        List<Supervisor> supervisors = business.getSupervisors();
+
+        List<Task> taskListOfSupervisor;
+
+        List<Task> taskListResult = new ArrayList<>();
+
+        List<Task> taskListAfterCheckTime=new ArrayList<>();
+
+        for (int i = 0; i < supervisors.size(); i++) {
+            taskListOfSupervisor = supervisors.get(i).getTasks();
+            for (int j = 0; j < taskListOfSupervisor.size(); j++) {
+                boolean checkDate = checkTaskListIsInSemester(semester, taskListOfSupervisor.get(j));
+                if (checkDate == true) {
+                    taskListAfterCheckTime.add(taskListOfSupervisor.get(j));
+                }
+            }
+            taskListResult.addAll(taskListAfterCheckTime);
+        }
+        return taskListResult;
+    }
+
+    public boolean checkTaskListIsInSemester(Semester semester, Task task) {
+        Date dateStart = semester.getStart_date();
+
+        Date dateEnd = semester.getEnd_date();
+
+        Date taskDate = task.getTime_created();
+
+        return taskDate.after(dateStart) && taskDate.before(dateEnd);
     }
 }

@@ -1000,13 +1000,6 @@ public class StudentController {
         return new ResponseEntity<Integer>(countEventIsNotRead, HttpStatus.OK);
     }
 
-    @GetMapping("/specialized-paging")
-    @ResponseBody
-    public ResponseEntity<List<Specialized>> getSpecializedPaging(@RequestParam int page, @RequestParam int pageSize) {
-        List<Specialized> specializedList = specializedService.pagingSpecialized(page, pageSize);
-        return new ResponseEntity<List<Specialized>>(specializedList, HttpStatus.OK);
-    }
-
     //get email from token
     private String getEmailFromToken() {
         String email = "";

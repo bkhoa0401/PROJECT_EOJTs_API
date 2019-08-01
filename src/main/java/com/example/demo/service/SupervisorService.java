@@ -25,6 +25,9 @@ public class SupervisorService implements ISupervisorService {
     @Autowired
     ISemesterService semesterService;
 
+    @Autowired
+    IStudentService iStudentService;
+
 
     @Override
     public Supervisor findByEmail(String email) {
@@ -100,4 +103,5 @@ public class SupervisorService implements ISupervisorService {
         }
         return false;
     }
+
 }

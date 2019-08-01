@@ -4,6 +4,7 @@ import com.example.demo.dto.*;
 
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
+import com.nimbusds.jwt.JWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -300,7 +302,7 @@ public class AdminController {
     // thống kê số lượng sinh viên đc nhận thực tập tại doanh nghiệp qua các kì
     @GetMapping("/studentInternAtBusiness")
     @ResponseBody
-    public ResponseEntity<BusinessOptionsBySemesterDTO> countStudentInternAtBusinessBySemester(){
+    public ResponseEntity<BusinessOptionsBySemesterDTO> countStudentInternAtBusinessBySemester() {
         String email = getEmailFromToken();
         BusinessOptionsBySemesterDTO countStudent = adminService.countStudentInternAtBusinessBySemester(email);
 
@@ -313,16 +315,79 @@ public class AdminController {
     //thống kê đánh giá các report của sinh viên thực tập tại doanh nghiệp
     @GetMapping("/statisticalEvaluationsBusiness")
     @ResponseBody
-    public ResponseEntity<List<Statistical_EvaluationDTO>> getListStatistical_EvaluationDTOOfABusiness(){
-        String email=getEmailFromToken();
+    public ResponseEntity<List<Statistical_EvaluationDTO>> getListStatistical_EvaluationDTOOfABusiness() {
+        String email = getEmailFromToken();
 
-        List<Statistical_EvaluationDTO> evaluationDTOs=adminService.getListStatistical_EvaluationDTOOfABusiness(email);
+        List<Statistical_EvaluationDTO> evaluationDTOs = adminService.getListStatistical_EvaluationDTOOfABusiness(email);
 
-        if(evaluationDTOs!=null){
-            return new ResponseEntity<List<Statistical_EvaluationDTO>>(evaluationDTOs,HttpStatus.OK);
+        if (evaluationDTOs != null) {
+            return new ResponseEntity<List<Statistical_EvaluationDTO>>(evaluationDTOs, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 
+
+    //thống kê tỉ lệ về trạng thái task của sinh viên trong 1 doanh nghiệp
+    @GetMapping("/numberStatusTaskStudent")
+    @ResponseBody
+    public ResponseEntity<List<MonthNumberTaskDTO>> numberStatusTaskOfStudent() {
+        String email = getEmailFromToken();
+
+        Business business = businessService.getBusinessByEmail(email);
+
+        List<MonthNumberTaskDTO> numberStatus = adminService.numberTaskOfStudent(business);
+        if (numberStatus != null) {
+            return new ResponseEntity<List<MonthNumberTaskDTO>>(numberStatus, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/studentsTasks")
+    @ResponseBody
+    public ResponseEntity<Students_TasksDTO> getStudentsTasks() {
+        String email = getEmailFromToken();
+
+        Students_TasksDTO students_tasksDTO = adminService.getStudentsAndTasksOfSupervisor(email);
+        if (students_tasksDTO != null) {
+            return new ResponseEntity<Students_TasksDTO>(students_tasksDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/studentsTasksDone")
+    @ResponseBody
+    public ResponseEntity<Students_TasksDoneDTO> getStudentsTasksDone() {
+        String email = getEmailFromToken();
+
+        Students_TasksDoneDTO students_tasksDoneDTO = adminService.getStudentAndTasksDoneOfSupervisor(email);
+        if (students_tasksDoneDTO != null) {
+            return new ResponseEntity<Students_TasksDoneDTO>(students_tasksDoneDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/statisticalEvaluationOfSupervisor")
+    @ResponseBody
+    public ResponseEntity<List<Statistical_EvaluationDTO>> getStatistical_EvaluationDTOSBySupervisor() {
+        String email = getEmailFromToken();
+
+        List<Statistical_EvaluationDTO> evaluationDTOS = adminService.getListStatistical_EvaluationOfSupervisorDTO(email);
+        if (evaluationDTOS != null) {
+            return new ResponseEntity<List<Statistical_EvaluationDTO>>(evaluationDTOS, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+
+    @GetMapping("/statisticalStudentInSemester")
+    @ResponseBody
+    public ResponseEntity<StatisticalStudentInSemesterDTO> getStatisticalStudentInSemester(@RequestParam String semesterName) {
+        StatisticalStudentInSemesterDTO statisticalStudentInSemesterDTO =
+                adminService.getStatisticalStudentInSemester(semesterName);
+        if (statisticalStudentInSemesterDTO != null) {
+            return new ResponseEntity<StatisticalStudentInSemesterDTO>(statisticalStudentInSemesterDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
     @GetMapping("/checkSemester")
@@ -343,7 +408,7 @@ public class AdminController {
     @ResponseBody
     public ResponseEntity<Semester> getSemesterByName(@RequestParam String semesterName) {
         Semester semester = semesterService.getSemesterByName(semesterName);
-        if (semester!= null) {
+        if (semester != null) {
             return new ResponseEntity<Semester>(semester, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -357,4 +422,6 @@ public class AdminController {
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
+
+
 }
