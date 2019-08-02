@@ -166,12 +166,22 @@ public class StudentController {
 
         Semester semester = semesterService.getSemesterByName(student.getSemesterName());
 
-        Student studentGetByEmail=studentService.getStudentByEmail(student.getEmail());
+//        Student studentGetByEmail=studentService.getStudentByEmail(student.getEmail());
+        Student student1 = new Student();
+        student1.setEmail(student.getEmail());
+        student1.setSpecialized(student.getSpecialized());
+        student1.setStatus(StudentStatus.NOTSTART);
+        student1.setAddress(student.getAddress());
+        student1.setDob(student.getDob());
+        student1.setGender(student.isGender());
+        student1.setName(student.getName());
+        student1.setCode(student.getCode());
+        student1.setPhone(student.getPhone());
 
-        ojt_enrollment.setStudent(studentGetByEmail);
+        ojt_enrollment.setStudent(student1);
         ojt_enrollment.setSemester(semester);
         try {
-            studentService.saveStudent(studentGetByEmail);
+            studentService.saveStudent(student1);
             usersService.saveUser(users);
             ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);
 
