@@ -48,7 +48,7 @@ class User_Student_Create extends Component {
             specializeds: [],
             specializedItem: {},
             gpa: '',
-            semester: '',
+            semesterName: '',
         }
     }
 
@@ -93,12 +93,12 @@ class User_Student_Create extends Component {
             gender: 0,
             specializedItem: this.state.specializeds[0],
             gpa: '',
-            semester: '',
+            semesterName: '',
         })
     }
 
     handleSubmit = async () => {
-        const { email, name, phone, address, code, dob, gender, specializedItem, gpa, semester } = this.state;
+        const { email, name, phone, address, code, dob, gender, specializedItem, gpa, semesterName } = this.state;
         const specialized = {
             id: specializedItem.id
         }
@@ -112,7 +112,7 @@ class User_Student_Create extends Component {
             gender,
             specialized,
             gpa,
-            semester
+            semesterName
         }
 
         if (this.validator.allValid()) {
@@ -275,12 +275,12 @@ class User_Student_Create extends Component {
                                             </FormGroup>
                                             <FormGroup row>
                                                 <Col md="2">
-                                                    <Label htmlFor="semester">Học kì</Label>
+                                                    <Label htmlFor="semesterName">Học kì</Label>
                                                 </Col>
                                                 <Col xs="12" md="10">
-                                                    <Input value={this.state.semester} onChange={this.handleInput} type="text" name="semester" placeholder="Học kì" />
+                                                    <Input value={this.state.semesterName} onChange={this.handleInput} type="text" name="semesterName" placeholder="Học kì" />
                                                     <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Học kì', this.state.semester, 'required|alpha_num_space|min:8|max:10')}
+                                                        {this.validator.message('Học kì', this.state.semesterName, 'required|alpha_num_space|min:8|max:10')}
                                                     </span>
                                                 </Col>
                                             </FormGroup>

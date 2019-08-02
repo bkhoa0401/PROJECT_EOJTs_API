@@ -59,7 +59,7 @@ class Official_List extends Component {
 
 
   async componentDidMount() {
-    await ApiServices.Put('/admin');
+    // await ApiServices.Put('/admin');
     const students = await ApiServices.Get('/business/getStudentsByBusiness');
     const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness');
     const supervisors_FirstBlank = await ApiServices.Get('/business/getAllSupervisorABusiness');
@@ -419,7 +419,7 @@ class Official_List extends Component {
                       <form className="form-inline">
                         <input onChange={this.handleInputSearch} name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
                       </form>
-                      <div style={{ marginRight: "70px" }}>
+                      {/* <div style={{ marginRight: "70px" }}>
                         <b>Sắp xếp theo: </b>
                         &nbsp;&nbsp;&nbsp;
                         <select>
@@ -427,7 +427,7 @@ class Official_List extends Component {
                           <option value="olala">olala 2</option>
                           <option value="olala">olala 3</option>
                         </select>
-                      </div>
+                      </div> */}
                     </nav>
 
                     <Table responsive striped>
