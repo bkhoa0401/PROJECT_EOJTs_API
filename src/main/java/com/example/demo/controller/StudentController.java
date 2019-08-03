@@ -791,6 +791,8 @@ public class StudentController {
         String email = getEmailFromToken();
 
         DashboardDTO dashboardDTO = new DashboardDTO();
+        Student student = studentService.getStudentByEmail(email);
+        dashboardDTO.setSupervisor(student.getSupervisor());
 
         List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(email);
         if (evaluationList == null) {

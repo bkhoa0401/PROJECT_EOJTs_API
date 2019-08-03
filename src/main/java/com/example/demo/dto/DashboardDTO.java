@@ -2,6 +2,7 @@ package com.example.demo.dto;
 
 import com.example.demo.entity.Business;
 import com.example.demo.entity.Evaluation;
+import com.example.demo.entity.Supervisor;
 import com.example.demo.entity.Task;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public class DashboardDTO {
     private boolean isMakeFeedback;
     private boolean isDoneFeedback;
     private Business business;
+    private Supervisor supervisor;
 
     public Business getBusiness() {
         return business;
@@ -71,5 +73,13 @@ public class DashboardDTO {
 
     public void setDoneFeedback(boolean doneFeedback) {
         isDoneFeedback = doneFeedback;
+    }
+
+    public Supervisor getSupervisor() {
+        return supervisor;
+    }
+
+    public void setSupervisor(Supervisor supervisor) {
+        this.supervisor = supervisor;
     }
 }
