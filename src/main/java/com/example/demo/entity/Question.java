@@ -26,7 +26,7 @@ public class Question implements Serializable {
     @Column(name = "has_others")
     private boolean has_others;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question",cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Answer> answers;
 

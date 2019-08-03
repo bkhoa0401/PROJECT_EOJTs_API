@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.config.BusinessProposedStatus;
+import com.example.demo.config.StudentStatus;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IBusiness_ProposedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -190,6 +191,11 @@ public class Business_ProposedService implements IBusiness_ProposedService {
             ojt_enrollment.setSemester(semester);
             ojtEnrollmentList.add(ojt_enrollment);
             business.setOjt_enrollments(ojtEnrollmentList);
+
+            //update status student when raise business success
+            Student student=business_proposed.getStudent_proposed();
+            student.setStatus(StudentStatus.STARTED);
+            iStudentService.saveStudent(student);
 
             iBusinessService.saveBusiness(business);
             iUsersService.saveUser(users);

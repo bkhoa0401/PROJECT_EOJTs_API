@@ -85,5 +85,10 @@ export default {
       url: '/answer-statistics',
       icon: 'icon-star',
     },
+    {
+      name: 'Quản lí câu hỏi',
+      url: '/question',
+      icon: 'icon-star',
+    }
   ]
 };

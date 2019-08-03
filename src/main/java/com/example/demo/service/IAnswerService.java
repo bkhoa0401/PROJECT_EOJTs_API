@@ -7,4 +7,5 @@ import java.util.List;
 public interface IAnswerService {
     void saveAnswer(Answer answer);
     List<Answer> findAnswerByOtherIsTrueAndQuestionId(int id);
+    Answer findAnswerById(int id);
 }

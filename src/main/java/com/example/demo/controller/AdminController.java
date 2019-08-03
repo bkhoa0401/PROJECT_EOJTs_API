@@ -43,6 +43,9 @@ public class AdminController {
     @Autowired
     ISemesterService semesterService;
 
+    @Autowired
+    IQuestionService iQuestionService;
+
     @GetMapping
     @ResponseBody
     public ResponseEntity<List<Student>> getAllStudentByTypeStatusOption(@RequestParam int typeOfStatus) {
@@ -388,6 +391,47 @@ public class AdminController {
             return new ResponseEntity<StatisticalStudentInSemesterDTO>(statisticalStudentInSemesterDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PostMapping("/question")
+    public ResponseEntity<Void> createNewQuestion(@RequestBody Question question) {
+        if (question == null) {
+            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        }
+        iQuestionService.addNewQuestion(question);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/questions")
+    @ResponseBody
+    public ResponseEntity<List<Question>> getAllQuestion() {
+        List<Question> questions = iQuestionService.getAllQuestionNotCareStatus();
+        if (questions != null) {
+            return new ResponseEntity<List<Question>>(questions, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("/question/id")
+    @ResponseBody
+    public ResponseEntity<Question> getQuestionById(@RequestParam int id) {
+        Question question = iQuestionService.findQuestionById(id);
+        if (question != null) {
+            return new ResponseEntity<Question>(question, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PutMapping("/question")
+    public ResponseEntity<Void> deleteQuestion(@RequestParam int id, @RequestParam boolean status) {
+        iQuestionService.deleteQuestion(id, status);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/question-content")
+    public ResponseEntity<Void> updateQuestion(@RequestBody Question question) {
+        iQuestionService.updateQuestion(question);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/checkSemester")
