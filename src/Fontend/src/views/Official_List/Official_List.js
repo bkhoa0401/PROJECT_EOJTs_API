@@ -59,7 +59,7 @@ class Official_List extends Component {
 
 
   async componentDidMount() {
-    await ApiServices.Put('/admin');
+    // await ApiServices.Put('/admin');
     const students = await ApiServices.Get('/business/getStudentsByBusiness');
     const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness');
     const supervisors_FirstBlank = await ApiServices.Get('/business/getAllSupervisorABusiness');
@@ -68,9 +68,13 @@ class Official_List extends Component {
       email: '',
       name: ''
     }
-    supervisors_FirstBlank.unshift(supervisors_FirstBlank_Obj);
-
-    if (students != null && supervisors != null) {
+    if (supervisors_FirstBlank != null) {
+      supervisors_FirstBlank.unshift(supervisors_FirstBlank_Obj);
+    } else {
+      supervisors_FirstBlank = [];
+      supervisors_FirstBlank.push(supervisors_FirstBlank_Obj);
+    }
+    if (students != null && supervisors != null && supervisors_FirstBlank != null) {
       this.setState({
         students,
         supervisors,
@@ -311,7 +315,7 @@ class Official_List extends Component {
       )
     } else if (taskLevel === 'NORMAL') {
       return (
-        <Badge color="warning">Bình thường</Badge>
+        <Badge color="warning">Trung bình</Badge>
       )
     }
   }
@@ -320,11 +324,11 @@ class Official_List extends Component {
     console.log(taskStatus);
     if (taskStatus === 'NOTSTART') {
       return (
-        <Badge color="danger">Chưa bắt đầu</Badge>
+        <Badge color="secondary">Chưa bắt đầu</Badge>
       )
     } else if (taskStatus === 'PENDING') {
       return (
-        <Badge color="warning">Chưa hoàn thành</Badge>
+        <Badge color="warning">Chưa xong</Badge>
       )
     } else if (taskStatus === 'DONE') {
       return (
@@ -366,6 +370,20 @@ class Official_List extends Component {
     }
   }
 
+  formatDate(inputDate, flag) {
+    var date = inputDate.split('-');
+    let formattedDate = date[2] + "/" + date[1] + "/" + date[0];
+    if (flag == true) {
+      return (
+        <Badge color="primary">{formattedDate}</Badge>
+      )
+    } else if (flag == false) {
+      return (
+        <Badge color="danger">{formattedDate}</Badge>
+      )
+    }
+  }
+
   render() {
     const { studentDetail, students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection, loading, suggestedStudents, isSelect, colorBackSelect, colorTextSelect } = this.state;
     let filteredListStudents = orderBy(students, columnToSort, sortDirection);
@@ -401,7 +419,7 @@ class Official_List extends Component {
                       <form className="form-inline">
                         <input onChange={this.handleInputSearch} name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
                       </form>
-                      <div style={{ marginRight: "70px" }}>
+                      {/* <div style={{ marginRight: "70px" }}>
                         <b>Sắp xếp theo: </b>
                         &nbsp;&nbsp;&nbsp;
                         <select>
@@ -409,7 +427,7 @@ class Official_List extends Component {
                           <option value="olala">olala 2</option>
                           <option value="olala">olala 3</option>
                         </select>
-                      </div>
+                      </div> */}
                     </nav>
 
                     <Table responsive striped>
@@ -657,7 +675,7 @@ class Official_List extends Component {
                       <h6>Người hướng dẫn</h6>
                     </Col>
                     <Col xs="12" md="9">
-                      <label>{studentDetail.supervisor.name}</label>
+                      <Label>{studentDetail.supervisor === null ? <></> : (studentDetail.supervisor.name)}</Label>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -673,12 +691,12 @@ class Official_List extends Component {
                       <tr>
                         <th style={{ textAlign: "center" }}>STT</th>
                         <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                        <th style={{ textAlign: "center" }}>Trạng thái</th>
                         <th style={{ textAlign: "center" }}>Giao bởi</th>
+                        <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
+                        <th style={{ textAlign: "center" }}>Độ khó</th>
                         <th style={{ textAlign: "center" }}>Ngày tạo</th>
                         <th style={{ textAlign: "center" }}>Hạn cuối</th>
-                        <th style={{ textAlign: "center" }}>Mức độ</th>
-                        <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
+                        <th style={{ textAlign: "center" }}>Trạng thái</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -688,20 +706,20 @@ class Official_List extends Component {
                             <tr>
                               <td style={{ textAlign: "center" }}>{index + 1}</td>
                               <td style={{ textAlign: "center" }}>{task.title}</td>
-                              <td style={{ textAlign: "center" }}>
-                                {
-                                  this.showTaskState(task.status)
-                                }
-                              </td>
                               <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
-                              <td style={{ textAlign: "center" }}>{task.time_created}</td>
-                              <td style={{ textAlign: "center" }}>{task.time_end}</td>
+                              <td style={{ textAlign: "center" }}>{task.priority}</td>
                               <td style={{ textAlign: "center" }}>
                                 {
                                   this.showTaskLevel(task.level_task)
                                 }
                               </td>
-                              <td style={{ textAlign: "center" }}>{task.priority}</td>
+                              <td style={{ textAlign: "center" }}>{this.formatDate(task.time_created, true)}</td>
+                              <td style={{ textAlign: "center" }}>{this.formatDate(task.time_end, false)}</td>
+                              <td style={{ textAlign: "center" }}>
+                                {
+                                  this.showTaskState(task.status)
+                                }
+                              </td>
                             </tr>
                           )
                         })
