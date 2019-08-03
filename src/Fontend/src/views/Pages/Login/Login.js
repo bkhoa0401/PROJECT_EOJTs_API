@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import Toastify from '../../Toastify/Toastify';
 import { async } from 'q';
 import decode from 'jwt-decode';
+import { askForPermissioToReceiveNotifications } from '../../../service/push-notification';
 
 class Login extends Component {
 
@@ -40,10 +41,16 @@ class Login extends Component {
       const role = decoded.role;
 
       if (role === 'ROLE_ADMIN') {
+        const firebaseToken = await askForPermissioToReceiveNotifications();
+        alert(firebaseToken);
         this.props.history.push('/admin');
       } else if (role === 'ROLE_HR') {
+        const firebaseToken = await askForPermissioToReceiveNotifications();
+        alert(firebaseToken);
         this.props.history.push('/hr');
       } else if (role === 'ROLE_SUPERVISOR') {
+        const firebaseToken = await askForPermissioToReceiveNotifications();
+        alert(firebaseToken);
         this.props.history.push('/supervisor');
       } else if (role === 'ROLE_STARTUP') {
         this.props.history.push('/startup');

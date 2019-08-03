@@ -18,7 +18,7 @@ import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
 import { async } from 'q';
-import { initializeApp } from '../Invitation/push-notification';
+// import { initializeApp } from '../Invitation/push-notification';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';

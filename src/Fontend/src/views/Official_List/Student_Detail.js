@@ -21,7 +21,7 @@ import decode from 'jwt-decode';
 import Toastify from '../../views/Toastify/Toastify';
 import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
 import PaginationComponent from '../Paginations/pagination';
-import { initializeApp } from '../Invitation/push-notification';
+// import { initializeApp } from '../Invitation/push-notification';
 import 'firebase/storage';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 

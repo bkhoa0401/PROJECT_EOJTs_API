@@ -148,8 +148,8 @@ public class TaskService implements ITaskService {
 
     @Override
     public List<Task> findTasksOfBusinessAndSemester(Business business) {
-        Semester semester = semesterService.getSemesterByStartDateAndEndDate();
-
+        //Semester semester = semesterService.getSemesterByStartDateAndEndDate();
+        Semester semester = semesterService.getSemesterCurrent();
         List<Supervisor> supervisors = business.getSupervisors();
 
         List<Task> taskListOfSupervisor;
