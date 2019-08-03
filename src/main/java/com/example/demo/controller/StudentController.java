@@ -987,6 +987,16 @@ public class StudentController {
     public ResponseEntity<Void> postFeedback(@RequestParam String content) {
         String email = getEmailFromToken();
         studentService.postFeedBack(email, content);
+        HistoryDetail historyDetail = new HistoryDetail(Answer.class.getName(), "content", "new", content);
+        HistoryAction action =
+                new HistoryAction(email
+                        , "ROLE_STUDENT", ActionEnum.INSERT, TAG, new Object() {
+                }
+                        .getClass()
+                        .getEnclosingMethod()
+                        .getName(), null, new java.util.Date(), historyDetail);
+        historyDetail.setHistoryAction(action);
+        iHistoryActionService.createHistory(action);
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
@@ -1011,5 +1021,4 @@ public class StudentController {
         }
         return email;
     }
-
 }

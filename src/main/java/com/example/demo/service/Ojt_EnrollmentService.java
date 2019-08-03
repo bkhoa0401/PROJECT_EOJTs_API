@@ -1,9 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Business;
-import com.example.demo.entity.Ojt_Enrollment;
-import com.example.demo.entity.Semester;
-import com.example.demo.entity.Student;
+import com.example.demo.config.ActionEnum;
+import com.example.demo.entity.*;
 import com.example.demo.repository.IOjt_EnrollmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +22,11 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
 
     @Autowired
     ISemesterService semesterService;
+
+    @Autowired
+    IHistoryActionService historyActionService;
+
+
 
     @Override
     public boolean saveListOjtEnrollment(List<Ojt_Enrollment> ojtEnrollmentList) {
@@ -129,7 +132,20 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
         ojt_enrollment.setTimeEnroll(date);
         ojt_enrollment.setBusiness(business);
 
-        ojtEnrollmentRepository.save(ojt_enrollment);
+        if(ojtEnrollmentRepository.save(ojt_enrollment) != null) {
+            HistoryDetail historyDetail = new HistoryDetail(Ojt_Enrollment.class.getName(), "business_email", String.valueOf(ojt_enrollment.getId()), emailBusiness);
+            HistoryAction action =
+                    new HistoryAction(emailStudent
+                            , "ROLE_STUDENT", ActionEnum.UPDATE, "StudentController", new Object() {
+                    }
+                            .getClass()
+                            .getEnclosingMethod()
+                            .getName(), null, new java.util.Date(), historyDetail);
+            historyDetail.setHistoryAction(action);
+            historyActionService.createHistory(action);
+        }
+
+
     }
 
     //set business for student by student id and return result
