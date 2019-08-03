@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Popup from "reactjs-popup";
-import { Input, Form, Label, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import { ListGroup, ListGroupItem, Input, Form, Label, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../Toastify/Toastify';
@@ -54,9 +54,15 @@ class student_list extends Component {
 
             listStudentTask: null,
             studentDetail: null,
+            months: null,
+            isThisMonth: -1,
 
             typesOfStudent: ['Tổng', 'Rớt'],
             typeSelected: 1,
+
+            isViewSurvey: 0,
+            survey: [],
+
         };
         // this.toggleModal = this.toggleModal.bind(this);
     }
@@ -144,17 +150,146 @@ class student_list extends Component {
         } else {
             this.setState({
                 modalDetail: !this.state.modalDetail,
+                isViewSurvey: 0,
             });
         }
     }
 
+    handleSelectMonth = async (event, studentDetail) => {
+        const { name, value } = event.target;
+        const { months } = this.state;
+        var date = months[value].split(" - ");
+        // console.log(date[0]);
+        // console.log(date[1]);
+        var formatDateStart = date[0].split("/");
+        let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
+        // console.log(dateStart);
+        var formatDateEnd = date[1].split("/");
+        let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
+        // console.log(dateEnd);
+        const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+        await this.setState({
+            listStudentTask: listStudentTask,
+            isThisMonth: -1,
+        })
+    }
+
     toggleModalTask = async (studentDetail) => {
         if (this.state.modalTask == false) {
-            const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}`);
+            this.setState({
+                loading: true,
+            })
+            let months = [];
+            var date = new Date();
+            let isThisMonth = -1;
+
+            const ojtEnrollment = await ApiServices.Get(`/enrollment/getSelectedStuEnrollment?email=${studentDetail.email}`);
+            var dateEnroll = ojtEnrollment.timeEnroll;
+            var splitDate = dateEnroll.split('-');
+            let dd = parseInt(splitDate[2]);
+            let mm = parseInt(splitDate[1]);
+            // let mm31 = [1, 3, 5, 7, 8, 10, 12];
+            let mm30 = [4, 6, 9, 11];
+            let yyyy = parseInt(splitDate[0]);
+            for (let index = 1; index < 5; index++) {
+                let timeStartShow = "";
+                if (mm + parseInt(index) > 13) {
+                    if ((mm + parseInt(index) - 12 - 1) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+                        timeStartShow = 29 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+                    } else if ((mm + parseInt(index) - 12 - 1) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+                        timeStartShow = 28 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+                    } else if (mm30.includes((mm + parseInt(index) - 12 - 1)) && dd > 30) {
+                        timeStartShow = 30 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+                    } else {
+                        timeStartShow = dd + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+                    }
+                } else {
+                    if ((mm + parseInt(index) - 1) == 2 && yyyy % 4 == 0 && dd > 29) {
+                        timeStartShow = 29 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+                    } else if ((mm + parseInt(index) - 1) == 2 && yyyy % 4 != 0 && dd > 28) {
+                        timeStartShow = 28 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+                    } else if (mm30.includes((mm + parseInt(index) - 1)) && dd > 30) {
+                        timeStartShow = 30 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+                    } else {
+                        timeStartShow = dd + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+                    }
+                }
+                let formatTimeStartShow = timeStartShow.split('/');
+                // console.log(formatTimeStartShow[1]);
+                // console.log(formatTimeStartShow[0]);
+                if (parseInt(formatTimeStartShow[1]) < 10) {
+                    formatTimeStartShow[1] = "0" + formatTimeStartShow[1];
+                }
+                if (parseInt(formatTimeStartShow[0]) < 10) {
+                    formatTimeStartShow[0] = "0" + formatTimeStartShow[0];
+                }
+                timeStartShow = formatTimeStartShow[0] + "/" + formatTimeStartShow[1] + "/" + formatTimeStartShow[2];
+                // console.log(timeStartShow);
+                let timeEndShow = "";
+                if (mm + parseInt(index) > 12) {
+                    if ((mm + parseInt(index) - 12) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+                        timeEndShow = 29 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+                    } else if ((mm + parseInt(index) - 12) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+                        timeEndShow = 28 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+                    } else if (mm30.includes((mm + parseInt(index) - 12)) && dd > 30) {
+                        timeEndShow = 30 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+                    } else {
+                        timeEndShow = dd + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+                    }
+                } else {
+                    if ((mm + parseInt(index)) == 2 && yyyy % 4 == 0 && dd > 29) {
+                        timeEndShow = 29 + "/" + (mm + parseInt(index)) + "/" + yyyy;
+                    } else if ((mm + parseInt(index)) == 2 && yyyy % 4 != 0 && dd > 28) {
+                        timeEndShow = 28 + "/" + (mm + parseInt(index)) + "/" + yyyy;
+                    } else if (mm30.includes((mm + parseInt(index))) && dd > 30) {
+                        timeEndShow = 30 + "/" + (mm + parseInt(index)) + "/" + yyyy;
+                    } else {
+                        timeEndShow = dd + "/" + (mm + parseInt(index)) + "/" + yyyy;
+                    }
+                }
+                let formatTimeEndShow = timeEndShow.split('/');
+                if (parseInt(formatTimeEndShow[1]) < 10) {
+                    formatTimeEndShow[1] = "0" + formatTimeEndShow[1];
+                }
+                if (parseInt(formatTimeEndShow[0]) < 10) {
+                    formatTimeEndShow[0] = "0" + formatTimeEndShow[0];
+                }
+                timeEndShow = formatTimeEndShow[0] + "/" + formatTimeEndShow[1] + "/" + formatTimeEndShow[2];
+                // console.log(timeEndShow);
+                var date1 = new Date();
+                var date2 = new Date();
+                date1.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0]));
+                // console.log(formatTimeStartShow[1]);
+                date2.setFullYear(parseInt(formatTimeEndShow[2]), parseInt(formatTimeEndShow[1] - 1), parseInt(formatTimeEndShow[0]));
+                if (date >= date1 && date <= date2) {
+                    isThisMonth = index - 1;
+                }
+                // console.log(date);
+                // console.log(date1);
+                // console.log(date2);
+                // console.log(date >= date1);
+                // console.log(date <= date2);
+                months.push(`${timeStartShow} - ${timeEndShow}`);
+            }
+            // console.log(months);
+            // console.log(isThisMonth);
+
+
+            var date = months[isThisMonth].split(" - ");
+            var formatDateStart = date[0].split("/");
+            let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
+            var formatDateEnd = date[1].split("/");
+            let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
+            const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+
+
             this.setState({
                 modalTask: !this.state.modalTask,
                 studentDetail: studentDetail,
                 listStudentTask: listStudentTask,
+                months: months,
+                loading: false,
+                isThisMonth: isThisMonth,
             });
         } else {
             this.setState({
@@ -249,6 +384,19 @@ class student_list extends Component {
             )
         }
     }
+
+    handleViewSurvey = async () => {
+        this.setState({
+            isViewSurvey: 1,
+        })
+    }
+
+    handleBackSurvey = async () => {
+        this.setState({
+            isViewSurvey: 0,
+        })
+    }
+
 
     handleSubmit = async () => {
         this.setState({
@@ -361,7 +509,7 @@ class student_list extends Component {
     }
 
     tabPane() {
-        const { students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail, typesOfStudent } = this.state;
+        const { months, isThisMonth, isViewSurvey, survey, students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail, typesOfStudent } = this.state;
 
         const { name, code, email, phone, address, specialized, objective, gpa, skills, resumeLink, transcriptLink, role, isUploadTranscriptLink } = this.state;
         const linkDownCV = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
@@ -440,48 +588,49 @@ class student_list extends Component {
                         <Modal isOpen={this.state.modalDetail} toggle={this.toggleModalDetail} className={'modal-primary ' + this.props.className}>
                             <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
                             <ModalBody>
-                                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Họ và Tên</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <Label id="" name="">{name}</Label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>MSSV</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <Label id="" name="">{code}</Label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Email</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <Label id="" name="">{email}</Label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>SĐT</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <Label id="" name="">{phone}</Label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Chuyên ngành</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <Label id="" name="">{specialized}</Label>
-                                        </Col>
-                                    </FormGroup>
-                                    {/* <FormGroup row>
+                                {isViewSurvey === 0 ?
+                                    <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Họ và Tên</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <Label id="" name="">{name}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>MSSV</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <Label id="" name="">{code}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Email</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <Label id="" name="">{email}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>SĐT</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <Label id="" name="">{phone}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Chuyên ngành</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <Label id="" name="">{specialized}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        {/* <FormGroup row>
                                         <Col md="4">
                                             <h6>Học kỳ</h6>
                                         </Col>
@@ -489,83 +638,232 @@ class student_list extends Component {
                                             <Label id="" name="">{}</Label>
                                         </Col>
                                     </FormGroup> */}
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Địa chỉ</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <Label id="" name="">{address}</Label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Mục tiêu</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <Label id="" name="">{objective}</Label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>GPA</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <Label id="" name="">{gpa}</Label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Kỹ năng</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Địa chỉ</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <Label id="" name="">{address}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Mục tiêu</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <Label id="" name="">{objective}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>GPA</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <Label id="" name="">{gpa}</Label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Kỹ năng</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {
+                                                    skills && skills.map((skill, index) => {
+                                                        return (
+                                                            <div>
+                                                                {
+                                                                    skill.name && skill.name ? (
+                                                                        <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                    ) : (
+                                                                            <label style={{ marginRight: "15px" }}>N/A</label>
+                                                                        )
+                                                                }
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>CV</h6>
+                                            </Col>
                                             {
-                                                skills && skills.map((skill, index) => {
-                                                    return (
-                                                        <div>
-                                                            {
-                                                                skill.name && skill.name ? (
-                                                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
-                                                                ) : (
-                                                                        <label style={{ marginRight: "15px" }}>N/A</label>
-                                                                    )
-                                                            }
-                                                        </div>
-                                                    )
-                                                })
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>CV</h6>
-                                        </Col>
-                                        {
-                                            resumeLink && resumeLink ?
-                                                (<Col xs="12" md="8">
-                                                    <a target="_blank" href={linkDownCV} download>Tải về</a>
-                                                </Col>)
-                                                :
-                                                (
-                                                    <Col xs="12" md="8">
-                                                        <label>N/A</label>
+                                                resumeLink && resumeLink ?
+                                                    (<Col xs="12" md="8">
+                                                        <a target="_blank" href={linkDownCV} download>Tải về</a>
                                                     </Col>)
-                                        }
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Bảng điểm</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {
-                                                role && role === 'ROLE_HR' ?
+                                                    :
                                                     (
-                                                        this.showTranscript(transcriptLink)
-                                                    ) :
-                                                    (<input onChange={this.handleChange} type="file" />)
+                                                        <Col xs="12" md="8">
+                                                            <label>N/A</label>
+                                                        </Col>)
                                             }
-                                        </Col>
-                                    </FormGroup>
-                                </Form>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Bảng điểm</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {
+                                                    role && role === 'ROLE_HR' ?
+                                                        (
+                                                            this.showTranscript(transcriptLink)
+                                                        ) :
+                                                        (<input onChange={this.handleChange} type="file" />)
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Khảo sát ý kiến</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {
+                                                    survey === null ?
+                                                        <></> :
+                                                        <Button color="primary" onClick={() => this.handleViewSurvey()}>Xem</Button>
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                    </Form> :
+                                    <div style={{ height: '563px', overflowY: 'scroll' }}>
+                                        <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                            <div style={{ textAlign: "center" }}>
+                                                <img src="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410" width="400px" />
+                                                {/* <br /><br /><br /> */}
+                                                <h3 style={{ fontWeight: "bold" }}>PHIẾU KHẢO SÁT NƠI THỰC TẬP</h3>
+                                            </div>
+                                            <div>
+                                                {/* <FormGroup row>
+                                                <h4 style={{ fontWeight: "bold" }}>&emsp;Thông tin cá nhân</h4>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="5">
+                                                    <h6 style={{ fontWeight: "bold" }}>Họ tên sinh viên:</h6>
+                                                </Col>
+                                                <Col xs="12" md="7">
+                                                    <Label>Nguyễn Văn A</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="5">
+                                                    <h6 style={{ fontWeight: "bold" }}>MSSV:</h6>
+                                                </Col>
+                                                <Col xs="12" md="7">
+                                                    <Label>SE60000</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="5">
+                                                    <h6 style={{ fontWeight: "bold" }}>Ngành:</h6>
+                                                </Col>
+                                                <Col xs="12" md="7">
+                                                    <Label>IS</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="5">
+                                                    <h6 style={{ fontWeight: "bold" }}>Nơi học tập:</h6>
+                                                </Col>
+                                                <Col xs="12" md="7">
+                                                    <Label>FPT University</Label>
+                                                </Col>
+                                            </FormGroup> */}
+                                                <FormGroup row>
+                                                    <h4 style={{ fontWeight: "bold" }}>&emsp;Thông tin nơi thực tập</h4>
+                                                </FormGroup>
+                                                <FormGroup row>
+                                                    <Col md="5">
+                                                        <h6 style={{ fontWeight: "bold" }}>Tên công ty thực tập:</h6>
+                                                    </Col>
+                                                    <Col xs="12" md="7">
+                                                        <Label>TP Bank</Label>
+                                                    </Col>
+                                                </FormGroup>
+                                                <FormGroup row>
+                                                    <Col md="5">
+                                                        <h6 style={{ fontWeight: "bold" }}>Lĩnh vực hoạt động:</h6>
+                                                    </Col>
+                                                    <Col xs="12" md="7">
+                                                        <Label>Ngân hàng</Label>
+                                                    </Col>
+                                                </FormGroup>
+                                                <FormGroup row>
+                                                    <Col md="5">
+                                                        <h6 style={{ fontWeight: "bold" }}>Địa chỉ:</h6>
+                                                    </Col>
+                                                    <Col xs="12" md="7">
+                                                        <Label>123 abc</Label>
+                                                    </Col>
+                                                </FormGroup>
+                                                <FormGroup row>
+                                                    <Col md="5">
+                                                        <h6 style={{ fontWeight: "bold" }}>Số điện thoại:</h6>
+                                                    </Col>
+                                                    <Col xs="12" md="7">
+                                                        <Label>0901234567</Label>
+                                                    </Col>
+                                                </FormGroup>
+                                                <FormGroup row>
+                                                    <Col md="5">
+                                                        <h6 style={{ fontWeight: "bold" }}>Tên người hướng dẫn:</h6>
+                                                    </Col>
+                                                    <Col xs="12" md="7">
+                                                        <Label>Nguyễn Văn B</Label>
+                                                    </Col>
+                                                </FormGroup>
+                                                {/* <FormGroup>
+                                                <Col md="4">
+                                                    <h6 style={{ fontWeight: "bold" }}>Chức vụ:</h6>
+                                                </Col>
+                                                <Col xs="12" md="8">
+                                                    <Label>Trưởng phòng thực tập</Label>
+                                                </Col>
+                                            </FormGroup> */}
+                                            </div>
+                                            <hr />
+                                            <div style={{ paddingTop: "10px", paddingLeft: "5%", paddingRight: "5%" }}>
+                                                <FormGroup>
+                                                    <row>
+                                                        &emsp;<u><b>Câu 1:</b></u> Bạn đánh giá như thế nào về nơi thực tập
+                                            </row>
+                                                    <row style={{ paddingTop: "20px" }}>
+                                                        <br />&emsp;&emsp;Điều kiện làm việc tại công ty (Máy móc, trang thiết bị phục vụ cho công việc, nội thất văn phòng):
+                                                </row>
+                                                    <row>
+                                                        <ListGroup>
+                                                            <ListGroupItem tag="button" action>
+                                                                <FormGroup check className="radio">
+                                                                    <Input className="form-check-input" type="radio" id="radio1" name="radios" value="Tốt" checked />
+                                                                    <Label check className="form-check-label" htmlFor="radio1">Tốt</Label>
+                                                                </FormGroup>
+                                                            </ListGroupItem>
+                                                            <ListGroupItem tag="button" action>
+                                                                <FormGroup check className="radio">
+                                                                    <Input className="form-check-input" type="radio" id="radio2" name="radios" value="Khá" />
+                                                                    <Label check className="form-check-label" htmlFor="radio2">Khá</Label>
+                                                                </FormGroup>
+                                                            </ListGroupItem>
+                                                            <ListGroupItem tag="button" action>
+                                                                <FormGroup check className="radio">
+                                                                    <Input className="form-check-input" type="radio" id="radio3" name="radios" value="Trung bình" />
+                                                                    <Label check className="form-check-label" htmlFor="radio3">Trung bình</Label>
+                                                                </FormGroup>
+                                                            </ListGroupItem>
+                                                            <ListGroupItem tag="button" action>
+                                                                <FormGroup check className="radio">
+                                                                    <Input className="form-check-input" type="radio" id="radio4" name="radios" value="Kém" />
+                                                                    <Label check className="form-check-label" htmlFor="radio4">Kém</Label>
+                                                                </FormGroup>
+                                                            </ListGroupItem>
+                                                        </ListGroup>
+                                                    </row>
+                                                </FormGroup>
+                                            </div>
+                                        </Form>
+                                    </div>
+                                }
                             </ModalBody>
                             {isUploadTranscriptLink === true ?
                                 <ModalFooter>
@@ -577,6 +875,13 @@ class student_list extends Component {
                                     }
                                 </ModalFooter> :
                                 <></>
+                            }
+                            {
+                                isViewSurvey === 1 ?
+                                    <ModalFooter>
+                                        <Button onClick={() => this.handleBackSurvey()} color="secondary">Trở về</Button>
+                                    </ModalFooter> :
+                                    <></>
                             }
                         </Modal>
                         {studentDetail !== null ?
@@ -600,46 +905,57 @@ class student_list extends Component {
                                             <label>{studentDetail.name}</label>
                                         </Col>
                                     </FormGroup>
-                                    <Table responsive striped>
-                                        <thead>
-                                            <tr>
-                                                <th style={{ textAlign: "center" }}>STT</th>
-                                                <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                                                <th style={{ textAlign: "center" }}>Giao bởi</th>
-                                                <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
-                                                <th style={{ textAlign: "center" }}>Độ khó</th>
-                                                <th style={{ textAlign: "center" }}>Ngày tạo</th>
-                                                <th style={{ textAlign: "center" }}>Hạn cuối</th>
-                                                <th style={{ textAlign: "center" }}>Trạng thái</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                this.state.listStudentTask && this.state.listStudentTask.map((task, index) => {
-                                                    return (
-                                                        <tr>
-                                                            <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                            <td style={{ textAlign: "center" }}>{task.title}</td>
-                                                            <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
-                                                            <td style={{ textAlign: "center" }}>{task.priority}</td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                {
-                                                                    this.showTaskLevel(task.level_task)
-                                                                }
-                                                            </td>
-                                                            <td style={{ textAlign: "center" }}>{this.formatDate(task.time_created, true)}</td>
-                                                            <td style={{ textAlign: "center" }}>{this.formatDate(task.time_end, false)}</td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                {
-                                                                    this.showTaskState(task.status)
-                                                                }
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                                })
-                                            }
-                                        </tbody>
-                                    </Table>
+                                    <FormGroup row style={{ paddingLeft: '38%' }}>
+                                        <Input onChange={e => { this.handleSelectMonth(e, studentDetail) }} type="select" name="months" style={{ width: '250px' }}>
+                                            {months && months.map((month, i) => {
+                                                return (
+                                                    <option value={i} selected={i === isThisMonth}>{month}</option>
+                                                )
+                                            })}
+                                        </Input>
+                                    </FormGroup>
+                                    <div style={{ height: '492px', overflowY: 'scroll' }}>
+                                        <Table responsive striped>
+                                            <thead>
+                                                <tr>
+                                                    <th style={{ textAlign: "center" }}>STT</th>
+                                                    <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
+                                                    <th style={{ textAlign: "center" }}>Giao bởi</th>
+                                                    <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
+                                                    <th style={{ textAlign: "center" }}>Độ khó</th>
+                                                    <th style={{ textAlign: "center" }}>Ngày tạo</th>
+                                                    <th style={{ textAlign: "center" }}>Hạn cuối</th>
+                                                    <th style={{ textAlign: "center" }}>Trạng thái</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    this.state.listStudentTask && this.state.listStudentTask.map((task, index) => {
+                                                        return (
+                                                            <tr>
+                                                                <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                                <td style={{ textAlign: "center" }}>{task.title}</td>
+                                                                <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
+                                                                <td style={{ textAlign: "center" }}>{task.priority}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {
+                                                                        this.showTaskLevel(task.level_task)
+                                                                    }
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }}>{this.formatDate(task.time_created, true)}</td>
+                                                                <td style={{ textAlign: "center" }}>{this.formatDate(task.time_end, false)}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {
+                                                                        this.showTaskState(task.status)
+                                                                    }
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </tbody>
+                                        </Table>
+                                    </div>
                                 </ModalBody>
                                 {/* <ModalFooter>
                                 </ModalFooter> */}

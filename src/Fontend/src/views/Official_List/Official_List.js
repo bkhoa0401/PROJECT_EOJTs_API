@@ -819,7 +819,7 @@ class Official_List extends Component {
                       })}
                     </Input>
                   </FormGroup>
-                  <div style={{ height: '450px', overflowY: 'scroll' }}>
+                  <div style={{ height: '492px', overflowY: 'scroll' }}>
                     <Table responsive striped>
                       <thead>
                         <tr>
