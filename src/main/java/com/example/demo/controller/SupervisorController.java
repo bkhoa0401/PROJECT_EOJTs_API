@@ -248,11 +248,18 @@ public class SupervisorController {
     //check semester //ok
     @GetMapping("/taskByStudentEmail")
     @ResponseBody
-    public ResponseEntity<List<Task>> getTasksOfStudent(@RequestParam String emailStudent) {
+    public ResponseEntity<List<Task>> getTasksOfStudent(@RequestParam String emailStudent, @RequestParam Date dateStart, @RequestParam Date dateEnd) {
 
         List<Task> taskList = taskService.findTaskByStudentEmail(emailStudent);
-        if (taskList != null) {
-            return new ResponseEntity<List<Task>>(taskList, HttpStatus.OK);
+        List<Task> selectedTaskList = new ArrayList<>();
+        for (int i = 0; i < taskList.size(); i++) {
+            if (((taskList.get(i).getTime_created().after(dateStart) || taskList.get(i).getTime_created().equals(dateStart)) && (taskList.get(i).getTime_created().before(dateEnd) || taskList.get(i).getTime_created().equals(dateEnd))) ||
+                    ((taskList.get(i).getTime_end().after(dateStart) || taskList.get(i).getTime_end().equals(dateStart)) && (taskList.get(i).getTime_end().before(dateEnd) || taskList.get(i).getTime_end().equals(dateEnd)))) {
+                selectedTaskList.add(taskList.get(i));
+            }
+        }
+        if (selectedTaskList != null) {
+            return new ResponseEntity<List<Task>>(selectedTaskList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

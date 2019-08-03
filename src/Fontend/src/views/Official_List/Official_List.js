@@ -55,6 +55,7 @@ class Official_List extends Component {
       studentDetail: null,
       listStudentTask: null,
       months: null,
+      isThisMonth: -1,
     }
   }
 
@@ -96,11 +97,22 @@ class Official_List extends Component {
     })
   }
 
-  handleSelectSupervisor = async (event) => {
+  handleSelectMonth = async (event, studentDetail) => {
     const { name, value } = event.target;
-    let { supervisors_FirstBlank } = this.state;
+    const { months } = this.state;
+    var date = months[value].split(" - ");
+    // console.log(date[0]);
+    // console.log(date[1]);
+    var formatDateStart = date[0].split("/");
+    let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
+    // console.log(dateStart);
+    var formatDateEnd = date[1].split("/");
+    let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
+    // console.log(dateEnd);
+    const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
     await this.setState({
-      preSupervisor: supervisors_FirstBlank[value]
+      listStudentTask: listStudentTask,
+      isThisMonth: -1,
     })
   }
 
@@ -292,12 +304,14 @@ class Official_List extends Component {
 
   toggleModalTask = async (studentDetail) => {
     if (this.state.modalTask == false) {
-      const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}`);
+      // const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}`);
 
       this.setState({
         loading: true,
       })
       let months = [];
+      var date = new Date();
+      let isThisMonth = -1;
 
       const ojtEnrollment = await ApiServices.Get(`/enrollment/getSelectedStuEnrollment?email=${studentDetail.email}`);
       var dateEnroll = ojtEnrollment.timeEnroll;
@@ -337,7 +351,7 @@ class Official_List extends Component {
           formatTimeStartShow[1] = "0" + formatTimeStartShow[1];
         }
         if (parseInt(formatTimeStartShow[0]) < 10) {
-          formatTimeStartShow[0] = "0" + formatTimeStartShow[1];
+          formatTimeStartShow[0] = "0" + formatTimeStartShow[0];
         }
         timeStartShow = formatTimeStartShow[0] + "/" + formatTimeStartShow[1] + "/" + formatTimeStartShow[2];
         // console.log(timeStartShow);
@@ -368,15 +382,35 @@ class Official_List extends Component {
           formatTimeEndShow[1] = "0" + formatTimeEndShow[1];
         }
         if (parseInt(formatTimeEndShow[0]) < 10) {
-          formatTimeEndShow[0] = "0" + formatTimeEndShow[1];
+          formatTimeEndShow[0] = "0" + formatTimeEndShow[0];
         }
         timeEndShow = formatTimeEndShow[0] + "/" + formatTimeEndShow[1] + "/" + formatTimeEndShow[2];
         // console.log(timeEndShow);
+        var date1 = new Date();
+        var date2 = new Date();
+        date1.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0]));
+        // console.log(formatTimeStartShow[1]);
+        date2.setFullYear(parseInt(formatTimeEndShow[2]), parseInt(formatTimeEndShow[1] - 1), parseInt(formatTimeEndShow[0]));
+        if (date >= date1 && date <= date2) {
+          isThisMonth = index - 1;
+        }
+        // console.log(date);
+        // console.log(date1);
+        // console.log(date2);
+        // console.log(date >= date1);
+        // console.log(date <= date2);
         months.push(`${timeStartShow} - ${timeEndShow}`);
       }
-      console.log(months);
+      // console.log(months);
+      // console.log(isThisMonth);
 
 
+      var date = months[isThisMonth].split(" - ");
+      var formatDateStart = date[0].split("/");
+      let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
+      var formatDateEnd = date[1].split("/");
+      let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
+      const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
 
 
       this.setState({
@@ -385,6 +419,7 @@ class Official_List extends Component {
         listStudentTask: listStudentTask,
         months: months,
         loading: false,
+        isThisMonth: isThisMonth,
       });
     } else {
       this.setState({
@@ -410,7 +445,7 @@ class Official_List extends Component {
   }
 
   showTaskState(taskStatus) {
-    console.log(taskStatus);
+    // console.log(taskStatus);
     if (taskStatus === 'NOTSTART') {
       return (
         <Badge color="secondary">Chưa bắt đầu</Badge>
@@ -474,7 +509,7 @@ class Official_List extends Component {
   }
 
   render() {
-    const { months, studentDetail, students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection, loading, suggestedStudents, isSelect, colorBackSelect, colorTextSelect } = this.state;
+    const { isThisMonth, months, studentDetail, students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection, loading, suggestedStudents, isSelect, colorBackSelect, colorTextSelect } = this.state;
     let filteredListStudents = orderBy(students, columnToSort, sortDirection);
     if (students != null) {
       filteredListStudents = students.filter(
@@ -775,55 +810,58 @@ class Official_List extends Component {
                       <label>{studentDetail.name}</label>
                     </Col>
                   </FormGroup>
-                  <FormGroup row style={{ paddingLeft:'38%' }}>
-                    <Input onChange={e => { this.handleSelectSupervisor(e) }} type="select" name="months" style={{width:'250px'}}>
+                  <FormGroup row style={{ paddingLeft: '38%' }}>
+                    <Input onChange={e => { this.handleSelectMonth(e, studentDetail) }} type="select" name="months" style={{ width: '250px' }}>
                       {months && months.map((month, i) => {
                         return (
-                          <option value={i}>{month}</option>
+                          <option value={i} selected={i === isThisMonth}>{month}</option>
                         )
                       })}
                     </Input>
                   </FormGroup>
-                  <Table responsive striped>
-                    <thead>
-                      <tr>
-                        <th style={{ textAlign: "center" }}>STT</th>
-                        <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                        <th style={{ textAlign: "center" }}>Giao bởi</th>
-                        <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
-                        <th style={{ textAlign: "center" }}>Độ khó</th>
-                        <th style={{ textAlign: "center" }}>Ngày tạo</th>
-                        <th style={{ textAlign: "center" }}>Hạn cuối</th>
-                        <th style={{ textAlign: "center" }}>Trạng thái</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {
-                        this.state.listStudentTask && this.state.listStudentTask.map((task, index) => {
-                          return (
-                            <tr>
-                              <td style={{ textAlign: "center" }}>{index + 1}</td>
-                              <td style={{ textAlign: "center" }}>{task.title}</td>
-                              <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
-                              <td style={{ textAlign: "center" }}>{task.priority}</td>
-                              <td style={{ textAlign: "center" }}>
-                                {
-                                  this.showTaskLevel(task.level_task)
-                                }
-                              </td>
-                              <td style={{ textAlign: "center" }}>{this.formatDate(task.time_created, true)}</td>
-                              <td style={{ textAlign: "center" }}>{this.formatDate(task.time_end, false)}</td>
-                              <td style={{ textAlign: "center" }}>
-                                {
-                                  this.showTaskState(task.status)
-                                }
-                              </td>
-                            </tr>
-                          )
-                        })
-                      }
-                    </tbody>
-                  </Table>
+                  <div style={{ height: '450px', overflowY: 'scroll' }}>
+                    <Table responsive striped>
+                      <thead>
+                        <tr>
+                          <th style={{ textAlign: "center" }}>STT</th>
+                          <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
+                          <th style={{ textAlign: "center" }}>Giao bởi</th>
+                          <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
+                          <th style={{ textAlign: "center" }}>Độ khó</th>
+                          <th style={{ textAlign: "center" }}>Ngày tạo</th>
+                          <th style={{ textAlign: "center" }}>Hạn cuối</th>
+                          <th style={{ textAlign: "center" }}>Trạng thái</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          this.state.listStudentTask && this.state.listStudentTask.map((task, index) => {
+                            return (
+                              <tr>
+                                <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                <td style={{ textAlign: "center" }}>{task.title}</td>
+                                <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
+                                <td style={{ textAlign: "center" }}>{task.priority}</td>
+                                <td style={{ textAlign: "center" }}>
+                                  {
+                                    this.showTaskLevel(task.level_task)
+                                  }
+                                </td>
+                                <td style={{ textAlign: "center" }}>{this.formatDate(task.time_created, true)}</td>
+                                <td style={{ textAlign: "center" }}>{this.formatDate(task.time_end, false)}</td>
+                                <td style={{ textAlign: "center" }}>
+                                  {
+                                    this.showTaskState(task.status)
+                                  }
+                                </td>
+                              </tr>
+                            )
+                          })
+                        }
+                      </tbody>
+                    </Table>
+
+                  </div>
                 </ModalBody>
                 {/* <ModalFooter>
                 </ModalFooter> */}
