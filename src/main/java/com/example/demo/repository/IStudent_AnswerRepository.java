@@ -16,4 +16,6 @@ public interface IStudent_AnswerRepository extends JpaRepository<Student_Answer,
 
     @Query(value = "select count (distinct st.student.email) from Student_Answer st")
     int countStudent_AnswersGroupByStudentEmail();
+
+    List<Student_Answer> findStudent_AnswersByStudentEmail(String email);
 }

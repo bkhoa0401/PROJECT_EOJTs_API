@@ -77,6 +77,7 @@ public class StudentController {
     @Autowired
     IHistoryActionService iHistoryActionService;
 
+
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     //check semester //ok
@@ -165,6 +166,7 @@ public class StudentController {
         users.setActive(true);
 
         Semester semester = semesterService.getSemesterByName(student.getSemesterName());
+
 
 //        Student studentGetByEmail=studentService.getStudentByEmail(student.getEmail());
         Student student1 = new Student();
@@ -1039,10 +1041,32 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/answers")
+    @ResponseBody
+    public ResponseEntity<List<StudentAnswerDTO>> getAnswersOfStudent() {
+        String email = getEmailFromToken();
+        List<StudentAnswerDTO> answerDTOS = studentService.findListStudentAnswer(email);
+        if(answerDTOS!=null){
+            return new ResponseEntity<List<StudentAnswerDTO>>(answerDTOS,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+
+    }
+
     @PostMapping("/feedback")
     public ResponseEntity<Void> postFeedback(@RequestParam String content) {
         String email = getEmailFromToken();
         studentService.postFeedBack(email, content);
+        HistoryDetail historyDetail = new HistoryDetail(Answer.class.getName(), "content", "new", content);
+        HistoryAction action =
+                new HistoryAction(email
+                        , "ROLE_STUDENT", ActionEnum.INSERT, TAG, new Object() {
+                }
+                        .getClass()
+                        .getEnclosingMethod()
+                        .getName(), null, new java.util.Date(), historyDetail);
+        historyDetail.setHistoryAction(action);
+        iHistoryActionService.createHistory(action);
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
@@ -1076,5 +1100,4 @@ public class StudentController {
         }
         return email;
     }
-
 }

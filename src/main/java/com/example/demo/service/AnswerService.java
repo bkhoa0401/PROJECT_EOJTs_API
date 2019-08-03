@@ -23,4 +23,13 @@ public class AnswerService implements IAnswerService {
         List<Answer> answers = iAnswerRepository.findAnswersByOtherIsTrueAndQuestionId(id);
         return answers;
     }
+
+    @Override
+    public Answer findAnswerById(int id) {
+        Answer answer = iAnswerRepository.findById(id);
+        if (answer != null) {
+            return answer;
+        }
+        return null;
+    }
 }

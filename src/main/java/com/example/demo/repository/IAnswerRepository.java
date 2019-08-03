@@ -12,4 +12,6 @@ public interface IAnswerRepository extends JpaRepository<Answer,Integer> {
 
     @Query(value = "select a from Answer a where a.isOther=true and a.question.id=?1")
     List<Answer> findAnswersByOtherIsTrueAndQuestionId(int id);
+
+    Answer findById(int id);
 }

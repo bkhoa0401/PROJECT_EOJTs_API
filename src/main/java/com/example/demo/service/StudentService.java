@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.StudentAnswerDTO;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IStudentRepository;
 import com.example.demo.repository.ISupervisorRepository;
@@ -114,28 +115,28 @@ public class StudentService implements IStudentService {
 
     @Override
     public String updateOption1Student(String email, String option1) {
-                Student student = getStudentByEmail(email);
-                if (student != null) {
-                    if (option1 != null || !option1.isEmpty()) {
-                        student.setOption1(option1);
-                    }
-                    IStudentRepository.save(student);
-                    return "success";
-                }
+        Student student = getStudentByEmail(email);
+        if (student != null) {
+            if (option1 != null || !option1.isEmpty()) {
+                student.setOption1(option1);
+            }
+            IStudentRepository.save(student);
+            return "success";
+        }
 
         return "fail";
     }
 
     @Override
     public String updateOption2Student(String email, String option2) {
-                Student student = getStudentByEmail(email);
-                if (student != null) {
-                    if (option2 != null || !option2.isEmpty()) {
-                        student.setOption2(option2);
-                    }
-                    IStudentRepository.save(student);
-                    return "success";
-                }
+        Student student = getStudentByEmail(email);
+        if (student != null) {
+            if (option2 != null || !option2.isEmpty()) {
+                student.setOption2(option2);
+            }
+            IStudentRepository.save(student);
+            return "success";
+        }
         return "fail";
     }
 
@@ -425,4 +426,43 @@ public class StudentService implements IStudentService {
         iAnswerService.saveAnswer(answer);
         iStudent_answerService.saveFeedback(student, answer);
     }
+
+    @Override
+    public List<StudentAnswerDTO> findListStudentAnswer(String email) {
+        List<StudentAnswerDTO> answerDTOS = new ArrayList<>();
+
+        List<Student_Answer> student_answers = iStudent_answerService.findStudentAnswersByEmail(email);
+
+        for (int i = 0; i < student_answers.size(); i++) {
+            Student student = student_answers.get(i).getStudent();
+            Business business = student.getSupervisor().getBusiness();
+            Answer answer = student_answers.get(i).getAnswer();
+            Question question = answer.getQuestion();
+
+            StudentAnswerDTO studentAnswerDTO = new StudentAnswerDTO();
+            studentAnswerDTO.setStudentEmail(student.getEmail());
+            studentAnswerDTO.setBusinessEmail(business.getEmail());
+
+            List<Answer> answers=getListAnswerOfQuestion(student.getEmail(),question.getId(),student_answers);
+            studentAnswerDTO.setAnswers(answers);
+            studentAnswerDTO.setQuestion(question);
+
+            answerDTOS.add(studentAnswerDTO);
+        }
+        return answerDTOS;
+    }
+
+    public List<Answer> getListAnswerOfQuestion(String emailStudent, int idQuestion, List<Student_Answer> student_answers) {
+        List<Answer> answers = new ArrayList<>();
+        for (int i = 0; i < student_answers.size(); i++) {
+            Student_Answer student_answer = student_answers.get(i);
+            if (student_answer.getStudent().getEmail().equals(emailStudent)) {
+                if (student_answer.getAnswer().getQuestion().getId() == idQuestion) {
+                    answers.add(student_answers.get(i).getAnswer());
+                }
+            }
+        }
+        return answers;
+    }
+
 }

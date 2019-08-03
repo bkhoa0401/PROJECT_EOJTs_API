@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.config.ActionEnum;
 import com.example.demo.config.StudentStatus;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IInvitationRepository;
@@ -23,6 +24,11 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
 
     @Autowired
     ISemesterService semesterService;
+
+    @Autowired
+    IHistoryActionService historyActionService;
+
+
 
     @Autowired
     IStudentService iStudentService;
@@ -147,6 +153,19 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
         if (invitation != null) {
             invitation.setState(true);
             iInvitationRepository.save(invitation);
+        }
+
+        if(ojtEnrollmentRepository.save(ojt_enrollment) != null) {
+            HistoryDetail historyDetail = new HistoryDetail(Ojt_Enrollment.class.getName(), "business_email", String.valueOf(ojt_enrollment.getId()), emailBusiness);
+            HistoryAction action =
+                    new HistoryAction(emailStudent
+                            , "ROLE_STUDENT", ActionEnum.UPDATE, "StudentController", new Object() {
+                    }
+                            .getClass()
+                            .getEnclosingMethod()
+                            .getName(), null, new java.util.Date(), historyDetail);
+            historyDetail.setHistoryAction(action);
+            historyActionService.createHistory(action);
         }
     }
 

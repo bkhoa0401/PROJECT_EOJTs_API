@@ -112,9 +112,15 @@ class Create_Report extends Component {
             }
         }
         let formatTimeStartShow = timeStartShow.split('/');
-        if (formatTimeStartShow[1] < 10) {
-            timeStartShow = formatTimeStartShow[0] + "/" + "0" + formatTimeStartShow[1] + "/" + formatTimeStartShow[2];
+        // console.log(formatTimeStartShow[1]);
+        // console.log(formatTimeStartShow[0]);
+        if (parseInt(formatTimeStartShow[1]) < 10) {
+            formatTimeStartShow[1] = "0" + formatTimeStartShow[1];
         }
+        if (parseInt(formatTimeStartShow[0]) < 10) {
+            formatTimeStartShow[0] = "0" + formatTimeStartShow[1];
+        }
+        timeStartShow = formatTimeStartShow[0] + "/" + formatTimeStartShow[1] + "/" + formatTimeStartShow[2];
         let timeEndShow = "";
         if (mm + parseInt(needParam) > 12) {
             if ((mm + parseInt(needParam[0]) - 12) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
@@ -138,10 +144,13 @@ class Create_Report extends Component {
             }
         }
         let formatTimeEndShow = timeEndShow.split('/');
-        if (formatTimeEndShow[1] < 10) {
-            timeEndShow = formatTimeEndShow[0] + "/" + "0" + formatTimeEndShow[1] + "/" + formatTimeEndShow[2];
+        if (parseInt(formatTimeEndShow[1]) < 10) {
+            formatTimeEndShow[1] = "0" + formatTimeEndShow[1];
         }
-
+        if (parseInt(formatTimeEndShow[0]) < 10) {
+            formatTimeEndShow[0] = "0" + formatTimeEndShow[1];
+        }
+        timeEndShow = formatTimeEndShow[0] + "/" + formatTimeEndShow[1] + "/" + formatTimeEndShow[2];
         let maxWorkDays = 0;
         if (mm30.includes(parseInt(formatTimeStartShow[1]))) {
             maxWorkDays = 30 - parseInt(formatTimeStartShow[0]) + parseInt(formatTimeEndShow[0]);

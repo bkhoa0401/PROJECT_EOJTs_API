@@ -43,4 +43,5 @@ public interface IAdminService {
     List<Statistical_EvaluationDTO> getListStatistical_EvaluationOfSupervisorDTO(String email);
 
     StatisticalStudentInSemesterDTO getStatisticalStudentInSemester(String semesterName);
+
 }

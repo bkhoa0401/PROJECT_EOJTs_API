@@ -649,19 +649,19 @@ class student_list extends Component {
                         <TabPane tabId="2">
                             {
                                 <div>
-                                    <FormGroup row style={{ paddingLeft: "45%" }}>
-                                        <Input style={{width:'100px'}} onChange={e => { this.handleInputSelect(e) }} type="select" name="typeStudent">
-                                            {typesOfStudent && typesOfStudent.map((typeStudent, i) => {
-                                                return (
-                                                    <option value={i} selected={i === this.state.typeSelected}>{typeStudent}</option>
-                                                )
-                                            })}
-                                        </Input>
-                                    </FormGroup>
                                     <nav className="navbar navbar-light bg-light justify-content-between">
                                         <form className="form-inline">
                                             <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
                                         </form>
+                                        <div style={{ marginRight: "4px" }}>
+                                            <Input style={{ width: '100px' }} onChange={e => { this.handleInputSelect(e) }} type="select" name="typeStudent">
+                                                {typesOfStudent && typesOfStudent.map((typeStudent, i) => {
+                                                    return (
+                                                        <option value={i} selected={i === this.state.typeSelected}>{typeStudent}</option>
+                                                    )
+                                                })}
+                                            </Input>
+                                        </div>
                                     </nav>
                                     <Table responsive striped>
                                         <thead>

@@ -13,6 +13,6 @@ public interface IStudent_AnswerService {
     void saveFeedback(Student student,Answer answer);
     Student_Answer findStudentAnswerByStudentEmail(String email);
     int countStudentsAnswerByAnswerId(int id);
-
     int countStudent_AnswersGroupByStudentEmail();
+    List<Student_Answer> findStudentAnswersByEmail(String email);
 }

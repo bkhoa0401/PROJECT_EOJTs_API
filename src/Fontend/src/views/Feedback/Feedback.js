@@ -76,7 +76,7 @@ class Feedback extends Component {
                                                         <th style={{ textAlign: "center" }}>Họ và Tên</th>
                                                         <th style={{ textAlign: "center" }}>Email</th>
                                                         <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                        <th style={{ textAlign: "center" }}>Mức độ hài lòng</th>
+                                                        {/* <th style={{ textAlign: "center" }}>Mức độ hài lòng</th> */}
                                                         <th style={{ textAlign: "center" }}></th>
                                                     </tr>
                                                 </thead>
@@ -89,16 +89,9 @@ class Feedback extends Component {
                                                         <td style={{ textAlign: "center" }}>Nguyễn Văn A</td>
                                                         <td style={{ textAlign: "center" }}>nguyenvana@gmail.com</td>
                                                         <td style={{ textAlign: "center" }}>IS</td>
-                                                        <td style={{ textAlign: "center", fontSize:'18.5px'}}>
+                                                        {/* <td style={{ textAlign: "center", fontSize:'18.5px'}}>
                                                             <Badge className="mr-1" color="primary" pill>9.5</Badge>
-                                                            {/* <Badge className="mr-1" color="secondary" pill>Secondary</Badge>
-                                                            <Badge className="mr-1" color="success" pill>Success</Badge>
-                                                            <Badge className="mr-1" color="danger" pill>Danger</Badge>
-                                                            <Badge className="mr-1" color="warning" pill>Warning</Badge>
-                                                            <Badge className="mr-1" color="info" pill>Info</Badge>
-                                                            <Badge className="mr-1" color="light" pill>Light</Badge>
-                                                            <Badge className="mr-1" color="dark" pill>Dark</Badge> */}
-                                                        </td>
+                                                        </td> */}
                                                         <td style={{ textAlign: "center" }}>
                                                             <Button color="primary" onClick={() => this.handleDirect(`/Feedback/Feedback_Detail/1`)}>Chi tiết</Button>
                                                         </td>
