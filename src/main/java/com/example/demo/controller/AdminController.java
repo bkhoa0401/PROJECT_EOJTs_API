@@ -402,9 +402,29 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @GetMapping("/questions")
+    @ResponseBody
+    public ResponseEntity<List<Question>> getAllQuestion() {
+        List<Question> questions = iQuestionService.getAllQuestionNotCareStatus();
+        if (questions != null) {
+            return new ResponseEntity<List<Question>>(questions, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("/question/id")
+    @ResponseBody
+    public ResponseEntity<Question> getQuestionById(@RequestParam int id) {
+        Question question = iQuestionService.findQuestionById(id);
+        if (question != null) {
+            return new ResponseEntity<Question>(question, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @PutMapping("/question")
-    public ResponseEntity<Void> deleteQuestion(@RequestParam int id) {
-        iQuestionService.deleteQuestion(id);
+    public ResponseEntity<Void> deleteQuestion(@RequestParam int id, @RequestParam boolean status) {
+        iQuestionService.deleteQuestion(id, status);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
