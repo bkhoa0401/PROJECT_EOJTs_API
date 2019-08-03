@@ -59,6 +59,9 @@ import {
   AnswerStatistics,
   SiteHr,
   SiteSupervisor,
+  Question,
+  Add_Question,
+  Update_Question
 
 } from './Base';
 
@@ -168,7 +171,10 @@ export {
   SiteAdmin,
   AnswerStatistics,
   SiteHr,
-  SiteSupervisor
+  SiteSupervisor,
+  Question,
+  Add_Question,
+  Update_Question
   
 };
 

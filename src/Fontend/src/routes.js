@@ -93,6 +93,9 @@ const SiteAdmin = React.lazy(() => import('./views/Dashboard/SiteAdmin.js'));
 const SiteHr = React.lazy(() => import('./views/Dashboard/SiteHr.js'));
 const AnswerStatistics = React.lazy(() => import('./views/AnswerStatistics/AnswerStatistics.js'));
 const SiteSupervisor = React.lazy(() => import('./views/Dashboard/SiteSupervisor.js'));
+const Question = React.lazy(() => import('./views/Question/Question.js'));
+const Add_Question = React.lazy(() => import('./views/Question/Add_Question.js'));
+const Update_Question = React.lazy(() => import('./views/Question/Update_Question.js'));
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -198,6 +201,9 @@ const routes = [
   { path: '/business-proposed/:id', exact: true, name: 'Chi tiết doanh nghiệp đề xuất', component: BusinessProposed_Detail },
   { path: '/business-proposed/update/:id', exact: true, name: 'Chỉnh sửa chi tiết doanh nghiệp đề xuất', component: BusinessProposed_Update },
   { path: '/answer-statistics', exact: true, name: 'Thống kê kết quả khảo sát', component: AnswerStatistics },
+  { path: '/question', exact: true, name: 'Quản lí câu hỏi', component: Question },
+  { path: '/question/new', exact: true, name: 'Tạo mới câu hỏi', component: Add_Question },
+  { path: '/question/update/:id', exact: true, name: 'Chỉnh sửa câu hỏi', component: Update_Question }
 ];
 
 export default routes;

@@ -42,6 +42,15 @@ public class QuestionService implements IQuestionService {
     }
 
     @Override
+    public List<Question> getAllQuestionNotCareStatus() {
+        List<Question> questions = iQuestionRepository.findAll();
+        if (questions != null) {
+            return questions;
+        }
+        return null;
+    }
+
+    @Override
     public Question findQuestionById(int id) {
         Question question = iQuestionRepository.findById(id);
         return question;
@@ -59,19 +68,19 @@ public class QuestionService implements IQuestionService {
     }
 
     @Override
-    public void deleteQuestion(int id) {
+    public void deleteQuestion(int id, boolean status) {
         Question question = findQuestionById(id);
         if (question != null) {
-            question.setActive(false);
+            question.setActive(status);
             iQuestionRepository.save(question);
         }
     }
 
     @Override
     public void updateQuestion(Question question) {
-        Question questionIsExisted=findQuestionById(question.getId());
-        if(questionIsExisted!=null){
-            List<Answer> answers=question.getAnswers();
+        Question questionIsExisted = findQuestionById(question.getId());
+        if (questionIsExisted != null) {
+            List<Answer> answers = question.getAnswers();
 
             for (Answer answer : answers) {
                 answer.setQuestion(question);
