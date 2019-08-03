@@ -14,8 +14,9 @@ class Report extends Component {
         super(props);
         this.state = {
             loading: true,
-            reportColor: ['success', 'primary', 'warning', 'danger', 'dark', 'black'],
-            rate: ['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu', 'N/A'],
+            reportColor: ['success', 'primary', 'warning', 'danger', 'dark'],
+            finalReportColor: ['lime', 'DeepSkyBlue', 'gold', 'red', 'black'],
+            rate: ['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu'],
             role: '',
             students: null,
             overviewReports: null,
@@ -57,7 +58,7 @@ class Report extends Component {
         // console.log(overviewReports);
         for (let index = 0; index < overviewReports.length; index++) {
             if (overviewReports[index] != null) {
-                overviewReportsRate.push(overviewReports[index].score_discipline*0.4 + overviewReports[index].score_work*0.5 + overviewReports[index].score_activity*0.1);
+                overviewReportsRate.push(overviewReports[index].score_discipline * 0.4 + overviewReports[index].score_work * 0.5 + overviewReports[index].score_activity * 0.1);
                 if (overviewReportsRate[index] > 9) {
                     onScreenStatus.push(0);
                 } else if (overviewReportsRate[index] > 8) {
@@ -74,22 +75,33 @@ class Report extends Component {
                 onScreenStatus.push(null);
             }
         }
+        // console.log(overviewReportsRate);
+        // console.log(students);
+        let tmpFinalRate = [];
         for (let index = 0; index < students.length; index++) {
-            if (overviewReportsRate[index] != null && overviewReportsRate[index + 1] != null && overviewReportsRate[index + 2] != null && overviewReportsRate[index + 3] != null) {
-                let tmpFinalRate = (overviewReportsRate[index] + overviewReportsRate[index + 1] + overviewReportsRate[index + 2] + overviewReportsRate[index + 3]) / 4;
-                if (tmpFinalRate > 9) {
+            if (overviewReportsRate[index * 4] != null && overviewReportsRate[index * 4 + 1] != null && overviewReportsRate[index * 4 + 2] != null && overviewReportsRate[index * 4 + 3] != null) {
+                tmpFinalRate.push((overviewReportsRate[index * 4] + overviewReportsRate[index * 4 + 1] + overviewReportsRate[index * 4 + 2] + overviewReportsRate[index * 4 + 3]) / 4);
+            } else {
+                tmpFinalRate.push(null);
+            }
+        }
+        // console.log(tmpFinalRate);
+        for (let index = 0; index < tmpFinalRate.length; index++) {
+            // console.log(tmpFinalRate[index]);
+            if (tmpFinalRate[index] == null) {
+                finalOnScreenStatus.push(null);
+            } else {
+                if (parseFloat(tmpFinalRate[index]) > 9) {
                     finalOnScreenStatus.push(0);
-                } else if (tmpFinalRate > 8) {
+                } else if (parseFloat(tmpFinalRate[index]) > 8) {
                     finalOnScreenStatus.push(1);
-                } else if (tmpFinalRate > 7) {
+                } else if (parseFloat(tmpFinalRate[index]) > 7) {
                     finalOnScreenStatus.push(2);
-                } else if (tmpFinalRate >= 5) {
+                } else if (parseFloat(tmpFinalRate[index]) >= 5) {
                     finalOnScreenStatus.push(3);
-                } else if (tmpFinalRate < 5) {
+                } else if (parseFloat(tmpFinalRate[index]) < 5) {
                     finalOnScreenStatus.push(4);
                 }
-            } else {
-                finalOnScreenStatus.push(5);
             }
         }
         this.setState({
@@ -119,7 +131,7 @@ class Report extends Component {
     }
 
     render() {
-        const { loading, reportColor, rate, role, students, overviewReports, onScreenStatus, finalOnScreenStatus } = this.state;
+        const { loading, reportColor, rate, role, students, overviewReports, onScreenStatus, finalOnScreenStatus, finalReportColor } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -179,12 +191,12 @@ class Report extends Component {
                                                                 {onScreenStatus[index * 4 + 1] === null ?
                                                                     (
                                                                         role && role === 'ROLE_SUPERVISOR' ?
-                                                                        ( onScreenStatus[index * 4] !==  null?
-                                                                            <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/2~${student.email}`)}>
-                                                                                Tạo
+                                                                            (onScreenStatus[index * 4] !== null ?
+                                                                                <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/2~${student.email}`)}>
+                                                                                    Tạo
                                                                             </Button> :
-                                                                            <p>N/A</p>
-                                                                        ):
+                                                                                <p>N/A</p>
+                                                                            ) :
                                                                             <p>N/A</p>
                                                                     ) :
                                                                     (
@@ -198,12 +210,12 @@ class Report extends Component {
                                                                 {onScreenStatus[index * 4 + 2] === null ?
                                                                     (
                                                                         role && role === 'ROLE_SUPERVISOR' ?
-                                                                        ( onScreenStatus[index * 4 + 1] !==  null?
-                                                                            <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/3~${student.email}`)}>
-                                                                                Tạo
+                                                                            (onScreenStatus[index * 4 + 1] !== null ?
+                                                                                <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/3~${student.email}`)}>
+                                                                                    Tạo
                                                                             </Button> :
-                                                                            <p>N/A</p>
-                                                                        ):
+                                                                                <p>N/A</p>
+                                                                            ) :
                                                                             <p>N/A</p>
                                                                     ) :
                                                                     (
@@ -217,12 +229,12 @@ class Report extends Component {
                                                                 {onScreenStatus[index * 4 + 3] === null ?
                                                                     (
                                                                         role && role === 'ROLE_SUPERVISOR' ?
-                                                                        (  onScreenStatus[index * 4 + 2] !==  null?
-                                                                            <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/4~${student.email}`)}>
-                                                                                Tạo
+                                                                            (onScreenStatus[index * 4 + 2] !== null ?
+                                                                                <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/4~${student.email}`)}>
+                                                                                    Tạo
                                                                             </Button> :
-                                                                            <p>N/A</p>
-                                                                        ):
+                                                                                <p>N/A</p>
+                                                                            ) :
                                                                             <p>N/A</p>
                                                                     ) :
                                                                     (
@@ -232,9 +244,9 @@ class Report extends Component {
                                                                     )
                                                                 }
                                                             </td>
-                                                            {finalOnScreenStatus === null ?
+                                                            {finalOnScreenStatus[index] === null ?
                                                                 <td style={{ textAlign: "center" }}>N/A</td> :
-                                                                <td style={{ textAlign: "center", color: reportColor[finalOnScreenStatus[index]] }}>{rate[finalOnScreenStatus[index]]}</td>
+                                                                <td style={{ textAlign: "center", fontWeight: 'bold', color: finalReportColor[finalOnScreenStatus[index]] }}>{rate[finalOnScreenStatus[index]]}</td>
                                                             }
                                                         </tr>
                                                     )}

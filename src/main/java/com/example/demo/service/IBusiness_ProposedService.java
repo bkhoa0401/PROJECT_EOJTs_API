@@ -21,4 +21,6 @@ public interface IBusiness_ProposedService {
     void createBusinessPropose(Business_Proposed business_proposed);
 
     boolean updateBusinessPropose(Business_Proposed business_proposed);
+
+    boolean checkBusinessProposeIsReject(String email);
 }

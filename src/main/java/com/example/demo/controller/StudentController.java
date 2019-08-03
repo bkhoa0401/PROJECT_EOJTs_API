@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.config.ActionEnum;
 import com.example.demo.config.Status;
+import com.example.demo.config.StudentStatus;
 import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
@@ -110,12 +111,14 @@ public class StudentController {
             specialized.setId(specializedID);
             studentList.get(i).setSpecialized(specialized);
 
+
             usersList.add(users);
 
             Semester semester = semesterService.getSemesterByName(studentList.get(i).getSemesterName());
 
             Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
             Student student = studentService.getStudentByEmail(studentList.get(i).getEmail());
+            student.setStatus(StudentStatus.NOTSTART);
             ojt_enrollment.setStudent(student);
             ojt_enrollment.setSemester(semester);
 
@@ -146,7 +149,7 @@ public class StudentController {
 
     //check semester //ok
     @PostMapping("/new")
-    public ResponseEntity<Void> createNewStudent(@RequestBody Student student) throws Exception {
+    public ResponseEntity<Void> createNewStudent(@RequestBody Student_ImportFileDTO student) throws Exception {
 
         List<Role> roleList = new ArrayList<>();
         Role role = new Role();
@@ -161,12 +164,24 @@ public class StudentController {
         users.setPassword(password);
         users.setActive(true);
 
-        Semester semester = semesterService.getSemesterCurrent();
+        Semester semester = semesterService.getSemesterByName(student.getSemesterName());
 
-        ojt_enrollment.setStudent(student);
+//        Student studentGetByEmail=studentService.getStudentByEmail(student.getEmail());
+        Student student1 = new Student();
+        student1.setEmail(student.getEmail());
+        student1.setSpecialized(student.getSpecialized());
+        student1.setStatus(StudentStatus.NOTSTART);
+        student1.setAddress(student.getAddress());
+        student1.setDob(student.getDob());
+        student1.setGender(student.isGender());
+        student1.setName(student.getName());
+        student1.setCode(student.getCode());
+        student1.setPhone(student.getPhone());
+
+        ojt_enrollment.setStudent(student1);
         ojt_enrollment.setSemester(semester);
         try {
-            studentService.saveStudent(student);
+            studentService.saveStudent(student1);
             usersService.saveUser(users);
             ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);
 
@@ -226,6 +241,43 @@ public class StudentController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(student_ojtenrollmentDTOList, HttpStatus.OK);
+    }
+
+    @GetMapping("/getStudentsWithNoCompany")
+    @ResponseBody
+    public ResponseEntity<List<Student_OjtenrollmentDTO>> getStudentsWithNoCompany() throws Exception {
+//        LOG.info("Getting all student");
+        Semester semester = semesterService.getSemesterCurrent();
+        List<Student> studentList = studentService.getAllStudentsBySemesterId();;
+        List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOList = new ArrayList<>();
+        List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOWithNoCompanyList = new ArrayList<>();
+        try {
+            for (int i = 0; i < studentList.size(); i++) {
+                Student_OjtenrollmentDTO student_ojtenrollmentDTO = new Student_OjtenrollmentDTO();
+                student_ojtenrollmentDTO.setStudent(studentList.get(i));
+                Ojt_Enrollment ojt_enrollment =
+                        ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(studentList.get(i).getEmail(), semester.getId());
+                if (ojt_enrollment.getBusiness() != null) {
+                    student_ojtenrollmentDTO.setBusinessEnroll(ojt_enrollment.getBusiness().getBusiness_eng_name());
+                } else {
+                    if (studentList.get(i).isInterviewed1() == true && studentList.get(i).isInterviewed2() == true) {
+                        if (studentList.get(i).isAcceptedOption1() == false && studentList.get(i).isAcceptedOption2() == false) {
+                            student_ojtenrollmentDTO.setBusinessEnroll("Rớt");
+                        }
+                    }
+                }
+                student_ojtenrollmentDTOList.add(student_ojtenrollmentDTO);
+            }
+            for (int i = 0; i < student_ojtenrollmentDTOList.size(); i++) {
+                if (student_ojtenrollmentDTOList.get(i).getBusinessEnroll() == null || student_ojtenrollmentDTOList.get(i).getBusinessEnroll().equals("Rớt")) {
+                    student_ojtenrollmentDTOWithNoCompanyList.add(student_ojtenrollmentDTOList.get(i));
+                }
+            }
+        } catch (Exception ex) {
+            LOG.info(ex.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(student_ojtenrollmentDTOWithNoCompanyList, HttpStatus.OK);
     }
 
     //get list skill by specialzed
@@ -947,6 +999,10 @@ public class StudentController {
     public ResponseEntity<Void> createBusinessPropose(@RequestBody Business_Proposed business_proposed) {
         String email = getEmailFromToken();
         if (business_proposed != null) {
+            Student student = studentService.getStudentByEmail(email);
+
+            business_proposed.setStudent_proposed(student);
+            business_proposed.setContactLink(email);
             iBusiness_proposedService.createBusinessPropose(business_proposed);
             HistoryDetail historyDetail = new HistoryDetail(Business_Proposed.class.getName(), null, email, business_proposed.toString());
             HistoryAction action =
@@ -1009,6 +1065,15 @@ public class StudentController {
 
         return new ResponseEntity<Integer>(countEventIsNotRead, HttpStatus.OK);
     }
+
+    @GetMapping("/businessIsReject")
+    @ResponseBody
+    public ResponseEntity<Boolean> getStatusOfBusinessProposeOfStudent() {
+        String email = getEmailFromToken();
+        boolean result = iBusiness_proposedService.checkBusinessProposeIsReject(email);
+        return new ResponseEntity<Boolean>(result, HttpStatus.OK);
+    }
+
 
     //get email from token
     private String getEmailFromToken() {

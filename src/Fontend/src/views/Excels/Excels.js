@@ -192,7 +192,7 @@ class Excels extends Component {
     handlePageNumber = (currentPage) => {
         const { rows_Students } = this.state;
         if (rows_Students != null) {
-            const studentsPagination = rows_Students.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));
+            const studentsPagination = rows_Students.slice(getPaginationCurrentPageNumber(currentPage, 5), getPaginationNextPageNumber(currentPage, 5));
             this.setState({
                 studentsPagination,
                 currentPage,
@@ -203,7 +203,7 @@ class Excels extends Component {
     handlePagePrevious = (currentPage) => {
         const { rows_Students } = this.state;
         if (rows_Students != null) {
-            const studentsPagination = rows_Students.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));
+            const studentsPagination = rows_Students.slice(getPaginationCurrentPageNumber(currentPage, 5), getPaginationNextPageNumber(currentPage, 5));
             this.setState({
                 studentsPagination,
                 currentPage,
@@ -214,7 +214,7 @@ class Excels extends Component {
     handlePageNext = (currentPage) => {
         const { rows_Students } = this.state;
         if (rows_Students != null) {
-            const studentsPagination = rows_Students.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));
+            const studentsPagination = rows_Students.slice(getPaginationCurrentPageNumber(currentPage, 5), getPaginationNextPageNumber(currentPage, 5));
             this.setState({
                 studentsPagination,
                 currentPage,
@@ -225,7 +225,7 @@ class Excels extends Component {
     handlePageNumberBus = (currentPageBus) => {
         const { rows_Businesses } = this.state;
         if (rows_Businesses != null) {
-            const businessesPagination = rows_Businesses.slice(getPaginationCurrentPageNumber(currentPageBus), getPaginationNextPageNumber(currentPageBus));
+            const businessesPagination = rows_Businesses.slice(getPaginationCurrentPageNumber(currentPageBus, 5), getPaginationNextPageNumber(currentPageBus, 5));
             this.setState({
                 businessesPagination,
                 currentPageBus,
@@ -236,7 +236,7 @@ class Excels extends Component {
     handlePagePreviousBus = (currentPageBus) => {
         const { rows_Businesses } = this.state;
         if (rows_Businesses != null) {
-            const businessesPagination = rows_Businesses.slice(getPaginationCurrentPageNumber(currentPageBus), getPaginationNextPageNumber(currentPageBus));
+            const businessesPagination = rows_Businesses.slice(getPaginationCurrentPageNumber(currentPageBus, 5), getPaginationNextPageNumber(currentPageBus, 5));
             this.setState({
                 businessesPagination,
                 currentPageBus,
@@ -247,7 +247,7 @@ class Excels extends Component {
     handlePageNextBus = (currentPageBus) => {
         const { rows_Businesses } = this.state;
         if (rows_Businesses != null) {
-            const businessesPagination = rows_Businesses.slice(getPaginationCurrentPageNumber(currentPageBus), getPaginationNextPageNumber(currentPageBus));
+            const businessesPagination = rows_Businesses.slice(getPaginationCurrentPageNumber(currentPageBus, 5), getPaginationNextPageNumber(currentPageBus, 5));
             this.setState({
                 businessesPagination,
                 currentPageBus,
@@ -567,9 +567,9 @@ class Excels extends Component {
                         Toastify.actionWarning("Cấu trúc file không hợp lệ!");
                     } else {
                         const { currentPage } = this.state;
-                        const pageNumber = getPaginationPageNumber(resp.rows.length - 1);
+                        const pageNumber = getPaginationPageNumber(resp.rows.length - 1, 5);
                         resp.rows.splice(0, 1);
-                        const studentsPagination = resp.rows.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));
+                        const studentsPagination = resp.rows.slice(getPaginationCurrentPageNumber(currentPage, 5), getPaginationNextPageNumber(currentPage, 5));
                         this.setState({
                             files_Students: fileObj,
                             cols_Students: resp.cols,
@@ -623,9 +623,9 @@ class Excels extends Component {
                         Toastify.actionWarning("Cấu trúc file không hợp lệ!");
                     } else {
                         const { currentPageBus } = this.state;
-                        const pageNumberBus = getPaginationPageNumber(resp.rows.length - 1);
+                        const pageNumberBus = getPaginationPageNumber(resp.rows.length - 1, 5);
                         resp.rows.splice(0, 1);
-                        const businessesPagination = resp.rows.slice(getPaginationCurrentPageNumber(currentPageBus), getPaginationNextPageNumber(currentPageBus));
+                        const businessesPagination = resp.rows.slice(getPaginationCurrentPageNumber(currentPageBus, 5), getPaginationNextPageNumber(currentPageBus, 5));
                         this.setState({
                             files_Businesses: fileObj,
                             cols_Businesses: resp.cols,

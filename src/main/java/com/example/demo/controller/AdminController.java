@@ -423,5 +423,13 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-
+    @GetMapping("/getAllSemester")
+    @ResponseBody
+    public ResponseEntity<List<Semester>> getAllSemester() {
+        List<Semester> semesterList = semesterService.getAllSemester();
+        if (semesterList != null) {
+            return new ResponseEntity<>(semesterList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.config.ActionEnum;
+import com.example.demo.config.StudentStatus;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IOjt_EnrollmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
     IHistoryActionService historyActionService;
 
 
+
+    @Autowired
+    IStudentService iStudentService;
 
     @Override
     public boolean saveListOjtEnrollment(List<Ojt_Enrollment> ojtEnrollmentList) {
@@ -121,6 +125,9 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
 
     @Override
     public void updateBusinessForStudent(String emailBusiness, String emailStudent) {
+        Student student = iStudentService.getStudentByEmail(emailStudent);
+        student.setStatus(StudentStatus.STARTED);
+
         Business business = businessService.getBusinessByEmail(emailBusiness);
         Date date = new Date(Calendar.getInstance().getTime().getTime());
 
@@ -131,6 +138,8 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
 
         ojt_enrollment.setTimeEnroll(date);
         ojt_enrollment.setBusiness(business);
+
+        iStudentService.saveStudent(student);
 
         if(ojtEnrollmentRepository.save(ojt_enrollment) != null) {
             HistoryDetail historyDetail = new HistoryDetail(Ojt_Enrollment.class.getName(), "business_email", String.valueOf(ojt_enrollment.getId()), emailBusiness);
@@ -219,7 +228,7 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
 
     @Override
     public int countOjt_EnrollmentsByBusinessEmailAndSemesterIdAndStudentEmailNotNull(String email, int id) {
-        return ojtEnrollmentRepository.countOjt_EnrollmentsByBusinessEmailAndSemesterIdAndStudentEmailNotNull(email,id);
+        return ojtEnrollmentRepository.countOjt_EnrollmentsByBusinessEmailAndSemesterIdAndStudentEmailNotNull(email, id);
     }
 
     @Override
