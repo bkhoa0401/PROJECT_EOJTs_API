@@ -54,6 +54,7 @@ class Official_List extends Component {
       modalTask: false,
       studentDetail: null,
       listStudentTask: null,
+      months: null,
     }
   }
 
@@ -62,13 +63,13 @@ class Official_List extends Component {
     // await ApiServices.Put('/admin');
     const students = await ApiServices.Get('/business/getStudentsByBusiness');
     const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness');
-    const supervisors_FirstBlank = await ApiServices.Get('/business/getAllSupervisorABusiness');
+    let supervisors_FirstBlank = await ApiServices.Get('/business/getAllSupervisorABusiness');
 
     const supervisors_FirstBlank_Obj = {
       email: '',
       name: ''
     }
-    if (supervisors_FirstBlank != null) {
+    if (supervisors_FirstBlank.length > 1) {
       supervisors_FirstBlank.unshift(supervisors_FirstBlank_Obj);
     } else {
       supervisors_FirstBlank = [];
@@ -292,10 +293,98 @@ class Official_List extends Component {
   toggleModalTask = async (studentDetail) => {
     if (this.state.modalTask == false) {
       const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}`);
+
+      this.setState({
+        loading: true,
+      })
+      let months = [];
+
+      const ojtEnrollment = await ApiServices.Get(`/enrollment/getSelectedStuEnrollment?email=${studentDetail.email}`);
+      var dateEnroll = ojtEnrollment.timeEnroll;
+      var splitDate = dateEnroll.split('-');
+      let dd = parseInt(splitDate[2]);
+      let mm = parseInt(splitDate[1]);
+      // let mm31 = [1, 3, 5, 7, 8, 10, 12];
+      let mm30 = [4, 6, 9, 11];
+      let yyyy = parseInt(splitDate[0]);
+      for (let index = 1; index < 5; index++) {
+        let timeStartShow = "";
+        if (mm + parseInt(index) > 13) {
+          if ((mm + parseInt(index) - 12 - 1) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+            timeStartShow = 29 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+          } else if ((mm + parseInt(index) - 12 - 1) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+            timeStartShow = 28 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+          } else if (mm30.includes((mm + parseInt(index) - 12 - 1)) && dd > 30) {
+            timeStartShow = 30 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+          } else {
+            timeStartShow = dd + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+          }
+        } else {
+          if ((mm + parseInt(index) - 1) == 2 && yyyy % 4 == 0 && dd > 29) {
+            timeStartShow = 29 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+          } else if ((mm + parseInt(index) - 1) == 2 && yyyy % 4 != 0 && dd > 28) {
+            timeStartShow = 28 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+          } else if (mm30.includes((mm + parseInt(index) - 1)) && dd > 30) {
+            timeStartShow = 30 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+          } else {
+            timeStartShow = dd + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+          }
+        }
+        let formatTimeStartShow = timeStartShow.split('/');
+        // console.log(formatTimeStartShow[1]);
+        // console.log(formatTimeStartShow[0]);
+        if (parseInt(formatTimeStartShow[1]) < 10) {
+          formatTimeStartShow[1] = "0" + formatTimeStartShow[1];
+        }
+        if (parseInt(formatTimeStartShow[0]) < 10) {
+          formatTimeStartShow[0] = "0" + formatTimeStartShow[1];
+        }
+        timeStartShow = formatTimeStartShow[0] + "/" + formatTimeStartShow[1] + "/" + formatTimeStartShow[2];
+        // console.log(timeStartShow);
+        let timeEndShow = "";
+        if (mm + parseInt(index) > 12) {
+          if ((mm + parseInt(index) - 12) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+            timeEndShow = 29 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+          } else if ((mm + parseInt(index) - 12) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+            timeEndShow = 28 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+          } else if (mm30.includes((mm + parseInt(index) - 12)) && dd > 30) {
+            timeEndShow = 30 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+          } else {
+            timeEndShow = dd + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+          }
+        } else {
+          if ((mm + parseInt(index)) == 2 && yyyy % 4 == 0 && dd > 29) {
+            timeEndShow = 29 + "/" + (mm + parseInt(index)) + "/" + yyyy;
+          } else if ((mm + parseInt(index)) == 2 && yyyy % 4 != 0 && dd > 28) {
+            timeEndShow = 28 + "/" + (mm + parseInt(index)) + "/" + yyyy;
+          } else if (mm30.includes((mm + parseInt(index))) && dd > 30) {
+            timeEndShow = 30 + "/" + (mm + parseInt(index)) + "/" + yyyy;
+          } else {
+            timeEndShow = dd + "/" + (mm + parseInt(index)) + "/" + yyyy;
+          }
+        }
+        let formatTimeEndShow = timeEndShow.split('/');
+        if (parseInt(formatTimeEndShow[1]) < 10) {
+          formatTimeEndShow[1] = "0" + formatTimeEndShow[1];
+        }
+        if (parseInt(formatTimeEndShow[0]) < 10) {
+          formatTimeEndShow[0] = "0" + formatTimeEndShow[1];
+        }
+        timeEndShow = formatTimeEndShow[0] + "/" + formatTimeEndShow[1] + "/" + formatTimeEndShow[2];
+        // console.log(timeEndShow);
+        months.push(`${timeStartShow} - ${timeEndShow}`);
+      }
+      console.log(months);
+
+
+
+
       this.setState({
         modalTask: !this.state.modalTask,
         studentDetail: studentDetail,
         listStudentTask: listStudentTask,
+        months: months,
+        loading: false,
       });
     } else {
       this.setState({
@@ -385,7 +474,7 @@ class Official_List extends Component {
   }
 
   render() {
-    const { studentDetail, students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection, loading, suggestedStudents, isSelect, colorBackSelect, colorTextSelect } = this.state;
+    const { months, studentDetail, students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection, loading, suggestedStudents, isSelect, colorBackSelect, colorTextSelect } = this.state;
     let filteredListStudents = orderBy(students, columnToSort, sortDirection);
     if (students != null) {
       filteredListStudents = students.filter(
@@ -685,6 +774,15 @@ class Official_List extends Component {
                     <Col xs="12" md="9">
                       <label>{studentDetail.name}</label>
                     </Col>
+                  </FormGroup>
+                  <FormGroup row style={{ paddingLeft:'38%' }}>
+                    <Input onChange={e => { this.handleSelectSupervisor(e) }} type="select" name="months" style={{width:'250px'}}>
+                      {months && months.map((month, i) => {
+                        return (
+                          <option value={i}>{month}</option>
+                        )
+                      })}
+                    </Input>
                   </FormGroup>
                   <Table responsive striped>
                     <thead>
