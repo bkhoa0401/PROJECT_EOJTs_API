@@ -43,6 +43,9 @@ public class AdminController {
     @Autowired
     ISemesterService semesterService;
 
+    @Autowired
+    IQuestionService iQuestionService;
+
     @GetMapping
     @ResponseBody
     public ResponseEntity<List<Student>> getAllStudentByTypeStatusOption(@RequestParam int typeOfStatus) {
@@ -388,6 +391,27 @@ public class AdminController {
             return new ResponseEntity<StatisticalStudentInSemesterDTO>(statisticalStudentInSemesterDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PostMapping("/question")
+    public ResponseEntity<Void> createNewQuestion(@RequestBody Question question) {
+        if (question == null) {
+            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        }
+        iQuestionService.addNewQuestion(question);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/question")
+    public ResponseEntity<Void> deleteQuestion(@RequestParam int id) {
+        iQuestionService.deleteQuestion(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/question-content")
+    public ResponseEntity<Void> updateQuestion(@RequestBody Question question) {
+        iQuestionService.updateQuestion(question);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/checkSemester")

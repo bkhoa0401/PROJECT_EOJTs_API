@@ -77,6 +77,7 @@ public class StudentController {
     @Autowired
     IHistoryActionService iHistoryActionService;
 
+
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     //check semester //ok
@@ -166,7 +167,7 @@ public class StudentController {
 
         Semester semester = semesterService.getSemesterByName(student.getSemesterName());
 
-        Student studentGetByEmail=studentService.getStudentByEmail(student.getEmail());
+        Student studentGetByEmail = studentService.getStudentByEmail(student.getEmail());
 
         ojt_enrollment.setStudent(studentGetByEmail);
         ojt_enrollment.setSemester(semester);
@@ -990,6 +991,18 @@ public class StudentController {
 
         iStudent_answerService.saveStudent_Answer(student, answers, mapOthers);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/answers")
+    @ResponseBody
+    public ResponseEntity<List<StudentAnswerDTO>> getAnswersOfStudent() {
+        String email = getEmailFromToken();
+        List<StudentAnswerDTO> answerDTOS = studentService.findListStudentAnswer(email);
+        if(answerDTOS!=null){
+            return new ResponseEntity<List<StudentAnswerDTO>>(answerDTOS,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+
     }
 
     @PostMapping("/feedback")

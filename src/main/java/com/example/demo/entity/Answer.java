@@ -39,6 +39,9 @@ public class Answer implements Serializable {
 //    @ManyToMany(mappedBy = "answers")
 //    private List<Student> students;
 
+    public Answer() {
+    }
+
     public int getId() {
         return id;
     }

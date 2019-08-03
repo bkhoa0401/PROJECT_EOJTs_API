@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.StudentAnswerDTO;
 import com.example.demo.entity.*;
 
 import java.text.ParseException;
@@ -7,57 +8,59 @@ import java.util.List;
 
 public interface IStudentService {
 
-    public Student getStudentByEmail(String email);
+    Student getStudentByEmail(String email);
 
-    public boolean saveListStudent(List<Student> studentList);
+    boolean saveListStudent(List<Student> studentList);
 
-    public boolean saveStudent(Student student);
+    boolean saveStudent(Student student);
 
-    public List<Student> getAllStudents();
+    List<Student> getAllStudents();
 
-    public List<Student> getAllStudentsBySemesterId();
+    List<Student> getAllStudentsBySemesterId();
 
-    public int getSpecializedIdByEmail(String email);
+    int getSpecializedIdByEmail(String email);
 
-    public boolean updateInforStudent(String email, String ojective, List<Skill> skillList);
+    boolean updateInforStudent(String email, String ojective, List<Skill> skillList);
 
 //    public boolean updateOption1Student(String email, String option1);
 //
 //    public boolean updateOption2Student(String email, String option2);
 
-    public String updateOption1Student(String email, String option1);
+    String updateOption1Student(String email, String option1);
 
-    public String updateOption2Student(String email, String option2);
+    String updateOption2Student(String email, String option2);
 
-    public Student getStudentIsInvited(String email);
+    Student getStudentIsInvited(String email);
 
-    public List<Student> findStudentByBusinessNameOption(String option1, String option2);
+    List<Student> findStudentByBusinessNameOption(String option1, String option2);
 
-    public boolean updateLinkFileResumeForStudent(String email, String resumeLink);
+    boolean updateLinkFileResumeForStudent(String email, String resumeLink);
 
-    public boolean updateStatusOptionOfStudent(List<Integer> numberOfOption, boolean statusOfOption, String emailStudent);
+    boolean updateStatusOptionOfStudent(List<Integer> numberOfOption, boolean statusOfOption, String emailStudent);
 
-    public List<Student> getAllStudentByStatusOption(int typeGetStatus);
+    List<Student> getAllStudentByStatusOption(int typeGetStatus);
 
-    public boolean updateTokenDeviceForStudent(String emailStudent, String token);
+    boolean updateTokenDeviceForStudent(String emailStudent, String token);
 
-    public boolean updateLinkTranscriptForStudent(Student student);
+    boolean updateLinkTranscriptForStudent(Student student);
 
-    public boolean assignSupervisorForStudent(List<Student> studentList);
+    boolean assignSupervisorForStudent(List<Student> studentList);
 
-    public List<Job_Post> getSuggestListJobPost(String emailStudent);
+    List<Job_Post> getSuggestListJobPost(String emailStudent);
 
-    public float compareSkillsStudentAndSkillsJobPost(List<Skill> skillListStudent, List<Skill> skillListJobPost);
+    float compareSkillsStudentAndSkillsJobPost(List<Skill> skillListStudent, List<Skill> skillListJobPost);
 
-    public boolean updateLinkAvatar(String emailStudent, String linkAvatar);
+    boolean updateLinkAvatar(String emailStudent, String linkAvatar);
 
-    public Business getBusinessOfStudent(String studentEmail);
+    Business getBusinessOfStudent(String studentEmail);
 
-    public List<Business> getBusinessByOptionStudent(String studentEmail);
+    List<Business> getBusinessByOptionStudent(String studentEmail);
 
-    public List<Student> getAllStudentOfASupervisor(String email);
+    List<Student> getAllStudentOfASupervisor(String email);
 
-    public boolean updateInformationStudent(String email, String name, String phone, boolean gender, String address, String birthDate) throws ParseException;
+    boolean updateInformationStudent(String email, String name, String phone, boolean gender, String address, String birthDate) throws ParseException;
 
-    public void postFeedBack(String email,String content);
+    void postFeedBack(String email, String content);
+
+    List<StudentAnswerDTO> findListStudentAnswer(String email);
 }

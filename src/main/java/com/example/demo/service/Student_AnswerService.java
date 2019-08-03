@@ -69,13 +69,22 @@ public class Student_AnswerService implements IStudent_AnswerService {
 
     @Override
     public int countStudentsAnswerByAnswerId(int id) {
-        int student_answers=iStudent_answerRepository.countStudent_AnswersByAnswerId(id);
+        int student_answers = iStudent_answerRepository.countStudent_AnswersByAnswerId(id);
         return student_answers;
     }
 
     @Override
     public int countStudent_AnswersGroupByStudentEmail() {
-        int studentsIsAnswer=iStudent_answerRepository.countStudent_AnswersGroupByStudentEmail();
+        int studentsIsAnswer = iStudent_answerRepository.countStudent_AnswersGroupByStudentEmail();
         return studentsIsAnswer;
+    }
+
+    @Override
+    public List<Student_Answer> findStudentAnswersByEmail(String email) {
+        List<Student_Answer> student_answers = iStudent_answerRepository.findStudent_AnswersByStudentEmail(email);
+        if (student_answers != null) {
+            return student_answers;
+        }
+        return null;
     }
 }
