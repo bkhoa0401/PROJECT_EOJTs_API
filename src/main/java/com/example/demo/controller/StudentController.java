@@ -1045,10 +1045,28 @@ public class StudentController {
 
     @GetMapping("/answers")
     @ResponseBody
-    public ResponseEntity<List<StudentAnswerDTO>> getAnswersOfStudent() {
+    public ResponseEntity<List<StudentAnswerDTO>> getAnswers() {
         String email = getEmailFromToken();
         List<StudentAnswerDTO> answerDTOS = studentService.findListStudentAnswer(email);
         if(answerDTOS!=null){
+            return new ResponseEntity<List<StudentAnswerDTO>>(answerDTOS,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+
+    }
+
+    @GetMapping("/answersOfStudent")
+    @ResponseBody
+    public ResponseEntity<List<StudentAnswerDTO>> getAnswersOfStudent(@RequestParam String studentEmail) {
+        List<StudentAnswerDTO> answerDTOS = studentService.findListStudentAnswer(studentEmail);
+        boolean isAnswered = false;
+        for (int i = 0; i < answerDTOS.size(); i++) {
+            if (answerDTOS.get(i).getAnswers()!= null) {
+                isAnswered = true;
+                break;
+            }
+        }
+        if(answerDTOS!=null && isAnswered == true){
             return new ResponseEntity<List<StudentAnswerDTO>>(answerDTOS,HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);

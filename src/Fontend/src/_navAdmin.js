@@ -75,11 +75,11 @@ export default {
       url: '/Report/Report',
       icon: 'icon-star',
     },
-    {
-      name: 'Phản hồi',
-      url: '/Feedback/Feedback',
-      icon: 'icon-star',
-    },
+    // {
+    //   name: 'Phản hồi',
+    //   url: '/Feedback/Feedback',
+    //   icon: 'icon-star',
+    // },
     {
       name: 'Thống kê khảo sát',
       url: '/answer-statistics',

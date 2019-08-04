@@ -84,8 +84,8 @@ const Hr_Task_Create = React.lazy(() => import('./views/Hr_Task/Hr_Task_Create.j
 const Hr_Task_Detail = React.lazy(() => import('./views/Hr_Task/Hr_Task_Detail.js'));
 const Hr_Task_Update = React.lazy(() => import('./views/Hr_Task/Hr_Task_Update.js'));
 const Business_Detail = React.lazy(() => import('./views/Company/Business_Detail.js'));
-const Feedback = React.lazy(() => import('./views/Feedback/Feedback.js'));
-const Feedback_Detail = React.lazy(() => import('./views/Feedback/Feedback_Detail.js'));
+// const Feedback = React.lazy(() => import('./views/Feedback/Feedback.js'));
+// const Feedback_Detail = React.lazy(() => import('./views/Feedback/Feedback_Detail.js'));
 const BusinessProposed = React.lazy(() => import('./views/BusinessProposed/BusinessProposed.js'));
 const BusinessProposed_Detail = React.lazy(() => import('./views/BusinessProposed/BusinessProposed_Detail.js'));
 const BusinessProposed_Update = React.lazy(() => import('./views/BusinessProposed/BusinessProposed_Update.js'));
@@ -195,8 +195,8 @@ const routes = [
   { path: '/hr-task/update/:id', exact: true, name: 'Chỉnh sửa nhiệm vụ', component: Hr_Task_Update },
   { path: '/list_management/business_list/Business_Detail/:email', exact: true, name: 'Chi tiết doanh nghiệp', component: Business_Detail },
   { path: '/Business_Detail/:email', exact: true, name: 'Thông tin tài khoản', component: Business_Detail },
-  { path: '/feedback/feedback', exact: true, name: 'Phản hồi', component: Feedback },
-  { path: '/feedback/feedback_detail/:id', exact: true, name: 'Chi tiết phản hồi', component: Feedback_Detail },
+  // { path: '/feedback/feedback', exact: true, name: 'Phản hồi', component: Feedback },
+  // { path: '/feedback/feedback_detail/:id', exact: true, name: 'Chi tiết phản hồi', component: Feedback_Detail },
   { path: '/business-proposed', exact: true, name: 'Doanh nghiệp đề xuất', component: BusinessProposed },
   { path: '/business-proposed/:id', exact: true, name: 'Chi tiết doanh nghiệp đề xuất', component: BusinessProposed_Detail },
   { path: '/business-proposed/update/:id', exact: true, name: 'Chỉnh sửa chi tiết doanh nghiệp đề xuất', component: BusinessProposed_Update },
