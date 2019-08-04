@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.EventDTO;
 import com.example.demo.entity.Event;
 import com.example.demo.service.EventService;
 import com.example.demo.service.IEventService;
@@ -22,10 +23,10 @@ public class EventController {
 
     @GetMapping("/getEvent")
     @ResponseBody
-    public ResponseEntity<Event> getEventById(@RequestParam int id) {
-        Event event = eventService.findEventById(id);
-        if (event != null) {
-            return new ResponseEntity<Event>(event, HttpStatus.OK);
+    public ResponseEntity<EventDTO> getEventById(@RequestParam int id) {
+        EventDTO eventDTO = eventService.findEventAndStudentsById(id);
+        if (eventDTO != null) {
+            return new ResponseEntity<EventDTO>(eventDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
