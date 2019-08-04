@@ -63,4 +63,6 @@ public interface IStudentService {
     void postFeedBack(String email, String content);
 
     List<StudentAnswerDTO> findListStudentAnswer(String email);
+
+    void studentCreateInformMessage(String email,Event event);
 }

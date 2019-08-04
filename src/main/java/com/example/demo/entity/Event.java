@@ -41,16 +41,21 @@ public class Event implements Comparable<Event>, Serializable {
     private Business business;
 
     //@ManyToMany(mappedBy = "events")
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(
-            name = "student_event",
-            joinColumns = {
-                    @JoinColumn(name = "event_id")},
-            inverseJoinColumns = {
-                    @JoinColumn(name = "student_email")}
-    )
-//    @JsonIgnore
-    private List<Student> students;
+//    @ManyToMany(cascade = CascadeType.MERGE)
+//    @JoinTable(
+//            name = "student_event",
+//            joinColumns = {
+//                    @JoinColumn(name = "event_id")},
+//            inverseJoinColumns = {
+//                    @JoinColumn(name = "student_email")}
+//    )
+////    @JsonIgnore
+//    private List<Student> students;
+
+    @OneToMany(mappedBy = "event")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonIgnore
+    private List<Student_Event> student_events;
 
     @Column(name = "isRead")
     private boolean isRead;
@@ -98,13 +103,13 @@ public class Event implements Comparable<Event>, Serializable {
         this.business = business;
     }
 
-    public List<Student> getStudents() {
-        return students;
-    }
-
-    public void setStudents(List<Student> students) {
-        this.students = students;
-    }
+//    public List<Student> getStudents() {
+//        return students;
+//    }
+//
+//    public void setStudents(List<Student> students) {
+//        this.students = students;
+//    }
 
     public int getId() {
         return id;
@@ -136,5 +141,13 @@ public class Event implements Comparable<Event>, Serializable {
 
     public void setHeading_email(String heading_email) {
         this.heading_email = heading_email;
+    }
+
+    public List<Student_Event> getStudent_events() {
+        return student_events;
+    }
+
+    public void setStudent_events(List<Student_Event> student_events) {
+        this.student_events = student_events;
     }
 }

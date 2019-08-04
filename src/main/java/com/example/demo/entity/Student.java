@@ -85,18 +85,23 @@ public class Student implements Serializable {
     )
     private List<Skill> skills;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinTable(
-            name = "student_event",
-            joinColumns = {
-                    @JoinColumn(name = "student_email")},
-            inverseJoinColumns = {
-                    @JoinColumn(name = "event_id")}
-    )
+//    @ManyToMany(cascade = CascadeType.MERGE)
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    @JoinTable(
+//            name = "student_event",
+//            joinColumns = {
+//                    @JoinColumn(name = "student_email")},
+//            inverseJoinColumns = {
+//                    @JoinColumn(name = "event_id")}
+//    )
+//
+//    @JsonIgnore
+//    private List<Event> events;
 
+    @OneToMany(mappedBy = "student")
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonIgnore
-    private List<Event> events;
+    private List<Student_Event> student_events;
 
     //Add ignore Student - Invitation
     @OneToMany(mappedBy = "student")
@@ -262,13 +267,13 @@ public class Student implements Serializable {
         this.skills = skills;
     }
 
-    public List<Event> getEvents() {
-        return events;
-    }
-
-    public void setEvents(List<Event> events) {
-        this.events = events;
-    }
+//    public List<Event> getEvents() {
+//        return events;
+//    }
+//
+//    public void setEvents(List<Event> events) {
+//        this.events = events;
+//    }
 
     public List<Invitation> getInvitations() {
         return invitations;
@@ -380,6 +385,14 @@ public class Student implements Serializable {
 
     public void setStudent_answers(List<Student_Answer> student_answers) {
         this.student_answers = student_answers;
+    }
+
+    public List<Student_Event> getStudent_events() {
+        return student_events;
+    }
+
+    public void setStudent_events(List<Student_Event> student_events) {
+        this.student_events = student_events;
     }
     //    public List<Answer> getAnswers() {
 //        return answers;
