@@ -61,8 +61,8 @@ class student_list extends Component {
             typeSelected: 1,
 
             isViewSurvey: 0,
-            survey: [],
-
+            survey: null,
+            businessSurvey: null,
         };
         // this.toggleModal = this.toggleModal.bind(this);
     }
@@ -121,10 +121,17 @@ class student_list extends Component {
 
     toggleModalDetail = async (email) => {
         let students = null;
+        let businessSurvey = null;
+        let survey = null;
         let role = '';
         if (this.state.modalDetail == false) {
             students = await ApiServices.Get(`/student/student/${email}`);
-
+            businessSurvey = await ApiServices.Get(`/student/business?email=${email}`);
+            survey = await ApiServices.Get(`/student/answersOfStudent?studentEmail=${email}`);
+            // console.log(survey.length);
+            if (survey.length == 0) {
+                survey = null;
+            }
             const token = localStorage.getItem('id_token');
             if (token != null) {
                 const decoded = decode(token);
@@ -146,6 +153,9 @@ class student_list extends Component {
                 transcriptLink: students.transcriptLink,
                 role: role,
                 modalDetail: !this.state.modalDetail,
+
+                businessSurvey: businessSurvey,
+                survey: survey,
             });
         } else {
             this.setState({
@@ -182,106 +192,106 @@ class student_list extends Component {
             let months = [];
             var date = new Date();
             let isThisMonth = -1;
+            let listStudentTask = null;
 
             const ojtEnrollment = await ApiServices.Get(`/enrollment/getSelectedStuEnrollment?email=${studentDetail.email}`);
             var dateEnroll = ojtEnrollment.timeEnroll;
-            var splitDate = dateEnroll.split('-');
-            let dd = parseInt(splitDate[2]);
-            let mm = parseInt(splitDate[1]);
-            // let mm31 = [1, 3, 5, 7, 8, 10, 12];
-            let mm30 = [4, 6, 9, 11];
-            let yyyy = parseInt(splitDate[0]);
-            for (let index = 1; index < 5; index++) {
-                let timeStartShow = "";
-                if (mm + parseInt(index) > 13) {
-                    if ((mm + parseInt(index) - 12 - 1) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
-                        timeStartShow = 29 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
-                    } else if ((mm + parseInt(index) - 12 - 1) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
-                        timeStartShow = 28 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
-                    } else if (mm30.includes((mm + parseInt(index) - 12 - 1)) && dd > 30) {
-                        timeStartShow = 30 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+            if (dateEnroll != null) {
+                var splitDate = dateEnroll.split('-');
+                let dd = parseInt(splitDate[2]);
+                let mm = parseInt(splitDate[1]);
+                // let mm31 = [1, 3, 5, 7, 8, 10, 12];
+                let mm30 = [4, 6, 9, 11];
+                let yyyy = parseInt(splitDate[0]);
+                for (let index = 1; index < 5; index++) {
+                    let timeStartShow = "";
+                    if (mm + parseInt(index) > 13) {
+                        if ((mm + parseInt(index) - 12 - 1) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+                            timeStartShow = 29 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+                        } else if ((mm + parseInt(index) - 12 - 1) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+                            timeStartShow = 28 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+                        } else if (mm30.includes((mm + parseInt(index) - 12 - 1)) && dd > 30) {
+                            timeStartShow = 30 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+                        } else {
+                            timeStartShow = dd + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+                        }
                     } else {
-                        timeStartShow = dd + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+                        if ((mm + parseInt(index) - 1) == 2 && yyyy % 4 == 0 && dd > 29) {
+                            timeStartShow = 29 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+                        } else if ((mm + parseInt(index) - 1) == 2 && yyyy % 4 != 0 && dd > 28) {
+                            timeStartShow = 28 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+                        } else if (mm30.includes((mm + parseInt(index) - 1)) && dd > 30) {
+                            timeStartShow = 30 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+                        } else {
+                            timeStartShow = dd + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+                        }
                     }
-                } else {
-                    if ((mm + parseInt(index) - 1) == 2 && yyyy % 4 == 0 && dd > 29) {
-                        timeStartShow = 29 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
-                    } else if ((mm + parseInt(index) - 1) == 2 && yyyy % 4 != 0 && dd > 28) {
-                        timeStartShow = 28 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
-                    } else if (mm30.includes((mm + parseInt(index) - 1)) && dd > 30) {
-                        timeStartShow = 30 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+                    let formatTimeStartShow = timeStartShow.split('/');
+                    // console.log(formatTimeStartShow[1]);
+                    // console.log(formatTimeStartShow[0]);
+                    if (parseInt(formatTimeStartShow[1]) < 10) {
+                        formatTimeStartShow[1] = "0" + formatTimeStartShow[1];
+                    }
+                    if (parseInt(formatTimeStartShow[0]) < 10) {
+                        formatTimeStartShow[0] = "0" + formatTimeStartShow[0];
+                    }
+                    timeStartShow = formatTimeStartShow[0] + "/" + formatTimeStartShow[1] + "/" + formatTimeStartShow[2];
+                    // console.log(timeStartShow);
+                    let timeEndShow = "";
+                    if (mm + parseInt(index) > 12) {
+                        if ((mm + parseInt(index) - 12) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+                            timeEndShow = 29 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+                        } else if ((mm + parseInt(index) - 12) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+                            timeEndShow = 28 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+                        } else if (mm30.includes((mm + parseInt(index) - 12)) && dd > 30) {
+                            timeEndShow = 30 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+                        } else {
+                            timeEndShow = dd + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+                        }
                     } else {
-                        timeStartShow = dd + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+                        if ((mm + parseInt(index)) == 2 && yyyy % 4 == 0 && dd > 29) {
+                            timeEndShow = 29 + "/" + (mm + parseInt(index)) + "/" + yyyy;
+                        } else if ((mm + parseInt(index)) == 2 && yyyy % 4 != 0 && dd > 28) {
+                            timeEndShow = 28 + "/" + (mm + parseInt(index)) + "/" + yyyy;
+                        } else if (mm30.includes((mm + parseInt(index))) && dd > 30) {
+                            timeEndShow = 30 + "/" + (mm + parseInt(index)) + "/" + yyyy;
+                        } else {
+                            timeEndShow = dd + "/" + (mm + parseInt(index)) + "/" + yyyy;
+                        }
                     }
-                }
-                let formatTimeStartShow = timeStartShow.split('/');
-                // console.log(formatTimeStartShow[1]);
-                // console.log(formatTimeStartShow[0]);
-                if (parseInt(formatTimeStartShow[1]) < 10) {
-                    formatTimeStartShow[1] = "0" + formatTimeStartShow[1];
-                }
-                if (parseInt(formatTimeStartShow[0]) < 10) {
-                    formatTimeStartShow[0] = "0" + formatTimeStartShow[0];
-                }
-                timeStartShow = formatTimeStartShow[0] + "/" + formatTimeStartShow[1] + "/" + formatTimeStartShow[2];
-                // console.log(timeStartShow);
-                let timeEndShow = "";
-                if (mm + parseInt(index) > 12) {
-                    if ((mm + parseInt(index) - 12) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
-                        timeEndShow = 29 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
-                    } else if ((mm + parseInt(index) - 12) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
-                        timeEndShow = 28 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
-                    } else if (mm30.includes((mm + parseInt(index) - 12)) && dd > 30) {
-                        timeEndShow = 30 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
-                    } else {
-                        timeEndShow = dd + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+                    let formatTimeEndShow = timeEndShow.split('/');
+                    if (parseInt(formatTimeEndShow[1]) < 10) {
+                        formatTimeEndShow[1] = "0" + formatTimeEndShow[1];
                     }
-                } else {
-                    if ((mm + parseInt(index)) == 2 && yyyy % 4 == 0 && dd > 29) {
-                        timeEndShow = 29 + "/" + (mm + parseInt(index)) + "/" + yyyy;
-                    } else if ((mm + parseInt(index)) == 2 && yyyy % 4 != 0 && dd > 28) {
-                        timeEndShow = 28 + "/" + (mm + parseInt(index)) + "/" + yyyy;
-                    } else if (mm30.includes((mm + parseInt(index))) && dd > 30) {
-                        timeEndShow = 30 + "/" + (mm + parseInt(index)) + "/" + yyyy;
-                    } else {
-                        timeEndShow = dd + "/" + (mm + parseInt(index)) + "/" + yyyy;
+                    if (parseInt(formatTimeEndShow[0]) < 10) {
+                        formatTimeEndShow[0] = "0" + formatTimeEndShow[0];
                     }
+                    timeEndShow = formatTimeEndShow[0] + "/" + formatTimeEndShow[1] + "/" + formatTimeEndShow[2];
+                    // console.log(timeEndShow);
+                    var date1 = new Date();
+                    var date2 = new Date();
+                    date1.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0]));
+                    // console.log(formatTimeStartShow[1]);
+                    date2.setFullYear(parseInt(formatTimeEndShow[2]), parseInt(formatTimeEndShow[1] - 1), parseInt(formatTimeEndShow[0]));
+                    if (date >= date1 && date <= date2) {
+                        isThisMonth = index - 1;
+                    }
+                    // console.log(date);
+                    // console.log(date1);
+                    // console.log(date2);
+                    // console.log(date >= date1);
+                    // console.log(date <= date2);
+                    months.push(`${timeStartShow} - ${timeEndShow}`);
                 }
-                let formatTimeEndShow = timeEndShow.split('/');
-                if (parseInt(formatTimeEndShow[1]) < 10) {
-                    formatTimeEndShow[1] = "0" + formatTimeEndShow[1];
-                }
-                if (parseInt(formatTimeEndShow[0]) < 10) {
-                    formatTimeEndShow[0] = "0" + formatTimeEndShow[0];
-                }
-                timeEndShow = formatTimeEndShow[0] + "/" + formatTimeEndShow[1] + "/" + formatTimeEndShow[2];
-                // console.log(timeEndShow);
-                var date1 = new Date();
-                var date2 = new Date();
-                date1.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0]));
-                // console.log(formatTimeStartShow[1]);
-                date2.setFullYear(parseInt(formatTimeEndShow[2]), parseInt(formatTimeEndShow[1] - 1), parseInt(formatTimeEndShow[0]));
-                if (date >= date1 && date <= date2) {
-                    isThisMonth = index - 1;
-                }
-                // console.log(date);
-                // console.log(date1);
-                // console.log(date2);
-                // console.log(date >= date1);
-                // console.log(date <= date2);
-                months.push(`${timeStartShow} - ${timeEndShow}`);
+                // console.log(months);
+                // console.log(isThisMonth);
+                var date = months[isThisMonth].split(" - ");
+                var formatDateStart = date[0].split("/");
+                let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
+                var formatDateEnd = date[1].split("/");
+                let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
+                listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
             }
-            // console.log(months);
-            // console.log(isThisMonth);
-
-
-            var date = months[isThisMonth].split(" - ");
-            var formatDateStart = date[0].split("/");
-            let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
-            var formatDateEnd = date[1].split("/");
-            let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
-            const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
-
 
             this.setState({
                 modalTask: !this.state.modalTask,
@@ -355,7 +365,7 @@ class student_list extends Component {
     }
 
     showTaskState(taskStatus) {
-        console.log(taskStatus);
+        // console.log(taskStatus);
         if (taskStatus === 'NOTSTART') {
             return (
                 <Badge color="secondary">Chưa bắt đầu</Badge>
@@ -369,6 +379,20 @@ class student_list extends Component {
                 <Badge color="success">Hoàn Thành</Badge>
             )
         }
+    }
+
+    checkChose(quesAns, ans) {
+        // console.log(quesAns.includes(ans));
+        // console.log(quesAns);
+        // console.log(quesAns.length);
+        // console.log(ans);
+        let isChecked = false;
+        for (let index = 0; index < quesAns.length; index++) {
+            if (quesAns[index].id == ans.id) {
+                isChecked = true;
+            }
+        }
+        return isChecked;
     }
 
     formatDate(inputDate, flag) {
@@ -400,7 +424,8 @@ class student_list extends Component {
 
     handleSubmit = async () => {
         this.setState({
-            loading: true
+            loading: true,
+            isUploadTranscriptLink: false,
         })
         await this.uploadTranscriptToFireBase();
         await this.saveTranscript();
@@ -509,7 +534,7 @@ class student_list extends Component {
     }
 
     tabPane() {
-        const { months, isThisMonth, isViewSurvey, survey, students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail, typesOfStudent } = this.state;
+        const { student, businessSurvey, months, isThisMonth, isViewSurvey, survey, students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail, typesOfStudent } = this.state;
 
         const { name, code, email, phone, address, specialized, objective, gpa, skills, resumeLink, transcriptLink, role, isUploadTranscriptLink } = this.state;
         const linkDownCV = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
@@ -585,7 +610,8 @@ class student_list extends Component {
                                 </div>
                             }
                         </TabPane>
-                        <Modal isOpen={this.state.modalDetail} toggle={this.toggleModalDetail} className={'modal-primary ' + this.props.className}>
+                        <Modal isOpen={this.state.modalDetail} toggle={this.toggleModalDetail}
+                            className={'modal-primary ' + this.props.className}>
                             <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
                             <ModalBody>
                                 {isViewSurvey === 0 ?
@@ -727,11 +753,11 @@ class student_list extends Component {
                                             </Col>
                                         </FormGroup>
                                     </Form> :
-                                    <div style={{ height: '563px', overflowY: 'scroll' }}>
-                                        <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                    <Form>
+                                        <div style={{ height: '563px', overflowY: 'scroll', width: "100%", overflowX: "hidden" }}>
                                             <div style={{ textAlign: "center" }}>
-                                                <img src="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410" width="400px" />
-                                                {/* <br /><br /><br /> */}
+                                                <img src="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410" width="96%" />
+                                                <br /><br /><br />
                                                 <h3 style={{ fontWeight: "bold" }}>PHIẾU KHẢO SÁT NƠI THỰC TẬP</h3>
                                             </div>
                                             <div>
@@ -771,30 +797,30 @@ class student_list extends Component {
                                                 </Col>
                                             </FormGroup> */}
                                                 <FormGroup row>
-                                                    <h4 style={{ fontWeight: "bold" }}>&emsp;Thông tin nơi thực tập</h4>
+                                                    <h4 style={{ fontWeight: "bold" }}>&emsp;&emsp;Thông tin nơi thực tập</h4>
                                                 </FormGroup>
                                                 <FormGroup row>
                                                     <Col md="5">
                                                         <h6 style={{ fontWeight: "bold" }}>Tên công ty thực tập:</h6>
                                                     </Col>
                                                     <Col xs="12" md="7">
-                                                        <Label>TP Bank</Label>
+                                                        {businessSurvey === null ? <></> : <Label>{businessSurvey.business_name}</Label>}
                                                     </Col>
                                                 </FormGroup>
-                                                <FormGroup row>
+                                                {/* <FormGroup row>
                                                     <Col md="5">
                                                         <h6 style={{ fontWeight: "bold" }}>Lĩnh vực hoạt động:</h6>
                                                     </Col>
                                                     <Col xs="12" md="7">
                                                         <Label>Ngân hàng</Label>
                                                     </Col>
-                                                </FormGroup>
+                                                </FormGroup> */}
                                                 <FormGroup row>
                                                     <Col md="5">
                                                         <h6 style={{ fontWeight: "bold" }}>Địa chỉ:</h6>
                                                     </Col>
                                                     <Col xs="12" md="7">
-                                                        <Label>123 abc</Label>
+                                                        {businessSurvey === null ? <></> : <Label>{businessSurvey.business_address}</Label>}
                                                     </Col>
                                                 </FormGroup>
                                                 <FormGroup row>
@@ -802,15 +828,15 @@ class student_list extends Component {
                                                         <h6 style={{ fontWeight: "bold" }}>Số điện thoại:</h6>
                                                     </Col>
                                                     <Col xs="12" md="7">
-                                                        <Label>0901234567</Label>
+                                                        {businessSurvey === null ? <></> : <Label>{businessSurvey.business_phone}</Label>}
                                                     </Col>
                                                 </FormGroup>
                                                 <FormGroup row>
                                                     <Col md="5">
                                                         <h6 style={{ fontWeight: "bold" }}>Tên người hướng dẫn:</h6>
                                                     </Col>
-                                                    <Col xs="12" md="7">
-                                                        <Label>Nguyễn Văn B</Label>
+                                                    <Col xs="12" md="7">student
+                                                        {student === null ? <></> : (student.supervisor === null ? <></> : <Label>{student.supervisor.name}</Label>)}
                                                     </Col>
                                                 </FormGroup>
                                                 {/* <FormGroup>
@@ -824,45 +850,35 @@ class student_list extends Component {
                                             </div>
                                             <hr />
                                             <div style={{ paddingTop: "10px", paddingLeft: "5%", paddingRight: "5%" }}>
-                                                <FormGroup>
-                                                    <row>
-                                                        &emsp;<u><b>Câu 1:</b></u> Bạn đánh giá như thế nào về nơi thực tập
-                                            </row>
-                                                    <row style={{ paddingTop: "20px" }}>
-                                                        <br />&emsp;&emsp;Điều kiện làm việc tại công ty (Máy móc, trang thiết bị phục vụ cho công việc, nội thất văn phòng):
-                                                </row>
-                                                    <row>
-                                                        <ListGroup>
-                                                            <ListGroupItem tag="button" action>
-                                                                <FormGroup check className="radio">
-                                                                    <Input className="form-check-input" type="radio" id="radio1" name="radios" value="Tốt" checked />
-                                                                    <Label check className="form-check-label" htmlFor="radio1">Tốt</Label>
-                                                                </FormGroup>
-                                                            </ListGroupItem>
-                                                            <ListGroupItem tag="button" action>
-                                                                <FormGroup check className="radio">
-                                                                    <Input className="form-check-input" type="radio" id="radio2" name="radios" value="Khá" />
-                                                                    <Label check className="form-check-label" htmlFor="radio2">Khá</Label>
-                                                                </FormGroup>
-                                                            </ListGroupItem>
-                                                            <ListGroupItem tag="button" action>
-                                                                <FormGroup check className="radio">
-                                                                    <Input className="form-check-input" type="radio" id="radio3" name="radios" value="Trung bình" />
-                                                                    <Label check className="form-check-label" htmlFor="radio3">Trung bình</Label>
-                                                                </FormGroup>
-                                                            </ListGroupItem>
-                                                            <ListGroupItem tag="button" action>
-                                                                <FormGroup check className="radio">
-                                                                    <Input className="form-check-input" type="radio" id="radio4" name="radios" value="Kém" />
-                                                                    <Label check className="form-check-label" htmlFor="radio4">Kém</Label>
-                                                                </FormGroup>
-                                                            </ListGroupItem>
-                                                        </ListGroup>
-                                                    </row>
-                                                </FormGroup>
+                                                {survey && survey.map((ques, index) => {
+                                                    return (
+                                                        <>
+                                                            <FormGroup>
+                                                                <row>
+                                                                    &emsp;<u><b>Câu {index + 1}</b></u>: {ques.question.content}
+                                                                </row>
+                                                                <row>
+                                                                    <ListGroup>
+                                                                        {ques.question.answers && ques.question.answers.map((answer, index1) => {
+                                                                            return (
+                                                                                <ListGroupItem tag="button" action active={this.checkChose(ques.answers, answer)} disabled>
+                                                                                    <FormGroup check className="radio">
+                                                                                        <Input className="form-check-input" type="radio" id={answer.id} name={ques.question.id} value={answer.content} checked={this.checkChose(ques.answers, answer)} readOnly />
+                                                                                        <Label check className="form-check-label" htmlFor="radio1">{answer.content}</Label>
+                                                                                    </FormGroup>
+                                                                                </ListGroupItem>
+                                                                            )
+                                                                        })}
+                                                                    </ListGroup>
+                                                                </row>
+                                                            </FormGroup>
+                                                            {index === survey.length ? <></> : <hr />}
+                                                        </>
+                                                    )
+                                                })}
                                             </div>
-                                        </Form>
-                                    </div>
+                                        </div>
+                                    </Form>
                                 }
                             </ModalBody>
                             {isUploadTranscriptLink === true ?

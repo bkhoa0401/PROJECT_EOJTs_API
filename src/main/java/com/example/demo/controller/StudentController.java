@@ -1059,7 +1059,14 @@ public class StudentController {
     @ResponseBody
     public ResponseEntity<List<StudentAnswerDTO>> getAnswersOfStudent(@RequestParam String studentEmail) {
         List<StudentAnswerDTO> answerDTOS = studentService.findListStudentAnswer(studentEmail);
-        if(answerDTOS!=null){
+        boolean isAnswered = false;
+        for (int i = 0; i < answerDTOS.size(); i++) {
+            if (answerDTOS.get(i).getAnswers()!= null) {
+                isAnswered = true;
+                break;
+            }
+        }
+        if(answerDTOS!=null && isAnswered == true){
             return new ResponseEntity<List<StudentAnswerDTO>>(answerDTOS,HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
