@@ -91,17 +91,23 @@ class AnswerStatistics extends Component {
                                                         backgroundColor: [
                                                             '#FF6384',
                                                             '#36A2EB',
+                                                            '#EEE8AA',
+                                                            '#00FF00',
+                                                            '#C0C0C0'
                                                         ],
                                                         hoverBackgroundColor: [
                                                             '#FF6384',
                                                             '#36A2EB',
+                                                            '#EEE8AA',
+                                                            '#00FF00',
+                                                            '#C0C0C0'
                                                         ],
                                                     }],
                                             }
                                             return (
                                                 <CardBody>
                                                     <FormGroup row>
-                                                        <h4>{data.question}</h4><br />
+                                                        <h4 dangerouslySetInnerHTML={{ __html: data.question }} />
                                                     </FormGroup>
                                                     <FormGroup row style={{ width: "100%" }}>
                                                         {
@@ -115,15 +121,24 @@ class AnswerStatistics extends Component {
                                                                     </div>
                                                                 )
                                                         }
+
                                                         {
-                                                            others && others.map((other, index) => {
-                                                                return (
-                                                                    <div style={{marginLeft: "2%"}}>
-                                                                        <h6 style={{textDecoration: "underline"}}>Những câu trả lời khác: </h6><br />
-                                                                        <label>{'- ' + other}</label> <br />
-                                                                    </div>
+                                                            others.length != 0 ? (
+                                                                <div style={{ marginLeft: "2%" }}>
+                                                                    <h6 style={{ textDecoration: "underline" }}>Những câu trả lời khác: </h6><br />
+                                                                    {
+                                                                        others && others.map((other, index) => {
+                                                                            return (
+                                                                                <div>
+                                                                                    <label>{'- ' + other}</label> <br />
+                                                                                </div>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </div>
+                                                            ) : (
+                                                                    <div></div>
                                                                 )
-                                                            })
                                                         }
                                                     </FormGroup>
                                                     <hr />

@@ -122,7 +122,7 @@ class Create_Report extends Component {
         }
         timeStartShow = formatTimeStartShow[0] + "/" + formatTimeStartShow[1] + "/" + formatTimeStartShow[2];
         let timeEndShow = "";
-        if (mm + parseInt(needParam) > 12) {
+        if (mm + parseInt(needParam[0]) > 12) {
             if ((mm + parseInt(needParam[0]) - 12) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
                 timeEndShow = 29 + "/" + (mm + parseInt(needParam[0]) - 12) + "/" + (yyyy + 1);
             } else if ((mm + parseInt(needParam[0]) - 12) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {

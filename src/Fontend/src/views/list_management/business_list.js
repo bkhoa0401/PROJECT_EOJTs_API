@@ -93,8 +93,8 @@ class business_list extends Component {
                                                     <tr>
                                                         <th style={{ textAlign: "center" }}>STT</th>
                                                         <th style={{ textAlign: "center" }}>Tên doanh nghiệp</th>
-                                                        <th style={{ textAlign: "center" }}>Tên tiếng Anh</th>
-                                                        {/* <th style={{ textAlign: "center" }}>Địa chỉ</th> */}
+                                                        {/* <th style={{ textAlign: "center" }}>Tên tiếng Anh</th> */}
+                                                        <th style={{ textAlign: "center" }}>Địa chỉ</th>
                                                         <th style={{ textAlign: "center" }}>Website</th>
                                                         <th style={{ textAlign: "center" }}>Liên hệ</th>
                                                         <th style={{ textAlign: "center" }}></th>
@@ -106,8 +106,8 @@ class business_list extends Component {
                                                             <tr>
                                                                 <td style={{ textAlign: "center" }}>{index + 1}</td>
                                                                 <td style={{ textAlign: "center" }}>{business.business_name}</td>
-                                                                <td style={{ textAlign: "center" }}>{business.business_eng_name}</td>
-                                                                {/* <td style={{ textAlign: "center" }}>{business.business_address}</td> */}
+                                                                {/* <td style={{ textAlign: "center" }}>{business.business_eng_name}</td> */}
+                                                                <td style={{ textAlign: "center" }}>{business.business_address}</td>
                                                                 <td style={{ textAlign: "center" }}>{business.business_website}</td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     Email: {business.email}<br />

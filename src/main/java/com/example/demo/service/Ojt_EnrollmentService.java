@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.config.ActionEnum;
 import com.example.demo.config.StudentStatus;
 import com.example.demo.entity.*;
+import com.example.demo.repository.IInvitationRepository;
 import com.example.demo.repository.IOjt_EnrollmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -125,6 +126,12 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
         return null;
     }
 
+    @Autowired
+    IInvitationService iInvitationService;
+
+    @Autowired
+    IInvitationRepository iInvitationRepository;
+
     @Override
     public void updateBusinessForStudent(String emailBusiness, String emailStudent) {
         Student student = iStudentService.getStudentByEmail(emailStudent);
@@ -142,6 +149,13 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
         ojt_enrollment.setBusiness(business);
 
         iStudentService.saveStudent(student);
+        ojtEnrollmentRepository.save(ojt_enrollment);
+
+        Invitation invitation = iInvitationService.getInvitationByBusinessEmailAndStudentEmail(emailBusiness, emailStudent);
+        if (invitation != null) {
+            invitation.setState(true);
+            iInvitationRepository.save(invitation);
+        }
 
         if(ojtEnrollmentRepository.save(ojt_enrollment) != null) {
             HistoryDetail historyDetail = new HistoryDetail(Ojt_Enrollment.class.getName(), "business_email", String.valueOf(ojt_enrollment.getId()), emailBusiness);
@@ -155,8 +169,6 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
             historyDetail.setHistoryAction(action);
             historyActionService.createHistory(action);
         }
-
-
     }
 
     //set business for student by student id and return result

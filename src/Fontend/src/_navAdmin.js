@@ -75,15 +75,20 @@ export default {
       url: '/Report/Report',
       icon: 'icon-star',
     },
-    {
-      name: 'Phản hồi',
-      url: '/Feedback/Feedback',
-      icon: 'icon-star',
-    },
+    // {
+    //   name: 'Phản hồi',
+    //   url: '/Feedback/Feedback',
+    //   icon: 'icon-star',
+    // },
     {
       name: 'Thống kê khảo sát',
       url: '/answer-statistics',
       icon: 'icon-star',
     },
+    {
+      name: 'Quản lí câu hỏi',
+      url: '/question',
+      icon: 'icon-star',
+    }
   ]
 };

@@ -650,7 +650,8 @@ public class AdminService implements IAdminService {
         List<String> emailList = new ArrayList<>();
         List<Integer> tasksOfStudent = new ArrayList<>();
 
-        Semester semester = semesterService.getSemesterByStartDateAndEndDate();
+       // Semester semester = semesterService.getSemesterByStartDateAndEndDate();
+        Semester semester = semesterService.getSemesterCurrent();
 
         Students_TasksDTO students_tasksDTO = new Students_TasksDTO();
 
@@ -677,7 +678,8 @@ public class AdminService implements IAdminService {
         List<String> emailList = new ArrayList<>();
         List<Double> percentTasksDoneOfStudent = new ArrayList<>();
 
-        Semester semester = semesterService.getSemesterByStartDateAndEndDate();
+        //Semester semester = semesterService.getSemesterByStartDateAndEndDate();
+        Semester semester = semesterService.getSemesterCurrent();
         Students_TasksDoneDTO students_tasksDoneDTO = new Students_TasksDoneDTO();
 
         List<Student> studentList = iStudentService.getAllStudentOfASupervisor(email);

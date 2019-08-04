@@ -20,7 +20,7 @@ import SimpleReactValidator from '../../validator/simple-react-validator';
 import firebase from 'firebase/app';
 import 'firebase/storage';
 import { async } from 'q';
-import { initializeApp } from '../Invitation/push-notification';
+// import { initializeApp } from '../Invitation/push-notification';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
