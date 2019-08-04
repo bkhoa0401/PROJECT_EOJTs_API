@@ -63,13 +63,15 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
 
     @Override
     public void updateStudentToBusinessPassOption1OrOption2(List<Student> studentList) {
+        Semester semester = semesterService.getSemesterCurrent();
+
         for (int i = 0; i < studentList.size(); i++) {
             Student student = studentList.get(i);
             if (student.isAcceptedOption1() == true) {
                 Business businessOption1 = businessService.findBusinessByName(student.getOption1());
 
-                Ojt_Enrollment ojt_enrollment = getOjt_EnrollmentByStudentEmail(student.getEmail());
-
+               // Ojt_Enrollment ojt_enrollment = getOjt_EnrollmentByStudentEmail(student.getEmail());
+                Ojt_Enrollment ojt_enrollment = getOjtEnrollmentByStudentEmailAndSemesterId(student.getEmail(), semester.getId());
                 ojt_enrollment.setBusiness(businessOption1);
 
                 ojtEnrollmentRepository.save(ojt_enrollment);

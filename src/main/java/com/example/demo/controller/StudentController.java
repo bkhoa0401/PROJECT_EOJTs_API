@@ -112,7 +112,6 @@ public class StudentController {
             specialized.setId(specializedID);
             studentList.get(i).setSpecialized(specialized);
 
-
             usersList.add(users);
 
             Semester semester = semesterService.getSemesterByName(studentList.get(i).getSemesterName());
@@ -214,12 +213,6 @@ public class StudentController {
 
             for (int i = 0; i < studentList.size(); i++) {
                 Student student = studentList.get(i);
-//                if (student.getOption1() == null) {
-//                    studentList.get(i).setOption1("N/A");
-//                }
-//                if (student.getOption2() == null) {
-//                    studentList.get(i).setOption2("N/A");
-//                }
                 Student_OjtenrollmentDTO student_ojtenrollmentDTO = new Student_OjtenrollmentDTO();
                 student_ojtenrollmentDTO.setStudent(student);
                 Ojt_Enrollment ojt_enrollment =
@@ -231,8 +224,6 @@ public class StudentController {
                         if (student.isAcceptedOption1() == false && student.isAcceptedOption2() == false) {
                             student_ojtenrollmentDTO.setBusinessEnroll("Rớt");
                         }
-//                    }else{
-//                        student_ojtenrollmentDTO.setBusinessEnroll("N/A");
                     }
                 }
                 student_ojtenrollmentDTOList.add(student_ojtenrollmentDTO);
@@ -282,7 +273,7 @@ public class StudentController {
         return new ResponseEntity<>(student_ojtenrollmentDTOWithNoCompanyList, HttpStatus.OK);
     }
 
-    //get list skill by specialzed
+    //get listspecialzed
     @GetMapping("/specialized")
     public ResponseEntity<List<Specialized>> getSpecializedList() {
         List<Specialized> specializedList = specializedService.getAllSpecialized();

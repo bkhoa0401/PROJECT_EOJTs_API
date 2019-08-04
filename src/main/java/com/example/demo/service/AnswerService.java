@@ -4,6 +4,7 @@ import com.example.demo.entity.Answer;
 import com.example.demo.repository.IAnswerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,6 +13,9 @@ public class AnswerService implements IAnswerService {
 
     @Autowired
     IAnswerRepository iAnswerRepository;
+
+    @Autowired
+    IStudent_AnswerService iStudent_answerService;
 
     @Override
     public void saveAnswer(Answer answer) {
@@ -31,5 +35,15 @@ public class AnswerService implements IAnswerService {
             return answer;
         }
         return null;
+    }
+
+    @Transactional
+    @Override
+    public void deleteAnswerById(int id) {
+        Answer answer = findAnswerById(id);
+        if (answer != null) {
+            iStudent_answerService.deleteStudentAnswerByAnswerId(id);
+            iAnswerRepository.deleteById(id);
+        }
     }
 }

@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 
@@ -30,7 +31,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
-@CacheConfig(cacheNames = "specialized")
 public class SpecializedService implements ISpecializedService {
 
     @Autowired
@@ -42,6 +42,8 @@ public class SpecializedService implements ISpecializedService {
     @Autowired
     private EntityManager entityManager;
 
+    @Autowired
+    private RedisTemplate<Object, Object> template;
 
     @Override
     public int fullTextSearch(String specializedName) {
@@ -77,14 +79,16 @@ public class SpecializedService implements ISpecializedService {
     List<Specialized> specializedListAll = new ArrayList<>();
 
 
-    @Cacheable(key = "'all'")
     public List<Specialized> getAllSpecialized() {
-        //List<Specialized> list;
-        specializedListAll = ISpecializedRepository.findAll();
-        if (specializedListAll != null) {
-            return specializedListAll;
+        ValueOperations values = template.opsForValue();
+        List<Specialized> specializeds = (List<Specialized>) values.get("specialized");
+        if (specializeds == null) {
+            specializeds = ISpecializedRepository.findAll();
+            values.set("specialized", specializeds);
+            return specializeds;
+        } else {
+            return specializeds;
         }
-        return null;
     }
 
     @Cacheable(key = "{#currentPage,#rowsPerPage}")
@@ -122,7 +126,7 @@ public class SpecializedService implements ISpecializedService {
 //        }
 //        return listPaging;
 
-        int pageNumber = (int) Math.ceil((double) specializedListAll.size() / (double) rowsPerPage);
+        int pageNumber = (int) Math.ceil((double) specializedListAll.size() / (double) rowsPerPage); // ra tong so page
 
         int nextPageNumber = (currentPage + 1) * rowsPerPage;
 
@@ -159,18 +163,19 @@ public class SpecializedService implements ISpecializedService {
         }
     }
 
-    @CachePut(key = "'all'")
-    @CacheEvict(allEntries = true)
     public List<Specialized> updateSpecialized(Specialized specialized) {
-        Specialized specializedFound = ISpecializedRepository.findSpecializedById(specialized.getId());
-        if (specializedFound != null) {
-            ISpecializedRepository.save(specialized); //save db
-
-            if (this.specializedListAll.size() == 0) {
-                this.specializedListAll = ISpecializedRepository.findAll();
+        ValueOperations values = template.opsForValue();
+        List<Specialized> specializeds = (List<Specialized>) values.get("specialized");
+        if (specializeds != null) {
+            for (int i = 0; i < specializeds.size(); i++) {
+                Specialized specializedIsExisted=specializeds.get(i);
+                if(specialized.getId()==specializedIsExisted.getId()){
+                    ISpecializedRepository.save(specialized); // update db
+                    specializeds.set(i,specialized);
+                    values.set("specialized",specializeds); //update redis
+                }
             }
-            this.specializedListAll.set(specialized.getId() - 1, specialized); // save redis
-            return specializedListAll;
+            return specializeds;
         }
         return null;
     }

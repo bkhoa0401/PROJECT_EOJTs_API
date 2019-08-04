@@ -8,4 +8,5 @@ public interface IAnswerService {
     void saveAnswer(Answer answer);
     List<Answer> findAnswerByOtherIsTrueAndQuestionId(int id);
     Answer findAnswerById(int id);
+    void deleteAnswerById(int id);
 }

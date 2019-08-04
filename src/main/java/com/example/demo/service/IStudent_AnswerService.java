@@ -15,4 +15,5 @@ public interface IStudent_AnswerService {
     int countStudentsAnswerByAnswerId(int id);
     int countStudent_AnswersGroupByStudentEmail();
     List<Student_Answer> findStudentAnswersByEmail(String email);
+    void deleteStudentAnswerByAnswerId(int id);
 }

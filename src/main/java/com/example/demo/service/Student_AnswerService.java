@@ -87,4 +87,9 @@ public class Student_AnswerService implements IStudent_AnswerService {
         }
         return null;
     }
+
+    @Override
+    public void deleteStudentAnswerByAnswerId(int id) {
+        iStudent_answerRepository.deleteByAnswerId(id);
+    }
 }
