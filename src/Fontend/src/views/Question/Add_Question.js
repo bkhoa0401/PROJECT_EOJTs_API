@@ -244,7 +244,7 @@ class Add_Question extends Component {
                                                         <tr>
                                                             <td>{index + 1}.</td>
                                                             <td style={{ width: "900px" }}>
-                                                                <Input value={answer} onChange={e => { this.handleInputAnswer(e, index) }} type="textarea" name="answer" style={{ width: "850px", marginLeft: "2%" }} rows="5"></Input>
+                                                                <Input value={answer} onChange={e => { this.handleInputAnswer(e, index) }} type="textarea" name="answer" style={{ width: "850px", marginLeft: "2%" }} rows="3" placeholder="Nhập đáp án cho hỏi ..."></Input>
                                                             </td>
                                                             <td>
                                                                 <Button id={'btnDelete' + index} color="danger" style={{ marginLeft: "2%" }} onClick={() => this.deleteAnswer(index)}>Xóa</Button>
