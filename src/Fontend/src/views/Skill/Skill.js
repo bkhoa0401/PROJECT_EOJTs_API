@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
-import { Button } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import Toastify from '../../views/Toastify/Toastify';
 
 
 class Skill extends Component {
@@ -50,7 +49,7 @@ class Skill extends Component {
     handleUpdateStatus = async (id, status) => {
         const result = await ApiServices.Put(`/skill/status?id=${id}&status=${status}`);
         const skills = await ApiServices.Get('/skill');
-        if (skills != null) {
+        if (skills !== null) {
             this.setState({
                 skills,
             });
@@ -65,7 +64,7 @@ class Skill extends Component {
 
     async componentDidMount() {
         const skills = await ApiServices.Get('/skill');
-        if (skills != null) {
+        if (skills !== null) {
             this.setState({
                 skills,
                 loading: false
@@ -111,14 +110,14 @@ class Skill extends Component {
                                                                 <td style={{ textAlign: "center" }}>{skill.name}</td>
                                                                 <td style={{ textAlign: "center" }}>{skill.specialized.name}</td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    {skill.status.toString() == 'true' ? (
+                                                                    {skill.status.toString() === 'true' ? (
                                                                         <Badge color="success">KÍCH HOẠT</Badge>
                                                                     ) : (
                                                                             <Badge color="danger">VÔ HIỆU HOÁ</Badge>
                                                                         )}
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    {skill.status.toString() == 'true' ? (
+                                                                    {skill.status.toString() === 'true' ? (
                                                                         <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(skill, false)} type="submit">Vô hiệu</Button>
                                                                     ) : (
                                                                             <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(skill, true)} type="submit">Kích hoạt</Button>

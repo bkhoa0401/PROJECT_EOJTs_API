@@ -27,7 +27,7 @@ class Students extends Component {
 
     async componentDidMount() {
         const students = await ApiServices.Get('/student/getAllStudent');
-        if (students != null) {
+        if (students !== null) {
             this.setState({
                 students,
             });
@@ -65,7 +65,7 @@ class Students extends Component {
         const { students, searchValue } = this.state;
         let filteredListStudents;
 
-        if (students != null) {
+        if (students !== null) {
             filteredListStudents = students.filter(
                 (student) => {
                     if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {

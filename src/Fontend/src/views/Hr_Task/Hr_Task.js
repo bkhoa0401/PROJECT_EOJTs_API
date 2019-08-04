@@ -4,13 +4,13 @@ import {
     Button,
     Card,
     CardBody,
-    CardFooter,
+    // CardFooter,
     CardHeader,
     Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
+    // Form,
+    // FormGroup,
+    // Input,
+    // Label,
     Row,
     Pagination,
     Table
@@ -18,8 +18,8 @@ import {
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
 import Toastify from '../../views/Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
+// import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
+// import PaginationComponent from '../Paginations/pagination';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
@@ -38,7 +38,7 @@ class Hr_Task extends Component {
     async componentDidMount() {
         const tasks = await ApiServices.Get('/supervisor/tasks');
 
-        if (tasks != null) {
+        if (tasks !== null) {
             this.setState({
                 tasks: tasks,
                 loading: false
@@ -56,9 +56,9 @@ class Hr_Task extends Component {
         })
         const result = await ApiServices.Delete(`/supervisor/task?id=${deletedId}`);
 
-        if (result.status == 200) {
+        if (result.status === 200) {
             const tasks = await ApiServices.Get('/supervisor/tasks');
-            if (tasks != null) {
+            if (tasks !== null) {
                 this.setState({
                     tasks: tasks
                 });
@@ -133,7 +133,7 @@ class Hr_Task extends Component {
                                                 <tr>
                                                     <th style={{ textAlign: "center" }}>STT</th>
                                                     <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                                                    {/* <th style={{ textAlign: "center" }}>Độ ưu tiên</th> */}
+                                                    {/* <th style={{ textAlign: "center" }}>Ưu tiên</th> */}
                                                     {/* <th style={{ textAlign: "center" }}>Hạn cuối</th>
                                             <th style={{ textAlign: "center" }}>Mức độ</th> */}
                                                     <th style={{ textAlign: "center" }}>Người giao</th>

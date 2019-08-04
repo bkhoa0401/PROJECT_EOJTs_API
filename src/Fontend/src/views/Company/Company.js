@@ -1,29 +1,15 @@
-import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
-import SimpleReactValidator from '../../validator/simple-react-validator';
-import firebase from 'firebase/app';
-import 'firebase/storage';
-import { async } from 'q';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 // import { initializeApp } from '../Invitation/push-notification';
 import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import firebase from 'firebase/app';
+import 'firebase/storage';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Input, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../../views/Toastify/Toastify';
 
 const storage = firebase.storage();
 
@@ -49,7 +35,7 @@ class Company extends Component {
     async componentDidMount() {
         const business = await ApiServices.Get("/business/getBusiness");
 
-        if (business != null) {
+        if (business !== null) {
             this.setState({
                 loading: false,
                 logo: business.logo,
@@ -101,7 +87,7 @@ class Company extends Component {
     uploadImageToFireBase = async () => {
         let { image } = this.state;
 
-        if (image != null) {
+        if (image !== null) {
             const uploadTask = await storage.ref(`images/${image.name}`).put(image);
             await storage.ref('images').child(image.name).getDownloadURL().then(url => {
                 this.setState({
@@ -143,7 +129,7 @@ class Company extends Component {
 
             const result = await ApiServices.Put('/business/updateBusiness', company);
 
-            if (result.status == 200) {
+            if (result.status === 200) {
                 Toastify.actionSuccess('Cập nhật thông tin thành công');
                 this.props.history.push(`/Business_Detail/${email}`);
             } else {

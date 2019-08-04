@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
-import { Label, FormGroup, Input, Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
-import { Button } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import moment from 'moment';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardHeader, Col, Input, Pagination, Row, Table } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
+import Toastify from '../../views/Toastify/Toastify';
 import PaginationComponent from '../Paginations/pagination';
-import { async } from 'q';
 
 class Specialized extends Component {
 
@@ -57,7 +53,7 @@ class Specialized extends Component {
     handleUpdateStatus = async (id, status) => {
         const result = await ApiServices.Put(`/specialized/status?id=${id}&status=${status}`);
         // const specializeds = await ApiServices.Get('/specialized');
-        // if (specializeds != null) {
+        // if (specializeds !== null) {
         //     this.setState({
         //         specializeds,
         //     });
@@ -71,7 +67,7 @@ class Specialized extends Component {
 
         const { currentPage, rowsPerPage } = this.state;
         const specializeds = await ApiServices.Get(`/specialized/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
-        if (specializeds != null) {
+        if (specializeds !== null) {
             this.setState({
                 specializeds: specializeds.listData,
                 currentPage,
@@ -85,7 +81,7 @@ class Specialized extends Component {
         const specializeds = await ApiServices.Get(`/specialized/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
         // const specializeds = await ApiServices.Get('/specialized');
-        if (specializeds != null) {
+        if (specializeds !== null) {
             // const { currentPage, rowsPerPage } = this.state;
             // const pageNumber = getPaginationPageNumber(specializeds.length, rowsPerPage);
             // const specializedsPagination = specializeds.slice(getPaginationCurrentPageNumber(currentPage, rowsPerPage), getPaginationNextPageNumber(currentPage, rowsPerPage));
@@ -103,7 +99,7 @@ class Specialized extends Component {
         const specializeds = await ApiServices.Get(`/specialized/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
         // const { specializeds, rowsPerPage } = this.state;
-        if (specializeds != null) {
+        if (specializeds !== null) {
             // const pageNumber = getPaginationPageNumber(specializeds.length, rowsPerPage);
             // const specializedsPagination = specializeds.slice(getPaginationCurrentPageNumber(currentPage, rowsPerPage), getPaginationNextPageNumber(currentPage, rowsPerPage));
             this.setState({
@@ -120,7 +116,7 @@ class Specialized extends Component {
         const specializeds = await ApiServices.Get(`/specialized/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
         // const { specializeds, rowsPerPage } = this.state;
-        if (specializeds != null) {
+        if (specializeds !== null) {
             // const pageNumber = getPaginationPageNumber(specializeds.length, rowsPerPage);
             // const specializedsPagination = specializeds.slice(getPaginationCurrentPageNumber(currentPage, rowsPerPage), getPaginationNextPageNumber(currentPage, rowsPerPage));
             this.setState({
@@ -133,7 +129,7 @@ class Specialized extends Component {
         // console.log('currentPage', currentPage);
 
         // const { specializeds, rowsPerPage } = this.state;
-        // if (specializeds != null) {
+        // if (specializeds !== null) {
         //     const pageNumber = getPaginationPageNumber(specializeds.length, rowsPerPage);
         //     const specializedsPagination = specializeds.slice(getPaginationCurrentPageNumber(currentPage, rowsPerPage), getPaginationNextPageNumber(currentPage, rowsPerPage));
         //     this.setState({
@@ -149,7 +145,7 @@ class Specialized extends Component {
         const specializeds = await ApiServices.Get(`/specialized/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
         // const { specializeds, rowsPerPage } = this.state;
-        if (specializeds != null) {
+        if (specializeds !== null) {
             // const pageNumber = getPaginationPageNumber(specializeds.length, rowsPerPage);
             // const specializedsPagination = specializeds.slice(getPaginationCurrentPageNumber(currentPage, rowsPerPage), getPaginationNextPageNumber(currentPage, rowsPerPage));
             this.setState({
@@ -162,7 +158,7 @@ class Specialized extends Component {
         // console.log('currentPage', currentPage);
 
         // const { specializeds, rowsPerPage } = this.state;
-        // if (specializeds != null) {
+        // if (specializeds !== null) {
         //     const pageNumber = getPaginationPageNumber(specializeds.length, rowsPerPage);
         //     const specializedsPagination = specializeds.slice(getPaginationCurrentPageNumber(currentPage, rowsPerPage), getPaginationNextPageNumber(currentPage, rowsPerPage));
         //     this.setState({
@@ -183,7 +179,7 @@ class Specialized extends Component {
         const specializeds = await ApiServices.Get(`/specialized/pagination?currentPage=0&rowsPerPage=${rowsPerPage}`);
 
         // const { specializeds, rowsPerPage } = this.state;
-        if (specializeds != null) {
+        if (specializeds !== null) {
             // const pageNumber = getPaginationPageNumber(specializeds.length, rowsPerPage);
             // const specializedsPagination = specializeds.slice(getPaginationCurrentPageNumber(currentPage, rowsPerPage), getPaginationNextPageNumber(currentPage, rowsPerPage));
             this.setState({
@@ -195,7 +191,7 @@ class Specialized extends Component {
         }
 
         // const { specializeds, rowsPerPage } = this.state;
-        // if (specializeds != null) {
+        // if (specializeds !== null) {
         //     const pageNumber = getPaginationPageNumber(specializeds.length, rowsPerPage);
         //     const specializedsPagination = specializeds.slice(getPaginationCurrentPageNumber(0, rowsPerPage), getPaginationNextPageNumber(0, rowsPerPage));
         //     this.setState({
@@ -246,14 +242,14 @@ class Specialized extends Component {
                                                                 <td style={{ textAlign: "center" }}>{i + 1}</td>
                                                                 <td style={{ textAlign: "center" }}>{specialized.name}</td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    {specialized.status.toString() == 'true' ? (
+                                                                    {specialized.status.toString() === 'true' ? (
                                                                         <Badge color="success">KÍCH HOẠT</Badge>
                                                                     ) : (
                                                                             <Badge color="danger">VÔ HIỆU HOÁ</Badge>
                                                                         )}
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    {specialized.status.toString() == 'true' ? (
+                                                                    {specialized.status.toString() === 'true' ? (
                                                                         <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(specialized, false)} type="submit">Vô hiệu</Button>
                                                                     ) : (
                                                                             <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(specialized, true)} type="submit">Kích hoạt</Button>
@@ -271,7 +267,7 @@ class Specialized extends Component {
                                             <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
                                             <h6 style={{marginLeft: "45%", width: "15%", marginTop: "7px"}}>Số dòng trên trang: </h6>
                                             <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{width: "7%"}}>
-                                                <option value={1} selected={rowsPerPage == 1}>1</option>
+                                                <option value={1} selected={rowsPerPage === 1}>1</option>
                                                 <option value={2}>2</option>
                                                 <option value={3}>3</option>
                                                 <option value={100}>100</option>

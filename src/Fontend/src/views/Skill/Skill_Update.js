@@ -1,35 +1,11 @@
 import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Collapse,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Fade,
-    Form,
-    FormGroup,
-    FormText,
-    FormFeedback,
-    Input,
-    InputGroup,
-    InputGroupAddon,
-    InputGroupButtonDropdown,
-    InputGroupText,
-    Label,
-    Row,
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../../views/Toastify/Toastify';
 
 class Skill_Update extends Component {
 
@@ -49,7 +25,7 @@ class Skill_Update extends Component {
         const updatedId = window.location.href.split("/").pop();
         const skill = await ApiServices.Get(`/skill/id?id=${updatedId}`);
         const specializeds = await ApiServices.Get('/specialized');
-        if (specializeds != null) {
+        if (specializeds !== null) {
             this.setState({
                 id: skill.id,
                 name: skill.name,
@@ -123,7 +99,7 @@ class Skill_Update extends Component {
         }
 
         const result = await ApiServices.Put('/skill', skill);
-        if (result.status == 200) {
+        if (result.status === 200) {
             Toastify.actionSuccess("Cập nhật kỹ năng thành công!");
         } else {
             Toastify.actionFail("Cập nhật kỹ năng thất bại!");
@@ -163,7 +139,7 @@ class Skill_Update extends Component {
                                             <Input onChange={this.handleInput} type="select" name="specialized">
                                                 {specializeds && specializeds.map((specialized, i) => {
                                                     return (
-                                                        <option key={i} value={i} selected={specialized.id == specializedItem.id}>{specialized.name}</option>
+                                                        <option key={i} value={i} selected={specialized.id === specializedItem.id}>{specialized.name}</option>
                                                     )
                                                 })}
                                             </Input>

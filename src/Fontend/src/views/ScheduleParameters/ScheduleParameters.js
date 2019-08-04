@@ -1,22 +1,9 @@
 import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../../views/Toastify/Toastify';
 
 
 class ScheduleParameters extends Component {
@@ -38,18 +25,18 @@ class ScheduleParameters extends Component {
 
     async componentDidMount() {
         var month = new Date().getMonth() + 1; //Current Month.
-        var year = new Date(). getFullYear(); //Current Year.
+        var year = new Date().getFullYear(); //Current Year.
         // console.log(month);
         let semesterName = "";
-        if ( parseInt(month) == 1 || parseInt(month) == 2 || parseInt(month) == 3 || parseInt(month) == 4 ) {
+        if ( parseInt(month) === 1 || parseInt(month) === 2 || parseInt(month) === 3 || parseInt(month) === 4 ) {
             semesterName = "SPRING" + year;
-        } else if ( parseInt(month) == 5 || parseInt(month) == 6 || parseInt(month) == 7 || parseInt(month) == 8 ) {
+        } else if ( parseInt(month) === 5 || parseInt(month) === 6 || parseInt(month) === 7 || parseInt(month) === 8 ) {
             semesterName = "SUMMER" + year;
-        } else if ( parseInt(month) == 9 || parseInt(month) == 10 || parseInt(month) == 11 || parseInt(month) == 12 ) {
+        } else if ( parseInt(month) === 9 || parseInt(month) === 10 || parseInt(month) === 11 || parseInt(month) === 12 ) {
             semesterName = "FALL" + year;
         }
         const isExisted = await ApiServices.Get(`/admin/checkSemester?semesterName=${semesterName}`);
-        if (isExisted == false ) {
+        if (isExisted === false ) {
             this.setState({
                 virgin: true,
                 name: semesterName,
@@ -73,12 +60,12 @@ class ScheduleParameters extends Component {
     handleInput = async (event) => {
         const { name, value } = event.target;
         let virgin = this.state.virgin;
-        if ( name == 'start_choose_option_time' && virgin == true ) {
+        if ( name === 'start_choose_option_time' && virgin === true ) {
             await this.setState({
                 [name]: value,
                 virgin: !virgin,
             })
-        } else if (virgin == true) {
+        } else if (virgin === true) {
             await this.setState({
                 [name]: value,
                 virgin: !virgin,
@@ -122,7 +109,7 @@ class ScheduleParameters extends Component {
             console.log("ScheduleParameters", ScheduleParameters);
 
             const result = await ApiServices.Post('/admin/saveSemester', ScheduleParameters);
-            if (result.status == 200) {
+            if (result.status === 200) {
                 Toastify.actionSuccess('Tạo các tham số thành công');
             } else {
                 Toastify.actionFail('Tạo các tham số thất bại');

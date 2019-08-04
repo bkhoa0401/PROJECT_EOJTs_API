@@ -1,22 +1,9 @@
 import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
-import Toastify from '../Toastify/Toastify';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Input, Row } from 'reactstrap';
 import SimpleReactValidator from 'simple-react-validator';
+import ApiServices from '../../service/api-service';
+import Toastify from '../Toastify/Toastify';
 
 
 class Company extends Component {
@@ -77,7 +64,7 @@ class Company extends Component {
             console.log("ScheduleParameters", ScheduleParameters);
 
             const result = await ApiServices.Post('/scheduleparameters/', ScheduleParameters);
-            if (result != null) {
+            if (result !== null) {
                 Toastify.actionSuccess('Tạo các tham số thành công');
             } else {
                 Toastify.actionFail('Tạo các tham số thất bại');

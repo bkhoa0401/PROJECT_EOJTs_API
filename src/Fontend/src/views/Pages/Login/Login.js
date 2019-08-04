@@ -1,12 +1,10 @@
+import decode from 'jwt-decode';
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import AuthService from '../../../service/auth-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../Toastify/Toastify';
-import { async } from 'q';
-import decode from 'jwt-decode';
 import { askForPermissioToReceiveNotifications } from '../../../service/push-notification';
+import Toastify from '../../Toastify/Toastify';
 
 class Login extends Component {
 

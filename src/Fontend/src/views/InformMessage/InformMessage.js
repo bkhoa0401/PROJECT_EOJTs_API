@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
-import { ButtonGroup, Input, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
 import decode from 'jwt-decode';
-import Toastify from '../Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardHeader, Col, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Pagination, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 
@@ -23,16 +20,16 @@ class InformMessage extends Component {
     async componentDidMount() {
         const token = localStorage.getItem('id_token');
         let informs = null;
-        if (token != null) {
+        if (token !== null) {
             const decoded = decode(token);
-            if (decoded.role == "ROLE_ADMIN") {
+            if (decoded.role === "ROLE_ADMIN") {
                 informs = await ApiServices.Get('/admin/events');
             }
-            if (decoded.role == "ROLE_HR") {
+            if (decoded.role === "ROLE_HR") {
                 informs = await ApiServices.Get('/business/events');
             }
         }
-        if (informs != null) {
+        if (informs !== null) {
             this.setState({
                 loading: false,
                 informs,
@@ -55,7 +52,7 @@ class InformMessage extends Component {
     render() {
         const { loading, searchValue, informs } = this.state;
         let filteredListInforms;
-        if (informs != null) {
+        if (informs !== null) {
             filteredListInforms = informs.filter(
                 (inform) => {
                     if (inform.title.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {

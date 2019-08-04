@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table } from 'reactstrap';
-import { Button, ModalFooter, FormGroup, Modal, ModalHeader, ModalBody } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import { async } from 'q';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardHeader, Col, FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Row, Table } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import Toastify from '../Toastify/Toastify';
 
 class Ojt_Registration extends Component {
 
@@ -35,11 +31,11 @@ class Ojt_Registration extends Component {
         const business = await ApiServices.Get('/business/getBusiness');
         const invitations = await ApiServices.Get('/student/getListStudentIsInvited');
         let listInvitation = [];
-        if (students != null) {
+        if (students !== null) {
             for (let index = 0; index < students.length; index++) {
                 listInvitation.push(false);
                 for (let index1 = 0; index1 < invitations.length; index1++) {
-                    if (invitations[index1].student.email == students[index].email) {
+                    if (invitations[index1].student.email === students[index].email) {
                         listInvitation.splice(index, 1);
                         listInvitation.push(true);
                         break;
@@ -94,7 +90,7 @@ class Ojt_Registration extends Component {
     handleIsAcceptedOption = async (student, numberOfOption, statusOfOption) => {
 
         var action, message;
-        if (statusOfOption == true) {
+        if (statusOfOption === true) {
             action = 'Duyệt';
             message = `Chúc mừng ${student.name}! Việc đăng kí thực tập của bạn đã được ${this.state.business_name} chấp nhận!`;
         } else {
@@ -116,14 +112,14 @@ class Ojt_Registration extends Component {
             loading: true
         })
 
-        if (numberOfOption == '1, 2') {
+        if (numberOfOption === '1, 2') {
             var numberOfOption = [];
             numberOfOption.push(1);
             numberOfOption.push(2);
         }
         const result = await ApiServices.Put(`/business/updateStatusOfStudent?numberOfOption=${numberOfOption}&statusOfOption=${statusOfOption}&emailOfStudent=${student.email}`);
 
-        if (result.status == 200) {
+        if (result.status === 200) {
             Toastify.actionSuccess(`${action} thành công!`);
             const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
             this.setState({
@@ -139,7 +135,7 @@ class Ojt_Registration extends Component {
 
         const students = await ApiServices.Get('/student/getListStudentByOptionAndStatusOption');
         const business = await ApiServices.Get('/business/getBusiness');
-        if (students != null) {
+        if (students !== null) {
             this.setState({
                 students,
                 business_eng_name: business.business_eng_name
@@ -150,7 +146,7 @@ class Ojt_Registration extends Component {
     toggleModalDetail = async (studentDetail) => {
         let invitationDetail = null;
         let invitation = null;
-        if (this.state.modal == false) {
+        if (this.state.modal === false) {
             invitation = await ApiServices.Get(`/business/getInvitationOfStudent?emailStudent=${studentDetail.email}`);
             invitationDetail = invitation.description;
             this.setState({
@@ -170,7 +166,7 @@ class Ojt_Registration extends Component {
 
         let filteredListStudents;
 
-        if (students != null) {
+        if (students !== null) {
             filteredListStudents = students.filter(
                 (student) => {
                     if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
@@ -217,9 +213,9 @@ class Ojt_Registration extends Component {
                                                         let email = student.email;
                                                         let numberOfOption = 'N/A';
 
-                                                        if (student.option1 == business_eng_name && student.option2 != business_eng_name) {
+                                                        if (student.option1 === business_eng_name && student.option2 !== business_eng_name) {
                                                             numberOfOption = "1";
-                                                        } else if (student.option2 == business_eng_name && student.option1 != business_eng_name) {
+                                                        } else if (student.option2 === business_eng_name && student.option1 !== business_eng_name) {
                                                             numberOfOption = "2";
                                                         } else {
                                                             numberOfOption = "1, 2";

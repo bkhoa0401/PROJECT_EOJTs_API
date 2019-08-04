@@ -102,6 +102,8 @@ public class QuestionService implements IQuestionService {
                     answer.setQuestion(question);
                 }
                 question.setAnswers(answers);
+
+                iQuestionRepository.save(question);
                 return;
             } else if (sizeAnswerOfQuestionUpdate > sizeAnswerOfQuestionIsExisted) { // them cau tra loi
                 List<Answer> answersIsAdd = getAnswerIsDeleted(question.getAnswers(), questionIsExisted.getAnswers()); //tim duoc list answer add

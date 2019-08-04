@@ -1,28 +1,11 @@
 import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-    Pagination
-} from 'reactstrap';
-
-import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import { async } from 'q';
-import SimpleReactValidator from '../../validator/simple-react-validator';
+import { Button, Card, CardBody, CardFooter, Col, Form, FormGroup, Input, Label, Pagination, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../../views/Toastify/Toastify';
+
 
 
 class Update_Job extends Component {
@@ -79,7 +62,7 @@ class Update_Job extends Component {
         const { specializedUpdate, arraySkill, arrayQuantity, choseSpecialized } = this.state;
         const specializeds = await ApiServices.Get('/specialized');
         const skills = await ApiServices.Get('/skill');
-        if (specializeds != null) {
+        if (specializeds !== null) {
             this.setState({
                 specializeds,
                 skills,
@@ -105,7 +88,7 @@ class Update_Job extends Component {
 
         for (let j = 0; j < specializedUpdate.length; j++) {
             const skills = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${specializedUpdate[j]}`);
-            if (skills != null) {
+            if (skills !== null) {
                 for (let k = 0; k < skills.length; k++) {
                     choseSpecialized.push(skills[k].id);
                 }
@@ -113,7 +96,7 @@ class Update_Job extends Component {
         }
 
         // const skillsUpdate = await ApiServices.Post('/skill/byListSpecializedId', specializedUpdate);
-        // if (skillsUpdate != null) {
+        // if (skillsUpdate !== null) {
         //     for (let k = 0; k < skillsUpdate.length; k++) {
         //         choseSpecialized.push(skillsUpdate[k].id);
         //     }
@@ -208,7 +191,7 @@ class Update_Job extends Component {
     handleSelect = async (selectSpecialized) => {
 
         var indexFound = this.state.specializedUpdate.indexOf(selectSpecialized);
-        if (indexFound != -1) {
+        if (indexFound !== -1) {
             this.state.specializedUpdate.splice(indexFound, 1);
         }
         // console.log(this.state.specializedUpdate);
@@ -306,18 +289,18 @@ class Update_Job extends Component {
         let tmpNumber = numbersForSave[index];
 
         if (name.includes('skill')) {
-            if (tmpSkill == null && tmpNumber != null) {
+            if (tmpSkill === null && tmpNumber !== null) {
                 skillsForSave.push(skills[value]);
-            } else if (tmpSkill == null && tmpNumber == null) {
+            } else if (tmpSkill === null && tmpNumber === null) {
                 numbersForSave.push("");
                 skillsForSave.push(skills[value]);
             } else {
                 skillsForSave[index] = skills[value];
             }
         } else if (name.includes('number')) {
-            if (tmpNumber == null && tmpSkill != null) {
+            if (tmpNumber === null && tmpSkill !== null) {
                 numbersForSave.push(value);
-            } else if (tmpNumber == null && tmpSkill == null) {
+            } else if (tmpNumber === null && tmpSkill === null) {
                 skillsForSave.push(tmpSkill);
                 numbersForSave.push(value);
             } else {
@@ -364,7 +347,7 @@ class Update_Job extends Component {
             })
 
             const result = await ApiServices.Post('/business/createJobPost', job_post);
-            if (result.status == 201) {
+            if (result.status === 201) {
                 Toastify.actionSuccess("Cập nhật bài đăng thành công!");
                 this.setState({
                     loading: false
@@ -475,7 +458,7 @@ class Update_Job extends Component {
                                                                 </FormGroup>
                                                             )
                                                         }
-                                                        // <option selected={specializedItem.id == i + 1} value={i}>{specialized.name}</option>
+                                                        // <option selected={specializedItem.id === i + 1} value={i}>{specialized.name}</option>
 
                                                     })}<br></br>
                                                     <span className="form-error is-visible text-danger">
@@ -505,7 +488,7 @@ class Update_Job extends Component {
                                                                                     let a = choseSpecialized.indexOf(skill.id);
                                                                                     {/* console.log(a); */ }
 
-                                                                                    if (a != -1) {
+                                                                                    if (a !== -1) {
                                                                                         {/* console.log('all', choseSpecialized);
                                                                                 console.log('skill.id', skill.id);
                                                                                 console.log('a', a);

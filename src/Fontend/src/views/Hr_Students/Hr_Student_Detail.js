@@ -1,28 +1,10 @@
-import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-    Pagination,
-    Table
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
 import firebase from 'firebase/app';
-import Toastify from '../../views/Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import decode from 'jwt-decode';
 import 'firebase/storage';
+import decode from 'jwt-decode';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, Pagination, Row, Table } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 
@@ -46,7 +28,7 @@ class Hr_Students_Detail extends Component {
 
         const token = localStorage.getItem('id_token');
         let role = '';
-        if (token != null) {
+        if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
             this.setState({
@@ -54,7 +36,7 @@ class Hr_Students_Detail extends Component {
             });
         }
 
-        if (listStudentTask != null) {
+        if (listStudentTask !== null) {
             this.setState({
                 listStudentTask: listStudentTask,
                 loading: false
@@ -77,7 +59,7 @@ class Hr_Students_Detail extends Component {
             )
         } else if (taskLevel === 'NORMAL') {
             return (
-                <Badge color="warning">Bình thường</Badge>
+                <Badge color="warning">Trung bình</Badge>
             )
         }
     }
@@ -124,10 +106,10 @@ class Hr_Students_Detail extends Component {
                                                 <tr>
                                                     <th style={{ textAlign: "center" }}>STT</th>
                                                     <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                                                    <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
+                                                    <th style={{ textAlign: "center" }}>Ưu tiên</th>
                                                     <th style={{ textAlign: "center" }}>Hạn cuối</th>
                                                     <th style={{ textAlign: "center" }}>Mức độ</th>
-                                                    <th style={{ textAlign: "center" }}>Giao bởi</th>
+                                                    <th style={{ textAlign: "center" }}>Người giao</th>
                                                     <th style={{ textAlign: "center" }}>Trạng thái</th>
                                                 </tr>
                                             </thead>

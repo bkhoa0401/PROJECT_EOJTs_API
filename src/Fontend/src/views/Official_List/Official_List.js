@@ -1,20 +1,12 @@
-import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardFooter, CardHeader, Col, Pagination, Row, Table, Input } from 'reactstrap';
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader, FormGroup, Label, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
 import orderBy from "lodash/orderBy";
-import Toastify from '../../views/Toastify/Toastify';
-import {
-  getPaginationPageNumber,
-  getPaginationNextPageNumber,
-  getPaginationCurrentPageNumber
-} from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import { async } from 'q';
+import React, { Component } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import Toastify from '../../views/Toastify/Toastify';
 
 
 const invertDirection = {
@@ -76,7 +68,7 @@ class Official_List extends Component {
       supervisors_FirstBlank = [];
       supervisors_FirstBlank.push(supervisors_FirstBlank_Obj);
     }
-    if (students != null && supervisors != null && supervisors_FirstBlank != null) {
+    if (students !== null && supervisors !== null && supervisors_FirstBlank !== null) {
       this.setState({
         students,
         supervisors,
@@ -145,7 +137,7 @@ class Official_List extends Component {
   handleConfirm = () => {
     const { listDataEdited } = this.state;
 
-    if (listDataEdited.length == 0) {
+    if (listDataEdited.length === 0) {
       Toastify.actionWarning("Không có sự thay đổi!");
     } else {
       confirmAlert({
@@ -197,16 +189,16 @@ class Official_List extends Component {
     let preListStudentEmail = this.state.preListStudentEmail;
     let isSelect = this.state.isSelect;
     for (let index = 0; index < preListStudentEmail.length; index++) {
-      if (preListStudentEmail[index].email == studentEmail) {
+      if (preListStudentEmail[index].email === studentEmail) {
         isSelected = index;
       }
     }
-    if (isSelected != -1) {
+    if (isSelected !== -1) {
       preListStudentEmail.splice(isSelected, 1);
     }
     for (let index = 0; index < suggestedStudents.length; index++) {
-      if (suggestedStudents[index].email == studentEmail) {
-        if (isSelected != -1) {
+      if (suggestedStudents[index].email === studentEmail) {
+        if (isSelected !== -1) {
           isSelect[index] = 0;
         } else {
           isSelect[index] = 1;
@@ -223,14 +215,14 @@ class Official_List extends Component {
   toggleModal = async () => {
     let suggestedStudents = null;
     let isSelect = [];
-    if (this.state.modal == false) {
+    if (this.state.modal === false) {
       this.setState({
         loading: true,
       })
       suggestedStudents = await ApiServices.Get(`/business/getStudentsByBusinessWithNoSupervisor`);
 
       // console.log(suggestedStudents);
-      if (suggestedStudents != null) {
+      if (suggestedStudents !== null) {
         for (let index = 0; index < suggestedStudents.length; index++) {
           isSelect.push(0);
         }
@@ -250,7 +242,7 @@ class Official_List extends Component {
 
   toggleModalWithConfirm = async () => {
     let { listDataEdited, preListStudentEmail, suggestedStudents } = this.state;
-    if (preListStudentEmail.length == 0 || this.state.preSupervisor == '') {
+    if (preListStudentEmail.length === 0 || this.state.preSupervisor === '') {
       this.setState({
         modal: !this.state.modal,
       })
@@ -258,7 +250,7 @@ class Official_List extends Component {
       for (let index = 0; index < suggestedStudents.length; index++) {
         listDataEdited.push(suggestedStudents[index]);
         for (let i = 0; i < preListStudentEmail.length; i++) {
-          if (preListStudentEmail[i].email == listDataEdited[index].email) {
+          if (preListStudentEmail[i].email === listDataEdited[index].email) {
             listDataEdited[index].supervisor = this.state.preSupervisor;
           }
         }
@@ -290,7 +282,7 @@ class Official_List extends Component {
   }
 
   toggleModalDetail = async (studentDetail) => {
-    if (this.state.modalDetail == false) {
+    if (this.state.modalDetail === false) {
       this.setState({
         modalDetail: !this.state.modalDetail,
         studentDetail: studentDetail,
@@ -303,7 +295,7 @@ class Official_List extends Component {
   }
 
   toggleModalTask = async (studentDetail) => {
-    if (this.state.modalTask == false) {
+    if (this.state.modalTask === false) {
       // const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}`);
 
       this.setState({
@@ -324,9 +316,9 @@ class Official_List extends Component {
       for (let index = 1; index < 5; index++) {
         let timeStartShow = "";
         if (mm + parseInt(index) > 13) {
-          if ((mm + parseInt(index) - 12 - 1) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+          if ((mm + parseInt(index) - 12 - 1) === 2 && (yyyy + 1) % 4 === 0 && dd > 29) {
             timeStartShow = 29 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
-          } else if ((mm + parseInt(index) - 12 - 1) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+          } else if ((mm + parseInt(index) - 12 - 1) === 2 && (yyyy + 1) % 4 !== 0 && dd > 28) {
             timeStartShow = 28 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
           } else if (mm30.includes((mm + parseInt(index) - 12 - 1)) && dd > 30) {
             timeStartShow = 30 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
@@ -334,9 +326,9 @@ class Official_List extends Component {
             timeStartShow = dd + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
           }
         } else {
-          if ((mm + parseInt(index) - 1) == 2 && yyyy % 4 == 0 && dd > 29) {
+          if ((mm + parseInt(index) - 1) === 2 && yyyy % 4 === 0 && dd > 29) {
             timeStartShow = 29 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
-          } else if ((mm + parseInt(index) - 1) == 2 && yyyy % 4 != 0 && dd > 28) {
+          } else if ((mm + parseInt(index) - 1) === 2 && yyyy % 4 !== 0 && dd > 28) {
             timeStartShow = 28 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
           } else if (mm30.includes((mm + parseInt(index) - 1)) && dd > 30) {
             timeStartShow = 30 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
@@ -357,9 +349,9 @@ class Official_List extends Component {
         // console.log(timeStartShow);
         let timeEndShow = "";
         if (mm + parseInt(index) > 12) {
-          if ((mm + parseInt(index) - 12) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+          if ((mm + parseInt(index) - 12) === 2 && (yyyy + 1) % 4 === 0 && dd > 29) {
             timeEndShow = 29 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
-          } else if ((mm + parseInt(index) - 12) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+          } else if ((mm + parseInt(index) - 12) === 2 && (yyyy + 1) % 4 !== 0 && dd > 28) {
             timeEndShow = 28 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
           } else if (mm30.includes((mm + parseInt(index) - 12)) && dd > 30) {
             timeEndShow = 30 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
@@ -367,9 +359,9 @@ class Official_List extends Component {
             timeEndShow = dd + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
           }
         } else {
-          if ((mm + parseInt(index)) == 2 && yyyy % 4 == 0 && dd > 29) {
+          if ((mm + parseInt(index)) === 2 && yyyy % 4 === 0 && dd > 29) {
             timeEndShow = 29 + "/" + (mm + parseInt(index)) + "/" + yyyy;
-          } else if ((mm + parseInt(index)) == 2 && yyyy % 4 != 0 && dd > 28) {
+          } else if ((mm + parseInt(index)) === 2 && yyyy % 4 !== 0 && dd > 28) {
             timeEndShow = 28 + "/" + (mm + parseInt(index)) + "/" + yyyy;
           } else if (mm30.includes((mm + parseInt(index))) && dd > 30) {
             timeEndShow = 30 + "/" + (mm + parseInt(index)) + "/" + yyyy;
@@ -469,7 +461,7 @@ class Official_List extends Component {
     const { listDataEdited } = this.state;
     const result = await ApiServices.Put('/business/assignSupervisor', listDataEdited);
 
-    if (result.status == 200) {
+    if (result.status === 200) {
       Toastify.actionSuccess("Thao tác thành công!");
       const students = await ApiServices.Get('/business/getStudentsByBusiness');
       const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness');
@@ -497,11 +489,11 @@ class Official_List extends Component {
   formatDate(inputDate, flag) {
     var date = inputDate.split('-');
     let formattedDate = date[2] + "/" + date[1] + "/" + date[0];
-    if (flag == true) {
+    if (flag === true) {
       return (
         <Badge color="primary">{formattedDate}</Badge>
       )
-    } else if (flag == false) {
+    } else if (flag === false) {
       return (
         <Badge color="danger">{formattedDate}</Badge>
       )
@@ -511,7 +503,7 @@ class Official_List extends Component {
   render() {
     const { isThisMonth, months, studentDetail, students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection, loading, suggestedStudents, isSelect, colorBackSelect, colorTextSelect } = this.state;
     let filteredListStudents = orderBy(students, columnToSort, sortDirection);
-    if (students != null) {
+    if (students !== null) {
       filteredListStudents = students.filter(
         (student) => {
           if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
@@ -598,7 +590,7 @@ class Official_List extends Component {
                             </td> */}
                                 <td style={{ textAlign: "center" }}>
                                   {
-                                    student.supervisor == null ? (
+                                    student.supervisor === null ? (
 
                                       <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="withBlank">
                                         {supervisors_FirstBlank && supervisors_FirstBlank.map((supervisor, i) => {
@@ -825,8 +817,8 @@ class Official_List extends Component {
                         <tr>
                           <th style={{ textAlign: "center" }}>STT</th>
                           <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                          <th style={{ textAlign: "center" }}>Giao bởi</th>
-                          <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
+                          <th style={{ textAlign: "center" }}>Người giao</th>
+                          <th style={{ textAlign: "center" }}>Ưu tiên</th>
                           <th style={{ textAlign: "center" }}>Độ khó</th>
                           <th style={{ textAlign: "center" }}>Ngày tạo</th>
                           <th style={{ textAlign: "center" }}>Hạn cuối</th>

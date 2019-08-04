@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
-import { Button } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import moment from 'moment';
 import { ToastContainer } from 'react-toastify';
-import Toastify from '../Toastify/Toastify';
+import { Button, Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import Toastify from '../Toastify/Toastify';
 
 
 class Job_Post_List_HR extends Component {
@@ -25,7 +23,7 @@ class Job_Post_List_HR extends Component {
     handleUpdateStatus = async (id, status) => {
         const result = await ApiServices.Put(`/job_post/status?id=${id}&status=${status}`);
         const job_posts = await ApiServices.Get('/job_post');
-        if (job_posts != null) {
+        if (job_posts !== null) {
             this.setState({
                 job_posts,
             });
@@ -45,7 +43,7 @@ class Job_Post_List_HR extends Component {
             job_postList.push(job_posts_business[i].job_post);
         }
 
-        if (job_posts_business != null) {
+        if (job_posts_business !== null) {
             this.setState({
                 job_posts: job_postList,
                 loading: false

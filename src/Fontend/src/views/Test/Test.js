@@ -13,7 +13,7 @@ class Test extends Component {
     async componentDidMount() {
         const tests = await ApiServices.Get('/Exercise/getAllExercise');
         console.log(tests);
-        if (tests != null) {
+        if (tests !== null) {
             this.setState({
                 tests: tests,
             });

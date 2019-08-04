@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
-import Popup from "reactjs-popup";
-import { Input, Label, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
-import Toastify from '../Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import { forEach } from '@firebase/util';
+import { Badge, Button, Card, CardBody, CardHeader, Col, FormGroup, Input, Label, Modal, ModalBody, ModalHeader, Pagination, Row, Table } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 
@@ -29,7 +24,7 @@ class Hr_Students extends Component {
 
     async componentDidMount() {
         const students = await ApiServices.Get('/supervisor/students');
-        if (students != null) {
+        if (students !== null) {
             this.setState({
                 students,
                 loading: false
@@ -56,7 +51,7 @@ class Hr_Students extends Component {
     }
 
     toggleModalDetail = async (studentDetail) => {
-        if (this.state.modalDetail == false) {
+        if (this.state.modalDetail === false) {
             this.setState({
                 modalDetail: !this.state.modalDetail,
                 studentDetail: studentDetail,
@@ -88,7 +83,7 @@ class Hr_Students extends Component {
     }
 
     toggleModalTask = async (studentDetail) => {
-        if (this.state.modalTask == false) {
+        if (this.state.modalTask === false) {
             this.setState({
                 loading: true,
             })
@@ -107,9 +102,9 @@ class Hr_Students extends Component {
             for (let index = 1; index < 5; index++) {
                 let timeStartShow = "";
                 if (mm + parseInt(index) > 13) {
-                    if ((mm + parseInt(index) - 12 - 1) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+                    if ((mm + parseInt(index) - 12 - 1) === 2 && (yyyy + 1) % 4 === 0 && dd > 29) {
                         timeStartShow = 29 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
-                    } else if ((mm + parseInt(index) - 12 - 1) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+                    } else if ((mm + parseInt(index) - 12 - 1) === 2 && (yyyy + 1) % 4 !== 0 && dd > 28) {
                         timeStartShow = 28 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
                     } else if (mm30.includes((mm + parseInt(index) - 12 - 1)) && dd > 30) {
                         timeStartShow = 30 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
@@ -117,9 +112,9 @@ class Hr_Students extends Component {
                         timeStartShow = dd + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
                     }
                 } else {
-                    if ((mm + parseInt(index) - 1) == 2 && yyyy % 4 == 0 && dd > 29) {
+                    if ((mm + parseInt(index) - 1) === 2 && yyyy % 4 === 0 && dd > 29) {
                         timeStartShow = 29 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
-                    } else if ((mm + parseInt(index) - 1) == 2 && yyyy % 4 != 0 && dd > 28) {
+                    } else if ((mm + parseInt(index) - 1) === 2 && yyyy % 4 !== 0 && dd > 28) {
                         timeStartShow = 28 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
                     } else if (mm30.includes((mm + parseInt(index) - 1)) && dd > 30) {
                         timeStartShow = 30 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
@@ -140,9 +135,9 @@ class Hr_Students extends Component {
                 // console.log(timeStartShow);
                 let timeEndShow = "";
                 if (mm + parseInt(index) > 12) {
-                    if ((mm + parseInt(index) - 12) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+                    if ((mm + parseInt(index) - 12) === 2 && (yyyy + 1) % 4 === 0 && dd > 29) {
                         timeEndShow = 29 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
-                    } else if ((mm + parseInt(index) - 12) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+                    } else if ((mm + parseInt(index) - 12) === 2 && (yyyy + 1) % 4 !== 0 && dd > 28) {
                         timeEndShow = 28 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
                     } else if (mm30.includes((mm + parseInt(index) - 12)) && dd > 30) {
                         timeEndShow = 30 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
@@ -150,9 +145,9 @@ class Hr_Students extends Component {
                         timeEndShow = dd + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
                     }
                 } else {
-                    if ((mm + parseInt(index)) == 2 && yyyy % 4 == 0 && dd > 29) {
+                    if ((mm + parseInt(index)) === 2 && yyyy % 4 === 0 && dd > 29) {
                         timeEndShow = 29 + "/" + (mm + parseInt(index)) + "/" + yyyy;
-                    } else if ((mm + parseInt(index)) == 2 && yyyy % 4 != 0 && dd > 28) {
+                    } else if ((mm + parseInt(index)) === 2 && yyyy % 4 !== 0 && dd > 28) {
                         timeEndShow = 28 + "/" + (mm + parseInt(index)) + "/" + yyyy;
                     } else if (mm30.includes((mm + parseInt(index))) && dd > 30) {
                         timeEndShow = 30 + "/" + (mm + parseInt(index)) + "/" + yyyy;
@@ -247,11 +242,11 @@ class Hr_Students extends Component {
     formatDate(inputDate, flag) {
         var date = inputDate.split('-');
         let formattedDate = date[2] + "/" + date[1] + "/" + date[0];
-        if (flag == true) {
+        if (flag === true) {
             return (
                 <Badge color="primary">{formattedDate}</Badge>
             )
-        } else if (flag == false) {
+        } else if (flag === false) {
             return (
                 <Badge color="danger">{formattedDate}</Badge>
             )
@@ -262,7 +257,7 @@ class Hr_Students extends Component {
         const { months, isThisMonth, studentDetail, listStudentTask, students, searchValue, loading } = this.state;
         let filteredListStudents;
 
-        if (students != null) {
+        if (students !== null) {
             filteredListStudents = students.filter(
                 (student) => {
                     if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
@@ -470,8 +465,8 @@ class Hr_Students extends Component {
                                             <tr>
                                                 <th style={{ textAlign: "center" }}>STT</th>
                                                 <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                                                <th style={{ textAlign: "center" }}>Giao bởi</th>
-                                                <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
+                                                <th style={{ textAlign: "center" }}>Người giao</th>
+                                                <th style={{ textAlign: "center" }}>Ưu tiên</th>
                                                 <th style={{ textAlign: "center" }}>Độ khó</th>
                                                 <th style={{ textAlign: "center" }}>Ngày tạo</th>
                                                 <th style={{ textAlign: "center" }}>Hạn cuối</th>

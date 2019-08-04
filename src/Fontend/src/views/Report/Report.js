@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
-import { FormGroup, ButtonGroup, Input, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
 import decode from 'jwt-decode';
-import Toastify from '../Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Pagination, Row, Table } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 class Report extends Component {
@@ -35,17 +32,17 @@ class Report extends Component {
         let overviewReports = [];
         let finalOnScreenStatus = [];
         let listStudentAndReport = null;
-        if (token != null) {
+        if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
         }
-        if (role == 'ROLE_SUPERVISOR') {
+        if (role === 'ROLE_SUPERVISOR') {
             students = await ApiServices.Get('/supervisor/students');
             overviewReports = await ApiServices.Get('/supervisor/evaluations');
-        } else if (role == 'ROLE_HR') {
+        } else if (role === 'ROLE_HR') {
             students = await ApiServices.Get('/business/getStudentsByBusiness');
             overviewReports = await ApiServices.Get('/business/evaluations');
-        } else if (role == 'ROLE_ADMIN') {
+        } else if (role === 'ROLE_ADMIN') {
             listStudentAndReport = await ApiServices.Get('/student/studentsEvaluations');
             for (let index = 0; index < listStudentAndReport.length; index++) {
                 students.push(listStudentAndReport[index].student);
@@ -57,7 +54,7 @@ class Report extends Component {
         // console.log(students);
         // console.log(overviewReports);
         for (let index = 0; index < overviewReports.length; index++) {
-            if (overviewReports[index] != null) {
+            if (overviewReports[index] !== null) {
                 overviewReportsRate.push(overviewReports[index].score_discipline * 0.4 + overviewReports[index].score_work * 0.5 + overviewReports[index].score_activity * 0.1);
                 if (overviewReportsRate[index] > 9) {
                     onScreenStatus.push(0);
@@ -79,7 +76,7 @@ class Report extends Component {
         // console.log(students);
         let tmpFinalRate = [];
         for (let index = 0; index < students.length; index++) {
-            if (overviewReportsRate[index * 4] != null && overviewReportsRate[index * 4 + 1] != null && overviewReportsRate[index * 4 + 2] != null && overviewReportsRate[index * 4 + 3] != null) {
+            if (overviewReportsRate[index * 4] !== null && overviewReportsRate[index * 4 + 1] !== null && overviewReportsRate[index * 4 + 2] !== null && overviewReportsRate[index * 4 + 3] !== null) {
                 tmpFinalRate.push((overviewReportsRate[index * 4] + overviewReportsRate[index * 4 + 1] + overviewReportsRate[index * 4 + 2] + overviewReportsRate[index * 4 + 3]) / 4);
             } else {
                 tmpFinalRate.push(null);
@@ -88,7 +85,7 @@ class Report extends Component {
         // console.log(tmpFinalRate);
         for (let index = 0; index < tmpFinalRate.length; index++) {
             // console.log(tmpFinalRate[index]);
-            if (tmpFinalRate[index] == null) {
+            if (tmpFinalRate[index] === null) {
                 finalOnScreenStatus.push(null);
             } else {
                 if (parseFloat(tmpFinalRate[index]) > 9) {

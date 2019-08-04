@@ -1,28 +1,11 @@
 import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-    Pagination
-} from 'reactstrap';
-
-import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import { async } from 'q';
-import SimpleReactValidator from '../../validator/simple-react-validator';
+import { Button, Card, CardBody, CardFooter, Col, Form, FormGroup, Input, Label, Pagination, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../../views/Toastify/Toastify';
+
 
 
 class Add_Job extends Component {
@@ -78,7 +61,7 @@ class Add_Job extends Component {
         // let firstSpecialized = specializeds[0].id;
         // const skills = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${firstSpecialized}`);
         const skills = await ApiServices.Get(`/skill`);
-        if (specializeds != null) {
+        if (specializeds !== null) {
             this.setState({
                 specializeds,
                 // specializedItem: specializeds[0],
@@ -134,7 +117,7 @@ class Add_Job extends Component {
 
         // const { specializedId } = this.state;
         // const skills = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${specializedId}`);
-        // if (skills != null) {
+        // if (skills !== null) {
         //     await this.setState({
         //         isChangeSpecialized: true,
         //         skills: skills,
@@ -266,18 +249,18 @@ class Add_Job extends Component {
         let tmpNumber = numbersForSave[index];
 
         if (name.includes('skill')) {
-            if (tmpSkill == null && tmpNumber != null) {
+            if (tmpSkill === null && tmpNumber !== null) {
                 skillsForSave.push(skills[value]);
-            } else if (tmpSkill == null && tmpNumber == null) {
+            } else if (tmpSkill === null && tmpNumber === null) {
                 numbersForSave.push("");
                 skillsForSave.push(skills[value]);
             } else {
                 skillsForSave[index] = skills[value];
             }
         } else if (name.includes('number')) {
-            if (tmpNumber == null && tmpSkill != null) {
+            if (tmpNumber === null && tmpSkill !== null) {
                 numbersForSave.push(value);
-            } else if (tmpNumber == null && tmpSkill == null) {
+            } else if (tmpNumber === null && tmpSkill === null) {
                 skillsForSave.push(tmpSkill);
                 numbersForSave.push(value);
             } else {
@@ -324,7 +307,7 @@ class Add_Job extends Component {
             })
 
             const result = await ApiServices.Post('/business/createJobPost', job_post);
-            if (result.status == 201) {
+            if (result.status === 201) {
                 Toastify.actionSuccess("Tạo bài đăng thành công!");
                 this.setState({
                     loading: false
@@ -406,7 +389,7 @@ class Add_Job extends Component {
                                                     {/* <Col xs="12" md="4">
                                             <Input onChange={this.handleInput} type="select" name="specialized"> */}
                                                     {specializeds && specializeds.map((specialized, i) =>
-                                                        // <option selected={specializedItem.id == i + 1} value={i}>{specialized.name}</option>
+                                                        // <option selected={specializedItem.id === i + 1} value={i}>{specialized.name}</option>
                                                         <>
                                                             <FormGroup check inline>
                                                                 <Input

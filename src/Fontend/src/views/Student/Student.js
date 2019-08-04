@@ -1,29 +1,13 @@
-import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-    Pagination
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
 import firebase from 'firebase/app';
-import decode from 'jwt-decode';
-import Toastify from '../../views/Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
 // import { initializeApp } from '../Invitation/push-notification';
 import 'firebase/storage';
+import decode from 'jwt-decode';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Label, Pagination, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import Toastify from '../../views/Toastify/Toastify';
 
 
 const storage = firebase.storage();
@@ -58,7 +42,7 @@ class CV extends Component {
 
         const token = localStorage.getItem('id_token');
         let role = '';
-        if (token != null) {
+        if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
         }
@@ -101,7 +85,7 @@ class CV extends Component {
         student.transcriptLink = transcriptLink;
         const result = await ApiServices.Put('/business/updateLinkTranscript', student);
 
-        if (result.status == 200) {
+        if (result.status === 200) {
             Toastify.actionSuccess('Cập nhật bảng điểm thành công');
             this.setState({
                 loading: false
@@ -132,7 +116,7 @@ class CV extends Component {
     }
 
     showTranscript(transcriptLink) {
-        if (transcriptLink != null) {
+        if (transcriptLink !== null) {
             return (
                 <a href={transcriptLink}>Tải về</a>
             )

@@ -1,35 +1,11 @@
-import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Collapse,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Fade,
-    Form,
-    FormGroup,
-    FormText,
-    FormFeedback,
-    Input,
-    InputGroup,
-    InputGroupAddon,
-    InputGroupButtonDropdown,
-    InputGroupText,
-    Label,
-    Row,
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
-import SimpleReactValidator from '../../validator/simple-react-validator';
-import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import firebase from 'firebase';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../../views/Toastify/Toastify';
 
 class User_Student_Create extends Component {
 
@@ -54,7 +30,7 @@ class User_Student_Create extends Component {
 
     async componentDidMount() {
         const specializeds = await ApiServices.Get('/specialized');
-        if (specializeds != null) {
+        if (specializeds !== null) {
             this.setState({
                 specializeds,
                 specializedItem: specializeds[0],
@@ -120,7 +96,7 @@ class User_Student_Create extends Component {
                 loading: true
             })
             const result = await ApiServices.Post('/student/new', student);
-            if (result.status == 201) {
+            if (result.status === 201) {
                 Toastify.actionSuccess("Tạo tài khoản mới thành công!");
                 this.setState({
                     loading: false
@@ -267,7 +243,7 @@ class User_Student_Create extends Component {
                                                     <Input onChange={this.handleInput} type="select" name="specialized">
                                                         {specializeds && specializeds.map((specialized, i) => {
                                                             return (
-                                                                <option value={i} selected={this.state.specializedItem.id == i + 1}>{specialized.name}</option>
+                                                                <option value={i} selected={this.state.specializedItem.id === i + 1}>{specialized.name}</option>
                                                             )
                                                         })}
                                                     </Input>

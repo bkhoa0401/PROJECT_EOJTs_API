@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import { Collapse, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
-import Toastify from '../Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import { taggedTemplateExpression } from '@babel/types';
+import { Button, Card, CardBody, CardHeader, Col, Collapse, Pagination, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 
 
 class Job_Post_List extends Component {
@@ -32,7 +28,7 @@ class Job_Post_List extends Component {
         // const skillList = jobPostList.job_post_skills;
         // let countJobPostList = [];
         // let countJobPostSkillList = [];
-        if (businesses != null) {
+        if (businesses !== null) {
             for (let i = 0; i < businesses.length; i++) {
                 // countJobPostList.push(businesses[i].job_postList.length);
                 // for (let j = 0; j < businesses[i].job_postList.length; j++) {
@@ -60,7 +56,7 @@ class Job_Post_List extends Component {
         const accordion = this.state.accordion;
         const prevState = [];
         for (let index = 0; index < businesses.length; index++) {
-            if (indexTab == index) {
+            if (indexTab === index) {
                 prevState.push(!accordion[index]);
             } else {
                 prevState.push(accordion[index]);
@@ -92,7 +88,7 @@ class Job_Post_List extends Component {
     render() {
         const { businesses, searchValue } = this.state;
         let filteredListBusinesses;
-        if (businesses != null) {
+        if (businesses !== null) {
             filteredListBusinesses = businesses.filter(
                 (business) => {
                     if (business.business.business_name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {

@@ -1,36 +1,11 @@
 import React, { Component } from 'react';
-import moment from 'moment';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Collapse,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Fade,
-    Form,
-    FormGroup,
-    FormText,
-    FormFeedback,
-    Input,
-    InputGroup,
-    InputGroupAddon,
-    InputGroupButtonDropdown,
-    InputGroupText,
-    Label,
-    Row,
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../../views/Toastify/Toastify';
 
 class Specialized_Update extends Component {
     constructor(props) {

@@ -12,7 +12,7 @@ const login = async function (email, password) {
         body: JSON.stringify({ email: email, password: password })
     });
     const data = await response.json();
-    if (data.token !== null && data.users.active == true && data.users.roles[0].id != 2) {
+    if (data.token !== null && data.users.active === true && data.users.roles[0].id !== 2) {
         try {
             localStorage.setItem('id_token', data.token);
         }
@@ -21,7 +21,7 @@ const login = async function (email, password) {
         }
         return 'true';
     }
-    else if (data.token !== null && data.users.active == false && data.users.roles[0].id != 2) {
+    else if (data.token !== null && data.users.active === false && data.users.roles[0].id !== 2) {
         return 'disabled';
     } else {
         return 'false';

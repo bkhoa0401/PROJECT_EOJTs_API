@@ -1,32 +1,13 @@
+import decode from 'jwt-decode';
 import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-    Modal, ModalBody, ModalFooter, ModalHeader
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
-import { async } from 'q';
-// import { initializeApp } from '../Invitation/push-notification';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
-import Popup from "reactjs-popup";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalHeader, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import SimpleReactValidator from '../../validator/simple-react-validator';
-import decode from 'jwt-decode';
+import Toastify from '../../views/Toastify/Toastify';
 
 class BusinessProposed_Detail extends Component {
 
@@ -52,12 +33,12 @@ class BusinessProposed_Detail extends Component {
 
         const token = localStorage.getItem('id_token');
         let role = '';
-        if (token != null) {
+        if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
         }
 
-        if (business != null) {
+        if (business !== null) {
             this.setState({
                 loading: false,
                 open: false,
@@ -257,7 +238,7 @@ class BusinessProposed_Detail extends Component {
         } else if (role === 'ROLE_HEADMASTER') {
             result = await ApiServices.Put(`/heading/headMaster?id=${id}&comment=${comment}&status=${status}`);
         }
-        if (result.status == 200) {
+        if (result.status === 200) {
             Toastify.actionSuccess(messageSucces);
             this.setState({
                 loading: false
@@ -265,7 +246,7 @@ class BusinessProposed_Detail extends Component {
 
             const business = await ApiServices.Get(`/heading/id?id=${id}`);
 
-            if (business != null) {
+            if (business !== null) {
                 this.setState({
                     loading: false,
                     open: false,
@@ -320,7 +301,7 @@ class BusinessProposed_Detail extends Component {
     render() {
         const { business, loading, role } = this.state;
         let linkDownContact = '';
-        if (business != null) {
+        if (business !== null) {
             linkDownContact = `http://localhost:8000/api/file/downloadFile/${business.contactLink}`;
         }
 

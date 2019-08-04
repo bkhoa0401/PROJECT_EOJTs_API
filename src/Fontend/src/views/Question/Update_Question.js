@@ -1,30 +1,13 @@
-import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-    Pagination
-} from 'reactstrap';
-
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import { async } from 'q';
-import SimpleReactValidator from '../../validator/simple-react-validator';
-import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
-import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CKEditor from '@ckeditor/ckeditor5-react';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardFooter, Col, Form, FormGroup, Input, Pagination, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../../views/Toastify/Toastify';
+
 
 
 class Update_Question extends Component {
@@ -96,7 +79,7 @@ class Update_Question extends Component {
     deleteAnswer = async (deleteIndex) => {
         const { arrayAnswer } = this.state;
 
-        if (arrayAnswer.length != 1) {
+        if (arrayAnswer.length !== 1) {
             for (let index = 0; index < arrayAnswer.length; index++) {
                 if (index === deleteIndex) {
                     arrayAnswer.splice(index, 1);
@@ -108,7 +91,7 @@ class Update_Question extends Component {
             })
         }
 
-        if (arrayAnswer.length == 1) {
+        if (arrayAnswer.length === 1) {
             document.getElementById('btnDelete0').setAttribute("disabled", "disabled");
         }
     }
@@ -128,7 +111,7 @@ class Update_Question extends Component {
         const { name, value } = event.target;
         const { arrayAnswer } = this.state;
 
-        if (this.state.arrayAnswer.length == 1) {
+        if (this.state.arrayAnswer.length === 1) {
             document.getElementById('btnDelete0').setAttribute("disabled", "disabled");
         } else {
             document.getElementById('btnDelete0').removeAttribute("disabled", "disabled");
@@ -137,7 +120,7 @@ class Update_Question extends Component {
         let tmpAnswers = arrayAnswer[index];
 
         if (name.includes('answer')) {
-            if (tmpAnswers == null) {
+            if (tmpAnswers === null) {
                 var answer = {
                     id: "",
                     content: value,
@@ -179,16 +162,16 @@ class Update_Question extends Component {
             })
 
             const result = await ApiServices.Put('/admin/question-content', question);
-            if (result.status == 200) {
+            if (result.status === 200) {                
+                this.setState({
+                    loading: false
+                })
                 Toastify.actionSuccess("Chỉnh sửa câu hỏi thành công!");
+            } else {                
                 this.setState({
                     loading: false
                 })
-            } else {
                 Toastify.actionFail("Chỉnh sửa câu hỏi thất bại!");
-                this.setState({
-                    loading: false
-                })
             }
         } else {
             this.validator.showMessages();
@@ -204,6 +187,7 @@ class Update_Question extends Component {
                 SpinnerLoading.showHashLoader(loading)
             ) : (
                     <div className="animated fadeIn">
+                        <ToastContainer />
                         <Row>
                             <Col xs="12" lg="12">
                                 <Card>
@@ -260,30 +244,34 @@ class Update_Question extends Component {
 
                                             {
                                                 arrayAnswer && arrayAnswer.map((answer, index) =>
-                                                    <div>
-                                                        <tr>
-                                                            <td>{index + 1}.</td>
-                                                            <td style={{ width: "900px" }}>
-                                                                <Input value={answer.content} onChange={e => { this.handleInputAnswer(e, index) }} type="textarea" name="answer" style={{ width: "850px", marginLeft: "2%" }} rows="3" placeholder="Nhập đáp án cho hỏi ..."></Input>
-                                                            </td>
-                                                            <td>
-                                                                <Button id={'btnDelete' + index} color="danger" style={{ marginLeft: "2%" }} onClick={() => this.deleteAnswer(index)}>Xóa</Button>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td></td>
-                                                            <td style={{ width: "900px" }}>
-                                                                <span className="form-error is-visible text-danger" style={{ width: "850px", marginBottom: "5%", marginLeft: "2%" }}>
-                                                                    {this.validator.message('Nội dung đáp án', answer.content, 'required|max:255')}
-                                                                </span>
-                                                            </td>
-                                                            <td></td>
-                                                        </tr>
-                                                    </div>
+
+                                                    answer.other.toString() === 'false' ? (
+                                                        <div>
+                                                            <tr>
+                                                                <td>{index + 1}.</td>
+                                                                <td style={{ width: "900px" }}>
+                                                                    <Input value={answer.content} onChange={e => { this.handleInputAnswer(e, index) }} type="textarea" name="answer" style={{ width: "850px", marginLeft: "2%" }} rows="3" placeholder="Nhập đáp án cho hỏi ..."></Input>
+                                                                </td>
+                                                                <td>
+                                                                    <Button id={'btnDelete' + index} color="danger" style={{ marginLeft: "2%" }} onClick={() => this.deleteAnswer(index)}>Xóa</Button>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td style={{ width: "900px" }}>
+                                                                    <span className="form-error is-visible text-danger" style={{ width: "850px", marginBottom: "5%", marginLeft: "2%" }}>
+                                                                        {this.validator.message('Nội dung đáp án', answer.content, 'required|max:255')}
+                                                                    </span>
+                                                                </td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </div>
+                                                    ) : (
+                                                            <></>
+                                                        )
                                                 )
                                             }
                                         </Form>
-                                        <ToastContainer />
                                         <Pagination>
                                             {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
                                         </Pagination>

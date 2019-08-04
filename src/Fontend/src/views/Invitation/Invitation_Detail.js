@@ -1,24 +1,6 @@
 import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-    Pagination
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Label, Pagination, Row } from 'reactstrap';
 
 
 class Invitation_Detail extends Component {
@@ -33,7 +15,7 @@ class Invitation_Detail extends Component {
 
     //   async componentDidMount() {
     //     const products = await ApiService.Get('/product');
-    //     if (products != null) {
+    //     if (products !== null) {
     //       this.setState({
 
     //       });
@@ -58,7 +40,7 @@ class Invitation_Detail extends Component {
     //   handleUpdateDiscontinued = async (id, discontinued) => {
     //     const result = await ApiService.Put(`/product/discontinued/${id}/${discontinued}`, "");
     //     const products = await ApiService.Get('/product');
-    //     if (products != null) {
+    //     if (products !== null) {
     //       const { currentPage } = this.state;
     //       const pageNumber = getPaginationPageNumber(products.length);
     //       const productsPagination = products.slice(getPaginationCurrentPageNumber(currentPage), getPaginationNextPageNumber(currentPage));

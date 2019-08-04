@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Card, CardBody, CardFooter, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
-import { async } from '@firebase/util';
-import ApiServices from '../../../service/api-service';
 import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardFooter, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
+import ApiServices from '../../../service/api-service';
 import Toastify from '../../Toastify/Toastify';
-import crypto from 'crypto';
 
 class FotgotPassword extends Component {
 
@@ -41,8 +39,8 @@ class FotgotPassword extends Component {
     let messageError = '';
     const result = await ApiServices.GetWithoutToken(`/account/check?email=${emailReset}`);
     console.log(result);
-    if (result.status == 200) {
-      Toastify.actionSuccess("Một email vừa được gửi đến tài khoản của bạn! Vui lòng kiểm tra!");
+    if (result.status === 200) {
+      Toastify.actionSuccess("Một email Trung bình được gửi đến tài khoản của bạn! Vui lòng kiểm tra!");
     } else {
       messageError = "Email không tồn tại trong hệ thống!";
       this.setState({

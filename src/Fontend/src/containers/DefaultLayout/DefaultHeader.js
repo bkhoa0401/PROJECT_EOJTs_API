@@ -1,13 +1,12 @@
-import React, { Component } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { Col, FormGroup, Badge, DropdownItem, DropdownMenu, DropdownToggle, Nav, NavItem } from 'reactstrap';
-import PropTypes from 'prop-types';
-
 import { AppAsideToggler, AppHeaderDropdown, AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
 import decode from 'jwt-decode';
-import logo from '../../assets/img/brand/logo.svg'
-import sygnet from '../../assets/img/brand/sygnet.svg'
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { NavLink } from 'react-router-dom';
+import { Col, DropdownItem, DropdownMenu, DropdownToggle, FormGroup, Nav, NavItem } from 'reactstrap';
+import sygnet from '../../assets/img/brand/sygnet.svg';
 import ApiServices from '../../service/api-service';
+
 
 const propTypes = {
   children: PropTypes.node,
@@ -29,7 +28,7 @@ class DefaultHeader extends Component {
 
   async componentDidMount() {
     const token = localStorage.getItem('id_token');
-    if (token != null) {
+    if (token !== null) {
       const decoded = decode(token);
       const email = decoded.email;
       const role = decoded.role;
@@ -37,24 +36,24 @@ class DefaultHeader extends Component {
       let username = '';
       let logo = null;
       let linkProfile = '';
-      if (role == "ROLE_ADMIN" || role == "ROLE_STARTUP" || role == "ROLE_HEADTRAINING" || role == "ROLE_HEADMASTER") {
+      if (role === "ROLE_ADMIN" || role === "ROLE_STARTUP" || role === "ROLE_HEADTRAINING" || role === "ROLE_HEADMASTER") {
         actor = await ApiServices.Get(`/admin/getCurrentUser`);
-        if (actor != null) {
+        if (actor !== null) {
           username = actor.name;
           logo = actor.logo;
           linkProfile = `/account_detail`;
         }
-      } else if (role == "ROLE_HR") {
+      } else if (role === "ROLE_HR") {
         actor = await ApiServices.Get(`/business/getBusiness`);
-        if (actor != null) {
+        if (actor !== null) {
           username = actor.business_eng_name;
           logo = actor.logo;
           linkProfile = `/Business_Detail/${actor.email}`;
         }
-      } else if (role == "ROLE_SUPERVISOR") {
+      } else if (role === "ROLE_SUPERVISOR") {
         let tmpActor = await ApiServices.Get(`/supervisor`);
         actor = tmpActor.supervisor;
-        if (actor != null) {
+        if (actor !== null) {
           username = actor.name;
           logo = actor.logo;
           linkProfile = `/account_detail`;

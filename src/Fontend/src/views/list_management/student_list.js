@@ -1,18 +1,13 @@
-import React, { Component } from 'react';
-import Popup from "reactjs-popup";
-import { ListGroup, ListGroupItem, Input, Form, Label, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import { forEach } from '@firebase/util';
-import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 import firebase from 'firebase/app';
 import decode from 'jwt-decode';
-import { async } from 'q';
+import React, { Component } from 'react';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, Label, ListGroup, ListGroupItem, Modal, ModalBody, ModalFooter, ModalHeader, Nav, NavItem, NavLink, Pagination, Row, TabContent, Table, TabPane } from 'reactstrap';
+import ApiServices from '../../service/api-service';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import Toastify from '../Toastify/Toastify';
 
 const storage = firebase.storage();
 
@@ -69,7 +64,7 @@ class student_list extends Component {
 
     async componentDidMount() {
         const students = await ApiServices.Get('/student/getAllStudent');
-        if (students != null) {
+        if (students !== null) {
             this.setState({
                 students,
                 loading: false
@@ -82,9 +77,9 @@ class student_list extends Component {
         newArray[tabPane] = tab;
         let students = null;
         let typeSelected;
-        if (tab == 1) {
+        if (tab === 1) {
             students = await ApiServices.Get('/student/getAllStudent');
-        } else if (tab == 2) {
+        } else if (tab === 2) {
             students = await ApiServices.Get('/student/getStudentsWithNoCompany');
             typeSelected = 1;
         }
@@ -101,7 +96,7 @@ class student_list extends Component {
     toggleModal = async (studentSelect) => {
         let suggestedBusiness = null;
         let otherBusiness = null;
-        if (this.state.modal == false) {
+        if (this.state.modal === false) {
             this.setState({
                 loading: true,
             })
@@ -124,16 +119,18 @@ class student_list extends Component {
         let businessSurvey = null;
         let survey = null;
         let role = '';
-        if (this.state.modalDetail == false) {
+        if (this.state.modalDetail === false) {
             students = await ApiServices.Get(`/student/student/${email}`);
             businessSurvey = await ApiServices.Get(`/student/business?email=${email}`);
             survey = await ApiServices.Get(`/student/answersOfStudent?studentEmail=${email}`);
             // console.log(survey.length);
-            if (survey.length == 0) {
-                survey = null;
+            if (survey !== null) {
+                if (survey.length === 0) {
+                    survey = null;
+                }
             }
             const token = localStorage.getItem('id_token');
-            if (token != null) {
+            if (token !== null) {
                 const decoded = decode(token);
                 role = decoded.role;
             }
@@ -168,16 +165,23 @@ class student_list extends Component {
     handleSelectMonth = async (event, studentDetail) => {
         const { name, value } = event.target;
         const { months } = this.state;
-        var date = months[value].split(" - ");
-        // console.log(date[0]);
-        // console.log(date[1]);
-        var formatDateStart = date[0].split("/");
-        let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
-        // console.log(dateStart);
-        var formatDateEnd = date[1].split("/");
-        let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
-        // console.log(dateEnd);
-        const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+        let listStudentTask = null;
+        // console.log(value);
+        if (value <= 0) {
+            listStudentTask = await ApiServices.Get(`/supervisor/allTasksByStudentEmail?emailStudent=${studentDetail.email}`);
+            // console.log(listStudentTask);
+        } else {
+            var date = months[value].split(" - ");
+            // console.log(date[0]);
+            // console.log(date[1]);
+            var formatDateStart = date[0].split("/");
+            let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
+            // console.log(dateStart);
+            var formatDateEnd = date[1].split("/");
+            let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
+            // console.log(dateEnd);
+            listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+        }
         await this.setState({
             listStudentTask: listStudentTask,
             isThisMonth: -1,
@@ -185,7 +189,7 @@ class student_list extends Component {
     }
 
     toggleModalTask = async (studentDetail) => {
-        if (this.state.modalTask == false) {
+        if (this.state.modalTask === false) {
             this.setState({
                 loading: true,
             })
@@ -196,7 +200,7 @@ class student_list extends Component {
 
             const ojtEnrollment = await ApiServices.Get(`/enrollment/getSelectedStuEnrollment?email=${studentDetail.email}`);
             var dateEnroll = ojtEnrollment.timeEnroll;
-            if (dateEnroll != null) {
+            if (dateEnroll !== null) {
                 var splitDate = dateEnroll.split('-');
                 let dd = parseInt(splitDate[2]);
                 let mm = parseInt(splitDate[1]);
@@ -206,9 +210,9 @@ class student_list extends Component {
                 for (let index = 1; index < 5; index++) {
                     let timeStartShow = "";
                     if (mm + parseInt(index) > 13) {
-                        if ((mm + parseInt(index) - 12 - 1) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+                        if ((mm + parseInt(index) - 12 - 1) === 2 && (yyyy + 1) % 4 === 0 && dd > 29) {
                             timeStartShow = 29 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
-                        } else if ((mm + parseInt(index) - 12 - 1) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+                        } else if ((mm + parseInt(index) - 12 - 1) === 2 && (yyyy + 1) % 4 !== 0 && dd > 28) {
                             timeStartShow = 28 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
                         } else if (mm30.includes((mm + parseInt(index) - 12 - 1)) && dd > 30) {
                             timeStartShow = 30 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
@@ -216,9 +220,9 @@ class student_list extends Component {
                             timeStartShow = dd + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
                         }
                     } else {
-                        if ((mm + parseInt(index) - 1) == 2 && yyyy % 4 == 0 && dd > 29) {
+                        if ((mm + parseInt(index) - 1) === 2 && yyyy % 4 === 0 && dd > 29) {
                             timeStartShow = 29 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
-                        } else if ((mm + parseInt(index) - 1) == 2 && yyyy % 4 != 0 && dd > 28) {
+                        } else if ((mm + parseInt(index) - 1) === 2 && yyyy % 4 !== 0 && dd > 28) {
                             timeStartShow = 28 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
                         } else if (mm30.includes((mm + parseInt(index) - 1)) && dd > 30) {
                             timeStartShow = 30 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
@@ -239,9 +243,9 @@ class student_list extends Component {
                     // console.log(timeStartShow);
                     let timeEndShow = "";
                     if (mm + parseInt(index) > 12) {
-                        if ((mm + parseInt(index) - 12) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+                        if ((mm + parseInt(index) - 12) === 2 && (yyyy + 1) % 4 === 0 && dd > 29) {
                             timeEndShow = 29 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
-                        } else if ((mm + parseInt(index) - 12) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+                        } else if ((mm + parseInt(index) - 12) === 2 && (yyyy + 1) % 4 !== 0 && dd > 28) {
                             timeEndShow = 28 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
                         } else if (mm30.includes((mm + parseInt(index) - 12)) && dd > 30) {
                             timeEndShow = 30 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
@@ -249,9 +253,9 @@ class student_list extends Component {
                             timeEndShow = dd + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
                         }
                     } else {
-                        if ((mm + parseInt(index)) == 2 && yyyy % 4 == 0 && dd > 29) {
+                        if ((mm + parseInt(index)) === 2 && yyyy % 4 === 0 && dd > 29) {
                             timeEndShow = 29 + "/" + (mm + parseInt(index)) + "/" + yyyy;
-                        } else if ((mm + parseInt(index)) == 2 && yyyy % 4 != 0 && dd > 28) {
+                        } else if ((mm + parseInt(index)) === 2 && yyyy % 4 !== 0 && dd > 28) {
                             timeEndShow = 28 + "/" + (mm + parseInt(index)) + "/" + yyyy;
                         } else if (mm30.includes((mm + parseInt(index))) && dd > 30) {
                             timeEndShow = 30 + "/" + (mm + parseInt(index)) + "/" + yyyy;
@@ -291,15 +295,15 @@ class student_list extends Component {
                 var formatDateEnd = date[1].split("/");
                 let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
                 listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+                months.unshift("Tổng");
             }
-
             this.setState({
                 modalTask: !this.state.modalTask,
                 studentDetail: studentDetail,
                 listStudentTask: listStudentTask,
                 months: months,
                 loading: false,
-                isThisMonth: isThisMonth,
+                isThisMonth: isThisMonth + 1,
             });
         } else {
             this.setState({
@@ -324,7 +328,7 @@ class student_list extends Component {
         student.transcriptLink = transcriptLink;
         const result = await ApiServices.Put('/business/updateLinkTranscript', student);
 
-        if (result.status == 200) {
+        if (result.status === 200) {
             Toastify.actionSuccess('Cập nhật bảng điểm thành công');
             this.setState({
                 loading: false,
@@ -388,7 +392,7 @@ class student_list extends Component {
         // console.log(ans);
         let isChecked = false;
         for (let index = 0; index < quesAns.length; index++) {
-            if (quesAns[index].id == ans.id) {
+            if (quesAns[index].id === ans.id) {
                 isChecked = true;
             }
         }
@@ -398,11 +402,11 @@ class student_list extends Component {
     formatDate(inputDate, flag) {
         var date = inputDate.split('-');
         let formattedDate = date[2] + "/" + date[1] + "/" + date[0];
-        if (flag == true) {
+        if (flag === true) {
             return (
                 <Badge color="primary">{formattedDate}</Badge>
             )
-        } else if (flag == false) {
+        } else if (flag === false) {
             return (
                 <Badge color="danger">{formattedDate}</Badge>
             )
@@ -432,7 +436,7 @@ class student_list extends Component {
     }
 
     showTranscript(transcriptLink) {
-        if (transcriptLink != null) {
+        if (transcriptLink !== null) {
             return (
                 <a href={transcriptLink}>Tải về</a>
             )
@@ -456,10 +460,10 @@ class student_list extends Component {
         let students = null;
         // console.log(name);
         // console.log(value);
-        if (value == 0) {
+        if (value === 0) {
             typeSelected = 0;
             students = await ApiServices.Get('/student/getAllStudent');
-        } else if (value == 1) {
+        } else if (value === 1) {
             typeSelected = 1;
             students = await ApiServices.Get('/student/getStudentsWithNoCompany');
         }
@@ -517,7 +521,7 @@ class student_list extends Component {
         const result = await ApiServices.Put(`/admin/setBusinessForStudent?emailOfBusiness=${businessEmail}&emailOfStudent=${studentSelect.email}`);
         // console.log(result);
 
-        if (result.status == 200) {
+        if (result.status === 200) {
             Toastify.actionSuccess(`Đăng ký thành công!`);
             const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
             const students = await ApiServices.Get('/student/getAllStudent');
@@ -540,7 +544,7 @@ class student_list extends Component {
         const linkDownCV = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
         let filteredListStudents;
 
-        if (students != null) {
+        if (students !== null) {
             filteredListStudents = students.filter(
                 (student) => {
                     if (student.student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
@@ -936,8 +940,8 @@ class student_list extends Component {
                                                 <tr>
                                                     <th style={{ textAlign: "center" }}>STT</th>
                                                     <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                                                    <th style={{ textAlign: "center" }}>Giao bởi</th>
-                                                    <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
+                                                    <th style={{ textAlign: "center" }}>Người giao</th>
+                                                    <th style={{ textAlign: "center" }}>Ưu tiên</th>
                                                     <th style={{ textAlign: "center" }}>Độ khó</th>
                                                     <th style={{ textAlign: "center" }}>Ngày tạo</th>
                                                     <th style={{ textAlign: "center" }}>Hạn cuối</th>

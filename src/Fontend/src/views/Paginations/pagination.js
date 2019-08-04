@@ -7,7 +7,7 @@ class PaginationComponent extends Component {
         const { pageNumber, handlePageNumber, handlePagePrevious, handlePageNext, currentPage } = this.props;
         const RenderPagination = [];
         for (let i = 0; i < pageNumber; i++) {
-            RenderPagination.push(<PaginationItem active={currentPage == i} key={i}><PaginationLink onClick={() => handlePageNumber(i)} tag="button">{i + 1}</PaginationLink></PaginationItem>)
+            RenderPagination.push(<PaginationItem active={currentPage === i} key={i}><PaginationLink onClick={() => handlePageNumber(i)} tag="button">{i + 1}</PaginationLink></PaginationItem>)
         }
         return (
             <Pagination>

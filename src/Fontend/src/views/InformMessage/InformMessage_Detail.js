@@ -1,14 +1,8 @@
-import React, { Component } from 'react';
-import Popup from "reactjs-popup";
-import { Label, FormGroup, Input, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
 import decode from 'jwt-decode';
-import Toastify from '../Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Label, Pagination, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 class InformMessage_Detail extends Component {
@@ -33,19 +27,19 @@ class InformMessage_Detail extends Component {
         let business = null;
         let informFromName = '';
         let informFromEmail = '';
-        if (token != null) {
+        if (token !== null) {
             const decoded = decode(token);
-            if (decoded.role == "ROLE_ADMIN") {
+            if (decoded.role === "ROLE_ADMIN") {
                 informFromName = "FPT University";
                 informFromEmail = decoded.email;
             }
-            if (decoded.role == "ROLE_HR") {
+            if (decoded.role === "ROLE_HR") {
                 business = await ApiServices.Get('/business/getBusiness');
                 informFromName = business.business_name;
                 informFromEmail = business.email;
             }
         }
-        if (data != null) {
+        if (data !== null) {
             this.setState({
                 loading: false,
                 title: data.title,
