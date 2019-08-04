@@ -353,6 +353,7 @@ class Ojt_Registration extends Component {
                                         </Col>
                                     </FormGroup>
                                 </ModalBody>
+                                {invitationDetail !== null ? 
                                 <ModalFooter>
                                     <FormGroup row>
                                         <Col md="4">
@@ -362,7 +363,9 @@ class Ojt_Registration extends Component {
                                             <label>{invitationDetail}</label>
                                         </Col>
                                     </FormGroup>
-                                </ModalFooter>
+                                </ModalFooter> :
+                                <></>
+                                }
                             </Modal> :
                             <></>
                         }
