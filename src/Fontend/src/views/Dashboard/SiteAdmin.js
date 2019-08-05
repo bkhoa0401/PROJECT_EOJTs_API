@@ -154,7 +154,7 @@ class SiteAdmin extends Component {
 
       if (statisticalEvaluations[0] !== null) {
         let data1 = {
-          label: 'Báo cáo 1',
+          label: 'Đánh giá tháng 1',
           backgroundColor: 'rgba(179,181,198,0.2)',
           borderColor: 'rgba(179,181,198,1)',
           pointBackgroundColor: 'rgba(179,181,198,1)',
@@ -167,7 +167,7 @@ class SiteAdmin extends Component {
       }
       if (statisticalEvaluations[1] !== null) {
         let data2 = {
-          label: 'Báo cáo 2',
+          label: 'Đánh giá tháng 2',
           backgroundColor: 'rgba(255,99,132,0.2)',
           borderColor: 'rgba(255,99,132,1)',
           pointBackgroundColor: 'rgba(255,99,132,1)',
@@ -180,7 +180,7 @@ class SiteAdmin extends Component {
       }
       if (statisticalEvaluations[2] !== null) {
         let data3 = {
-          label: 'Báo cáo 3',
+          label: 'Đánh giá tháng 3',
           backgroundColor: '#CCFFFF',
           borderColor: '#00FFFF',
           pointBackgroundColor: '#00FFFF',
@@ -193,7 +193,7 @@ class SiteAdmin extends Component {
       }
       if (statisticalEvaluations[3] !== null) {
         let data4 = {
-          label: 'Báo cáo 4',
+          label: 'Đánh giá tháng 4',
           backgroundColor: '#FFF68F',
           borderColor: '#CDAD00',
           pointBackgroundColor: '#CDAD00',
@@ -330,7 +330,7 @@ class SiteAdmin extends Component {
                   <td>
                     <Card>
                       <CardHeader>
-                        <h6>Thống kê kết quả các report</h6>
+                        <h6>Thống kê kết quả các đánh giá hàng tháng</h6>
                         {/* <div className="card-header-actions">
                 <a href="http://www.chartjs.org" className="card-header-action">
                   <small className="text-muted">docs</small>

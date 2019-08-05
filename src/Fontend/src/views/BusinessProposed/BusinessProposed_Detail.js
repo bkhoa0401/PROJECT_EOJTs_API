@@ -563,9 +563,7 @@ class BusinessProposed_Detail extends Component {
                                                                 <Button disabled id="btnUpdate" type="submit" block color="primary" onClick={() => this.handleDirect(`/hr-task/update/`)}>Chỉnh sửa</Button>
                                                             </Col>
                                                         ) : (
-                                                                <Col xs="1" sm="1">
-
-                                                                </Col>
+                                                               <></>
                                                             )
                                                     )
                                             }

@@ -472,7 +472,7 @@ public class AdminController {
     }
 
     @PostMapping("/saveSemester")
-    public ResponseEntity<Semester> getSemesterByName(@RequestBody Semester ScheduleParameters) {
+    public ResponseEntity<Semester> saveParameter(@RequestBody Semester ScheduleParameters) {
         boolean save = semesterService.saveSemester(ScheduleParameters);
         if (save == true) {
             return new ResponseEntity<>(HttpStatus.OK);
