@@ -230,13 +230,13 @@ class BusinessProposed_Update extends Component {
                                     </CardBody>
                                     <CardFooter className="p-4">
                                         <Row>
-                                            <Col xs="4" sm="4">
+                                            <Col xs="4" md="4">
                                                 <Button color="secondary" block onClick={() => this.handleDirect(`/business-proposed/${id}`)} type="submit">Trở về</Button>
                                             </Col>
-                                            <Col xs="4" sm="4">
+                                            <Col xs="4" md="4">
                                                 <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>
                                             </Col>
-                                            <Col xs="4" sm="4">
+                                            <Col xs="4" md="4">
                                                 <Button onClick={() => this.handleSubmit()} type="submit" color="success" block>Xác nhận</Button>
                                             </Col>
                                         </Row>

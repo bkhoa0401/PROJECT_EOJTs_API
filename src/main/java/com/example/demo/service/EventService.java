@@ -1,17 +1,24 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.EventDTO;
 import com.example.demo.entity.Event;
+import com.example.demo.entity.Student;
+import com.example.demo.entity.Student_Event;
 import com.example.demo.repository.IEventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class EventService implements IEventService{
+public class EventService implements IEventService {
 
     @Autowired
     IEventRepository IEventRepository;
+
+    @Autowired
+    IStudent_EventService iStudent_eventService;
 
     @Override
     public List<Event> getEventList(String email) {
@@ -76,5 +83,27 @@ public class EventService implements IEventService{
             return true;
         }
         return false;
+    }
+
+    @Override
+    public EventDTO findEventAndStudentsById(int id) {
+        Event event = IEventRepository.findEventById(id);
+        List<Student> students = new ArrayList<>();
+
+        List<Student_Event> student_events = iStudent_eventService.findStudentEventByEventId(id);
+
+        for (int i = 0; i < student_events.size(); i++) {
+            students.add(student_events.get(i).getStudent());
+        }
+        EventDTO eventDTO = new EventDTO();
+        eventDTO.setEvent(event);
+        eventDTO.setStudentList(students);
+
+        if (eventDTO != null) {
+            event.setRead(true);
+            IEventRepository.save(event);
+            return eventDTO;
+        }
+        return null;
     }
 }

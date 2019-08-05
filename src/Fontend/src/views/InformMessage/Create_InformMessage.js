@@ -358,12 +358,12 @@ class Create_InformMessage extends Component {
                                     <CardFooter className="p-3">
                                         <Row style={{ marginLeft: "21%" }}>
                                             <Col xs="4" sm="4">
-                                                <Button style={{ width: '100px' }} color="secondary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
+                                                <Button block color="secondary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
                                                     Trở về
                                                 </Button>
                                             </Col>
                                             <Col xs="4" sm="4">
-                                                <Button style={{ width: '100px' }} color="primary" onClick={() => this.handleSubmit()}>
+                                                <Button block color="primary" onClick={() => this.handleSubmit()}>
                                                     Tạo
                                                 </Button>
                                             </Col>

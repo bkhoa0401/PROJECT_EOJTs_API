@@ -42,9 +42,9 @@ class InformMessage_Detail extends Component {
         if (data !== null) {
             this.setState({
                 loading: false,
-                title: data.title,
-                description: data.description,
-                students: data.students,
+                title: data.event.title,
+                description: data.event.description,
+                students: data.studentList,
                 business: business,
                 informFromName: informFromName,
                 informFromEmail: informFromEmail,
