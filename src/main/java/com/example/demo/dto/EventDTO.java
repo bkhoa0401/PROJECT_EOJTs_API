@@ -9,6 +9,7 @@ import java.util.List;
 public class EventDTO implements Serializable {
     private Event event;
     private List<Student> studentList;
+    private boolean isStudentSent;
 
     public Event getEvent() {
         return event;
@@ -24,6 +25,14 @@ public class EventDTO implements Serializable {
 
     public void setStudentList(List<Student> studentList) {
         this.studentList = studentList;
+    }
+
+    public boolean isStudentSent() {
+        return isStudentSent;
+    }
+
+    public void setStudentSent(boolean studentSent) {
+        isStudentSent = studentSent;
     }
 
     public EventDTO() {

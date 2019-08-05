@@ -3,12 +3,12 @@ export default {
     {
       name: 'Site Head Master',
       url: '/headmaster',
-      icon: 'icon-star',
+      icon: 'icon-speedometer',
     },
     {
       name: 'Doanh nghiệp đề xuất',
       url: '/business-proposed',
-      icon: 'icon-star',
+      icon: 'icon-note',
     },
   ]
 };

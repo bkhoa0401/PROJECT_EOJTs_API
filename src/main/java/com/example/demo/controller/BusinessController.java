@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.*;
 
 
@@ -154,7 +155,7 @@ public class BusinessController {
 
     @GetMapping("/getBusiness")
     @ResponseBody
-    public ResponseEntity<Business> getBusinessByEmail() {
+    public ResponseEntity<Business> getBusinessByEmailFromToken() {
         String email = getEmailFromToken();
         Business business = businessService.getBusinessByEmail(email);
         if (business != null) {
@@ -463,12 +464,26 @@ public class BusinessController {
     //get all events of business
     @GetMapping("/events")
     @ResponseBody
-    public ResponseEntity<List<Event>> getAllEventOfBusiness() {
+    public ResponseEntity<List<Event>> getAllEventOfBusinessSent() {
         String email = getEmailFromToken();
         List<Event> events = eventService.getEventListOfBusiness(email);
-        if (events != null) {
+        List<Event> finalBusinessListEvent = eventService.getEventListSent(events);
+        if (finalBusinessListEvent != null) {
             Collections.sort(events);
-            return new ResponseEntity<List<Event>>(events, HttpStatus.OK);
+            return new ResponseEntity<List<Event>>(finalBusinessListEvent, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/eventsReceived")
+    @ResponseBody
+    public ResponseEntity<List<Event>> getAllEventOfAdminReceived() {
+        String email = getEmailFromToken();
+        List<Event> businessReceivedEvents = eventService.getEventListOfBusiness(email);
+        List<Event> finalListEvent = eventService.getEventListReceived(businessReceivedEvents);
+        if (finalListEvent != null) {
+            Collections.sort(finalListEvent);
+            return new ResponseEntity<List<Event>>(finalListEvent, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

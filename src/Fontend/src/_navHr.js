@@ -8,12 +8,12 @@ export default {
     {
       name: 'Dashboard',
       url: '/hr',
-      icon: 'icon-star',
+      icon: 'icon-speedometer',
     },
     {
       name: 'Quản lí tài khoản',
       url: '/manage_account',
-      icon: 'icon-puzzle',
+      icon: 'icon-list',
       // children: [
       //   {
       //     name: 'Đổi mật khẩu',
@@ -25,32 +25,32 @@ export default {
     {
       name: 'Quản lí lời mời',
       url: '/invitation',
-      icon: 'icon-star',
+      icon: 'icon-cursor',
     },
     {
       name: 'DSSV đăng kí thực tập',
       url: '/ojt_registration',
-      icon: 'icon-star',
+      icon: 'icon-user-follow',
     },
     {
       name: 'DSSV chính thức',
       url: '/official_list',
-      icon: 'icon-star',
+      icon: 'icon-user-following',
     },
     {
       name: 'Thông tin tuyển dụng',
       url: '/job_post_list_hr',
-      icon: 'icon-star',
+      icon: 'icon-directions',
     },
     {
       name: 'Thông báo',
       url: '/InformMessage/InformMessage',
-      icon: 'icon-star',
+      icon: 'icon-envelope-letter',
     },
     {
       name: 'Đánh giá',
       url: '/Report/Report',
-      icon: 'icon-star',
+      icon: 'icon-docs',
     },
     // {
     //   name: 'test',

@@ -3,7 +3,7 @@ import decode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Col, DropdownItem, DropdownMenu, DropdownToggle, FormGroup, Nav, NavItem } from 'reactstrap';
+import { Col, DropdownItem, Badge, DropdownMenu, DropdownToggle, FormGroup, Label, Nav, NavItem } from 'reactstrap';
 import sygnet from '../../assets/img/brand/sygnet.svg';
 import ApiServices from '../../service/api-service';
 
@@ -21,8 +21,8 @@ class DefaultHeader extends Component {
     this.state = {
       username: '',
       logo: null,
-      role:'',
-      linkProfile:'',
+      role: '',
+      linkProfile: '',
     }
   }
 
@@ -96,12 +96,12 @@ class DefaultHeader extends Component {
         </Nav> */}
         <Nav className="ml-auto" navbar>
           <NavItem>
-            <h6 className="nav-link" style={{ color: "Gray", fontWeight:'bold'}}>Xin chào, {username}!&nbsp;&nbsp;</h6>
+            <h6 className="nav-link" style={{ color: "Gray", fontWeight: 'bold' }}>Xin chào, {username}!&nbsp;&nbsp;</h6>
           </NavItem>
           {/* <NavItem className="d-md-down-none">
             <NavLink to="#" className="nav-link"><i className="icon-bell"></i><Badge pill color="danger">5</Badge></NavLink>
-          </NavItem> */}
-          {/* <NavItem className="d-md-down-none">
+          </NavItem>
+          <NavItem className="d-md-down-none">
             <NavLink to="#" className="nav-link"><i className="icon-list"></i></NavLink>
           </NavItem>
           <NavItem className="d-md-down-none">
@@ -109,7 +109,7 @@ class DefaultHeader extends Component {
           </NavItem> */}
           <AppHeaderDropdown direction="down">
             <DropdownToggle nav>
-              {logo === null ? 
+              {logo === null ?
                 <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="usericon" /> :
                 <img src={logo} className="img-avatar" alt={logo} />
               }
@@ -135,7 +135,7 @@ class DefaultHeader extends Component {
               <DropdownItem>
                 <FormGroup row>
                   <Col md="2" style={{ height: "7px" }}>
-                    <i className="fa cui-pencil"></i>
+                    <i className="fa cui-lock-locked"></i>
                   </Col>
                   <Col md="9.5" style={{ height: "7px" }}>
                     <NavItem>
@@ -163,8 +163,27 @@ class DefaultHeader extends Component {
               </DropdownItem>
             </DropdownMenu>
           </AppHeaderDropdown>
+          <AppHeaderDropdown direction="down">
+            <DropdownToggle nav>
+              <i className="icon-envelope-letter"></i><Badge pill color="primary">1</Badge>
+            </DropdownToggle>
+            <DropdownMenu right style={{ width: "250px" }}>
+              <DropdownItem header tag="div" className="text-center"><strong>Có 1 thông báo</strong></DropdownItem>
+              <DropdownItem style={{ height: "60px" }}>
+                <FormGroup row>
+                  &nbsp;&nbsp;<img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="usericon" style={{ width: '30px', height: '30px' }} />
+                  <NavItem>
+                    <NavLink to={linkProfile} className="nav-link"><Label style={{ color: 'Gray', fontSize: '12px', height: '10px' }}>&nbsp;&nbsp;Tài khoản</Label>
+                      <br />
+                      <Label style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>&nbsp;&nbsp;&nbsp;Tiêu đề</Label>
+                    </NavLink>
+                  </NavItem>
+                </FormGroup>
+              </DropdownItem>
+            </DropdownMenu>
+          </AppHeaderDropdown>
         </Nav>
-        <AppAsideToggler className="d-md-down-none" />
+        {/* <AppAsideToggler className="d-md-down-none" /> */}
         {/*<AppAsideToggler className="d-lg-none" mobile />*/}
       </React.Fragment>
     );

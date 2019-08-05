@@ -203,7 +203,7 @@ public class StudentController {
     //check semester //ok
     @GetMapping("/getAllStudent")
     @ResponseBody
-    public ResponseEntity<List<Student_OjtenrollmentDTO>> getAllStudents() throws Exception {
+    public ResponseEntity<List<Student_OjtenrollmentDTO>> getAllStudentsWithInternOptionState() throws Exception {
         LOG.info("Getting all student");
         Semester semester = semesterService.getSemesterCurrent();
         List<Student> studentList;
@@ -691,7 +691,7 @@ public class StudentController {
 
     @GetMapping("/business")
     @ResponseBody
-    public ResponseEntity<Business> getBusinessOfSutdent(@RequestParam String email) {
+    public ResponseEntity<Business> getBusinessOfStudent(@RequestParam String email) {
         Business business = studentService.getBusinessOfStudent(email);
         if (business != null) {
             return new ResponseEntity<Business>(business, HttpStatus.OK);

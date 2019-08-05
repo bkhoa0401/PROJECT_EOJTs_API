@@ -117,26 +117,29 @@ public class AdminController {
     //check semester ok
     @GetMapping("/events")
     @ResponseBody
-    public ResponseEntity<List<Event>> getAllEventOfAdmin() {
+    public ResponseEntity<List<Event>> getAllEventOfAdminSent() {
         String email = getEmailFromToken();
         List<Event> events = eventService.getEventListOfAdmin(email);
-        Semester semester = semesterService.getSemesterCurrent();
-        Date dateStartSemester = semester.getStart_date();
-        Date dateEndSemester = semester.getEnd_date();
-        List<Event> finalListEvent = new ArrayList<Event>();
-        for (int i = 0; i < events.size(); i++) {
-            Date dateEventCreate = events.get(i).getTime_created();
-            if (dateEventCreate.after(dateStartSemester) && dateEventCreate.before(dateEndSemester)) {
-                finalListEvent.add(events.get(i));
-            }
+        List<Event> finalAdminListEvent = eventService.getEventListSent(events);
+        if (finalAdminListEvent != null) {
+            Collections.sort(finalAdminListEvent);
+            return new ResponseEntity<List<Event>>(finalAdminListEvent, HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/eventsReceived")
+    @ResponseBody
+    public ResponseEntity<List<Event>> getAllEventOfAdminReceived() {
+        String email = getEmailFromToken();
+        List<Event> adminReceivedEvents = eventService.getEventListOfAdmin(email);
+        List<Event> finalListEvent = eventService.getEventListReceived(adminReceivedEvents);
         if (finalListEvent != null) {
             Collections.sort(finalListEvent);
             return new ResponseEntity<List<Event>>(finalListEvent, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
-
 
     @PostMapping("/event")
     public ResponseEntity<Void> createEvent(@RequestParam List<String> listStudentEmail, @RequestBody Event event) {
@@ -183,7 +186,7 @@ public class AdminController {
 
     @GetMapping("/jobPostsBusinesses")
     @ResponseBody
-    public ResponseEntity<List<Business_ListJobPostDTO>> getJobPostsOfBusiness() {
+    public ResponseEntity<List<Business_ListJobPostDTO>> getJobPostsOfBusinesses() {
         List<Business_ListJobPostDTO> business_listJobPostDTOS = adminService.getJobPostsOfBusinesses();
 
         if (business_listJobPostDTOS != null) {

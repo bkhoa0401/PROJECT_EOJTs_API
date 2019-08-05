@@ -25,8 +25,25 @@ public class EventController {
     @ResponseBody
     public ResponseEntity<EventDTO> getEventById(@RequestParam int id) {
         EventDTO eventDTO = eventService.findEventAndStudentsById(id);
+        if (eventDTO.getStudentList().size() == 1 && eventDTO.getEvent().getStudent_events().get(0).isStudent() == true) {
+            eventDTO.setStudentSent(true);
+        } else {
+            eventDTO.setStudentSent(false);
+        }
         if (eventDTO != null) {
             return new ResponseEntity<EventDTO>(eventDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @PutMapping("/setStateEvent")
+    @ResponseBody
+    public ResponseEntity<Void> setStateEvent(@RequestParam Integer eventId) {
+        Event event = eventService.findEventById(eventId);
+        if (event != null) {
+            event.setRead(true);
+            boolean result = eventService.updateEvent(event);
+            return new ResponseEntity<Void>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
