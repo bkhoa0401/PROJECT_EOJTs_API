@@ -1,7 +1,7 @@
 import decode from 'jwt-decode';
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { Button, Card, CardBody, CardHeader, Col, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, FormGroup, Pagination, Row, TabContent, TabPane } from 'reactstrap';
+import { Button, Card, CardBody, CardHeader, Col, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, FormGroup, Input, Pagination, Row, TabContent, TabPane } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import { async } from 'q';
@@ -18,6 +18,9 @@ class InformMessage extends Component {
             activeTab: 0,
             role: '',
             viewSent: true,
+
+            typesOfEvent: ['Tổng', 'Chưa xem', 'Đã xem'],
+            typeSelected: 0,
         };
     }
 
@@ -73,6 +76,8 @@ class InformMessage extends Component {
             this.setState({
                 activeTab: tab,
                 informs: informs,
+                viewSent: viewSent,
+                typeSelected: 0,
             });
         }
     }
@@ -81,6 +86,44 @@ class InformMessage extends Component {
         const { name, value } = event.target;
         await this.setState({
             [name]: value.substr(0, 20),
+        })
+    }
+
+    handleInputSelect = async (event) => {
+        const { name, value } = event.target;
+        let typeSelected = this.state.typeSelected;
+        const role = this.state.role;
+        let informs = null;
+        // console.log(name);
+        // console.log(value);
+        if (value == 0) {
+            typeSelected = 0;
+            if (role === "ROLE_ADMIN") {
+                informs = await ApiServices.Get('/admin/eventsReceived');
+            }
+            if (role === "ROLE_HR") {
+                informs = await ApiServices.Get('/business/eventsReceived');
+            }
+        } else if (value == 1) {
+            typeSelected = 1;
+            if (role === "ROLE_ADMIN") {
+                informs = await ApiServices.Get('/admin/eventsReceivedNotRead');
+            }
+            if (role === "ROLE_HR") {
+                informs = await ApiServices.Get('/business/eventsReceivedNotRead');
+            }
+        } else if (value == 2) {
+            typeSelected = 2;
+            if (role === "ROLE_ADMIN") {
+                informs = await ApiServices.Get('/admin/eventsReceivedRead');
+            }
+            if (role === "ROLE_HR") {
+                informs = await ApiServices.Get('/business/eventsReceivedRead');
+            }
+        }
+        await this.setState({
+            typeSelected: typeSelected,
+            informs: informs,
         })
     }
 
@@ -111,7 +154,7 @@ class InformMessage extends Component {
     }
 
     render() {
-        const { loading, searchValue, informs, activeTab } = this.state;
+        const { loading, searchValue, informs, activeTab, viewSent, typesOfEvent } = this.state;
         let filteredListInforms;
         if (informs !== null) {
             filteredListInforms = informs.filter(
@@ -154,6 +197,17 @@ class InformMessage extends Component {
                                                 <form className="form-inline">
                                                     <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
                                                 </form>
+                                                {viewSent === false ? 
+                                                <div style={{ marginRight: "4px" }}>
+                                                    <Input style={{ width: '150px' }} onChange={e => { this.handleInputSelect(e) }} type="select" name="typeEvent">
+                                                        {typesOfEvent && typesOfEvent.map((typeEvent, i) => {
+                                                            return (
+                                                                <option value={i} selected={i === this.state.typeSelected}>{typeEvent}</option>
+                                                            )
+                                                        })}
+                                                    </Input>
+                                                </div> : <></>
+                                                }
                                             </nav>
                                             <TabContent activeTab={this.state.activeTab} style={{ maxHeight: '350px', overflowY: 'auto' }}>
                                                 <TabPane tabId={0}>
