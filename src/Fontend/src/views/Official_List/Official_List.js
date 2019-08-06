@@ -664,7 +664,7 @@ class Official_List extends Component {
                 </FormGroup>
                 <hr />
                 <ListGroup>
-                  <div style={{ height: '400px', overflowY: 'scroll' }}>
+                  <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
                     {suggestedStudents && suggestedStudents.map((student, index) =>
                       <ListGroupItem action onClick={() => this.handleSelect(student.email)} style={{ color: colorTextSelect[isSelect[index]], backgroundColor: colorBackSelect[isSelect[index]] }}>
                         <ListGroupItemHeading style={{ fontWeight: 'bold' }}>{student.name}</ListGroupItemHeading>
@@ -811,7 +811,7 @@ class Official_List extends Component {
                       })}
                     </Input>
                   </FormGroup>
-                  <div style={{ height: '492px', overflowY: 'scroll' }}>
+                  <div style={{ maxHeight: '492px', overflowY: 'auto' }}>
                     <Table responsive striped>
                       <thead>
                         <tr>

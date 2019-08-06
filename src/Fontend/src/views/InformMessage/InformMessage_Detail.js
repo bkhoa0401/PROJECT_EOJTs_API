@@ -83,11 +83,13 @@ class InformMessage_Detail extends Component {
                                             <Col xs="12" md="10">
                                                 {isStudentSent === false ?
                                                     <Label>{<>{informFromName}<br />({informFromEmail})</>}</Label> :
-                                                    (students && students.map((student, index) =>
-                                                        <>
-                                                            {student.name}<br />({student.email})<br />
-                                                        </>
-                                                    ))
+                                                    <div>
+                                                        {students && students.map((student, index) => {
+                                                            return (
+                                                                <>{student.name}<br />({student.email})<br /></>
+                                                            )
+                                                        })}
+                                                    </div>
                                                 }
                                             </Col>
                                         </FormGroup>
@@ -98,11 +100,13 @@ class InformMessage_Detail extends Component {
                                             <Col xs="12" md="10">
                                                 <Label>
                                                     {isStudentSent === false ?
-                                                        (students && students.map((student, index) =>
-                                                            <>
-                                                                {student.name} ({student.email})<br />
-                                                            </>
-                                                        )) :
+                                                        <div style={{ maxHeight: '100px', overflowY: 'auto' }}>
+                                                            {students && students.map((student, index) => {
+                                                                return (
+                                                                    <>{student.name} ({student.email})<br /></>
+                                                                )
+                                                            })}
+                                                        </div> :
                                                         <Label>{<>{informFromName}<br />({informFromEmail})</>}</Label>
                                                     }
                                                 </Label>

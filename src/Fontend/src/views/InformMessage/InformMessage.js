@@ -84,25 +84,39 @@ class InformMessage extends Component {
         })
     }
 
-    handleDirect = async (uri, inform) => {
-        let viewSent = this.state.viewSent;
-        if (viewSent === false) {
-            if (inform.read === false) {
-                const result = await ApiServices.Put(`/event/setStateEvent?eventId=${inform.id}`);
-                this.props.history.push(uri);
-            }
+    handleDirect = async (uri) => {
+        this.props.history.push(uri);
+    }
+
+    handleShowString(stringFormat) {
+        if (stringFormat.length > 100) {
+            var finalString = stringFormat.substr(0, 100);
+            finalString += "...";
+            return finalString;
         } else {
-            this.props.history.push(uri);
+            return stringFormat;
         }
     }
 
+    handleShowSent(studentList) {
+        let informTo = '';
+        for (let index = 0; index < studentList.length; index++) {
+            informTo += studentList[index].email + "; ";
+            if (informTo.length > 75) {
+                informTo += "...";
+                return informTo;
+            }
+        }
+        return informTo;
+    }
+
     render() {
-        const { loading, searchValue, informs, activeTab, viewSent } = this.state;
+        const { loading, searchValue, informs, activeTab } = this.state;
         let filteredListInforms;
         if (informs !== null) {
             filteredListInforms = informs.filter(
                 (inform) => {
-                    if (inform.title.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+                    if (inform.event.title.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
                         return inform;
                     }
                 }
@@ -124,14 +138,14 @@ class InformMessage extends Component {
                                         <FormGroup row>
                                             <Col style={{ textAlign: 'right', paddingRight: "0px" }}>
                                                 {activeTab === 0 ?
-                                                    <Button onClick={() => this.toggle(0)} color="primary" style={{ width: "250px", height: "40px", fontSize: "16px", fontWeight: 'bold' }}>Thông báo đã gửi</Button> :
-                                                    <Button onClick={() => this.toggle(0)} outline color="primary" style={{ width: "250px", height: "40px", fontSize: "16px" }}>Thông báo đã gửi</Button>
+                                                    <Button onClick={() => this.toggle(0)} color="primary" style={{ width: "250px", fontSize: "16px", fontWeight: 'bold' }}>Thông báo đã gửi</Button> :
+                                                    <Button onClick={() => this.toggle(0)} outline color="primary" style={{ width: "250px", fontSize: "16px" }}>Thông báo đã gửi</Button>
                                                 }
                                             </Col>
                                             <Col style={{ textAlign: 'left', paddingLeft: "0px" }}>
                                                 {activeTab === 1 ?
-                                                    <Button onClick={() => this.toggle(1)} color="primary" style={{ width: "250px", height: "40px", fontSize: "16px", fontWeight: 'bold' }}>Thông báo đã nhận</Button> :
-                                                    <Button onClick={() => this.toggle(1)} outline color="primary" style={{ width: "250px", height: "40px", fontSize: "16px" }}>Thông báo đã nhận</Button>
+                                                    <Button onClick={() => this.toggle(1)} color="primary" style={{ width: "250px", fontSize: "16px", fontWeight: 'bold' }}>Thông báo đã nhận</Button> :
+                                                    <Button onClick={() => this.toggle(1)} outline color="primary" style={{ width: "250px", fontSize: "16px" }}>Thông báo đã nhận</Button>
                                                 }
                                             </Col>
                                         </FormGroup>
@@ -141,15 +155,16 @@ class InformMessage extends Component {
                                                     <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
                                                 </form>
                                             </nav>
-                                            <TabContent activeTab={this.state.activeTab} style={{ height: '400px', overflowY: 'scroll' }}>
+                                            <TabContent activeTab={this.state.activeTab} style={{ maxHeight: '350px', overflowY: 'auto' }}>
                                                 <TabPane tabId={0}>
                                                     <ListGroup>
                                                         {filteredListInforms && filteredListInforms.map((inform, index) => {
                                                             return (
-                                                                <ListGroupItem tag="a" action onClick={() => this.handleDirect(`/InformMessage/InformMessage_Detail/${inform.id}`)}>
-                                                                    <ListGroupItemHeading style={{ fontWeight: 'bold' }}>{inform.title}</ListGroupItemHeading>
+                                                                <ListGroupItem tag="a" action onClick={() => this.handleDirect(`/InformMessage/InformMessage_Detail/${inform.event.id}`)}>
+                                                                    <ListGroupItemHeading style={{ fontWeight: 'bold' }}>Tiêu đề: {this.handleShowString(inform.event.title)}</ListGroupItemHeading>
                                                                     <ListGroupItemText>
-                                                                        {inform.description}
+                                                                        &emsp;&emsp;Gửi: {this.handleShowSent(inform.studentList)}<br />
+                                                                        &emsp;Nội dung: {this.handleShowString(inform.event.description)}
                                                                     </ListGroupItemText>
                                                                 </ListGroupItem>
                                                             )
@@ -160,17 +175,19 @@ class InformMessage extends Component {
                                                     <ListGroup>
                                                         {filteredListInforms && filteredListInforms.map((inform, index) => {
                                                             return (
-                                                                inform.read === false ?
-                                                                    <ListGroupItem tag="a" action onClick={() => this.handleDirect(`/InformMessage/InformMessage_Detail/${inform.id}`, inform)}>
-                                                                        <ListGroupItemHeading style={{ fontWeight: 'bold' }}>{inform.title}</ListGroupItemHeading>
+                                                                inform.event.read === false ?
+                                                                    <ListGroupItem tag="a" action onClick={() => this.handleDirect(`/InformMessage/InformMessage_Detail/${inform.event.id}`)}>
+                                                                        <ListGroupItemHeading style={{ fontWeight: 'bold' }}>Tiêu đề: {this.handleShowString(inform.event.title)}</ListGroupItemHeading>
                                                                         <ListGroupItemText>
-                                                                            {inform.description}
+                                                                            &emsp;&emsp;Người gửi: {inform.studentList && inform.studentList.map((student, index) => student.email)}<br />
+                                                                            &emsp;Nội dung: {this.handleShowString(inform.event.description)}
                                                                         </ListGroupItemText>
                                                                     </ListGroupItem> :
-                                                                    <ListGroupItem tag="a" action style={{backgroundColor:'gainsboro'}} onClick={() => this.handleDirect(`/InformMessage/InformMessage_Detail/${inform.id}`, inform)}>
-                                                                        <ListGroupItemHeading style={{ fontWeight: 'bold' }}>{inform.title}</ListGroupItemHeading>
+                                                                    <ListGroupItem tag="a" action style={{ backgroundColor: 'gainsboro' }} onClick={() => this.handleDirect(`/InformMessage/InformMessage_Detail/${inform.event.id}`)}>
+                                                                        <ListGroupItemHeading style={{ fontWeight: 'bold' }}>Tiêu đề: {this.handleShowString(inform.event.title)}</ListGroupItemHeading>
                                                                         <ListGroupItemText>
-                                                                            {inform.description}
+                                                                            &emsp;&emsp;Người gửi: {inform.studentList && inform.studentList.map((student, index) => student.email)}<br />
+                                                                            &emsp;Nội dung: {this.handleShowString(inform.event.description)}
                                                                         </ListGroupItemText>
                                                                     </ListGroupItem>
                                                             )

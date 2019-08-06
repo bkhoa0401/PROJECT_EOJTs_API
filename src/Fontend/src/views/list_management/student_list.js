@@ -758,7 +758,7 @@ class student_list extends Component {
                                         </FormGroup>
                                     </Form> :
                                     <Form>
-                                        <div style={{ height: '563px', overflowY: 'scroll', width: "100%", overflowX: "hidden" }}>
+                                        <div style={{ maxHeight: '563px', overflowY: 'auto', width: "100%", overflowX: "hidden" }}>
                                             <div style={{ textAlign: "center" }}>
                                                 <img src="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410" width="96%" />
                                                 <br /><br /><br />
@@ -934,7 +934,7 @@ class student_list extends Component {
                                             })}
                                         </Input>
                                     </FormGroup>
-                                    <div style={{ height: '492px', overflowY: 'scroll' }}>
+                                    <div style={{ maxHeight: '492px', overflowY: 'auto' }}>
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>

@@ -117,26 +117,58 @@ public class AdminController {
     //check semester ok
     @GetMapping("/events")
     @ResponseBody
-    public ResponseEntity<List<Event>> getAllEventOfAdminSent() {
+    public ResponseEntity<List<EventDTO>> getAllEventOfAdminSent() {
         String email = getEmailFromToken();
         List<Event> events = eventService.getEventListOfAdmin(email);
         List<Event> finalAdminListEvent = eventService.getEventListSent(events);
-        if (finalAdminListEvent != null) {
-            Collections.sort(finalAdminListEvent);
-            return new ResponseEntity<List<Event>>(finalAdminListEvent, HttpStatus.OK);
+        Collections.sort(finalAdminListEvent);
+        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalAdminListEvent);
+        if (eventDTOList != null) {
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
     @GetMapping("/eventsReceived")
     @ResponseBody
-    public ResponseEntity<List<Event>> getAllEventOfAdminReceived() {
+    public ResponseEntity<List<EventDTO>> getAllEventOfAdminReceived() {
         String email = getEmailFromToken();
         List<Event> adminReceivedEvents = eventService.getEventListOfAdmin(email);
         List<Event> finalListEvent = eventService.getEventListReceived(adminReceivedEvents);
-        if (finalListEvent != null) {
-            Collections.sort(finalListEvent);
-            return new ResponseEntity<List<Event>>(finalListEvent, HttpStatus.OK);
+        Collections.sort(finalListEvent);
+        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEvent);
+        if (eventDTOList != null) {
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/eventsReceivedNotRead")
+    @ResponseBody
+    public ResponseEntity<List<EventDTO>> getAllEventOfAdminReceivedNotRead() {
+        String email = getEmailFromToken();
+        List<Event> adminReceivedEvents = eventService.getEventListOfAdmin(email);
+        List<Event> finalListEvent = eventService.getEventListReceived(adminReceivedEvents);
+        List<Event> finalListEventNotRead = eventService.getEventListNotRead(finalListEvent);
+        Collections.sort(finalListEventNotRead);
+        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventNotRead);
+        if (eventDTOList != null) {
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/eventsReceivedRead")
+    @ResponseBody
+    public ResponseEntity<List<EventDTO>> getAllEventOfAdminReceivedRead() {
+        String email = getEmailFromToken();
+        List<Event> adminReceivedEvents = eventService.getEventListOfAdmin(email);
+        List<Event> finalListEvent = eventService.getEventListReceived(adminReceivedEvents);
+        List<Event> finalListEventRead = eventService.getEventListRead(finalListEvent);
+        Collections.sort(finalListEventRead);
+        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventRead);
+        if (eventDTOList != null) {
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

@@ -386,7 +386,7 @@ class Create_InformMessage extends Component {
                                 <br />
                                 <hr />
                                 <ListGroup>
-                                    <div style={{ height: '400px', overflowY: 'scroll' }}>
+                                    <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                         {students && students.map((student, index) =>
                                             <ListGroupItem action onClick={() => this.handleSelect(student.email)} style={{ color: colorTextSelect[preIsSelect[index]], backgroundColor: colorBackSelect[preIsSelect[index]] }}>
                                                 <ListGroupItemHeading style={{ fontWeight: 'bold' }}>{student.name}</ListGroupItemHeading>

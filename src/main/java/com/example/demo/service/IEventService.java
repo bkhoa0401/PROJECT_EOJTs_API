@@ -17,11 +17,17 @@ public interface IEventService {
 
     List<Event> getEventListReceived(List<Event> eventList);
 
+    List<Event> getEventListRead(List<Event> eventList);
+
+    List<Event> getEventListNotRead(List<Event> eventList);
+
     int countEventIsNotRead(String email);
 
     Event findEventById(int id);
 
     EventDTO findEventAndStudentsById(int id);
+
+    List<EventDTO> transformListEventToEventDTO(List<Event> eventList);
 
     boolean createEvent(Event event);
 

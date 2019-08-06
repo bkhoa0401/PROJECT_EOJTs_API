@@ -23,6 +23,8 @@ class DefaultHeader extends Component {
       logo: null,
       role: '',
       linkProfile: '',
+      informs: null,
+      haveInform: false,
     }
   }
 
@@ -36,7 +38,13 @@ class DefaultHeader extends Component {
       let username = '';
       let logo = null;
       let linkProfile = '';
+      let informs = null;
+      let haveInform = false;
       if (role === "ROLE_ADMIN" || role === "ROLE_STARTUP" || role === "ROLE_HEADTRAINING" || role === "ROLE_HEADMASTER") {
+        if (role === "ROLE_ADMIN") {
+          haveInform = true;
+          informs = await ApiServices.Get(`/admin/eventsReceivedNotRead`);
+        }
         actor = await ApiServices.Get(`/admin/getCurrentUser`);
         if (actor !== null) {
           username = actor.name;
@@ -44,6 +52,8 @@ class DefaultHeader extends Component {
           linkProfile = `/account_detail`;
         }
       } else if (role === "ROLE_HR") {
+        haveInform = true;
+        informs = await ApiServices.Get(`/business/eventsReceivedNotRead`);
         actor = await ApiServices.Get(`/business/getBusiness`);
         if (actor !== null) {
           username = actor.business_eng_name;
@@ -65,14 +75,26 @@ class DefaultHeader extends Component {
         username: username,
         logo: logo,
         linkProfile: linkProfile,
+        haveInform: haveInform,
+        informs: informs,
       });
+    }
+  }
+
+  handleShowString(stringFormat) {
+    if (stringFormat.length > 18) {
+      var finalString = stringFormat.substr(0, 18);
+      finalString += "...";
+      return finalString;
+    } else {
+      return stringFormat;
     }
   }
 
   render() {
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
-    const { username, logo, linkProfile } = this.state;
+    const { username, logo, linkProfile, haveInform, informs } = this.state;
 
     return (
       <React.Fragment>
@@ -121,28 +143,32 @@ class DefaultHeader extends Component {
               <DropdownItem><i className="fa fa-tasks"></i> Tasks<Badge color="danger">42</Badge></DropdownItem>
               <DropdownItem><i className="fa fa-comments"></i> Comments<Badge color="warning">42</Badge></DropdownItem> */}
               <DropdownItem>
-                <FormGroup row>
-                  <Col md="2" style={{ height: "7px" }}>
-                    <i className="fa cui-user"></i>
-                  </Col>
-                  <Col md="9.5" style={{ height: "7px" }}>
-                    <NavItem>
-                      <NavLink to={linkProfile} className="nav-link" style={{ color: "Gray" }}>&nbsp;&nbsp;Tài khoản</NavLink>
-                    </NavItem>
-                  </Col>
-                </FormGroup>
+                <NavItem className="d-md-down-none">
+                  <NavLink to={linkProfile} className="nav-link" style={{ color: "Gray" }}>
+                    <FormGroup row>
+                      <Col md="2" style={{ height: "7px" }}>
+                        <i className="fa cui-user"></i>
+                      </Col>
+                      <Col md="9.5" style={{ height: "7px" }}>
+                        &nbsp;&nbsp;Tài khoản
+                      </Col>
+                    </FormGroup>
+                  </NavLink>
+                </NavItem>
               </DropdownItem>
               <DropdownItem>
-                <FormGroup row>
-                  <Col md="2" style={{ height: "7px" }}>
-                    <i className="fa cui-lock-locked"></i>
-                  </Col>
-                  <Col md="9.5" style={{ height: "7px" }}>
-                    <NavItem>
-                      <NavLink to="account/changepassword" className="nav-link" style={{ color: "Gray" }}>&nbsp;&nbsp;Đổi mật khẩu</NavLink>
-                    </NavItem>
-                  </Col>
-                </FormGroup>
+                <NavItem className="d-md-down-none">
+                  <NavLink to="account/changepassword" className="nav-link" style={{ color: "Gray" }}>
+                    <FormGroup row>
+                      <Col md="2" style={{ height: "7px" }}>
+                        <i className="fa cui-lock-locked"></i>
+                      </Col>
+                      <Col md="9.5" style={{ height: "7px" }}>
+                        &nbsp;&nbsp;Đổi mật khẩu
+                    </Col>
+                    </FormGroup>
+                  </NavLink>
+                </NavItem>
               </DropdownItem>
               {/* <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem> */}
               {/* <DropdownItem><i className="fa fa-user"></i> Profile</DropdownItem>
@@ -163,25 +189,37 @@ class DefaultHeader extends Component {
               </DropdownItem>
             </DropdownMenu>
           </AppHeaderDropdown>
-          <AppHeaderDropdown direction="down">
-            <DropdownToggle nav>
-              <i className="icon-envelope-letter"></i><Badge pill color="primary">1</Badge>
-            </DropdownToggle>
-            <DropdownMenu right style={{ width: "250px" }}>
-              <DropdownItem header tag="div" className="text-center"><strong>Có 1 thông báo</strong></DropdownItem>
-              <DropdownItem style={{ height: "60px" }}>
-                <FormGroup row>
-                  &nbsp;&nbsp;<img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="usericon" style={{ width: '30px', height: '30px' }} />
-                  <NavItem>
-                    <NavLink to={linkProfile} className="nav-link"><Label style={{ color: 'Gray', fontSize: '12px', height: '10px' }}>&nbsp;&nbsp;Tài khoản</Label>
-                      <br />
-                      <Label style={{ fontWeight: 'bold', color: 'black', fontSize: '16px' }}>&nbsp;&nbsp;&nbsp;Tiêu đề</Label>
-                    </NavLink>
-                  </NavItem>
-                </FormGroup>
-              </DropdownItem>
-            </DropdownMenu>
-          </AppHeaderDropdown>
+          {haveInform === true ?
+            <AppHeaderDropdown direction="down">
+              <DropdownToggle nav>
+                <i className="icon-envelope-letter"></i><Badge pill color="primary">{informs === null ? "" : informs.length}</Badge>
+              </DropdownToggle>
+              <DropdownMenu right style={{ width: "250px", maxHeight:"360px", overflowY:'auto' }}>
+                <DropdownItem header tag="div" className="text-center"><strong>Có {informs === null ? "" : informs.length} thông báo</strong></DropdownItem>
+                {informs && informs.map((inform, index) => {
+                  return (
+                    <DropdownItem style={{ height: "90px" }}>
+                      <NavItem className="d-md-down-none">
+                        <NavLink to={`/InformMessage/InformMessage_Detail/${inform.event.id}`} className="nav-link">
+                          <FormGroup row>
+                            {inform.studentList && inform.studentList.map((student, index) => {
+                              return (
+                                student.avatarLink === null ?
+                                  <Col>&nbsp;&nbsp;<img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="usericon" style={{ width: '30px', height: '30px' }} />&nbsp;&nbsp;{student.email}</Col> :
+                                  <Col style={{ color: 'Gray', fontSize: '12px' }}>&nbsp;&nbsp;<img src={student.avatarLink} className="img-avatar" alt={student.avatarLink} style={{ width: '30px', height: '30px' }} />&nbsp;&nbsp;{student.email}</Col>
+                              )
+                            })}
+                          </FormGroup>
+                          <p style={{ fontWeight: 'bold', color: 'black', paddingTop:'0px', fontSize: '16px', textAlign: 'left' }}>{this.handleShowString(inform.event.description)}</p>
+                        </NavLink>
+                      </NavItem>
+                    </DropdownItem>
+                  )
+                })
+                }
+              </DropdownMenu>
+            </AppHeaderDropdown> : <></>
+          }
         </Nav>
         {/* <AppAsideToggler className="d-md-down-none" /> */}
         {/*<AppAsideToggler className="d-lg-none" mobile />*/}

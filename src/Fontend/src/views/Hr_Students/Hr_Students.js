@@ -459,7 +459,7 @@ class Hr_Students extends Component {
                                             })}
                                         </Input>
                                     </FormGroup>
-                                    <div style={{ height: '492px', overflowY: 'scroll' }}>
+                                    <div style={{ maxHeight: '492px', overflowY: 'auto' }}>
                                     <Table responsive striped>
                                         <thead>
                                             <tr>
