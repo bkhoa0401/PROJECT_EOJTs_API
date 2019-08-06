@@ -45,6 +45,12 @@ public class Users implements Serializable {
     @Column(name = "isActive")
     private boolean isActive;
 
+    @Column(name = "resetToken")
+    private String resetToken;
+
+    @Column(name = "resetTime")
+    private String resetTime;
+
     public Users() {
     }
 
@@ -65,6 +71,21 @@ public class Users implements Serializable {
         return password;
     }
 
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public String getResetTime() {
+        return resetTime;
+    }
+
+    public void setResetTime(String resetTime) {
+        this.resetTime = resetTime;
+    }
 
     public List<Role> getRoles() {
         return roles;

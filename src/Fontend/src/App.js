@@ -24,7 +24,7 @@ class App extends Component {
             <Switch>
               <Route exact path="/login" name="Login Page" render={props => <Login {...props}/>} />
               <Route exact path="/forgotpassword" name="ForgotPassword Page" render={props => <ForgotPassword {...props}/>} />
-              <Route exact path="/resetpassword" name="ResetPassword Page" render={props => <ResetPassword {...props}/>} />
+              <Route exact path="/resetpassword/:id" name="ResetPassword Page" render={props => <ResetPassword {...props}/>} />
               <Route exact path="/404" name="Page 404" render={props => <Page404 {...props}/>} />
               <Route exact path="/500" name="Page 500" render={props => <Page500 {...props}/>} />
               <Route path="/" name="Home" render={props => <DefaultLayout {...props}/>} />
