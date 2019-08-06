@@ -17,6 +17,7 @@ class InformMessage_Detail extends Component {
             business: null,
             informFromName: '',
             informFromEmail: '',
+            isStudentSent: false,
         };
     }
 
@@ -24,6 +25,10 @@ class InformMessage_Detail extends Component {
         const informMessageID = window.location.href.split("/").pop();
         const token = localStorage.getItem('id_token');
         const data = await ApiServices.Get(`/event/getEvent?id=${informMessageID}`);
+        let isStudentSent = false;
+        if (data.studentSent === true) {
+            isStudentSent = data.studentSent;
+        }
         let business = null;
         let informFromName = '';
         let informFromEmail = '';
@@ -48,6 +53,7 @@ class InformMessage_Detail extends Component {
                 business: business,
                 informFromName: informFromName,
                 informFromEmail: informFromEmail,
+                isStudentSent: isStudentSent,
             });
         }
     }
@@ -57,7 +63,7 @@ class InformMessage_Detail extends Component {
     }
 
     render() {
-        const { loading, title, description, students, informFromName, informFromEmail } = this.state;
+        const { loading, title, description, students, informFromName, informFromEmail, isStudentSent } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -75,7 +81,16 @@ class InformMessage_Detail extends Component {
                                                 <h6>Từ:</h6>
                                             </Col>
                                             <Col xs="12" md="10">
-                                                <Label>{<>{informFromName}<br />({informFromEmail})</>}</Label>
+                                                {isStudentSent === false ?
+                                                    <Label>{<>{informFromName}<br />({informFromEmail})</>}</Label> :
+                                                    <div>
+                                                        {students && students.map((student, index) => {
+                                                            return (
+                                                                <>{student.name}<br />({student.email})<br /></>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                }
                                             </Col>
                                         </FormGroup>
                                         <FormGroup row>
@@ -84,11 +99,16 @@ class InformMessage_Detail extends Component {
                                             </Col>
                                             <Col xs="12" md="10">
                                                 <Label>
-                                                    {students && students.map((student, index) =>
-                                                        <>
-                                                            {student.name} ({student.email})<br />
-                                                        </>
-                                                    )}
+                                                    {isStudentSent === false ?
+                                                        <div style={{ maxHeight: '100px', overflowY: 'auto' }}>
+                                                            {students && students.map((student, index) => {
+                                                                return (
+                                                                    <>{student.name} ({student.email})<br /></>
+                                                                )
+                                                            })}
+                                                        </div> :
+                                                        <Label>{<>{informFromName}<br />({informFromEmail})</>}</Label>
+                                                    }
                                                 </Label>
                                             </Col>
                                         </FormGroup>

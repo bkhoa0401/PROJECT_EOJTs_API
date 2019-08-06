@@ -462,7 +462,7 @@ class Official_List extends Component {
     const result = await ApiServices.Put('/business/assignSupervisor', listDataEdited);
 
     if (result.status === 200) {
-      Toastify.actionSuccess("Thao tác thành công!");
+      Toastify.actionSuccess(" thành công!");
       const students = await ApiServices.Get('/business/getStudentsByBusiness');
       const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness');
       const supervisors_FirstBlank = await ApiServices.Get('/business/getAllSupervisorABusiness');
@@ -479,7 +479,7 @@ class Official_List extends Component {
         loading: false
       });
     } else {
-      Toastify.actionFail("Thao tác thất bại!");
+      Toastify.actionFail(" thất bại!");
       this.setState({
         loading: false
       })
@@ -558,7 +558,7 @@ class Official_List extends Component {
                       <th style={{ textAlign: "center" }}>CV</th>
                       <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
                           <th style={{ textAlign: "center" }}>Người hướng dẫn</th>
-                          <th style={{ textAlign: "center" }}>Thao tác</th>
+                          <th style={{ textAlign: "center" }}></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -612,10 +612,11 @@ class Official_List extends Component {
 
                                 </td>
                                 <td style={{ textAlign: "center" }}>
-                                  {/* <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}>Chi tiết</Button> */}
-                                  <Button style={{ width: '100px', marginRight: "2px" }} color="primary" onClick={() => this.toggleModalDetail(student)}>Chi tiết</Button>
+                                  {/* <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}><i className="fa cui-magnifying-glass"></i></Button> */}
+                                  <Button color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa cui-magnifying-glass"></i></Button>
+                                  &nbsp;&nbsp;
                                   {/* <Button style={{ width: '100px' }} color="success" onClick={() => this.handleDirect(`/details_task/${student.email}`)}>Nhiệm vụ</Button> */}
-                                  <Button style={{ width: '100px' }} color="success" onClick={() => this.toggleModalTask(student)}>Nhiệm vụ</Button>
+                                  <Button color="success" onClick={() => this.toggleModalTask(student)}>Nhiệm vụ</Button>
                                 </td>
                               </tr>
                             )
@@ -664,7 +665,7 @@ class Official_List extends Component {
                 </FormGroup>
                 <hr />
                 <ListGroup>
-                  <div style={{ height: '400px', overflowY: 'scroll' }}>
+                  <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
                     {suggestedStudents && suggestedStudents.map((student, index) =>
                       <ListGroupItem action onClick={() => this.handleSelect(student.email)} style={{ color: colorTextSelect[isSelect[index]], backgroundColor: colorBackSelect[isSelect[index]] }}>
                         <ListGroupItemHeading style={{ fontWeight: 'bold' }}>{student.name}</ListGroupItemHeading>
@@ -811,7 +812,7 @@ class Official_List extends Component {
                       })}
                     </Input>
                   </FormGroup>
-                  <div style={{ height: '492px', overflowY: 'scroll' }}>
+                  <div style={{ maxHeight: '492px', overflowY: 'auto' }}>
                     <Table responsive striped>
                       <thead>
                         <tr>

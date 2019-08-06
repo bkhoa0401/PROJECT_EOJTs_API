@@ -175,7 +175,7 @@ class Report_Detail extends Component {
                                                 <>
                                                     &nbsp;&nbsp;
                                             <Button color="primary" onClick={() => this.handleDirect(`/Report/Update_Report/${report.id}~${student.email}`)}>
-                                                        Chỉnh sửa
+                                                <i className="fa cui-note"></i>
                                             </Button>
                                                 </> :
                                                 <></>

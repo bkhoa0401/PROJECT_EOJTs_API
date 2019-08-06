@@ -214,7 +214,7 @@ class Invitation_Create extends Component {
                                                 {/* <th style={{ textAlign: "center" }}>Kỹ năng</th> */}
                                                 {/* <th style={{ textAlign: "center" }}>GPA</th> */}
                                                 {/* <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
-                                                <th style={{ textAlign: "center" }}>Thao tác</th>
+                                                <th style={{ textAlign: "center" }}></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -251,7 +251,7 @@ class Invitation_Create extends Component {
                                                                 }
                                                             </td> */}
                                                             <td style={{ textAlign: "center" }}>
-                                                                <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(student)}>Chi tiết</Button>
+                                                                <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(student)}><i className="fa cui-magnifying-glass"></i></Button>
                                                                 &nbsp;&nbsp;
                                                                 <Button onClick={() => this.toggleModal(student)} type="submit" color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                             </td>
@@ -283,7 +283,7 @@ class Invitation_Create extends Component {
                                                 {/* <th style={{ textAlign: "center" }}>Kỹ năng</th>
                                                 <th style={{ textAlign: "center" }}>GPA</th>
                                                 <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
-                                                <th style={{ textAlign: "center" }}>Thao tác</th>
+                                                <th style={{ textAlign: "center" }}></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -320,7 +320,7 @@ class Invitation_Create extends Component {
                                                                 }
                                                             </td> */}
                                                             <td style={{ textAlign: "center" }}>
-                                                                <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(suggestedStudent)}>Chi tiết</Button>
+                                                                <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(suggestedStudent)}><i className="fa cui-magnifying-glass"></i></Button>
                                                                 &nbsp;&nbsp;
                                                                 <Button onClick={() => this.toggleModal(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                             </td>

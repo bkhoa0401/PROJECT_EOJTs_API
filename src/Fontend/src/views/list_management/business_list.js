@@ -111,7 +111,7 @@ class business_list extends Component {
                                                                     SĐT: {business.business_phone}
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    <Button style={{ width: "80px" }} color="primary" onClick={() => this.toggleModalDetail(business.email)}>Chi tiết</Button>
+                                                                    <Button color="primary" onClick={() => this.toggleModalDetail(business.email)}><i className="fa cui-magnifying-glass"></i></Button>
                                                                     {/* <Button
                                                                         style={{ fontWeight: "bold", borderWidth: 0 }}
                                                                         color="primary"

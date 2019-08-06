@@ -80,7 +80,7 @@ class Job_Post_List_HR extends Component {
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Thời gian đăng</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Phúc lợi</th>
                                                     {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Thông tin liên hệ</th> */}
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Thao tác</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -111,7 +111,7 @@ class Job_Post_List_HR extends Component {
                                                                     }
                                                                 </td> */}
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    <Button type="submit" onClick={() => this.handleDirect(`/job-post/${job_post.id}`)} color="primary">Chi tiết</Button>
+                                                                    <Button type="submit" onClick={() => this.handleDirect(`/job-post/${job_post.id}`)} color="primary"><i className="fa cui-magnifying-glass"></i></Button>
                                                                     {/* <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/product/update/${job_post.id}`)}>Update</Button> */}
                                                                 </td>
                                                             </tr>

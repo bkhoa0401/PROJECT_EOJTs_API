@@ -294,7 +294,7 @@ class Hr_Students extends Component {
                                                         <th style={{ textAlign: "center" }}>Email</th>
                                                         <th style={{ textAlign: "center" }}>Chuyên ngành</th>
                                                         <th style={{ textAlign: "center" }}>GPA</th>
-                                                        <th style={{ textAlign: "center" }}>Thao tác</th>
+                                                        <th style={{ textAlign: "center" }}></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -316,10 +316,11 @@ class Hr_Students extends Component {
                                                         </td> */}
                                                                 <td style={{ textAlign: "center" }}>{student.gpa}</td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    {/* <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}>Chi tiết</Button> */}
-                                                                    <Button style={{ width: '100px', marginRight: "2px" }} color="primary" onClick={() => this.toggleModalDetail(student)}>Chi tiết</Button>
+                                                                    {/* <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}><i className="fa cui-magnifying-glass"></i></Button> */}
+                                                                    <Button color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa cui-magnifying-glass"></i></Button>
+                                                                    &nbsp;&nbsp;
                                                                     {/* <Button style={{ width: '100px' }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.email}`)}>Nhiệm vụ</Button> */}
-                                                                    <Button style={{ width: '100px' }} color="success" onClick={() => this.toggleModalTask(student)}>Nhiệm vụ</Button>
+                                                                    <Button color="success" onClick={() => this.toggleModalTask(student)}>Nhiệm vụ</Button>
                                                                 </td>
                                                             </tr>
                                                         )
@@ -459,7 +460,7 @@ class Hr_Students extends Component {
                                             })}
                                         </Input>
                                     </FormGroup>
-                                    <div style={{ height: '492px', overflowY: 'scroll' }}>
+                                    <div style={{ maxHeight: '492px', overflowY: 'auto' }}>
                                     <Table responsive striped>
                                         <thead>
                                             <tr>

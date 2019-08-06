@@ -169,7 +169,7 @@ class BusinessProposed extends Component {
                                                                     <th></th>
                                                                 )
                                                         }
-                                                        <th style={{ textAlign: "center" }}>Thao tác</th>
+                                                        <th style={{ textAlign: "center" }}></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

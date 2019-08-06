@@ -117,26 +117,61 @@ public class AdminController {
     //check semester ok
     @GetMapping("/events")
     @ResponseBody
-    public ResponseEntity<List<Event>> getAllEventOfAdmin() {
+    public ResponseEntity<List<EventDTO>> getAllEventOfAdminSent() {
         String email = getEmailFromToken();
         List<Event> events = eventService.getEventListOfAdmin(email);
-        Semester semester = semesterService.getSemesterCurrent();
-        Date dateStartSemester = semester.getStart_date();
-        Date dateEndSemester = semester.getEnd_date();
-        List<Event> finalListEvent = new ArrayList<Event>();
-        for (int i = 0; i < events.size(); i++) {
-            Date dateEventCreate = events.get(i).getTime_created();
-            if (dateEventCreate.after(dateStartSemester) && dateEventCreate.before(dateEndSemester)) {
-                finalListEvent.add(events.get(i));
-            }
-        }
-        if (finalListEvent != null) {
-            Collections.sort(finalListEvent);
-            return new ResponseEntity<List<Event>>(finalListEvent, HttpStatus.OK);
+        List<Event> finalAdminListEvent = eventService.getEventListSent(events);
+        Collections.sort(finalAdminListEvent);
+        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalAdminListEvent);
+        if (eventDTOList != null) {
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/eventsReceived")
+    @ResponseBody
+    public ResponseEntity<List<EventDTO>> getAllEventOfAdminReceived() {
+        String email = getEmailFromToken();
+        List<Event> adminReceivedEvents = eventService.getEventListOfAdmin(email);
+        List<Event> finalListEvent = eventService.getEventListReceived(adminReceivedEvents);
+        Collections.sort(finalListEvent);
+        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEvent);
+        if (eventDTOList != null) {
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/eventsReceivedNotRead")
+    @ResponseBody
+    public ResponseEntity<List<EventDTO>> getAllEventOfAdminReceivedNotRead() {
+        String email = getEmailFromToken();
+        List<Event> adminReceivedEvents = eventService.getEventListOfAdmin(email);
+        List<Event> finalListEvent = eventService.getEventListReceived(adminReceivedEvents);
+        List<Event> finalListEventNotRead = eventService.getEventListNotRead(finalListEvent);
+        Collections.sort(finalListEventNotRead);
+        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventNotRead);
+        if (eventDTOList != null) {
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/eventsReceivedRead")
+    @ResponseBody
+    public ResponseEntity<List<EventDTO>> getAllEventOfAdminReceivedRead() {
+        String email = getEmailFromToken();
+        List<Event> adminReceivedEvents = eventService.getEventListOfAdmin(email);
+        List<Event> finalListEvent = eventService.getEventListReceived(adminReceivedEvents);
+        List<Event> finalListEventRead = eventService.getEventListRead(finalListEvent);
+        Collections.sort(finalListEventRead);
+        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventRead);
+        if (eventDTOList != null) {
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 
     @PostMapping("/event")
     public ResponseEntity<Void> createEvent(@RequestParam List<String> listStudentEmail, @RequestBody Event event) {
@@ -183,7 +218,7 @@ public class AdminController {
 
     @GetMapping("/jobPostsBusinesses")
     @ResponseBody
-    public ResponseEntity<List<Business_ListJobPostDTO>> getJobPostsOfBusiness() {
+    public ResponseEntity<List<Business_ListJobPostDTO>> getJobPostsOfBusinesses() {
         List<Business_ListJobPostDTO> business_listJobPostDTOS = adminService.getJobPostsOfBusinesses();
 
         if (business_listJobPostDTOS != null) {

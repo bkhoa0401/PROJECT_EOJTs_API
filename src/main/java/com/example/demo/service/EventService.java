@@ -2,12 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.dto.EventDTO;
 import com.example.demo.entity.Event;
+import com.example.demo.entity.Semester;
 import com.example.demo.entity.Student;
 import com.example.demo.entity.Student_Event;
 import com.example.demo.repository.IEventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,9 @@ public class EventService implements IEventService {
 
     @Autowired
     IStudent_EventService iStudent_eventService;
+
+    @Autowired
+    ISemesterService iSemesterService;
 
     @Override
     public List<Event> getEventList(String email) {
@@ -48,6 +53,62 @@ public class EventService implements IEventService {
     }
 
     @Override
+    public List<Event> getEventListSent(List<Event> eventList) {
+        Semester semester = iSemesterService.getSemesterCurrent();
+        Date dateStartSemester = semester.getStart_date();
+        Date dateEndSemester = semester.getEnd_date();
+        List<Event> finalListEvent = new ArrayList<Event>();
+        for (int i = 0; i < eventList.size(); i++) {
+            Date dateEventCreate = eventList.get(i).getTime_created();
+            if (dateEventCreate.after(dateStartSemester) && dateEventCreate.before(dateEndSemester)) {
+                if (eventList.get(i).getStudent_events().size() > 1 || eventList.get(i).getStudent_events().get(0).isStudent() == false) {
+                    finalListEvent.add(eventList.get(i));
+                }
+            }
+        }
+        return finalListEvent;
+    }
+
+    @Override
+    public List<Event> getEventListReceived(List<Event> eventList) {
+        Semester semester = iSemesterService.getSemesterCurrent();
+        Date dateStartSemester = semester.getStart_date();
+        Date dateEndSemester = semester.getEnd_date();
+        List<Event> finalListEvent = new ArrayList<Event>();
+        for (int i = 0; i < eventList.size(); i++) {
+            Date dateEventCreate = eventList.get(i).getTime_created();
+            if (dateEventCreate.after(dateStartSemester) && dateEventCreate.before(dateEndSemester)) {
+                if (eventList.get(i).getStudent_events().size() == 1 && eventList.get(i).getStudent_events().get(0).isStudent() == true) {
+                    finalListEvent.add(eventList.get(i));
+                }
+            }
+        }
+        return finalListEvent;
+    }
+
+    @Override
+    public List<Event> getEventListRead(List<Event> eventList) {
+        List<Event> finalListEvent = new ArrayList<Event>();
+        for (int i = 0; i < eventList.size(); i++) {
+            if (eventList.get(i).isRead() == true) {
+                finalListEvent.add(eventList.get(i));
+            }
+        }
+        return  finalListEvent;
+    }
+
+    @Override
+    public List<Event> getEventListNotRead(List<Event> eventList) {
+        List<Event> finalListEvent = new ArrayList<Event>();
+        for (int i = 0; i < eventList.size(); i++) {
+            if (eventList.get(i).isRead() == false) {
+                finalListEvent.add(eventList.get(i));
+            }
+        }
+        return  finalListEvent;
+    }
+
+    @Override
     public int countEventIsNotRead(String email) {
         int count = IEventRepository.findEventsByStudentEmailAndReadIsFalse(email);
 
@@ -67,6 +128,15 @@ public class EventService implements IEventService {
 
     @Override
     public boolean createEvent(Event event) {
+        if (event != null) {
+            IEventRepository.save(event);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateEvent(Event event) {
         if (event != null) {
             IEventRepository.save(event);
             return true;
@@ -105,5 +175,21 @@ public class EventService implements IEventService {
             return eventDTO;
         }
         return null;
+    }
+
+    @Override
+    public List<EventDTO> transformListEventToEventDTO(List<Event> eventList) {
+        List<EventDTO> eventDTOList = new ArrayList<EventDTO>();
+        for (int i = 0; i < eventList.size(); i++) {
+            List<Student> studentList = new ArrayList<Student>();
+            for (int j = 0; j < eventList.get(i).getStudent_events().size(); j++) {
+                studentList.add(eventList.get(i).getStudent_events().get(j).getStudent());
+            }
+            EventDTO eventDTO = new EventDTO();
+            eventDTO.setEvent(eventList.get(i));
+            eventDTO.setStudentList(studentList);
+            eventDTOList.add(eventDTO);
+        }
+        return eventDTOList;
     }
 }

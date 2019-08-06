@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.*;
 
 
@@ -154,7 +155,7 @@ public class BusinessController {
 
     @GetMapping("/getBusiness")
     @ResponseBody
-    public ResponseEntity<Business> getBusinessByEmail() {
+    public ResponseEntity<Business> getBusinessByEmailFromToken() {
         String email = getEmailFromToken();
         Business business = businessService.getBusinessByEmail(email);
         if (business != null) {
@@ -463,12 +464,58 @@ public class BusinessController {
     //get all events of business
     @GetMapping("/events")
     @ResponseBody
-    public ResponseEntity<List<Event>> getAllEventOfBusiness() {
+    public ResponseEntity<List<EventDTO>> getAllEventOfBusinessSent() {
         String email = getEmailFromToken();
         List<Event> events = eventService.getEventListOfBusiness(email);
-        if (events != null) {
-            Collections.sort(events);
-            return new ResponseEntity<List<Event>>(events, HttpStatus.OK);
+        List<Event> finalBusinessListEvent = eventService.getEventListSent(events);
+        Collections.sort(finalBusinessListEvent);
+        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalBusinessListEvent);
+        if (eventDTOList != null) {
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/eventsReceived")
+    @ResponseBody
+    public ResponseEntity<List<EventDTO>> getAllEventOfBusinessReceived() {
+        String email = getEmailFromToken();
+        List<Event> businessReceivedEvents = eventService.getEventListOfBusiness(email);
+        List<Event> finalListEvent = eventService.getEventListReceived(businessReceivedEvents);
+        Collections.sort(finalListEvent);
+        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEvent);
+        if (eventDTOList != null) {
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/eventsReceivedNotRead")
+    @ResponseBody
+    public ResponseEntity<List<EventDTO>> getAllEventOfBusinessReceivedNotRead() {
+        String email = getEmailFromToken();
+        List<Event> businessReceivedEvents = eventService.getEventListOfBusiness(email);
+        List<Event> finalListEvent = eventService.getEventListReceived(businessReceivedEvents);
+        List<Event> finalListEventNotRead = eventService.getEventListNotRead(finalListEvent);
+        Collections.sort(finalListEventNotRead);
+        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventNotRead);
+        if (eventDTOList != null) {
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/eventsReceivedRead")
+    @ResponseBody
+    public ResponseEntity<List<EventDTO>> getAllEventOfBusinessReceivedRead() {
+        String email = getEmailFromToken();
+        List<Event> businessReceivedEvents = eventService.getEventListOfBusiness(email);
+        List<Event> finalListEvent = eventService.getEventListReceived(businessReceivedEvents);
+        List<Event> finalListEventRead = eventService.getEventListRead(finalListEvent);
+        Collections.sort(finalListEventRead);
+        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventRead);
+        if (eventDTOList != null) {
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
