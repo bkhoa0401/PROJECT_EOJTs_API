@@ -134,21 +134,21 @@ class Hr_Task_Detail extends Component {
         if (taskStatus === 'NOTSTART') {
             return (
                 <div>
-                    <Button style={{ marginLeft: "950px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/update/${id}`)}>Chỉnh sửa</Button>
+                    <Button style={{ marginLeft: "950px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button>
                 </div>
             )
         } else if (taskStatus === 'PENDING') {
             return (
                 <div>
                     <Button style={{ marginLeft: "720px" }} type="submit" color="success" onClick={() => this.handleConfirm(id, 3)}>Đánh dấu nhiệm vụ hoàn thành</Button>
-                    <Button style={{ marginLeft: "5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/update/${id}`)}>Chỉnh sửa</Button>
+                    <Button style={{ marginLeft: "5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button>
                 </div>
             )
         } else if (taskStatus === 'DONE') {
             return (
                 <div>
                     <Button style={{ marginLeft: "700px" }} type="submit" color="danger" onClick={() => this.handleConfirm(id, 2)}>Đánh dấu nhiệm vụ chưa hoàn thành</Button>
-                    <Button disabled style={{ marginLeft: "5px" }} type="submit" color="primary" onClick={() => this.handleDirect('')}>Chỉnh sửa</Button>
+                    <Button disabled style={{ marginLeft: "5px" }} type="submit" color="primary" onClick={() => this.handleDirect('')}><i className="fa cui-note"></i></Button>
                 </div>
             )
         }

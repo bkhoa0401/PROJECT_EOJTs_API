@@ -12,6 +12,7 @@ class Job_Post_List extends Component {
             businesses: null,
             searchValue: '',
             accordion: [],
+            isShowAll: true,
             // countJobPostList: [],
             // countJobPostSkillList: [],
             // businessList:[],
@@ -39,6 +40,7 @@ class Job_Post_List extends Component {
             this.setState({
                 businesses: businesses,
                 accordion: accordion,
+                isShowAll: true,
                 // jobPostList: jobPostList,
                 // skillList: skillList,
                 // countJobPostList: countJobPostList,
@@ -55,15 +57,20 @@ class Job_Post_List extends Component {
         const businesses = this.state.businesses;
         const accordion = this.state.accordion;
         const prevState = [];
+        let isShowAll = this.state.isShowAll;
         for (let index = 0; index < businesses.length; index++) {
             if (indexTab === index) {
                 prevState.push(!accordion[index]);
+                if (accordion[index] === true) {
+                    isShowAll = false;
+                }
             } else {
                 prevState.push(accordion[index]);
             }
         }
         this.setState({
             accordion: prevState,
+            isShowAll: isShowAll,
         });
     }
 
@@ -76,17 +83,34 @@ class Job_Post_List extends Component {
 
     handleHideAll = () => {
         const businesses = this.state.businesses;
-        const prevState = [];
-        for (let index = 0; index < businesses.length; index++) {
-            prevState.push(false);
+        const prevState = this.state.accordion;
+        let accordion = [];
+        let isShowAll = this.state.isShowAll;
+        for (let index = 0; index < prevState.length; index++) {
+            if (prevState[index] == false) {
+                isShowAll = false;
+                break;
+            }
+        }
+        if (isShowAll === true) {
+            for (let index = 0; index < businesses.length; index++) {
+                accordion.push(false);
+                isShowAll = false;
+            }
+        } else {
+            for (let index = 0; index < businesses.length; index++) {
+                accordion.push(true);
+                isShowAll = true;
+            }
         }
         this.setState({
-            accordion: prevState,
+            accordion: accordion,
+            isShowAll: isShowAll,
         });
     }
 
     render() {
-        const { businesses, searchValue } = this.state;
+        const { businesses, searchValue, isShowAll } = this.state;
         let filteredListBusinesses;
         if (businesses !== null) {
             filteredListBusinesses = businesses.filter(
@@ -115,10 +139,12 @@ class Job_Post_List extends Component {
                                         </form>
                                     </nav>
                                     <br />
-                                    <Row style={{paddingLeft:"45%"}}>
-                                        <Button onClick={this.handleHideAll} type="submit" color="secondary">Ẩn hết</Button>
+                                    <Row style={{ paddingLeft: "48%" }}>
+                                        <Button onClick={this.handleHideAll} type="submit" color="secondary">
+                                            {isShowAll === true ? <i className="fa cui-chevron-top"></i> : <i className="fa cui-chevron-bottom"></i>}
+                                        </Button>
                                     </Row>
-                                    <br/>
+                                    <br />
                                     <div id="accordionParrent" data-children=".accordion">
                                         {filteredListBusinesses && filteredListBusinesses.map((business, index) => {
                                             // let tmpJobPost;

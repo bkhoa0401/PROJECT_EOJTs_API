@@ -177,7 +177,7 @@ class InformMessage extends Component {
                                         <i className="fa fa-align-justify"></i>Thông báo
                                     </CardHeader>
                                     <CardBody>
-                                        <Row style={{ paddingLeft: '97%' }}><Button color="primary" onClick={() => this.handleDirect('/InformMessage/Create_InformMessage')}><i className="fa cui-pencil"></i></Button></Row>
+                                        <Row style={{ paddingLeft: '92%' }}><Button color="primary" onClick={() => this.handleDirect('/InformMessage/Create_InformMessage')}>Soạn thông báo</Button></Row>
                                         <FormGroup row>
                                             <Col style={{ textAlign: 'right', paddingRight: "0px" }}>
                                                 {activeTab === 0 ?

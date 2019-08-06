@@ -123,7 +123,7 @@ class Job_Post extends Component {
                 <Card>
                   <CardHeader style={{ fontWeight: "bold" }}>
                     <i className="fa fa-align-justify"></i>Thông tin tuyển dụng
-                <Button style={{ marginLeft: "950px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/job_post/update_job/${updatedId}`)}>Chỉnh sửa</Button>
+                <Button style={{ marginLeft: "950px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/job_post/update_job/${updatedId}`)}><i className="fa cui-note"></i></Button>
                   </CardHeader>
                   <CardBody>
                     <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">

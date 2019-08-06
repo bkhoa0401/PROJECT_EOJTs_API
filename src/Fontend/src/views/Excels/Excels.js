@@ -794,7 +794,7 @@ class Excels extends Component {
                                                                 <th >Chính sách ưu đãi</th>
                                                                 <th >Logo</th>
                                                                 <th >Kì</th> */}
-                                                            <th >Thao tác</th>
+                                                            <th ></th>
                                                         </thead>
                                                         <tbody>
                                                             {
@@ -818,7 +818,7 @@ class Excels extends Component {
                                                                                 <td  id={"b-" + index + "-14"} onKeyUp={this.rowBusinessEdited}>{business[14]}</td>
                                                                                 <td  id={"b-" + index + "-15"} onKeyUp={this.rowBusinessEdited}>{business[15]}</td> */}
                                                                             <td style={{ textAlign: "center" }}>
-                                                                                <Button style={{ width: "100px" }} color="primary" onClick={() => this.toggleLarge(business)} className="mr-1">Chi tiết</Button>
+                                                                                <Button style={{ width: "100px" }} color="primary" onClick={() => this.toggleLarge(business)} className="mr-1"><i className="fa cui-magnifying-glass"></i></Button>
                                                                                 {
                                                                                     this.showModal()
                                                                                 }

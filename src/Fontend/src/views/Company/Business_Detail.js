@@ -77,7 +77,7 @@ class Company extends Component {
                                             <Col md="2"> */}
                                         <h4>Thông tin công ty &nbsp;&nbsp;
                                                 {role === "ROLE_HR" ?
-                                                <Button color="primary" onClick={() => this.handleDirect('/company')}>Chỉnh sửa</Button> :
+                                                <Button color="primary" onClick={() => this.handleDirect('/company')}><i className="fa cui-note"></i></Button> :
                                                 <></>
                                             }</h4>
                                         {/* </Col>

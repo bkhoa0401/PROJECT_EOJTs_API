@@ -139,7 +139,7 @@ class Hr_Task extends Component {
                                                     <th style={{ textAlign: "center" }}>Người giao</th>
                                                     <th style={{ textAlign: "center" }}>Sinh viên</th>
                                                     <th style={{ textAlign: "center" }}>Trạng thái</th>
-                                                    <th style={{ textAlign: "center" }}>Thao tác</th>
+                                                    <th style={{ textAlign: "center" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -160,12 +160,12 @@ class Hr_Task extends Component {
                                                                     }
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/details/${task.task.id}`)}>Chi tiết</Button>
+                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/details/${task.task.id}`)}><i className="fa cui-magnifying-glass"></i></Button>
                                                                     {
                                                                         task.status === 'DONE' ? (
-                                                                            <Button disabled style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}>Xóa</Button>
+                                                                            <Button disabled style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
                                                                         ) : (
-                                                                                <Button style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}>Xóa</Button>
+                                                                                <Button style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
                                                                             )
                                                                     }
                                                                 </td>

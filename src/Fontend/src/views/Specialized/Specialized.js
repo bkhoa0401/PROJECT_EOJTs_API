@@ -231,7 +231,7 @@ class Specialized extends Component {
                                                     <th style={{ textAlign: "center" }}>STT</th>
                                                     <th style={{ textAlign: "center" }}>Tên Ngành</th>
                                                     <th style={{ textAlign: "center" }}>Trạng thái</th>
-                                                    <th style={{ textAlign: "center" }}>Thao tác</th>
+                                                    <th style={{ textAlign: "center" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -250,11 +250,11 @@ class Specialized extends Component {
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {specialized.status.toString() === 'true' ? (
-                                                                        <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(specialized, false)} type="submit">Vô hiệu</Button>
+                                                                        <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(specialized, false)} type="submit"><i className="fa cui-ban"></i></Button>
                                                                     ) : (
-                                                                            <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(specialized, true)} type="submit">Kích hoạt</Button>
+                                                                            <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(specialized, true)} type="submit"><i className="fa cui-circle-check"></i></Button>
                                                                         )}
-                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/specialized/update/${specialized.id}`)}>Chỉnh sửa</Button>
+                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/specialized/update/${specialized.id}`)}><i className="fa cui-note"></i></Button>
                                                                 </td>
                                                             </tr>
                                                         )

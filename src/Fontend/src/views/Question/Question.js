@@ -117,7 +117,7 @@ class Question extends Component {
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nội dung</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Thao tác</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -128,7 +128,7 @@ class Question extends Component {
                                                                 <td style={{ textAlign: "center" }}>{i + 1}</td>
                                                                 <td style={{ textAlign: "left" }}>
                                                                     {
-                                                                        <Label dangerouslySetInnerHTML={{ __html: question.content.length > 70 ? (question.content.replace(question.content.substr(71, question.content.length), " ...")) : (question.content) }} />
+                                                                        <Label dangerouslySetInnerHTML={{ __html: question.content.length > 133 ? (question.content.replace(question.content.substr(134, question.content.length), " ...")) : (question.content) }} />
                                                                     }
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
@@ -136,17 +136,17 @@ class Question extends Component {
                                                                         question.active.toString() === 'true' ? (
                                                                             <Badge color="success" style={{ fontSize: '12px' }}>KÍCH HOẠT</Badge>
                                                                         ) : (
-                                                                                <Badge color="danger" style={{ fontSize: '12px' }}>VÔ HIỆU</Badge>
+                                                                                <Badge color="danger" style={{ fontSize: '12px' }}>VÔ HIỆU HOÁ</Badge>
                                                                             )
                                                                     }
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} onClick={() => this.toggleModalDetail(question)} color="secondary">Chi tiết</Button>
-                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/question/update/${question.id}`)}>Chỉnh sửa</Button>
+                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} onClick={() => this.toggleModalDetail(question)} color="primary"><i className="fa cui-magnifying-glass"></i></Button>
+                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect(`/question/update/${question.id}`)}><i className="fa cui-note"></i></Button>
                                                                     {question.active.toString() === 'true' ? (
-                                                                        <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(question, false)} type="submit">Vô hiệu</Button>
+                                                                        <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(question, false)} type="submit"><i className="fa cui-ban"></i></Button>
                                                                     ) : (
-                                                                            <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(question, true)} type="submit">Kích hoạt</Button>
+                                                                            <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(question, true)} type="submit"><i className="fa cui-circle-check"></i></Button>
                                                                         )}
                                                                 </td>
                                                             </tr>
@@ -169,7 +169,7 @@ class Question extends Component {
                                                                     questionDetail.active.toString() === 'true' ? (
                                                                         <Badge color="success" style={{ fontSize: '12px' }}>KÍCH HOẠT</Badge>
                                                                     ) : (
-                                                                            <Badge color="danger" style={{ fontSize: '12px' }}>VÔ HIỆU</Badge>
+                                                                            <Badge color="danger" style={{ fontSize: '12px' }}>VÔ HIỆU HOÁ</Badge>
                                                                         )
                                                                 }
                                                             </Col>
@@ -210,9 +210,9 @@ class Question extends Component {
                                                             <Col xs="12" md="8">
                                                                 {
                                                                     questionDetail.has_others.toString() === 'true' ? (
-                                                                        <Badge color="success" style={{ fontSize: '12px' }}>ĐƯỢC PHÉP</Badge>
+                                                                        <Badge color="success" style={{ fontSize: '12px' }}><i className="fa cui-circle-check"></i></Badge>
                                                                     ) : (
-                                                                            <Badge color="danger" style={{ fontSize: '12px' }}>KHÔNG ĐƯỢC PHÉP</Badge>
+                                                                            <Badge color="danger" style={{ fontSize: '12px' }}><i className="fa cui-circle-x"></i></Badge>
                                                                         )
                                                                 }
                                                             </Col>
@@ -224,17 +224,17 @@ class Question extends Component {
                                                             <Col xs="12" md="8">
                                                                 {
                                                                     questionDetail.manyOption.toString() === 'true' ? (
-                                                                        <Badge color="success" style={{ fontSize: '12px' }}>ĐƯỢC PHÉP</Badge>
+                                                                        <Badge color="success" style={{ fontSize: '12px' }}><i className="fa cui-circle-check"></i></Badge>
                                                                     ) : (
-                                                                            <Badge color="danger" style={{ fontSize: '12px' }}>KHÔNG ĐƯỢC PHÉP</Badge>
+                                                                            <Badge color="danger" style={{ fontSize: '12px' }}><i className="fa cui-circle-x"></i></Badge>
                                                                         )
                                                                 }
                                                             </Col>
                                                         </FormGroup>
                                                     </ModalBody>
-                                                    <ModalFooter>
+                                                    {/* <ModalFooter>
                                                         <Button style={{ marginRight: "42%", width: "100px" }} color="primary" onClick={this.toggleModalDetail}>Xác nhận</Button>
-                                                    </ModalFooter>
+                                                    </ModalFooter> */}
                                                 </Modal>
                                             ) : (
                                                     <></>

@@ -100,7 +100,7 @@ class ManageAccount extends Component {
                                                     <th style={{ textAlign: "center" }}>SĐT</th>
                                                     <th style={{ textAlign: "center" }}>Địa chỉ</th>
                                                     <th style={{ textAlign: "center" }}>Trạng thái</th>
-                                                    <th style={{ textAlign: "center" }}>Thao tác</th>
+                                                    <th style={{ textAlign: "center" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -122,9 +122,9 @@ class ManageAccount extends Component {
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {supervisor.active.toString() === 'true' ? (
-                                                                        <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(supervisor.email, false)} type="submit">Vô hiệu</Button>
+                                                                        <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(supervisor.email, false)} type="submit"><i className="fa cui-ban"></i></Button>
                                                                     ) : (
-                                                                            <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(supervisor.email, true)} type="submit">Kích hoạt</Button>
+                                                                            <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(supervisor.email, true)} type="submit"><i className="fa cui-circle-check"></i></Button>
                                                                         )}
                                                                     {/* <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/supervisor/update/${supervisor.id}`)}>Update</Button> */}
                                                                 </td>

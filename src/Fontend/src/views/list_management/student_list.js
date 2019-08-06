@@ -576,7 +576,7 @@ class student_list extends Component {
                                                 <th style={{ textAlign: "center" }}>Chuyên ngành</th>
                                                 {/* <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
                                                 {/* <th style={{ textAlign: "center" }}>GPA</th> */}
-                                                <th style={{ textAlign: "center" }}>Thao tác</th>
+                                                <th style={{ textAlign: "center" }}></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -598,11 +598,11 @@ class student_list extends Component {
                                                         </td> */}
                                                         {/* <td style={{ textAlign: "center" }}>{student.gpa}</td> */}
                                                         <td style={{ textAlign: "center" }}>
-                                                            {/* <Button style={{ width: "80px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.student.email}`)}>Chi tiết</Button> */}
-                                                            <Button style={{ width: "80px" }} color="primary" onClick={() => this.toggleModalDetail(student.student.email)}>Chi tiết</Button>
+                                                            {/* <Button style={{ width: "80px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.student.email}`)}><i className="fa cui-magnifying-glass"></i></Button> */}
+                                                            <Button color="primary" onClick={() => this.toggleModalDetail(student.student.email)}><i className="fa cui-magnifying-glass"></i></Button>
                                                             &nbsp;&nbsp;
                                                             {/* <Button style={{ width: "90px" }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.student.email}`)}>Nhiệm vụ</Button> */}
-                                                            <Button style={{ width: '90px' }} color="success" onClick={() => this.toggleModalTask(student.student)}>Nhiệm vụ</Button>
+                                                            <Button color="success" onClick={() => this.toggleModalTask(student.student)}>Nhiệm vụ</Button>
                                                             {/* <Button style={{ width: "70px" }} color="danger">Xoá</Button> */}
                                                         </td>
                                                     </tr>
@@ -752,7 +752,7 @@ class student_list extends Component {
                                                 {
                                                     survey === null ?
                                                         <></> :
-                                                        <Button color="primary" onClick={() => this.handleViewSurvey()}>Xem</Button>
+                                                        <Button color="primary" onClick={() => this.handleViewSurvey()}><i className="fa cui-magnifying-glass"></i></Button>
                                                 }
                                             </Col>
                                         </FormGroup>
@@ -899,7 +899,7 @@ class student_list extends Component {
                             {
                                 isViewSurvey === 1 ?
                                     <ModalFooter>
-                                        <Button onClick={() => this.handleBackSurvey()} color="secondary">Trở về</Button>
+                                        <Button onClick={() => this.handleBackSurvey()} color="secondary"><i className="fa cui-arrow-left"></i></Button>
                                     </ModalFooter> :
                                     <></>
                             }

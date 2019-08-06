@@ -92,7 +92,7 @@ class Account_Detail extends Component {
                                     <CardHeader>
                                         {/* <FormGroup row>
                                             <Col md="2"> */}
-                                        <h4>Thông tin tài khoản &nbsp;&nbsp;<Button color="primary" onClick={() => this.handleDirect('/account_detail/account_update')}>Chỉnh sửa</Button></h4>
+                                        <h4>Thông tin tài khoản &nbsp;&nbsp;<Button color="primary" onClick={() => this.handleDirect('/account_detail/account_update')}><i className="fa cui-note"></i></Button></h4>
                                         {/* </Col>
                                             <Col md="10">
                                             </Col>

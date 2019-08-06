@@ -97,7 +97,7 @@ class User_Student extends Component {
                                                     <th style={{ textAlign: "center" }}>Email</th>
                                                     <th style={{ textAlign: "center" }}>Vai trò</th>
                                                     <th style={{ textAlign: "center" }}>Trạng thái</th>
-                                                    <th style={{ textAlign: "center" }}>Thao tác</th>
+                                                    <th style={{ textAlign: "center" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -121,9 +121,9 @@ class User_Student extends Component {
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {student.active.toString() === 'true' ? (
-                                                                        <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(student.email, false)} type="submit">Vô hiệu</Button>
+                                                                        <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(student.email, false)} type="submit"><i className="fa cui-ban"></i></Button>
                                                                     ) : (
-                                                                            <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(student.email, true)} type="submit">Kích hoạt</Button>
+                                                                            <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(student.email, true)} type="submit"><i className="fa cui-circle-check"></i></Button>
                                                                         )}
                                                                     {/* <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/student/update/${student.id}`)}>Update</Button> */}
                                                                 </td>

@@ -203,7 +203,7 @@ class Ojt_Registration extends Component {
                                                     <th style={{ textAlign: "center" }}>Chuyên ngành</th>
                                                     <th style={{ textAlign: "center" }}>Gửi lời mời</th>
                                                     <th style={{ textAlign: "center" }}>Nguyện vọng</th>
-                                                    <th style={{ textAlign: "center" }}>Thao tác</th>
+                                                    <th style={{ textAlign: "center" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -239,10 +239,10 @@ class Ojt_Registration extends Component {
                                                                     <strong>{numberOfOption}</strong>
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    {/* <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}>Chi tiết</Button> */}
-                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.toggleModalDetail(student)}>Chi tiết</Button>
-                                                                    <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(student, numberOfOption, false)}>Từ chối</Button>
-                                                                    <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(student, numberOfOption, true)}>Duyệt</Button>
+                                                                    {/* <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}><i className="fa cui-magnifying-glass"></i></Button> */}
+                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa cui-magnifying-glass"></i></Button>
+                                                                    <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(student, numberOfOption, false)}><i className="fa cui-ban"></i></Button>
+                                                                    <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(student, numberOfOption, true)}><i className="fa cui-circle-check"></i></Button>
                                                                 </td>
                                                             </tr>
                                                         )

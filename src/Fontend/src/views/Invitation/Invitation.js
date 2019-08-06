@@ -128,7 +128,7 @@ class Invitation extends Component {
                                                     <th style={{ textAlign: "center" }}>GPA</th> */}
                                                     {/* <th style={{ textAlign: "center" }}>Nguyện vọng của sinh viên</th> */}
                                                     <th style={{ textAlign: "center" }}>Trạng thái lời mời</th>
-                                                    <th style={{ textAlign: "center" }}>Thao tác</th>
+                                                    <th style={{ textAlign: "center" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -194,7 +194,7 @@ class Invitation extends Component {
                                                                     }
                                                                 </td>
                                                                 <td>
-                                                                    <Button style={{ width: "80px" }} color="primary" onClick={() => this.toggleModalDetail(student.student)}>Chi tiết</Button>
+                                                                    <Button color="primary" onClick={() => this.toggleModalDetail(student.student)}><i className="fa cui-magnifying-glass"></i></Button>
                                                                 </td>
                                                             </tr>
                                                         )

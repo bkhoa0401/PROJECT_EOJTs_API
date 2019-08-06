@@ -165,7 +165,7 @@ class Company extends Component {
                                     <CardHeader>
                                         <h4>Thông tin công ty</h4>
                                         {/* <Col xs="3" sm="3">
-                                    <Button style={{ marginLeft: "800px" }} block color="primary" onClick={() => this.handleDirect("/company/update")}>Chỉnh sửa</Button>
+                                    <Button style={{ marginLeft: "800px" }} block color="primary" onClick={() => this.handleDirect("/company/update")}><i className="fa cui-note"></i></Button>
                                 </Col> */}
                                     </CardHeader>
                                     <CardBody>

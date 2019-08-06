@@ -98,7 +98,7 @@ class Skill extends Component {
                                                     <th style={{ textAlign: "center" }}>Tên kỹ năng</th>
                                                     <th style={{ textAlign: "center" }}>Ngành</th>
                                                     <th style={{ textAlign: "center" }}>Trạng thái</th>
-                                                    <th style={{ textAlign: "center" }}>Thao tác</th>
+                                                    <th style={{ textAlign: "center" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -118,11 +118,11 @@ class Skill extends Component {
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {skill.status.toString() === 'true' ? (
-                                                                        <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(skill, false)} type="submit">Vô hiệu</Button>
+                                                                        <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(skill, false)} type="submit"><i className="fa cui-ban"></i></Button>
                                                                     ) : (
-                                                                            <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(skill, true)} type="submit">Kích hoạt</Button>
+                                                                            <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(skill, true)} type="submit"><i className="fa cui-circle-check"></i></Button>
                                                                         )}
-                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/skill/update/${skill.id}`)}>Chỉnh sửa</Button>
+                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/skill/update/${skill.id}`)}><i className="fa cui-note"></i></Button>
                                                                 </td>
                                                             </tr>
                                                         )
