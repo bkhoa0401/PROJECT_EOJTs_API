@@ -218,8 +218,8 @@ class Update_Question extends Component {
                                                 </Col>
                                                 <Col xs="12" md="10">
                                                     <Input onChange={this.handleInput} type="select" name="has_others" style={{ width: "20%" }}>
-                                                        <option value={true} selected={has_others === true}>Được phép</option>
-                                                        <option value={false} selected={has_others === false}>Không được phép</option>
+                                                        <option value={true} selected={has_others === true}>Có</option>
+                                                        <option value={false} selected={has_others === false}>Không</option>
                                                     </Input>
                                                 </Col>
                                             </FormGroup>
@@ -229,8 +229,8 @@ class Update_Question extends Component {
                                                 </Col>
                                                 <Col xs="12" md="10">
                                                     <Input onChange={this.handleInput} type="select" name="manyOption" style={{ width: "20%" }}>
-                                                        <option value={true} selected={manyOption === true}>Được phép</option>
-                                                        <option value={false} selected={manyOption === false}>Không được phép</option>
+                                                        <option value={true} selected={manyOption === true}>Có</option>
+                                                        <option value={false} selected={manyOption === false}>Không</option>
                                                     </Input>
                                                 </Col>
                                             </FormGroup>

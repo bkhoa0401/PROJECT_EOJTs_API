@@ -91,11 +91,12 @@ public class SpecializedService implements ISpecializedService {
         }
     }
 
-    @Cacheable(key = "{#currentPage,#rowsPerPage}")
+//    @Cacheable(key = "{#currentPage,#rowsPerPage}")
     public PagingDTO pagingSpecialized(int currentPage, int rowsPerPage) {
-        if (specializedListAll == null || specializedListAll.size() == 0) {
-            specializedListAll = ISpecializedRepository.findAll();
-        }
+//        if (specializedListAll == null || specializedListAll.size() == 0) {
+//            specializedListAll = ISpecializedRepository.findAll();
+//        }
+        List<Specialized> specializedList = getAllSpecialized();
 
 //        int length = specializedListAll.size();
 //
@@ -126,7 +127,7 @@ public class SpecializedService implements ISpecializedService {
 //        }
 //        return listPaging;
 
-        int pageNumber = (int) Math.ceil((double) specializedListAll.size() / (double) rowsPerPage); // ra tong so page
+        int pageNumber = (int) Math.ceil((double) specializedList.size() / (double) rowsPerPage); // ra tong so page
 
         int nextPageNumber = (currentPage + 1) * rowsPerPage;
 
@@ -134,9 +135,9 @@ public class SpecializedService implements ISpecializedService {
 
         List<Specialized> specializedsPagination = new ArrayList<>();
 
-        for (int i = 0; i < specializedListAll.size(); i++) {
+        for (int i = 0; i < specializedList.size(); i++) {
             if (i >= currentPageNumber && i < nextPageNumber) {
-                specializedsPagination.add(specializedListAll.get(i));
+                specializedsPagination.add(specializedList.get(i));
             }
         }
 
