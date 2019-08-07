@@ -330,41 +330,44 @@ public class AdminService implements IAdminService {
         int countMedium = 0;
         int countLeast = 0;
 
-        for (int i = 0; i < evaluationListByName.size(); i++) {
-            Evaluation evaluation = evaluationListByName.get(i);
+        if (evaluationListByName.size() != 0) {
+            for (int i = 0; i < evaluationListByName.size(); i++) {
+                Evaluation evaluation = evaluationListByName.get(i);
 
-            double scoreActivity = evaluation.getScore_activity();
-            double scoreDiscipline = evaluation.getScore_discipline();
-            double scoreWork = evaluation.getScore_work();
+                double scoreActivity = evaluation.getScore_activity();
+                double scoreDiscipline = evaluation.getScore_discipline();
+                double scoreWork = evaluation.getScore_work();
 
-            ReportType reportType = typeOfEvaluation(scoreActivity, scoreDiscipline, scoreWork);
-            if (reportType == ReportType.Excellent) {
-                countExcellent++;
-            } else if (reportType == ReportType.Good) {
-                countGood++;
-            } else if (reportType == ReportType.Middling) {
-                countMiddling++;
-            } else if (reportType == ReportType.Medium) {
-                countMedium++;
-            } else if (reportType == ReportType.Least) {
-                countLeast++;
+                ReportType reportType = typeOfEvaluation(scoreActivity, scoreDiscipline, scoreWork);
+                if (reportType == ReportType.Excellent) {
+                    countExcellent++;
+                } else if (reportType == ReportType.Good) {
+                    countGood++;
+                } else if (reportType == ReportType.Middling) {
+                    countMiddling++;
+                } else if (reportType == ReportType.Medium) {
+                    countMedium++;
+                } else if (reportType == ReportType.Least) {
+                    countLeast++;
+                }
             }
+            Statistical_EvaluationDTO statistical_evaluationDTO = new Statistical_EvaluationDTO();
+
+            ReportName reportName = evaluationListByName.get(0).getTitle();
+
+            List<Integer> percentTypeByNameReport = new ArrayList<>();
+            percentTypeByNameReport.add(countExcellent);
+            percentTypeByNameReport.add(countGood);
+            percentTypeByNameReport.add(countMiddling);
+            percentTypeByNameReport.add(countMedium);
+            percentTypeByNameReport.add(countLeast);
+
+            statistical_evaluationDTO.setEvaluationName(String.valueOf(reportName));
+            statistical_evaluationDTO.setStatisticalTypeEvaluation(percentTypeByNameReport);
+
+            return statistical_evaluationDTO;
         }
-        Statistical_EvaluationDTO statistical_evaluationDTO = new Statistical_EvaluationDTO();
-
-        ReportName reportName = evaluationListByName.get(0).getTitle();
-
-        List<Integer> percentTypeByNameReport = new ArrayList<>();
-        percentTypeByNameReport.add(countExcellent);
-        percentTypeByNameReport.add(countGood);
-        percentTypeByNameReport.add(countMiddling);
-        percentTypeByNameReport.add(countMedium);
-        percentTypeByNameReport.add(countLeast);
-
-        statistical_evaluationDTO.setEvaluationName(String.valueOf(reportName));
-        statistical_evaluationDTO.setStatisticalTypeEvaluation(percentTypeByNameReport);
-
-        return statistical_evaluationDTO;
+        return null;
     }
 
     public ReportType typeOfEvaluation(double scoreActivity, double scoreDiscipline, double scoreWork) {
@@ -505,45 +508,60 @@ public class AdminService implements IAdminService {
 
         List<Statistical_EvaluationDTO> statisticalEvaluationDTOList = new ArrayList<>();
 
-
-        if (evaluationListByTitle_1.size() != 0) {
-            statistical_evaluationDTOEvaluation_1 = statistical_evaluationDTO(evaluationListByTitle_1);
-            if (statistical_evaluationDTOEvaluation_1 != null) {
-                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_1);
+        if (evaluationListByTitle_1 != null) {
+            if (evaluationListByTitle_1.size() != 0) {
+                statistical_evaluationDTOEvaluation_1 = statistical_evaluationDTO(evaluationListByTitle_1);
+                if (statistical_evaluationDTOEvaluation_1 != null) {
+                    statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_1);
+                }
             }
         }
 
-        if (evaluationListByTitle_2.size() != 0) {
-            statistical_evaluationDTOEvaluation_2 = statistical_evaluationDTO(evaluationListByTitle_2);
-            if (statistical_evaluationDTOEvaluation_2 != null) {
-                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_2);
-            }
-        }
-        if (evaluationListByTitle_3.size() != 0) {
-            statistical_evaluationDTOEvaluation_3 = statistical_evaluationDTO(evaluationListByTitle_3);
-            if (statistical_evaluationDTOEvaluation_3 != null) {
-                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_3);
-            }
-        }
-        if (evaluationListByTitle_4.size() != 0) {
-            statistical_evaluationDTOEvaluation_4 = statistical_evaluationDTO(evaluationListByTitle_4);
-            if (statistical_evaluationDTOEvaluation_4 != null) {
-                statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_4);
+        if (evaluationListByTitle_2 != null) {
+            if (evaluationListByTitle_2.size() != 0) {
+                statistical_evaluationDTOEvaluation_2 = statistical_evaluationDTO(evaluationListByTitle_2);
+                if (statistical_evaluationDTOEvaluation_2 != null) {
+                    statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_2);
+                }
             }
         }
 
-        return statisticalEvaluationDTOList;
+        if (evaluationListByTitle_3 != null) {
+            if (evaluationListByTitle_3.size() != 0) {
+                statistical_evaluationDTOEvaluation_3 = statistical_evaluationDTO(evaluationListByTitle_3);
+                if (statistical_evaluationDTOEvaluation_3 != null) {
+                    statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_3);
+                }
+            }
+        }
+
+        if (evaluationListByTitle_4 != null) {
+            if (evaluationListByTitle_4.size() != 0) {
+                statistical_evaluationDTOEvaluation_4 = statistical_evaluationDTO(evaluationListByTitle_4);
+                if (statistical_evaluationDTOEvaluation_4 != null) {
+                    statisticalEvaluationDTOList.add(statistical_evaluationDTOEvaluation_4);
+                }
+            }
+        }
+
+        if (statisticalEvaluationDTOList.size() != 0) {
+            return statisticalEvaluationDTOList;
+        }
+        return null;
     }
 
     public List<Evaluation> getEvaluationByTitle(List<Evaluation> evaluationList, ReportName title) {
         List<Evaluation> evaluationListByTitle = new ArrayList<>();
-        for (int i = 0; i < evaluationList.size(); i++) {
-            Evaluation evaluation = evaluationList.get(i);
-            if (evaluation.getTitle().equals(title)) {
-                evaluationListByTitle.add(evaluation);
+        if (evaluationList != null) {
+            for (int i = 0; i < evaluationList.size(); i++) {
+                Evaluation evaluation = evaluationList.get(i);
+                if (evaluation.getTitle().equals(title)) {
+                    evaluationListByTitle.add(evaluation);
+                }
             }
+            return evaluationListByTitle;
         }
-        return evaluationListByTitle;
+        return null;
     }
 
 
@@ -650,7 +668,7 @@ public class AdminService implements IAdminService {
         List<String> emailList = new ArrayList<>();
         List<Integer> tasksOfStudent = new ArrayList<>();
 
-       // Semester semester = semesterService.getSemesterByStartDateAndEndDate();
+        // Semester semester = semesterService.getSemesterByStartDateAndEndDate();
         Semester semester = semesterService.getSemesterCurrent();
 
         Students_TasksDTO students_tasksDTO = new Students_TasksDTO();
@@ -779,15 +797,18 @@ public class AdminService implements IAdminService {
             }
         }
 
-        //ra duoc bn thang xuat sac kha gioi
-        Statistical_EvaluationDTO statistical_evaluationDTO = statistical_evaluationDTO(evaluationFinalListOfStudentsInSemester);
-        statisticalStudentInSemesterDTO.setCountStudentByType(statistical_evaluationDTO.getStatisticalTypeEvaluation());
+        if (evaluationFinalListOfStudentsInSemester.size() != 0) {
+            //ra duoc bn thang xuat sac kha gioi
+            Statistical_EvaluationDTO statistical_evaluationDTO = statistical_evaluationDTO(evaluationFinalListOfStudentsInSemester);
+            statisticalStudentInSemesterDTO.setCountStudentByType(statistical_evaluationDTO.getStatisticalTypeEvaluation());
 
-        //ra duoc bn thang pass fail
-        List<Integer> getStudentPassOrFail = getStudentPassOrFail(evaluationFinalListOfStudentsInSemester);
-        statisticalStudentInSemesterDTO.setCountStudentByStatus(getStudentPassOrFail);
+            //ra duoc bn thang pass fail
+            List<Integer> getStudentPassOrFail = getStudentPassOrFail(evaluationFinalListOfStudentsInSemester);
+            statisticalStudentInSemesterDTO.setCountStudentByStatus(getStudentPassOrFail);
 
-        return statisticalStudentInSemesterDTO;
+            return statisticalStudentInSemesterDTO;
+        }
+        return null;
     }
 
     public List<Integer> getStudentPassOrFail(List<Evaluation> evaluations) {

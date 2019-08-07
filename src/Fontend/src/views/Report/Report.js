@@ -53,6 +53,7 @@ class Report extends Component {
         }
         // console.log(students);
         // console.log(overviewReports);
+    if(overviewReports!==null){
         for (let index = 0; index < overviewReports.length; index++) {
             if (overviewReports[index] !== null) {
                 overviewReportsRate.push(overviewReports[index].score_discipline * 0.4 + overviewReports[index].score_work * 0.5 + overviewReports[index].score_activity * 0.1);
@@ -72,6 +73,7 @@ class Report extends Component {
                 onScreenStatus.push(null);
             }
         }
+    }
         // console.log(overviewReportsRate);
         // console.log(students);
         let tmpFinalRate = [];

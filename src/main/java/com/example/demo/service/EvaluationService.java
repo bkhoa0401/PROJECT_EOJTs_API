@@ -152,22 +152,29 @@ public class EvaluationService implements IEvaluationService {
         Business business = iBusinessService.getBusinessByEmail(email);
         List<Supervisor> supervisors = business.getSupervisors();
 
-        List<Evaluation> evaluationList = new ArrayList<>();
-        for (int i = 0; i < supervisors.size(); i++) {
-            Supervisor supervisor = supervisors.get(i);
-            List<Evaluation> evaluationListOfSupervisor = supervisor.getEvaluations();
-            evaluationList.addAll(evaluationListOfSupervisor);
-        } //get all evaluation of a business
+        if (supervisors != null) {
+            List<Evaluation> evaluationList = new ArrayList<>();
+            for (int i = 0; i < supervisors.size(); i++) {
+                Supervisor supervisor = supervisors.get(i);
+                List<Evaluation> evaluationListOfSupervisor = supervisor.getEvaluations();
+                if (evaluationListOfSupervisor.size() != 0) {
+                    evaluationList.addAll(evaluationListOfSupervisor);
+                }
+            } //get all evaluation of a business
 
-        List<Evaluation> evaluationListResult = new ArrayList<>();
-        for (int i = 0; i < evaluationList.size(); i++) {
-            Evaluation evaluation = evaluationList.get(i);
-            if (evaluation.getOjt_enrollment().getSemester().getId() == semesterCurrent.getId()) {
-                evaluationListResult.add(evaluation);
+            if(evaluationList.size()!=0){
+                List<Evaluation> evaluationListResult = new ArrayList<>();
+                for (int i = 0; i < evaluationList.size(); i++) {
+                    Evaluation evaluation = evaluationList.get(i);
+                    if (evaluation.getOjt_enrollment().getSemester().getId() == semesterCurrent.getId()) {
+                        evaluationListResult.add(evaluation);
+                    }
+                } //get evaluation of a business by semester
+
+                return evaluationListResult;
             }
-        } //get evaluation of a business by semester
-
-        return evaluationListResult;
+        }
+        return null;
     }
 
     //check semester // ok

@@ -376,28 +376,30 @@ public class StudentService implements IStudentService {
     public List<Student> getAllStudentOfASupervisor(String email) {
         List<Student> studentList = IStudentRepository.findStudentsBySupervisorEmail(email);
 
-        Semester semester = semesterService.getSemesterCurrent();
+        if (studentList != null) {
+            Semester semester = semesterService.getSemesterCurrent();
 
-        List<Ojt_Enrollment> ojt_enrollmentListStudentAtSemester = new ArrayList<>();
+            List<Ojt_Enrollment> ojt_enrollmentListStudentAtSemester = new ArrayList<>();
 
-        for (int i = 0; i < studentList.size(); i++) {
-            Student student = studentList.get(i);
-            Ojt_Enrollment ojt_enrollment =
-                    ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(student.getEmail(), semester.getId());
-            if (ojt_enrollment != null) {
-                ojt_enrollmentListStudentAtSemester.add(ojt_enrollment);
+            for (int i = 0; i < studentList.size(); i++) {
+                Student student = studentList.get(i);
+                Ojt_Enrollment ojt_enrollment =
+                        ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(student.getEmail(), semester.getId());
+                if (ojt_enrollment != null) {
+                    ojt_enrollmentListStudentAtSemester.add(ojt_enrollment);
+                }
             }
-        }
-        List<Student> studentsBySemester = new ArrayList<>();
+            List<Student> studentsBySemester = new ArrayList<>();
 
-        for (int i = 0; i < ojt_enrollmentListStudentAtSemester.size(); i++) {
-            Student student = ojt_enrollmentListStudentAtSemester.get(i).getStudent();
-            if (student != null) {
-                studentsBySemester.add(student);
+            for (int i = 0; i < ojt_enrollmentListStudentAtSemester.size(); i++) {
+                Student student = ojt_enrollmentListStudentAtSemester.get(i).getStudent();
+                if (student != null) {
+                    studentsBySemester.add(student);
+                }
             }
-        }
-        if (studentsBySemester != null) {
-            return studentsBySemester;
+            if (studentsBySemester != null) {
+                return studentsBySemester;
+            }
         }
         return null;
     }

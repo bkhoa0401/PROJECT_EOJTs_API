@@ -79,7 +79,7 @@ public class BusinessService implements IBusinessService {
             }
 
             if (businessList != null) {
-                values.set("business",businessList);
+                values.set("business", businessList);
                 return businessList;
             }
         }
@@ -302,16 +302,20 @@ public class BusinessService implements IBusinessService {
 
         Supervisor supervisor = iSupervisorService.findByEmail(email);
         List<Evaluation> evaluationList = supervisor.getEvaluations();
-        Semester semester = semesterService.getSemesterByStartDateAndEndDate();
 
-        for (int i = 0; i < evaluationList.size(); i++) {
-            Evaluation evaluation = evaluationList.get(i);
-            boolean result = checkEvaluationListIsInSemester(semester, evaluation);
-            if (result == true) {
-                evaluationListResult.add(evaluation);
+        if (evaluationList != null) {
+            Semester semester = semesterService.getSemesterByStartDateAndEndDate();
+
+            for (int i = 0; i < evaluationList.size(); i++) {
+                Evaluation evaluation = evaluationList.get(i);
+                boolean result = checkEvaluationListIsInSemester(semester, evaluation);
+                if (result == true) {
+                    evaluationListResult.add(evaluation);
+                }
             }
+            return evaluationListResult;
         }
-        return evaluationListResult;
+        return null;
     }
 
     public boolean checkEvaluationListIsInSemester(Semester semester, Evaluation evaluation) {
