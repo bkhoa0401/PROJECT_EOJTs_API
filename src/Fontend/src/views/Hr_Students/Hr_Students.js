@@ -319,8 +319,8 @@ class Hr_Students extends Component {
                                                                     {/* <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}><i className="fa cui-magnifying-glass"></i></Button> */}
                                                                     <Button color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa cui-magnifying-glass"></i></Button>
                                                                     &nbsp;&nbsp;
-                                                                    {/* <Button style={{ width: '100px' }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.email}`)}>Nhiệm vụ</Button> */}
-                                                                    <Button color="success" onClick={() => this.toggleModalTask(student)}>Nhiệm vụ</Button>
+                                                                    {/* <Button style={{ width: '100px' }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.email}`)}><i className="fa cui-task"></i></Button> */}
+                                                                    <Button color="success" onClick={() => this.toggleModalTask(student)}><i className="fa cui-task"></i></Button>
                                                                 </td>
                                                             </tr>
                                                         )

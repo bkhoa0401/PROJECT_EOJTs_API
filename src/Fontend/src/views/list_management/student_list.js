@@ -601,8 +601,8 @@ class student_list extends Component {
                                                             {/* <Button style={{ width: "80px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.student.email}`)}><i className="fa cui-magnifying-glass"></i></Button> */}
                                                             <Button color="primary" onClick={() => this.toggleModalDetail(student.student.email)}><i className="fa cui-magnifying-glass"></i></Button>
                                                             &nbsp;&nbsp;
-                                                            {/* <Button style={{ width: "90px" }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.student.email}`)}>Nhiệm vụ</Button> */}
-                                                            <Button color="success" onClick={() => this.toggleModalTask(student.student)}>Nhiệm vụ</Button>
+                                                            {/* <Button style={{ width: "90px" }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.student.email}`)}><i className="fa cui-task"></i></Button> */}
+                                                            <Button color="success" onClick={() => this.toggleModalTask(student.student)}><i className="fa cui-task"></i></Button>
                                                             {/* <Button style={{ width: "70px" }} color="danger">Xoá</Button> */}
                                                         </td>
                                                     </tr>
