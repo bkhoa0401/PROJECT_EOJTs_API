@@ -194,29 +194,31 @@ class DefaultHeader extends Component {
               <DropdownToggle nav>
                 <i className="icon-envelope-letter"></i><Badge pill color="primary">{informs === null ? "" : informs.length}</Badge>
               </DropdownToggle>
-              <DropdownMenu right style={{ width: "250px", maxHeight:"360px", overflowY:'auto' }}>
+              <DropdownMenu right>
                 <DropdownItem header tag="div" className="text-center"><strong>Có {informs === null ? "" : informs.length} thông báo</strong></DropdownItem>
-                {informs && informs.map((inform, index) => {
-                  return (
-                    <DropdownItem style={{ height: "90px" }}>
-                      <NavItem className="d-md-down-none">
-                        <NavLink to={`/InformMessage/InformMessage_Detail/${inform.event.id}`} className="nav-link">
-                          <FormGroup row>
-                            {inform.studentList && inform.studentList.map((student, index) => {
-                              return (
-                                student.avatarLink === null ?
-                                  <Col>&nbsp;&nbsp;<img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="usericon" style={{ width: '30px', height: '30px' }} />&nbsp;&nbsp;{student.email}</Col> :
-                                  <Col style={{ color: 'Gray', fontSize: '12px' }}>&nbsp;&nbsp;<img src={student.avatarLink} className="img-avatar" alt={student.avatarLink} style={{ width: '30px', height: '30px' }} />&nbsp;&nbsp;{student.email}</Col>
-                              )
-                            })}
-                          </FormGroup>
-                          <p style={{ fontWeight: 'bold', color: 'black', paddingTop:'0px', fontSize: '16px', textAlign: 'left' }}>{this.handleShowString(inform.event.description)}</p>
-                        </NavLink>
-                      </NavItem>
-                    </DropdownItem>
-                  )
-                })
-                }
+                <div style={{ width: "250px", maxHeight: "360px", overflowY: 'auto' }}>
+                  {informs && informs.map((inform, index) => {
+                    return (
+                      <DropdownItem style={{ height: "90px" }}>
+                        <NavItem className="d-md-down-none">
+                          <NavLink to={`/InformMessage/InformMessage_Detail/${inform.event.id}`} className="nav-link">
+                            <FormGroup row>
+                              {inform.studentList && inform.studentList.map((student, index) => {
+                                return (
+                                  student.avatarLink === null ?
+                                    <Col>&nbsp;&nbsp;<img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="usericon" style={{ width: '30px', height: '30px' }} />&nbsp;&nbsp;{student.email}</Col> :
+                                    <Col style={{ color: 'Gray', fontSize: '12px' }}>&nbsp;&nbsp;<img src={student.avatarLink} className="img-avatar" alt={student.avatarLink} style={{ width: '30px', height: '30px' }} />&nbsp;&nbsp;{student.email}</Col>
+                                )
+                              })}
+                            </FormGroup>
+                            <p style={{ fontWeight: 'bold', color: 'black', paddingTop: '0px', fontSize: '16px', textAlign: 'left' }}>{this.handleShowString(inform.event.description)}</p>
+                          </NavLink>
+                        </NavItem>
+                      </DropdownItem>
+                    )
+                  })
+                  }
+                </div>
               </DropdownMenu>
             </AppHeaderDropdown> : <></>
           }

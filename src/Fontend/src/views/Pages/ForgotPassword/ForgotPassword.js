@@ -37,10 +37,10 @@ class FotgotPassword extends Component {
   handleReset = async () => {
     const emailReset = this.state.emailReset;
     let messageError = '';
-    const result = await ApiServices.GetWithoutToken(`/account/check?email=${emailReset}`);
+    const result = await ApiServices.GetWithoutToken(`/account/reset?email=${emailReset}`);
     console.log(result);
     if (result.status === 200) {
-      Toastify.actionSuccess("Một email Trung bình được gửi đến tài khoản của bạn! Vui lòng kiểm tra!");
+      Toastify.actionSuccess("Một email vừa được gửi đến tài khoản của bạn! Vui lòng kiểm tra!");
     } else {
       messageError = "Email không tồn tại trong hệ thống!";
       this.setState({

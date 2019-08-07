@@ -54,6 +54,17 @@ public class UserController {
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
+    @GetMapping("/getCurrentAccount")
+    @ResponseBody
+    private ResponseEntity<Users> getCurrentAccount() {
+        String email = getEmailFromToken();
+        Users account = userService.findUserByEmail(email);
+        if (account != null) {
+            return new ResponseEntity<Users>(account, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     @GetMapping("/usersBySemester")
     public ResponseEntity<List<Users>> getAllUsersBySemester() {
         List<Users> usersListCurrentSemester = userService.getAllUsersBySemester();

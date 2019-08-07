@@ -8,6 +8,8 @@ public interface IUsersService {
 
     void sendEmail(String name, String mail, String password) throws Exception;
 
+    void sendResetEmail(String token, String email) throws Exception;
+
     void sendEmailHeading(String mail, String content) throws Exception;
 
     String getAlphaNumericString();
@@ -25,6 +27,12 @@ public interface IUsersService {
     boolean updatePasswordOfUserByEmail(String email, String password);
 
     boolean updateStatus(String email, boolean isActive);
+
+    boolean createResetToken(String email);
+
+    boolean checkToken(String token, String email);
+
+    boolean createNewPassword(String password, String email);
 
     List<Users> getAllUsersByType(int type);
 
