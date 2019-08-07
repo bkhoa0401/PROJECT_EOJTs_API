@@ -28,6 +28,8 @@ class Create_InformMessage extends Component {
             preListStudentEmail: [],
             informTo: '',
 
+            searchValue: '',
+
             description: '',
             title: '',
         };
@@ -283,7 +285,17 @@ class Create_InformMessage extends Component {
     }
 
     render() {
-        const { loading, informFromEmail, students, informTo, title, description, colorTextSelect, colorBackSelect, preIsSelect } = this.state;
+        const { loading, searchValue, informFromEmail, students, informTo, title, description, colorTextSelect, colorBackSelect, preIsSelect } = this.state;
+        let filteredListStudent;
+        if (students !== null) {
+            filteredListStudent = students.filter(
+                (student) => {
+                    if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+                        return student;
+                    }
+                }
+            );
+        }
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -378,16 +390,26 @@ class Create_InformMessage extends Component {
                             onClose={this.closePopupRegist}
                         >
                             <div className="TabContent">
-                                <row>
+                                <nav className="navbar navbar-light bg-light justify-content-between">
+                                    <form className="form-inline">
+                                        <input style={{width: '500px'}} onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                    </form>
+                                    <FormGroup row style={{ marginRight: "4px", paddingTop:'15px' }}>
+                                        <Button color="primary" onClick={() => this.handleSelectAll()}>Chọn tất cả</Button>
+                                        &nbsp;&nbsp;
+                                        <Button color="primary" onClick={() => this.handleDeSelect()}>Huỷ chọn</Button>
+                                    </FormGroup>
+                                </nav>
+                                {/* <row>
                                     <Button color="primary" onClick={() => this.handleSelectAll()}>Chọn tất cả</Button>
                                     &nbsp;&nbsp;
                                     <Button color="primary" onClick={() => this.handleDeSelect()}>Huỷ chọn</Button>
                                 </row>
-                                <br />
+                                <br /> */}
                                 <hr />
                                 <ListGroup>
                                     <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                                        {students && students.map((student, index) =>
+                                        {filteredListStudent && filteredListStudent.map((student, index) =>
                                             <ListGroupItem action onClick={() => this.handleSelect(student.email)} style={{ color: colorTextSelect[preIsSelect[index]], backgroundColor: colorBackSelect[preIsSelect[index]] }}>
                                                 <ListGroupItemHeading style={{ fontWeight: 'bold' }}>{student.name}</ListGroupItemHeading>
                                                 <ListGroupItemText>

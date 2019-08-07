@@ -91,21 +91,28 @@ class Official_List extends Component {
 
   handleSelectMonth = async (event, studentDetail) => {
     const { name, value } = event.target;
-    const { months } = this.state;
-    var date = months[value].split(" - ");
-    // console.log(date[0]);
-    // console.log(date[1]);
-    var formatDateStart = date[0].split("/");
-    let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
-    // console.log(dateStart);
-    var formatDateEnd = date[1].split("/");
-    let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
-    // console.log(dateEnd);
-    const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
-    await this.setState({
-      listStudentTask: listStudentTask,
-      isThisMonth: -1,
-    })
+        const { months } = this.state;
+        let listStudentTask = null;
+        // console.log(value);
+        if (value <= 0) {
+            listStudentTask = await ApiServices.Get(`/supervisor/allTasksByStudentEmail?emailStudent=${studentDetail.email}`);
+            // console.log(listStudentTask);
+        } else {
+            var date = months[value].split(" - ");
+            // console.log(date[0]);
+            // console.log(date[1]);
+            var formatDateStart = date[0].split("/");
+            let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
+            // console.log(dateStart);
+            var formatDateEnd = date[1].split("/");
+            let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
+            // console.log(dateEnd);
+            listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+        }
+        await this.setState({
+            listStudentTask: listStudentTask,
+            isThisMonth: -1,
+        })
   }
 
   handleInputSupervisor = async (event, student) => {
@@ -404,14 +411,14 @@ class Official_List extends Component {
       let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
       const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
 
-
+      months.unshift("Tổng");
       this.setState({
         modalTask: !this.state.modalTask,
         studentDetail: studentDetail,
         listStudentTask: listStudentTask,
         months: months,
         loading: false,
-        isThisMonth: isThisMonth,
+        isThisMonth: isThisMonth + 1,
       });
     } else {
       this.setState({
