@@ -91,7 +91,7 @@ public class SpecializedService implements ISpecializedService {
         }
     }
 
-//    @Cacheable(key = "{#currentPage,#rowsPerPage}")
+    //    @Cacheable(key = "{#currentPage,#rowsPerPage}")
     public PagingDTO pagingSpecialized(int currentPage, int rowsPerPage) {
 //        if (specializedListAll == null || specializedListAll.size() == 0) {
 //            specializedListAll = ISpecializedRepository.findAll();
@@ -169,11 +169,11 @@ public class SpecializedService implements ISpecializedService {
         List<Specialized> specializeds = (List<Specialized>) values.get("specialized");
         if (specializeds != null) {
             for (int i = 0; i < specializeds.size(); i++) {
-                Specialized specializedIsExisted=specializeds.get(i);
-                if(specialized.getId()==specializedIsExisted.getId()){
+                Specialized specializedIsExisted = specializeds.get(i);
+                if (specialized.getId() == specializedIsExisted.getId()) {
                     ISpecializedRepository.save(specialized); // update db
-                    specializeds.set(i,specialized);
-                    values.set("specialized",specializeds); //update redis
+                    specializeds.set(i, specialized);
+                    values.set("specialized", specializeds); //update redis
                 }
             }
             return specializeds;
@@ -183,19 +183,35 @@ public class SpecializedService implements ISpecializedService {
 
 
     @Override
-    @CachePut(key = "'all'")
-    @CacheEvict(allEntries = true)
+//    @CachePut(key = "'all'")
+//    @CacheEvict(allEntries = true)
     public List<Specialized> updateStatusSpecialized(int specializedId, boolean status) {
+//        Specialized specializedFound = ISpecializedRepository.findSpecializedById(specializedId);
+//        if (specializedFound != null) {
+//            specializedFound.setStatus(status);
+//            ISpecializedRepository.save(specializedFound);
+//
+//            if (this.specializedListAll.size() == 0) {
+//                this.specializedListAll = ISpecializedRepository.findAll();
+//            }
+//            this.specializedListAll.set(specializedId - 1, specializedFound); // save redis
+//            return specializedListAll;
+//        }
+//        return null;
         Specialized specializedFound = ISpecializedRepository.findSpecializedById(specializedId);
-        if (specializedFound != null) {
-            specializedFound.setStatus(status);
-            ISpecializedRepository.save(specializedFound);
-
-            if (this.specializedListAll.size() == 0) {
-                this.specializedListAll = ISpecializedRepository.findAll();
+        ValueOperations values = template.opsForValue();
+        List<Specialized> specializeds = (List<Specialized>) values.get("specialized");
+        if (specializeds != null && specializedFound != null) {
+            for (int i = 0; i < specializeds.size(); i++) {
+                Specialized specializedIsExisted = specializeds.get(i);
+                if (specializedIsExisted.getId() == specializedFound.getId()) {
+                    specializedFound.setStatus(status);
+                    ISpecializedRepository.save(specializedFound);
+                    specializeds.set(i, specializedFound);
+                    values.set("specialized", specializeds);
+                }
             }
-            this.specializedListAll.set(specializedId - 1, specializedFound); // save redis
-            return specializedListAll;
+            return specializeds;
         }
         return null;
     }

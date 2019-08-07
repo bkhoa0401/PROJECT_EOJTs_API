@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.Business_JobPostDTO;
+import com.example.demo.dto.PagingDTO;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IBusinessRepository;
 import com.example.demo.repository.IEvaluationRepository;
@@ -85,6 +86,30 @@ public class BusinessService implements IBusinessService {
         return null;
     }
 
+    @Override
+    public PagingDTO pagingBusiness(int currentPage, int rowsPerPage) {
+        List<Business> businessList = getAllBusinessBySemester();
+
+        int pageNumber = (int) Math.ceil((double) businessList.size() / (double) rowsPerPage);
+
+        int nextPageNumber = (currentPage + 1) * rowsPerPage;
+
+        int currentPageNumber = (currentPage * rowsPerPage);
+
+        List<Business> businessPagination = new ArrayList<>();
+
+        for (int i = 0; i < businessList.size(); i++) {
+            if (i >= currentPageNumber && i < nextPageNumber) {
+                businessPagination.add(businessList.get(i));
+            }
+        }
+
+        PagingDTO businessPagingDTO = new PagingDTO();
+        businessPagingDTO.setPageNumber(pageNumber);
+        businessPagingDTO.setListData(businessPagination);
+
+        return businessPagingDTO;
+    }
 
     @Override
     public Business getBusinessByEmail(String email) {

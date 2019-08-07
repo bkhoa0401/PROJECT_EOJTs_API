@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Label, Modal, ModalBody, ModalHeader, Pagination, Row, Table } from 'reactstrap';
+import { Button, Card, CardBody, Input, CardHeader, Col, Form, FormGroup, Label, Modal, ModalBody, ModalHeader, Pagination, Row, Table } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import PaginationComponent from '../Paginations/pagination';
 
 class business_list extends Component {
 
@@ -12,7 +13,10 @@ class business_list extends Component {
             businesses: null,
             searchValue: '',
             loading: true,
-
+            pageNumber: 1,
+            currentPage: 0,
+            businessPagination: null,
+            rowsPerPage: 1,
             modalDetail: false,
             business: null,
             role: '',
@@ -20,12 +24,52 @@ class business_list extends Component {
     }
 
     async componentDidMount() {
-        const businesses = await ApiServices.Get('/business/getAllBusiness');
+        const { currentPage, rowsPerPage } = this.state;
+        const businesses = await ApiServices.Get(`/business/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         if (businesses !== null) {
             this.setState({
-                businesses: businesses,
+                businesses: businesses.listData,
                 loading: false
             });
+        }
+    }
+
+    handlePageNumber = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const businesses = await ApiServices.Get(`/business/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (businesses !== null) {
+            this.setState({
+                businesses: businesses.listData,
+                currentPage,
+                pageNumber: businesses.pageNumber
+            })
+        }
+    }
+
+    handlePagePrevious = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const businesses = await ApiServices.Get(`/business/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (businesses !== null) {
+            this.setState({
+                businesses: businesses.listData,
+                currentPage,
+                pageNumber: businesses.pageNumber
+            })
+        }
+    }
+
+    handlePageNext = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const businesses = await ApiServices.Get(`/business/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (businesses !== null) {
+            this.setState({
+                businesses: businesses.listData,
+                currentPage,
+                pageNumber: businesses.pageNumber
+            })
         }
     }
 
@@ -45,10 +89,26 @@ class business_list extends Component {
     }
 
     handleInput = async (event) => {
+        // const { name, value } = event.target;
+        // await this.setState({
+        //     [name]: value.substr(0, 20),
+        // })
+
         const { name, value } = event.target;
         await this.setState({
-            [name]: value.substr(0, 20),
+            [name]: value
         })
+
+        const { rowsPerPage } = this.state;
+        const businesses = await ApiServices.Get(`/business/pagination?currentPage=0&rowsPerPage=${rowsPerPage}`);
+
+        if (businesses !== null) {
+            this.setState({
+                businesses: businesses.listData,
+                currentPage: 0,
+                pageNumber: businesses.pageNumber
+            })
+        }
     }
 
     handleDirect = (uri) => {
@@ -57,16 +117,8 @@ class business_list extends Component {
 
     render() {
         const { businesses, business, searchValue, loading } = this.state;
-        let filteredListBusinesses;
-        if (businesses !== null) {
-            filteredListBusinesses = businesses.filter(
-                (business) => {
-                    if (business.business_name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
-                        return business;
-                    }
-                }
-            );
-        }
+        const { pageNumber, currentPage, rowsPerPage } = this.state;
+
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -77,7 +129,7 @@ class business_list extends Component {
                                 <Card>
                                     <CardHeader style={{ fontWeight: "bold" }}>
                                         <i className="fa fa-align-justify"></i>Danh sách doanh nghiệp
-                            </CardHeader>
+                                    </CardHeader>
                                     <CardBody>
                                         <div>
                                             <nav className="navbar navbar-light bg-light justify-content-between">
@@ -92,20 +144,20 @@ class business_list extends Component {
                                                         <th style={{ textAlign: "center" }}>Tên doanh nghiệp</th>
                                                         {/* <th style={{ textAlign: "center" }}>Tên tiếng Anh</th> */}
                                                         <th style={{ textAlign: "center" }}>Địa chỉ</th>
-                                                        <th style={{ textAlign: "center" }}>Website</th>
+                                                        {/* <th style={{ textAlign: "center" }}>Website</th> */}
                                                         <th style={{ textAlign: "center" }}>Liên hệ</th>
                                                         <th style={{ textAlign: "center" }}></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {filteredListBusinesses && filteredListBusinesses.map((business, index) => {
+                                                    {businesses && businesses.map((business, index) => {
                                                         return (
                                                             <tr>
                                                                 <td style={{ textAlign: "center" }}>{index + 1}</td>
                                                                 <td style={{ textAlign: "center" }}>{business.business_name}</td>
                                                                 {/* <td style={{ textAlign: "center" }}>{business.business_eng_name}</td> */}
                                                                 <td style={{ textAlign: "center" }}>{business.business_address}</td>
-                                                                <td style={{ textAlign: "center" }}>{business.business_website}</td>
+                                                                {/* <td style={{ textAlign: "center" }}>{business.business_website}</td> */}
                                                                 <td style={{ textAlign: "center" }}>
                                                                     Email: {business.email}<br />
                                                                     SĐT: {business.business_phone}
@@ -129,8 +181,15 @@ class business_list extends Component {
                                             </Table>
                                         </div>
                                         <ToastContainer />
-                                        <Pagination>
-                                            {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                                        <Pagination style={{ marginTop: "3%" }}>
+                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                            <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                            <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "7%" }}>
+                                                <option value={1} selected={rowsPerPage === 1}>1</option>
+                                                <option value={2}>2</option>
+                                                <option value={3}>3</option>
+                                                <option value={100}>100</option>
+                                            </Input>
                                         </Pagination>
                                     </CardBody>
                                     {/* <CardFooter className="p-4">
