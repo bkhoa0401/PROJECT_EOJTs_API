@@ -201,7 +201,7 @@ public class AdminController {
         boolean create = eventService.createEvent(event);
 
         for (int i = 0; i < studentList.size(); i++) {
-            Student student=studentList.get(i);
+            Student student = studentList.get(i);
             Student_Event student_event = new Student_Event();
             student_event.setStudent(student);
             student_event.setEvent(event);
@@ -315,9 +315,14 @@ public class AdminController {
     public ResponseEntity<List<Statistical_EvaluationDTO>> getStatisticalEvaluation() {
         List<Statistical_EvaluationDTO> statistical_evaluationDTOList = adminService.getListStatistical_EvaluationDTO();
         if (statistical_evaluationDTOList != null) {
-            return new ResponseEntity<List<Statistical_EvaluationDTO>>(statistical_evaluationDTOList, HttpStatus.OK);
+            if (statistical_evaluationDTOList.size() != 0) {
+                return new ResponseEntity<List<Statistical_EvaluationDTO>>(statistical_evaluationDTOList, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
-        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
     @GetMapping("/statisticalQuestionAnswer")
@@ -427,7 +432,7 @@ public class AdminController {
         String email = getEmailFromToken();
 
         List<Statistical_EvaluationDTO> evaluationDTOS = adminService.getListStatistical_EvaluationOfSupervisorDTO(email);
-        if (evaluationDTOS != null) {
+        if (evaluationDTOS != null && evaluationDTOS.size() != 0) {
             return new ResponseEntity<List<Statistical_EvaluationDTO>>(evaluationDTOS, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
