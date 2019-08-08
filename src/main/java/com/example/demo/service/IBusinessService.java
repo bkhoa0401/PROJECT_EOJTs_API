@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.Business_JobPostDTO;
+import com.example.demo.dto.PagingDTO;
 import com.example.demo.entity.*;
 import java.util.List;
 
@@ -31,4 +32,6 @@ public interface IBusinessService {
     List<Job_Post> getAllJobPostOfBusiness(String email);
 
     List<Evaluation> getEvaluationsOfSupervisor(String email);
+
+    PagingDTO pagingBusiness(int currentPage, int rowsPerPage);
 }
