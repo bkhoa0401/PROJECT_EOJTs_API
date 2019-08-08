@@ -37,8 +37,8 @@ class Official_List extends Component {
 
       colorTextSelect: ['Black', 'White'],
       colorBackSelect: ['White', 'DeepSkyBlue'],
-      listStudentEmail: [],
-      preListStudentEmail: [],
+      // listStudentEmail: [],
+      preListStudent: [],
       isSelect: [],
       preSupervisor: '',
       modal: false,
@@ -56,16 +56,21 @@ class Official_List extends Component {
     // await ApiServices.Put('/admin');
     const students = await ApiServices.Get('/business/getStudentsByBusiness');
     const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness');
-    let supervisors_FirstBlank = await ApiServices.Get('/business/getAllSupervisorABusiness');
+    let supervisors_FirstBlank = null;
+    if (supervisors !== null) {
+      supervisors_FirstBlank = supervisors;
+    } else {
+      supervisors_FirstBlank = [];
+    }
 
     const supervisors_FirstBlank_Obj = {
       email: '',
       name: ''
     }
-    if (supervisors_FirstBlank.length > 1) {
+    if (supervisors_FirstBlank.length >= 1) {
+      // console.log(supervisors_FirstBlank.length);
       supervisors_FirstBlank.unshift(supervisors_FirstBlank_Obj);
     } else {
-      supervisors_FirstBlank = [];
       supervisors_FirstBlank.push(supervisors_FirstBlank_Obj);
     }
     if (students !== null && supervisors !== null && supervisors_FirstBlank !== null) {
@@ -76,6 +81,8 @@ class Official_List extends Component {
         loading: false
       });
     }
+    // console.log(this.state.supervisors);
+    // console.log(this.state.supervisors_FirstBlank);
   }
 
   handleDirect = (uri) => {
@@ -91,28 +98,28 @@ class Official_List extends Component {
 
   handleSelectMonth = async (event, studentDetail) => {
     const { name, value } = event.target;
-        const { months } = this.state;
-        let listStudentTask = null;
-        // console.log(value);
-        if (value <= 0) {
-            listStudentTask = await ApiServices.Get(`/supervisor/allTasksByStudentEmail?emailStudent=${studentDetail.email}`);
-            // console.log(listStudentTask);
-        } else {
-            var date = months[value].split(" - ");
-            // console.log(date[0]);
-            // console.log(date[1]);
-            var formatDateStart = date[0].split("/");
-            let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
-            // console.log(dateStart);
-            var formatDateEnd = date[1].split("/");
-            let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
-            // console.log(dateEnd);
-            listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
-        }
-        await this.setState({
-            listStudentTask: listStudentTask,
-            isThisMonth: -1,
-        })
+    const { months } = this.state;
+    let listStudentTask = null;
+    // console.log(value);
+    if (value <= 0) {
+      listStudentTask = await ApiServices.Get(`/supervisor/allTasksByStudentEmail?emailStudent=${studentDetail.email}`);
+      // console.log(listStudentTask);
+    } else {
+      var date = months[value].split(" - ");
+      // console.log(date[0]);
+      // console.log(date[1]);
+      var formatDateStart = date[0].split("/");
+      let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
+      // console.log(dateStart);
+      var formatDateEnd = date[1].split("/");
+      let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
+      // console.log(dateEnd);
+      listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+    }
+    await this.setState({
+      listStudentTask: listStudentTask,
+      isThisMonth: -1,
+    })
   }
 
   handleInputSupervisor = async (event, student) => {
@@ -141,6 +148,14 @@ class Official_List extends Component {
     }
   }
 
+  handleSelectSupervisor = async (event) => {
+    const { name, value } = event.target;
+    const { supervisors_FirstBlank } = this.state;
+    this.setState({
+      preSupervisor: supervisors_FirstBlank[value],
+    })
+  }
+
   handleConfirm = () => {
     const { listDataEdited } = this.state;
 
@@ -165,27 +180,27 @@ class Official_List extends Component {
 
   handleSelectAll = () => {
     let suggestedStudents = this.state.suggestedStudents;
-    let preListStudentEmail = [];
+    let preListStudent = [];
     let isSelect = [];
     for (let index = 0; index < suggestedStudents.length; index++) {
       isSelect.push(1);
-      preListStudentEmail.push(suggestedStudents[index]);
+      preListStudent.push(suggestedStudents[index]);
     }
     this.setState({
-      preListStudentEmail: preListStudentEmail,
+      preListStudent: preListStudent,
       isSelect: isSelect,
     })
   }
 
   handleDeSelect = () => {
     let suggestedStudents = this.state.suggestedStudents;
-    let preListStudentEmail = [];
+    let preListStudent = [];
     let isSelect = [];
     for (let index = 0; index < suggestedStudents.length; index++) {
       isSelect.push(0);
     }
     this.setState({
-      preListStudentEmail: preListStudentEmail,
+      preListStudent: preListStudent,
       isSelect: isSelect,
     })
   }
@@ -193,15 +208,15 @@ class Official_List extends Component {
   handleSelect = (studentEmail) => {
     let suggestedStudents = this.state.suggestedStudents;
     let isSelected = -1;
-    let preListStudentEmail = this.state.preListStudentEmail;
+    let preListStudent = this.state.preListStudent;
     let isSelect = this.state.isSelect;
-    for (let index = 0; index < preListStudentEmail.length; index++) {
-      if (preListStudentEmail[index].email === studentEmail) {
+    for (let index = 0; index < preListStudent.length; index++) {
+      if (preListStudent[index].email === studentEmail) {
         isSelected = index;
       }
     }
     if (isSelected !== -1) {
-      preListStudentEmail.splice(isSelected, 1);
+      preListStudent.splice(isSelected, 1);
     }
     for (let index = 0; index < suggestedStudents.length; index++) {
       if (suggestedStudents[index].email === studentEmail) {
@@ -209,14 +224,16 @@ class Official_List extends Component {
           isSelect[index] = 0;
         } else {
           isSelect[index] = 1;
-          preListStudentEmail[index] = suggestedStudents[index];
+          preListStudent[index] = suggestedStudents[index];
         }
       }
     }
     this.setState({
-      preListStudentEmail: preListStudentEmail,
+      preListStudent: preListStudent,
       isSelect: isSelect,
     })
+    // console.log(this.state.preListStudent);
+    // console.log(this.state.isSelect);
   }
 
   toggleModal = async () => {
@@ -248,25 +265,23 @@ class Official_List extends Component {
   }
 
   toggleModalWithConfirm = async () => {
-    let { listDataEdited, preListStudentEmail, suggestedStudents } = this.state;
-    if (preListStudentEmail.length === 0 || this.state.preSupervisor === '') {
+    let { listDataEdited, preListStudent } = this.state;
+    // console.log(preListStudent);
+    // console.log(this.state.preSupervisor);
+    if (preListStudent.length === 0 || this.state.preSupervisor.email === "") {
       this.setState({
         modal: !this.state.modal,
       })
     } else {
-      for (let index = 0; index < suggestedStudents.length; index++) {
-        listDataEdited.push(suggestedStudents[index]);
-        for (let i = 0; i < preListStudentEmail.length; i++) {
-          if (preListStudentEmail[i].email === listDataEdited[index].email) {
-            listDataEdited[index].supervisor = this.state.preSupervisor;
-          }
-        }
+      for (let index = 0; index < preListStudent.length; index++) {
+        listDataEdited.push(preListStudent[index]);
+        listDataEdited[index].supervisor = this.state.preSupervisor;
       }
       this.setState({
         listDataEdited: listDataEdited,
         modal: !this.state.modal,
       })
-      // console.log(preListStudentEmail);
+      // console.log(preListStudent);
       // console.log(this.state.preSupervisor);
       // console.log(listDataEdited);
       confirmAlert({
@@ -701,88 +716,90 @@ class Official_List extends Component {
                 className={'modal-primary ' + this.props.className}>
                 <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
                 <ModalBody>
-                  <FormGroup row>
-                    <Col md="4">
-                      <h6>Ảnh đại diện</h6>
-                    </Col>
-                    <Col xs="12" md="8">
-                      {studentDetail.avatarLink === null ?
-                        <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "100px", height: "100px" }} alt="usericon" /> :
-                        <img src={studentDetail.avatarLink} className="img-avatar" style={{ width: "100px", height: "100px" }} />
-                      }
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="4">
-                      <h6>Họ và tên</h6>
-                    </Col>
-                    <Col xs="12" md="8">
-                      <label>{studentDetail.name}</label>
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="4">
-                      <h6>Mã số sinh viên</h6>
-                    </Col>
-                    <Col xs="12" md="8">
-                      <label>{studentDetail.code}</label>
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="4">
-                      <h6>Chuyên ngành</h6>
-                    </Col>
-                    <Col xs="12" md="8">
-                      <label>{studentDetail.specialized.name}</label>
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="4">
-                      <h6>Giới thiệu bản thân</h6>
-                    </Col>
-                    <Col xs="12" md="8">
-                      <label>{studentDetail.objective}</label>
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="4">
-                      <h6>Bảng điểm</h6>
-                    </Col>
-                    <Col xs="12" md="8">
-                      {
-                        studentDetail.transcriptLink && studentDetail.transcriptLink ? (
-                          <a href={studentDetail.transcriptLink} download>Tải về</a>
-                        ) :
-                          (<label>N/A</label>)
-                      }
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="4">
-                      <h6>Kỹ năng</h6>
-                    </Col>
-                    <Col xs="12" md="8">
-                      {
-                        studentDetail.skills && studentDetail.skills.map((skill, index) => {
-                          return (
-                            <div>
-                              {
-                                <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
-                              }
-                            </div>
-                          )
-                        })
-                      }
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="4">
-                      <h6>GPA</h6>
-                    </Col>
-                    <Col xs="12" md="8">
-                      <label>{studentDetail.gpa}</label>
-                    </Col>
-                  </FormGroup>
+                  <div style={{ maxHeight: "563px", overflowY: 'auto', overflowX: 'hidden' }}>
+                    <FormGroup row>
+                      <Col md="4">
+                        <h6>Ảnh đại diện</h6>
+                      </Col>
+                      <Col xs="12" md="8">
+                        {studentDetail.avatarLink === null ?
+                          <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "100px", height: "100px" }} alt="usericon" /> :
+                          <img src={studentDetail.avatarLink} className="img-avatar" style={{ width: "100px", height: "100px" }} />
+                        }
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Col md="4">
+                        <h6>Họ và tên</h6>
+                      </Col>
+                      <Col xs="12" md="8">
+                        <label>{studentDetail.name}</label>
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Col md="4">
+                        <h6>Mã số sinh viên</h6>
+                      </Col>
+                      <Col xs="12" md="8">
+                        <label>{studentDetail.code}</label>
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Col md="4">
+                        <h6>Chuyên ngành</h6>
+                      </Col>
+                      <Col xs="12" md="8">
+                        <label>{studentDetail.specialized.name}</label>
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Col md="4">
+                        <h6>Giới thiệu bản thân</h6>
+                      </Col>
+                      <Col xs="12" md="8">
+                        <label>{studentDetail.objective}</label>
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Col md="4">
+                        <h6>Bảng điểm</h6>
+                      </Col>
+                      <Col xs="12" md="8">
+                        {
+                          studentDetail.transcriptLink && studentDetail.transcriptLink ? (
+                            <a href={studentDetail.transcriptLink} download>Tải về</a>
+                          ) :
+                            (<label>N/A</label>)
+                        }
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Col md="4">
+                        <h6>Kỹ năng</h6>
+                      </Col>
+                      <Col xs="12" md="8">
+                        {
+                          studentDetail.skills && studentDetail.skills.map((skill, index) => {
+                            return (
+                              <div>
+                                {
+                                  <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                }
+                              </div>
+                            )
+                          })
+                        }
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Col md="4">
+                        <h6>GPA</h6>
+                      </Col>
+                      <Col xs="12" md="8">
+                        <label>{studentDetail.gpa}</label>
+                      </Col>
+                    </FormGroup>
+                  </div>
                 </ModalBody>
                 {/* <ModalFooter>
                 </ModalFooter> */}

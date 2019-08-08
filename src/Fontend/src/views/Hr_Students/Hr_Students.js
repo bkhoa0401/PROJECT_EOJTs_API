@@ -349,6 +349,7 @@ class Hr_Students extends Component {
                                 className={'modal-primary ' + this.props.className}>
                                 <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
                                 <ModalBody>
+                                    <div style={{maxHeight:"563px", overflowY:'auto', overflowX:'hidden'}}>
                                     <FormGroup row>
                                         <Col md="4">
                                             <h6>Ảnh đại diện</h6>
@@ -431,9 +432,10 @@ class Hr_Students extends Component {
                                             <label>{studentDetail.gpa}</label>
                                         </Col>
                                     </FormGroup>
+                                    </div>
                                 </ModalBody>
                                 {/* <ModalFooter>
-                </ModalFooter> */}
+                                </ModalFooter> */}
                             </Modal> :
                             <></>
                         }

@@ -48,7 +48,7 @@ class ResetPassword extends Component {
         let validatorConfirmPassword = "";
         if (this.validator.allValid()) {
             if (confirmPassword !== password) {
-                validatorConfirmPassword = "Mật khẩu xác nhận không chính xác";
+                validatorConfirmPassword = "Mật khẩu xác nhận không chính xác!";
                 this.setState({
                     validatorConfirmPassword: validatorConfirmPassword,
                 });
@@ -107,9 +107,6 @@ class ResetPassword extends Component {
                                             </InputGroupAddon>
                                             <Input type="password" placeholder="Xác nhận mật khẩu" autoComplete="new-password" onKeyDown={this.handleKeyDown} onChange={this.handleInput} name="confirmPassword" />
                                         </InputGroup>
-                                        <span className="form-error is-visible text-danger">
-                                            {this.validator.message('Mật khẩu xác nhận ', this.state.confirmPassword, 'required|min:6|max:50|alpha_num')}
-                                        </span>
                                         <span className="form-error is-visible text-danger">
                                             {validatorConfirmPassword}
                                         </span>

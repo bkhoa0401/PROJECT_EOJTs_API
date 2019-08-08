@@ -82,6 +82,7 @@ class Invitation_Create extends Component {
                     className={'modal-primary ' + this.props.className}>
                     <ModalHeader toggle={this.toggleLarge}>Chi tiết sinh viên</ModalHeader>
                     <ModalBody>
+                    <div style={{maxHeight:"563px", overflowY:'auto', overflowX:'hidden'}}>
                         <FormGroup row>
                             <Col md="3">
                                 <h6>Họ và tên:</h6>
@@ -153,6 +154,7 @@ class Invitation_Create extends Component {
                                 <label>{studentDetail.gpa}</label>
                             </Col>
                         </FormGroup>
+                        </div>
                     </ModalBody>
                     {/* <ModalFooter>
                         <Button style={{ marginRight: "42%", width: "100px" }} color="primary" onClick={this.toggleLarge}>Xác nhận</Button>

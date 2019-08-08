@@ -265,7 +265,7 @@ class Create_InformMessage extends Component {
                 title,
             }
             const listStudentEmail = this.state.listStudentEmail;
-            const result = await ApiServices.Post(`/admin/event?listStudentEmail=${listStudentEmail}`, event);
+            const result = await ApiServices.Post(`/event/event?listStudentEmail=${listStudentEmail}`, event);
             // console.log(result);
             // console.log(listStudentEmail);
             // console.log(event);

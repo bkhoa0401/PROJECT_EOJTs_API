@@ -270,101 +270,105 @@ class Ojt_Registration extends Component {
                                 className={'modal-primary ' + this.props.className}>
                                 <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
                                 <ModalBody>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Ảnh đại diện</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {studentDetail.avatarLink === null ?
-                                                <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "100px", height: "100px" }} alt="usericon" /> :
-                                                <img src={studentDetail.avatarLink} className="img-avatar" style={{ width: "100px", height: "100px" }} />
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Họ và tên</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{studentDetail.name}</label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Mã số sinh viên</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{studentDetail.code}</label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Chuyên ngành</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{studentDetail.specialized.name}</label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Giới thiệu bản thân</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{studentDetail.objective}</label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Bảng điểm</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {
-                                                studentDetail.transcriptLink && studentDetail.transcriptLink ? (
-                                                    <a href={studentDetail.transcriptLink} download>Tải về</a>
-                                                ) :
-                                                    (<label>N/A</label>)
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Kỹ năng</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {
-                                                studentDetail.skills && studentDetail.skills.map((skill, index) => {
-                                                    return (
-                                                        <div>
-                                                            {
-                                                                <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
-                                                            }
-                                                        </div>
-                                                    )
-                                                })
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>GPA</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{studentDetail.gpa}</label>
-                                        </Col>
-                                    </FormGroup>
+                                    <div style={{ maxHeight: "563px", overflowY: 'auto', overflowX: 'hidden' }}>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Ảnh đại diện</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {studentDetail.avatarLink === null ?
+                                                    <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "100px", height: "100px" }} alt="usericon" /> :
+                                                    <img src={studentDetail.avatarLink} className="img-avatar" style={{ width: "100px", height: "100px" }} />
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Họ và tên</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.name}</label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Mã số sinh viên</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.code}</label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Chuyên ngành</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.specialized.name}</label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Giới thiệu bản thân</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.objective}</label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Bảng điểm</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {
+                                                    studentDetail.transcriptLink && studentDetail.transcriptLink ? (
+                                                        <a href={studentDetail.transcriptLink} download>Tải về</a>
+                                                    ) :
+                                                        (<label>N/A</label>)
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Kỹ năng</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {
+                                                    studentDetail.skills && studentDetail.skills.map((skill, index) => {
+                                                        return (
+                                                            <div>
+                                                                {
+                                                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                }
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>GPA</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.gpa}</label>
+                                            </Col>
+                                        </FormGroup>
+                                    </div>
                                 </ModalBody>
-                                {invitationDetail !== null ? 
-                                <ModalFooter>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Chi tiết lời mời</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{invitationDetail}</label>
-                                        </Col>
-                                    </FormGroup>
-                                </ModalFooter> :
-                                <></>
+                                {invitationDetail !== null ?
+                                    <ModalFooter>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Chi tiết lời mời</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <div style={{ maxHeight: "100px", overflowY: 'auto', overflowX: 'hidden' }}>
+                                                    <label>{invitationDetail}</label>
+                                                </div>
+                                            </Col>
+                                        </FormGroup>
+                                    </ModalFooter> :
+                                    <></>
                                 }
                             </Modal> :
                             <></>

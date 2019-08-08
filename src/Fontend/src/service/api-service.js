@@ -108,6 +108,25 @@ const Put = async function (api, query) {
   return response;
 }
 
+const PutWithoutToken = async function (api, query) {
+  if (isNullOrUndefined(api)) {
+    return;
+  }
+
+  const setting = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'put',
+    body: JSON.stringify(query),
+  }
+  const response = await fetch(API + api, setting);
+  if (response.status === 401 || response.status === 403) {
+    return null;
+  }
+  return response;
+}
+
 const Delete = async function (api, query) {
   if (isNullOrUndefined(api)) {
     return;
@@ -133,6 +152,7 @@ const ApiServices = {
   Delete,
   API, 
   GetWithoutToken,
+  PutWithoutToken,
 }
 
 export default ApiServices;
