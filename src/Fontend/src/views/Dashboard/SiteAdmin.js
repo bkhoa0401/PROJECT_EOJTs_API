@@ -318,7 +318,7 @@ class SiteAdmin extends Component {
   }
 
   render() {
-    const { loading, line, bar, radar, doughnut, polar, pie, semesters, semesterItem } = this.state;
+    const { loading, line, bar, radar, doughnut, polar, pie, semesters, semesterItem, semesterItemResult } = this.state;
     return (
       loading.toString() === 'true' ? (
         SpinnerLoading.showHashLoader(loading)
@@ -331,11 +331,6 @@ class SiteAdmin extends Component {
                     <Card>
                       <CardHeader>
                         <h6>Thống kê kết quả các đánh giá hàng tháng</h6>
-                        {/* <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div> */}
                       </CardHeader>
                       <CardBody>
                         <div className="chart-wrapper">
@@ -348,11 +343,6 @@ class SiteAdmin extends Component {
                     <Card>
                       <CardHeader>
                         <h6>Tỉ lệ sinh viên trả lời khảo sát</h6>
-                        {/* <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div> */}
                       </CardHeader>
                       <CardBody>
                         <div className="chart-wrapper">
@@ -367,11 +357,6 @@ class SiteAdmin extends Component {
                     <Card>
                       <CardHeader>
                         <h6>Số lượng sinh viên đăng kí nguyện vọng vào doanh nghiệp</h6>
-                        {/* <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div> */}
                       </CardHeader>
                       <CardBody>
                         <div className="chart-wrapper">
@@ -386,11 +371,6 @@ class SiteAdmin extends Component {
                     <Card>
                       <CardHeader>
                         <h6>Số lượng sinh viên đang thực tập tại doanh nghiệp</h6>
-                        {/* <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div> */}
                       </CardHeader>
                       <CardBody>
                         <div className="chart-wrapper">
@@ -437,7 +417,7 @@ class SiteAdmin extends Component {
                             <Input onChange={this.handleInput} type="select" name="result" style={{ width: "140px" }}>
                               {semesters && semesters.map((semester, i) => {
                                 return (
-                                  <option value={i} selected={semesterItem.id === semester.id}>{semester.name}</option>
+                                  <option value={i} selected={semesterItemResult.id === semester.id}>{semester.name}</option>
                                 )
                               })}
                             </Input>
@@ -454,105 +434,6 @@ class SiteAdmin extends Component {
                 </tr>
               </tbody>
             </Table>
-
-
-            {/* <CardColumns className="cols-2">
-              <Card>
-                <CardHeader>
-                  <h6>Số lượng sinh viên đăng kí nguyện vọng vào doanh nghiệp</h6>
-                  <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div>
-                </CardHeader>
-                <CardBody>
-                  <div className="chart-wrapper">
-                    <Line data={line} options={options} />
-                  </div>
-                </CardBody>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <h6>Số lượng sinh viên đang thực tập tại doanh nghiệp</h6>
-                  <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div>
-                </CardHeader>
-                <CardBody>
-                  <div className="chart-wrapper">
-                    <Bar data={bar} options={options} />
-                  </div>
-                </CardBody>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <h6>Thống kê kết quả thực tập của sinh viên</h6>
-                  <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div>
-                  <Input type="select" style={{ width: "150px" }}>
-                    <option>SPRING2019</option>
-                    <option>SUMMER2019</option>
-                    <option>WINTER2019</option>
-                  </Input>
-                </CardHeader>
-                <CardBody>
-                  <div className="chart-wrapper">
-                    <Polar data={polar} options={options} />
-                  </div>
-                </CardBody>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <h6>Thống kê kết quả các report</h6>
-                  <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div>
-                </CardHeader>
-                <CardBody>
-                  <div className="chart-wrapper">
-                    <Radar data={radar} />
-                  </div>
-                </CardBody>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <h6>Tỉ lệ sinh viên trả lời khảo sát</h6>
-                  <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div>
-                </CardHeader>
-                <CardBody>
-                  <div className="chart-wrapper">
-                    <Doughnut data={doughnut} />
-                  </div>
-                </CardBody>
-              </Card>
-              <Card>
-            <CardHeader>
-              Pie Chart
-              <div className="card-header-actions">
-                <a href="http://www.chartjs.org" className="card-header-action">
-                  <small className="text-muted">docs</small>
-                </a>
-              </div>
-            </CardHeader>
-            <CardBody>
-              <div className="chart-wrapper">
-                <Pie data={pie} />
-              </div>
-            </CardBody>
-          </Card>
-            </CardColumns> */}
           </div>
         )
     );
