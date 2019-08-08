@@ -270,7 +270,8 @@ class Ojt_Registration extends Component {
                                 className={'modal-primary ' + this.props.className}>
                                 <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
                                 <ModalBody>
-                                    <div style={{ maxHeight: "563px", overflowY: 'auto', overflowX: 'hidden' }}>
+                                    {/* <div style={{ maxHeight: "563px", overflowY: 'auto', overflowX: 'hidden' }}> */}
+                                    <div>
                                         <FormGroup row>
                                             <Col md="4">
                                                 <h6>Ảnh đại diện</h6>
@@ -292,7 +293,7 @@ class Ojt_Registration extends Component {
                                         </FormGroup>
                                         <FormGroup row>
                                             <Col md="4">
-                                                <h6>Mã số sinh viên</h6>
+                                                <h6>MSSV</h6>
                                             </Col>
                                             <Col xs="12" md="8">
                                                 <label>{studentDetail.code}</label>
@@ -314,19 +315,19 @@ class Ojt_Registration extends Component {
                                                 <label>{studentDetail.objective}</label>
                                             </Col>
                                         </FormGroup>
-                                        <FormGroup row>
+                                        {/* <FormGroup row>
                                             <Col md="4">
                                                 <h6>Bảng điểm</h6>
                                             </Col>
                                             <Col xs="12" md="8">
                                                 {
                                                     studentDetail.transcriptLink && studentDetail.transcriptLink ? (
-                                                        <a href={studentDetail.transcriptLink} download>Tải về</a>
+                                                        <a href={studentDetail.transcriptLink} download>tải</a>
                                                     ) :
                                                         (<label>N/A</label>)
                                                 }
                                             </Col>
-                                        </FormGroup>
+                                        </FormGroup> */}
                                         <FormGroup row>
                                             <Col md="4">
                                                 <h6>Kỹ năng</h6>
@@ -351,6 +352,19 @@ class Ojt_Registration extends Component {
                                             </Col>
                                             <Col xs="12" md="8">
                                                 <label>{studentDetail.gpa}</label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Bảng điểm</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {
+                                                    studentDetail.transcriptLink && studentDetail.transcriptLink ? (
+                                                        <a href={studentDetail.transcriptLink} download>tải</a>
+                                                    ) :
+                                                        (<label>N/A</label>)
+                                                }
                                             </Col>
                                         </FormGroup>
                                     </div>

@@ -118,7 +118,7 @@ class CV extends Component {
     showTranscript(transcriptLink) {
         if (transcriptLink !== null) {
             return (
-                <a href={transcriptLink}>Tải về</a>
+                <a href={transcriptLink} download>tải</a>
             )
         } else {
             return (
@@ -245,7 +245,7 @@ class CV extends Component {
                                                 {
                                                     resumeLink && resumeLink ?
                                                         (<Col xs="12" md="10">
-                                                            <a target="_blank" href={linkDownCV} download>Tải về</a>
+                                                            <a target="_blank" href={linkDownCV} download>tải</a>
                                                         </Col>)
                                                         :
                                                         (

@@ -82,78 +82,79 @@ class Invitation_Create extends Component {
                     className={'modal-primary ' + this.props.className}>
                     <ModalHeader toggle={this.toggleLarge}>Chi tiết sinh viên</ModalHeader>
                     <ModalBody>
-                    <div style={{maxHeight:"563px", overflowY:'auto', overflowX:'hidden'}}>
-                        <FormGroup row>
-                            <Col md="3">
-                                <h6>Họ và tên:</h6>
-                            </Col>
-                            <Col xs="12" md="9">
-                                <label>{studentDetail.name}</label>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col md="3">
-                                <h6>Mã số sinh viên</h6>
-                            </Col>
-                            <Col xs="12" md="9">
-                                <label>{studentDetail.code}</label>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col md="3">
-                                <h6>Chuyên ngành:</h6>
-                            </Col>
-                            <Col xs="12" md="9">
-                                <label>{studentDetail.specialized.name}</label>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col md="3">
-                                <h6>Giới thiệu bản thân:</h6>
-                            </Col>
-                            <Col xs="12" md="9">
-                                <label>{studentDetail.objective}</label>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
+                        {/* <div style={{maxHeight:"663px", overflowY:'auto', overflowX:'hidden'}}> */}
+                        <div>
+                            <FormGroup row>
+                                <Col md="3">
+                                    <h6>Họ và tên:</h6>
+                                </Col>
+                                <Col xs="12" md="9">
+                                    <label>{studentDetail.name}</label>
+                                </Col>
+                            </FormGroup>
+                            <FormGroup row>
+                                <Col md="3">
+                                    <h6>MSSV</h6>
+                                </Col>
+                                <Col xs="12" md="9">
+                                    <label>{studentDetail.code}</label>
+                                </Col>
+                            </FormGroup>
+                            <FormGroup row>
+                                <Col md="3">
+                                    <h6>Chuyên ngành:</h6>
+                                </Col>
+                                <Col xs="12" md="9">
+                                    <label>{studentDetail.specialized.name}</label>
+                                </Col>
+                            </FormGroup>
+                            <FormGroup row>
+                                <Col md="3">
+                                    <h6>Giới thiệu bản thân:</h6>
+                                </Col>
+                                <Col xs="12" md="9">
+                                    <label>{studentDetail.objective}</label>
+                                </Col>
+                            </FormGroup>
+                            {/* <FormGroup row>
                             <Col md="3">
                                 <h6>Bảng điểm:</h6>
                             </Col>
                             <Col xs="12" md="9">
                                 {
                                     studentDetail.transcriptLink && studentDetail.transcriptLink ? (
-                                        <a href={studentDetail.transcriptLink} download>Tải về</a>
+                                        <a href={studentDetail.transcriptLink} download>tải</a>
                                     ) :
                                         (<label>N/A</label>)
                                 }
                             </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col md="3">
-                                <h6>Kỹ năng:</h6>
-                            </Col>
-                            <Col xs="12" md="9">
-                                {
-                                    studentDetail.skills && studentDetail.skills.map((skill, index) => {
-                                        return (
-                                            <div>
-                                                {
-                                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
-                                                }
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Col md="3">
-                                <h6>GPA:</h6>
-                            </Col>
-                            <Col xs="12" md="9">
-                                <label>{studentDetail.gpa}</label>
-                            </Col>
-                        </FormGroup>
+                        </FormGroup> */}
+                            <FormGroup row>
+                                <Col md="3">
+                                    <h6>Kỹ năng:</h6>
+                                </Col>
+                                <Col xs="12" md="9">
+                                    {
+                                        studentDetail.skills && studentDetail.skills.map((skill, index) => {
+                                            return (
+                                                <div>
+                                                    {
+                                                        <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                    }
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </Col>
+                            </FormGroup>
+                            <FormGroup row>
+                                <Col md="3">
+                                    <h6>GPA:</h6>
+                                </Col>
+                                <Col xs="12" md="9">
+                                    <label>{studentDetail.gpa}</label>
+                                </Col>
+                            </FormGroup>
                         </div>
                     </ModalBody>
                     {/* <ModalFooter>
@@ -247,7 +248,7 @@ class Invitation_Create extends Component {
                                                             {/* <td style={{ textAlign: "center" }}>
                                                                 {
                                                                     student.transcriptLink && student.transcriptLink ? (
-                                                                        <a href={student.transcriptLink} download>Tải về</a>
+                                                                        <a href={student.transcriptLink} download>tải</a>
                                                                     ) :
                                                                         (<label>N/A</label>)
                                                                 }
@@ -551,7 +552,7 @@ class Invitation_Create extends Component {
                     <ModalBody>
                         <FormGroup row>
                             <Col md="1">
-                                <Label style={{ fontWeight:"bold", fontSize:"18px"}}>Tới: </Label>
+                                <Label style={{ fontWeight: "bold", fontSize: "18px" }}>Tới: </Label>
                             </Col>
                             <Col md="11">
                                 {student === null ?
