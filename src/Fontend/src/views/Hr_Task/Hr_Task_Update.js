@@ -223,7 +223,7 @@ class Hr_Task_Update extends Component {
                                     <CardFooter className="p-4">
                                         <Row>
                                             <Col xs="4" sm="4">
-                                                <Button color="secondary" block onClick={() => this.handleDirect(`/hr-task/details/${id}`)}>Trở về</Button>
+                                                <Button color="secondary" block onClick={() => this.handleDirect("/hr-task")}>Trở về</Button>
                                             </Col>
                                             <Col xs="4" sm="4">
                                                 <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>
