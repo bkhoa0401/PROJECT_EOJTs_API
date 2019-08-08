@@ -383,7 +383,7 @@ public class StudentController {
     //student get job post details by id
     @GetMapping("/getJobPost")
     @ResponseBody
-    public ResponseEntity<Job_PostDTO> getListInvitation(@RequestParam int id) {
+    public ResponseEntity<Job_PostDTO> getListJobPost(@RequestParam int id) {
 
         Job_Post job_post = job_postService.findJob_PostById(id);
         String emailOfBusiness = job_post.getOjt_enrollment().getBusiness().getEmail();
@@ -701,7 +701,7 @@ public class StudentController {
 
     @GetMapping("/businesses")
     @ResponseBody
-    public ResponseEntity<List<Business>> getBusinessesOfStudent() {
+    public ResponseEntity<List<Business>> getBusinessesListOfStudent() {
         String email = getEmailFromToken();
 
         List<Business> businessList = studentService.getBusinessByOptionStudent(email);

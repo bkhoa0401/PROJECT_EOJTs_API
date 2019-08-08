@@ -28,7 +28,7 @@ class ChangePassword extends Component {
         const token = localStorage.getItem('id_token');
         const decoded = decode(token);
         const email = decoded.email;
-        const account = await ApiServices.Get('/account/getCurrentAccount');
+        const account = await ApiServices.Get('/user/getCurrentAccount');
         this.setState({
             email,
             loading: false,

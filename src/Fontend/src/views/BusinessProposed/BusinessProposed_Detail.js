@@ -555,17 +555,15 @@ class BusinessProposed_Detail extends Component {
                                             {
                                                 (role === 'ROLE_STARTUP' && business.isAcceptedByStartupRoom === 'PENDING') ? (
                                                     <Col xs="3" sm="3">
-                                                        <Button id="btnUpdate" type="submit" block color="primary" onClick={() => this.handleDirect(`/business-proposed/update/${business.id}`)}><i className="fa cui-note"></i></Button>
+                                                        <Button id="btnUpdate" type="submit" block color="primary" onClick={() => this.handleDirect(`/business-proposed/update/${business.id}`)}>Chỉnh sửa</Button>
                                                     </Col>
                                                 ) : (
                                                         (role === 'ROLE_STARTUP' && business.isAcceptedByStartupRoom !== 'PENDING') ? (
                                                             <Col xs="3" sm="3">
-                                                                <Button disabled id="btnUpdate" type="submit" block color="primary" onClick={() => this.handleDirect(`/hr-task/update/`)}><i className="fa cui-note"></i></Button>
+                                                                <Button disabled id="btnUpdate" type="submit" block color="primary" onClick={() => this.handleDirect(`/hr-task/update/`)}>Chỉnh sửa</Button>
                                                             </Col>
                                                         ) : (
-                                                                <Col xs="1" sm="1">
-
-                                                                </Col>
+                                                               <></>
                                                             )
                                                     )
                                             }

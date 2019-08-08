@@ -210,9 +210,9 @@ class Question extends Component {
                                                             <Col xs="12" md="8">
                                                                 {
                                                                     questionDetail.has_others.toString() === 'true' ? (
-                                                                        <Badge color="success" style={{ fontSize: '12px' }}><i className="fa cui-circle-check"></i></Badge>
+                                                                        <Badge color="success" style={{ fontSize: '12px' }}>CÓ</Badge>
                                                                     ) : (
-                                                                            <Badge color="danger" style={{ fontSize: '12px' }}><i className="fa cui-circle-x"></i></Badge>
+                                                                            <Badge color="danger" style={{ fontSize: '12px' }}>KHÔNG</Badge>
                                                                         )
                                                                 }
                                                             </Col>
@@ -224,9 +224,9 @@ class Question extends Component {
                                                             <Col xs="12" md="8">
                                                                 {
                                                                     questionDetail.manyOption.toString() === 'true' ? (
-                                                                        <Badge color="success" style={{ fontSize: '12px' }}><i className="fa cui-circle-check"></i></Badge>
+                                                                        <Badge color="success" style={{ fontSize: '12px' }}>CÓ</Badge>
                                                                     ) : (
-                                                                            <Badge color="danger" style={{ fontSize: '12px' }}><i className="fa cui-circle-x"></i></Badge>
+                                                                            <Badge color="danger" style={{ fontSize: '12px' }}>KHÔNG</Badge>
                                                                         )
                                                                 }
                                                             </Col>

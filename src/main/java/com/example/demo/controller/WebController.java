@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
 
 @RestController
 @RequestMapping("/api/account")
@@ -95,30 +92,34 @@ public class WebController {
     }
 
     //check account existed
-    @GetMapping("/check")
+    @GetMapping("/reset")
     @ResponseBody
-    private ResponseEntity<Void> checkAccountExisted(@RequestParam String email) {
-        boolean isExisted = false;
-        List<Users> listAllUser = usersService.getAllUsers();
-        for (int i = 0; i < listAllUser.size(); i++) {
-            if (listAllUser.get(i).getEmail().equals(email)) {
-                isExisted = true;
-            }
-        }
-        if (isExisted) {
+    private ResponseEntity<Void> resetPassword(@RequestParam String email) {
+        boolean isSuccess = usersService.createResetToken(email);
+        if (isSuccess == true) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-    //check account existed
-    @GetMapping("/getCurrentAccount")
+    @GetMapping("/checkToken")
     @ResponseBody
-    private ResponseEntity<Users> getCurrentAccount() {
-        String email = getEmailFromToken();
-        Users account = usersService.findUserByEmail(email);
-        if (account != null) {
-            return new ResponseEntity<Users>(account, HttpStatus.OK);
+    private ResponseEntity<Void> checkToken(@RequestParam String token) {
+        String[] parts = token.split("_");
+        boolean isValid = usersService.checkToken(parts[0], parts[1]);
+        if (isValid == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/createNewPassword")
+    @ResponseBody
+    private ResponseEntity<Void> createNewPassword(@RequestParam String password, @RequestParam String token) {
+        String[] parts = token.split("_");
+        boolean isValid = usersService.createNewPassword(password, parts[1]);
+        if (isValid == true) {
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

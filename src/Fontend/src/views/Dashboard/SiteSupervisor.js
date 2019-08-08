@@ -35,7 +35,7 @@ class SiteSupervisor extends Component {
         labels: studentsTasks.studentEmail,
         datasets: [
           {
-            label: 'Số lượng sinh viên',
+            label: 'Số lượng task',
             fill: false,
             lineTension: 0.1,
             backgroundColor: 'rgba(75,192,192,0.4)',
@@ -67,7 +67,7 @@ class SiteSupervisor extends Component {
 
       if (statisticalEvaluationOfSupervisor[0] !== null) {
         let data1 = {
-          label: 'Báo cáo 1',
+          label: 'Đánh giá tháng 1',
           backgroundColor: 'rgba(179,181,198,0.2)',
           borderColor: 'rgba(179,181,198,1)',
           pointBackgroundColor: 'rgba(179,181,198,1)',
@@ -80,7 +80,7 @@ class SiteSupervisor extends Component {
       }
       if (statisticalEvaluationOfSupervisor[1] !== null) {
         let data2 = {
-          label: 'Báo cáo 2',
+          label: 'Đánh giá tháng 2',
           backgroundColor: 'rgba(255,99,132,0.2)',
           borderColor: 'rgba(255,99,132,1)',
           pointBackgroundColor: 'rgba(255,99,132,1)',
@@ -93,7 +93,7 @@ class SiteSupervisor extends Component {
       }
       if (statisticalEvaluationOfSupervisor[2] !== null) {
         let data3 = {
-          label: 'Báo cáo 3',
+          label: 'Đánh giá tháng 3',
           backgroundColor: '#CCFFFF',
           borderColor: '#00FFFF',
           pointBackgroundColor: '#00FFFF',
@@ -106,7 +106,7 @@ class SiteSupervisor extends Component {
       }
       if (statisticalEvaluationOfSupervisor[3] !== null) {
         let data4 = {
-          label: 'Báo cáo 4',
+          label: 'Đánh giá tháng 4',
           backgroundColor: '#FFF68F',
           borderColor: '#CDAD00',
           pointBackgroundColor: '#CDAD00',
@@ -131,7 +131,7 @@ class SiteSupervisor extends Component {
         labels: studentsTasksDone.studentEmail,
         datasets: [
           {
-            label: 'Số lượng sinh viên',
+            label: 'Tỉ lệ %',
             backgroundColor: 'rgba(255,99,132,0.2)',
             borderColor: 'rgba(255,99,132,1)',
             borderWidth: 1,

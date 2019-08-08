@@ -486,9 +486,9 @@ class Excels extends Component {
         this.setState({
             loading: true
         })
-        const resultAddListSkill = await ApiServices.Post('/skill/listSkill', listSkill);
+        //const resultAddListSkill = await ApiServices.Post('/skill/listSkill', listSkill);
 
-        if (resultAddListSkill.status === 200) {
+       // if (resultAddListSkill.status === 200) {
             const result = await ApiServices.Post('/business', listBusinesses);
             if (result.status === 201) {
                 this.setState({
@@ -502,7 +502,7 @@ class Excels extends Component {
                 })
                 Toastify.actionFail("Thêm tệp thất bại!");
             }
-        }
+        //}
     }
 
     removeFileStudents = (event) => {

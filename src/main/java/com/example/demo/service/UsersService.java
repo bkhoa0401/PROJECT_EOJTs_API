@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UsersService implements IUsersService {
@@ -36,6 +38,20 @@ public class UsersService implements IUsersService {
         helper.setTo(mail);
         helper.setText("Hi " + name + ",\n" + "welcome you to my system.\n Your password are : " + password + "\nThanks and Regards");
         helper.setSubject("[TEST EOJTs]");
+
+        sender.send(message);
+    }
+
+    @Override
+    public void sendResetEmail(String token, String email) throws Exception {
+        MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        helper.setTo(email);
+        helper.setText("Hi," + "\n" + "You or someone just require us to reset " + email + " account.\n" +
+                "Here is your reset password link: http://localhost:3000/#/resetpassword/" + token +
+                "\nThis link is only available in 5 minutes. If it's not you. Just ignore this email and your password will not change." +
+                "\nThanks & best regards!");
+        helper.setSubject("[Reset your account password in EOJTs system]");
 
         sender.send(message);
     }
@@ -122,6 +138,52 @@ public class UsersService implements IUsersService {
             users.setActive(isActive);
             usersRepository.save(users);
             return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean createResetToken(String email) {
+        String resetToken = UUID.randomUUID().toString().replaceAll("_", "-");
+        String resetTime = Long.toString(new Date().getTime());
+        Users user = findUserByEmail(email);
+        try {
+            sendResetEmail(resetToken + "_" + email, email);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (user != null) {
+            user.setResetToken(resetToken);
+            user.setResetTime(resetTime);
+            usersRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkToken(String token, String email) {
+        Users user = findUserByEmail(email);
+        if (user.getResetToken().equals(token)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean createNewPassword(String password, String email) {
+        Users user = findUserByEmail(email);
+        Long time = new Date().getTime();
+        Long resetTime = Long.parseLong(user.getResetTime());
+        if (user != null) {
+            //valid only 5 mins
+            if ((time - resetTime) > 5 * 60 * 1000) {
+                return false;
+            } else {
+                user.setPassword(password);
+                usersRepository.save(user);
+                return true;
+            }
         }
         return false;
     }
