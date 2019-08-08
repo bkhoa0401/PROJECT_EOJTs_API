@@ -60,6 +60,8 @@ class student_list extends Component {
             businessSurvey: null,
 
             dropdownOpen: false,
+            nameSortOrder: 0,
+            codeSortOrder: 0,
         };
         // this.toggleModal = this.toggleModal.bind(this);
     }
@@ -69,7 +71,9 @@ class student_list extends Component {
         if (students !== null) {
             this.setState({
                 students,
-                loading: false
+                loading: false,     
+                nameSortOrder: 0,
+                codeSortOrder: 0,
             });
         }
     }
@@ -188,6 +192,42 @@ class student_list extends Component {
             listStudentTask: listStudentTask,
             isThisMonth: -1,
         })
+    }
+
+    sortCodeInOrder = (orderBy) => {
+        if (orderBy === 1) {
+            this.setState({
+                students: this.state.students.sort((a, b) => (a.student.code > b.student.code) ? 1 : -1),
+                codeSortOrder: 1,
+                nameSortOrder: 0,
+            });
+        }
+        if (orderBy === 2) {
+            this.setState({
+                students: this.state.students.sort((a, b) => (b.student.code > a.student.code) ? 1 : -1),
+                codeSortOrder: 2,
+                nameSortOrder: 0,
+            });
+        }
+    }
+
+    sortNameInOrder = (orderBy) => {
+        if (orderBy === 1) {
+            // console.log(1);
+            this.setState({
+                students: this.state.students.sort((a, b) => (a.student.name > b.student.name) ? 1 : -1),
+                nameSortOrder: 1,
+                codeSortOrder: 0,
+            });
+            // console.log(this.state.students.sort((a, b) => (a.student.name > b.student.name) ? 1 : -1));
+        }
+        if (orderBy === 2) {
+            this.setState({
+                students: this.state.students.sort((a, b) => (b.student.name > a.student.name) ? 1 : -1),
+                nameSortOrder: 2,
+                codeSortOrder: 0,
+            });
+        }
     }
 
     toggleDropdown = () => {
@@ -546,7 +586,7 @@ class student_list extends Component {
     }
 
     tabPane() {
-        const { student, businessSurvey, months, isThisMonth, isViewSurvey, survey, students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail, typesOfStudent } = this.state;
+        const { codeSortOrder, nameSortOrder, student, businessSurvey, months, isThisMonth, isViewSurvey, survey, students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail, typesOfStudent } = this.state;
 
         const { name, code, email, phone, address, specialized, objective, gpa, skills, resumeLink, transcriptLink, role, isUploadTranscriptLink } = this.state;
         const linkDownCV = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
@@ -579,16 +619,26 @@ class student_list extends Component {
                                             <tr>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                                                    &emsp;&nbsp;MSSV
+                                                    &emsp;&nbsp;&nbsp;MSSV
                                                     &nbsp;
-                                                    <i onClick={() => this.toggleDropdown()} className="cui-sort-ascending"></i>
-                                                    {/* <i tag="a" onClick={} className="cui-sort-descending"></i> */}
+                                                    { codeSortOrder === 0 ? 
+                                                        <i onClick={() => this.sortCodeInOrder(1)} className="cui-sort-ascending"></i> : 
+                                                        ( codeSortOrder === 1 ?
+                                                            <i onClick={() => this.sortCodeInOrder(2)} className="cui-sort-ascending"></i> : 
+                                                            <i onClick={() => this.sortCodeInOrder(1)} className="cui-sort-descending"></i>
+                                                        )
+                                                    }   
                                                 </th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                                                    &emsp;&nbsp;Họ và tên
+                                                    &emsp;&nbsp;&nbsp;Họ và tên
                                                     &nbsp;
-                                                    <i onClick={() => this.toggleDropdown()} className="cui-sort-ascending"></i>
-                                                    {/* <i tag="a" onClick={} className="cui-sort-descending"></i> */}
+                                                    { nameSortOrder === 0 ? 
+                                                        <i onClick={() => this.sortNameInOrder(1)} className="cui-sort-ascending"></i> : 
+                                                        ( nameSortOrder === 1 ?
+                                                            <i onClick={() => this.sortNameInOrder(2)} className="cui-sort-ascending"></i> : 
+                                                            <i onClick={() => this.sortNameInOrder(1)} className="cui-sort-descending"></i>
+                                                        )
+                                                    }     
                                                 </th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Email</th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
