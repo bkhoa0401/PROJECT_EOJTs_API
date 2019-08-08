@@ -1069,7 +1069,7 @@ public class StudentController {
     public ResponseEntity<Void> postFeedback(@RequestParam String content) {
         String email = getEmailFromToken();
         studentService.postFeedBack(email, content);
-        HistoryDetail historyDetail = new HistoryDetail(Answer.class.getName(), "content", "new", content);
+        HistoryDetail historyDetail = new HistoryDetail(Answer.class.getName(), null, null, content);
         HistoryAction action =
                 new HistoryAction(email
                         , "ROLE_STUDENT", ActionEnum.INSERT, TAG, new Object() {
@@ -1104,6 +1104,17 @@ public class StudentController {
     public ResponseEntity<Void> studentCreateInformMessage(@RequestBody Event event) {
         String email = getEmailFromToken();
         studentService.studentCreateInformMessage(email,event);
+        HistoryDetail historyDetail = new HistoryDetail(Event.class.getName(), null, null, event.toString());
+        HistoryAction action =
+                new HistoryAction(email
+                        , "ROLE_STUDENT", ActionEnum.INSERT, TAG, new Object() {
+                }
+                        .getClass()
+                        .getEnclosingMethod()
+                        .getName(), null, new java.util.Date(), historyDetail);
+        historyDetail.setHistoryAction(action);
+        iHistoryActionService.createHistory(action);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
