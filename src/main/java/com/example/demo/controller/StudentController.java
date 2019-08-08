@@ -117,8 +117,18 @@ public class StudentController {
             Semester semester = semesterService.getSemesterByName(studentList.get(i).getSemesterName());
 
             Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
-            Student student = studentService.getStudentByEmail(studentList.get(i).getEmail());
+//            Student student = studentService.getStudentByEmail(studentList.get(i).getEmail());
+            Student student = new Student();
+            student.setEmail(studentList.get(i).getEmail());
+            student.setSpecialized(studentList.get(i).getSpecialized());
             student.setStatus(StudentStatus.NOTSTART);
+            student.setAddress(studentList.get(i).getAddress());
+            student.setDob(studentList.get(i).getDob());
+            student.setGender(studentList.get(i).isGender());
+            student.setName(studentList.get(i).getName());
+            student.setCode(studentList.get(i).getCode());
+            student.setPhone(studentList.get(i).getPhone());
+            student.setGpa(student.getGpa());
             ojt_enrollment.setStudent(student);
             ojt_enrollment.setSemester(semester);
 
@@ -178,6 +188,7 @@ public class StudentController {
         student1.setName(student.getName());
         student1.setCode(student.getCode());
         student1.setPhone(student.getPhone());
+        student1.setGpa(student.getGpa());
 
         ojt_enrollment.setStudent(student1);
         ojt_enrollment.setSemester(semester);

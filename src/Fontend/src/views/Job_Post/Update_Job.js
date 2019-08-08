@@ -194,23 +194,10 @@ class Update_Job extends Component {
         if (indexFound !== -1) {
             this.state.specializedUpdate.splice(indexFound, 1);
         }
-        // console.log(this.state.specializedUpdate);
-        // console.log(selectSpecialized);
-        // console.log(this.state.choseSpecialized);
-
-
-        // console.log(this.state.arraySkill);
-        // this.state.arraySkill.splice(2, 1);
-        // console.log(this.state.arrayQuantity);
-        // this.state.arraySkill.splice(2, 1);
-        // this.setState({
-        //     specializedUpdate: []
-        // })
 
         let isChecked = false;
 
         for (let l = 0; l < this.state.specializeds.length; l++) {
-            // console.log(`cb${selectSpecialized}`);
             if (document.getElementById(`cb${this.state.specializeds[l].id}`).checked) {
                 isChecked = true;
                 this.setState({
@@ -367,8 +354,6 @@ class Update_Job extends Component {
 
     render() {
         const { skillsForSave, numbersForSave, specializedUpdate, arraySkill, arrayQuantity, description, contact, updatedId, interview_process, interest, specializeds, specializedItem, skills, choseSpecialized, loading } = this.state;
-        // console.log(description, interview_process, interest, contact, specializedUpdate, arraySkill, arrayQuantity);
-        // console.log(this.state.choseSpecialized);
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -486,18 +471,8 @@ class Update_Job extends Component {
                                                                                 {skills && skills.map((skill, i) => {
 
                                                                                     let a = choseSpecialized.indexOf(skill.id);
-                                                                                    {/* console.log(a); */ }
 
                                                                                     if (a !== -1) {
-                                                                                        {/* console.log('all', choseSpecialized);
-                                                                                console.log('skill.id', skill.id);
-                                                                                console.log('a', a);
-                                                                                console.log('choseSpecialized[a]', choseSpecialized[a]);
-                                                                                console.log(choseSpecialized[a] === skill.id); */}
-                                                                                        console.log('choseSpecialized[a]', choseSpecialized[a]);
-                                                                                        {/* console.log('arraySkill', arraySkill); */ }
-                                                                                        console.log('arraySkill[index]', arraySkill[index]);
-                                                                                        console.log(choseSpecialized[a] === arraySkill[index]);
                                                                                         return (
                                                                                             <option selected={choseSpecialized[a] === arraySkill[index]} id={'op' + i} value={i}>{skill.name}</option>
                                                                                         )
