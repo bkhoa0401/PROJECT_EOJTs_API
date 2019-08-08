@@ -139,7 +139,7 @@ class Student_Detail extends Component {
                                         <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
                                             <FormGroup row>
                                                 <Col md="2">
-                                                    <h6>Họ và Tên</h6>
+                                                    <h6>Họ và tên</h6>
                                                 </Col>
                                                 <Col xs="12" md="10">
                                                     <Label id="" name="">{name}</Label>

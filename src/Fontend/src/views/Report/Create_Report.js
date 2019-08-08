@@ -113,7 +113,7 @@ class Create_Report extends Component {
             formatTimeStartShow[1] = "0" + formatTimeStartShow[1];
         }
         if (parseInt(formatTimeStartShow[0]) < 10) {
-            formatTimeStartShow[0] = "0" + formatTimeStartShow[1];
+            formatTimeStartShow[0] = "0" + formatTimeStartShow[0];
         }
         timeStartShow = formatTimeStartShow[0] + "/" + formatTimeStartShow[1] + "/" + formatTimeStartShow[2];
         let timeEndShow = "";
@@ -143,7 +143,7 @@ class Create_Report extends Component {
             formatTimeEndShow[1] = "0" + formatTimeEndShow[1];
         }
         if (parseInt(formatTimeEndShow[0]) < 10) {
-            formatTimeEndShow[0] = "0" + formatTimeEndShow[1];
+            formatTimeEndShow[0] = "0" + formatTimeEndShow[0];
         }
         timeEndShow = formatTimeEndShow[0] + "/" + formatTimeEndShow[1] + "/" + formatTimeEndShow[2];
         let maxWorkDays = 0;

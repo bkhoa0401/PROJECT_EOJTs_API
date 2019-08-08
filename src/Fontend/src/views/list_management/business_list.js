@@ -154,12 +154,12 @@ class business_list extends Component {
                                                         return (
                                                             <tr>
                                                                 <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                                <td style={{ textAlign: "center" }}>{business.business_name}</td>
+                                                                <td style={{ textAlign: "center" }}>{business.business_name}<br />({business.business_eng_name})</td>
                                                                 {/* <td style={{ textAlign: "center" }}>{business.business_eng_name}</td> */}
                                                                 <td style={{ textAlign: "center" }}>{business.business_address}</td>
                                                                 {/* <td style={{ textAlign: "center" }}>{business.business_website}</td> */}
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    Email: {business.email}<br />
+                                                                    <span>Email: {business.email}<br /></span>
                                                                     SĐT: {business.business_phone}
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
@@ -205,99 +205,100 @@ class business_list extends Component {
                         <Modal isOpen={this.state.modalDetail} toggle={this.toggleModalDetail} className={'modal-primary ' + this.props.className}>
                             <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
                             <ModalBody>
-                                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Logo</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {business === null ?
-                                                <></> :
-                                                (business.logo === null ?
-                                                    <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "100px", height: "100px" }} alt="usericon" /> :
-                                                    <img src={business.logo} className="img-avatar" style={{ width: "100px", height: "100px" }} />
-                                                )
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Email</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {business === null ?
-                                                <></> :
-                                                <Label>{business.email}</Label>
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Tên doanh nghiệp</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {business === null ?
-                                                <></> :
-                                                <Label>{business.business_name}</Label>
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Tên tiếng Anh</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {business === null ?
-                                                <></> :
-                                                <Label>{business.business_eng_name}</Label>
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>SĐT</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {business === null ?
-                                                <></> :
-                                                <Label>{business.business_phone}</Label>
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Website</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {business === null ?
-                                                <></> :
-                                                <Label>{business.business_website}</Label>
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Địa chỉ</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {business === null ?
-                                                <></> :
-                                                <Label>{business.business_address}</Label>
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Giới thiệu</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {business === null ?
-                                                <></> :
-                                                <Label>{business.business_overview}</Label>
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    {/* <FormGroup row>
+                                <div style={{ maxHeight: "563px", overflowY: 'auto', overflowX: 'hidden' }}>
+                                    <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Logo</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {business === null ?
+                                                    <></> :
+                                                    (business.logo === null ?
+                                                        <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "100px", height: "100px" }} alt="usericon" /> :
+                                                        <img src={business.logo} className="img-avatar" style={{ width: "100px", height: "100px" }} />
+                                                    )
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Email</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {business === null ?
+                                                    <></> :
+                                                    <Label>{business.email}</Label>
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Tên doanh nghiệp</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {business === null ?
+                                                    <></> :
+                                                    <Label>{business.business_name}</Label>
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Tên tiếng Anh</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {business === null ?
+                                                    <></> :
+                                                    <Label>{business.business_eng_name}</Label>
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>SĐT</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {business === null ?
+                                                    <></> :
+                                                    <Label>{business.business_phone}</Label>
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Website</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {business === null ?
+                                                    <></> :
+                                                    <Label>{business.business_website}</Label>
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Địa chỉ</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {business === null ?
+                                                    <></> :
+                                                    <Label>{business.business_address}</Label>
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Giới thiệu</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {business === null ?
+                                                    <></> :
+                                                    <Label>{business.business_overview}</Label>
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        {/* <FormGroup row>
                                         <Col md="4">
                                             <h6>Image</h6>
                                         </Col>
@@ -308,7 +309,8 @@ class business_list extends Component {
                                             </span>
                                         </Col>
                                     </FormGroup> */}
-                                </Form>
+                                    </Form>
+                                </div>
                             </ModalBody>
                             {/* <ModalFooter>
                             </ModalFooter> */}

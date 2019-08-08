@@ -82,9 +82,10 @@ class Invitation_Create extends Component {
                     className={'modal-primary ' + this.props.className}>
                     <ModalHeader toggle={this.toggleLarge}>Chi tiết sinh viên</ModalHeader>
                     <ModalBody>
+                    <div style={{maxHeight:"563px", overflowY:'auto', overflowX:'hidden'}}>
                         <FormGroup row>
                             <Col md="3">
-                                <h6>Họ và Tên:</h6>
+                                <h6>Họ và tên:</h6>
                             </Col>
                             <Col xs="12" md="9">
                                 <label>{studentDetail.name}</label>
@@ -153,6 +154,7 @@ class Invitation_Create extends Component {
                                 <label>{studentDetail.gpa}</label>
                             </Col>
                         </FormGroup>
+                        </div>
                     </ModalBody>
                     {/* <ModalFooter>
                         <Button style={{ marginRight: "42%", width: "100px" }} color="primary" onClick={this.toggleLarge}>Xác nhận</Button>
@@ -207,14 +209,14 @@ class Invitation_Create extends Component {
                                     <Table responsive striped>
                                         <thead>
                                             <tr>
-                                                <th style={{ textAlign: "center" }}>STT</th>
-                                                <th style={{ textAlign: "center" }}>MSSV</th>
-                                                <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                                <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                {/* <th style={{ textAlign: "center" }}>Kỹ năng</th> */}
-                                                {/* <th style={{ textAlign: "center" }}>GPA</th> */}
-                                                {/* <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
-                                                <th style={{ textAlign: "center" }}></th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
+                                                {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Kỹ năng</th> */}
+                                                {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>GPA</th> */}
+                                                {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Bảng điểm</th> */}
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -276,14 +278,14 @@ class Invitation_Create extends Component {
                                     <Table responsive striped>
                                         <thead>
                                             <tr>
-                                                <th style={{ textAlign: "center" }}>STT</th>
-                                                <th style={{ textAlign: "center" }}>MSSV</th>
-                                                <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                                <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                {/* <th style={{ textAlign: "center" }}>Kỹ năng</th>
-                                                <th style={{ textAlign: "center" }}>GPA</th>
-                                                <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
-                                                <th style={{ textAlign: "center" }}></th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
+                                                {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Kỹ năng</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>GPA</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Bảng điểm</th> */}
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                             </tr>
                                         </thead>
                                         <tbody>

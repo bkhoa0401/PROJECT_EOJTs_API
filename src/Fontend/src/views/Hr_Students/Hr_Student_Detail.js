@@ -104,13 +104,13 @@ class Hr_Students_Detail extends Component {
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ textAlign: "center" }}>STT</th>
-                                                    <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                                                    <th style={{ textAlign: "center" }}>Ưu tiên</th>
-                                                    <th style={{ textAlign: "center" }}>Hạn cuối</th>
-                                                    <th style={{ textAlign: "center" }}>Mức độ</th>
-                                                    <th style={{ textAlign: "center" }}>Người giao</th>
-                                                    <th style={{ textAlign: "center" }}>Trạng thái</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nhiệm vụ</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ưu tiên</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hạn cuối</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Mức độ</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Người giao</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
