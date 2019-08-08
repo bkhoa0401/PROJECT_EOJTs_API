@@ -93,11 +93,11 @@ class User_Student extends Component {
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ textAlign: "center" }}>STT</th>
-                                                    <th style={{ textAlign: "center" }}>Email</th>
-                                                    <th style={{ textAlign: "center" }}>Vai trò</th>
-                                                    <th style={{ textAlign: "center" }}>Trạng thái</th>
-                                                    <th style={{ textAlign: "center" }}></th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Email</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Vai trò</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>

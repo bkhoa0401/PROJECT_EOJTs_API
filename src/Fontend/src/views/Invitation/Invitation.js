@@ -119,16 +119,16 @@ class Invitation extends Component {
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ textAlign: "center" }}>STT</th>
-                                                    <th style={{ textAlign: "center" }}>MSSV</th>
-                                                    <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                                    <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                    {/* <th style={{ textAlign: "center" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
-                                                    {/* <th style={{ textAlign: "center" }}>Kỹ năng</th>
-                                                    <th style={{ textAlign: "center" }}>GPA</th> */}
-                                                    {/* <th style={{ textAlign: "center" }}>Nguyện vọng của sinh viên</th> */}
-                                                    <th style={{ textAlign: "center" }}>Trạng thái lời mời</th>
-                                                    <th style={{ textAlign: "center" }}></th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
+                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
+                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Kỹ năng</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>GPA</th> */}
+                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nguyện vọng của sinh viên</th> */}
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái lời mời</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -217,7 +217,7 @@ class Invitation extends Component {
                                 <ModalBody>
                                     <FormGroup row>
                                         <Col md="4">
-                                            <h6>Họ và Tên</h6>
+                                            <h6>Họ và tên</h6>
                                         </Col>
                                         <Col xs="12" md="8">
                                             <label>{studentDetail.name}</label>

@@ -240,7 +240,7 @@ public class Business_ProposedService implements IBusiness_ProposedService {
 
         List<Business_Proposed> business_proposeds = iBusiness_proposedRepository.findBusiness_ProposedsByStudent_proposed(email);
         if (business_proposeds.size() == 0 || business_proposeds == null) {
-            return false;
+            return true;
         }
         for (int i = 0; i < business_proposeds.size(); i++) {
             Business_Proposed bus = business_proposeds.get(i);

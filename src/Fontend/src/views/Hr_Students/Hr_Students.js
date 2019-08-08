@@ -66,16 +66,23 @@ class Hr_Students extends Component {
     handleSelectMonth = async (event, studentDetail) => {
         const { name, value } = event.target;
         const { months } = this.state;
-        var date = months[value].split(" - ");
-        // console.log(date[0]);
-        // console.log(date[1]);
-        var formatDateStart = date[0].split("/");
-        let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
-        // console.log(dateStart);
-        var formatDateEnd = date[1].split("/");
-        let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
-        // console.log(dateEnd);
-        const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+        let listStudentTask = null;
+        // console.log(value);
+        if (value <= 0) {
+            listStudentTask = await ApiServices.Get(`/supervisor/allTasksByStudentEmail?emailStudent=${studentDetail.email}`);
+            // console.log(listStudentTask);
+        } else {
+            var date = months[value].split(" - ");
+            // console.log(date[0]);
+            // console.log(date[1]);
+            var formatDateStart = date[0].split("/");
+            let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
+            // console.log(dateStart);
+            var formatDateEnd = date[1].split("/");
+            let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
+            // console.log(dateEnd);
+            listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+        }
         await this.setState({
             listStudentTask: listStudentTask,
             isThisMonth: -1,
@@ -189,7 +196,7 @@ class Hr_Students extends Component {
             var formatDateEnd = date[1].split("/");
             let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
             const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
-
+            months.unshift("Tổng");
 
             this.setState({
                 modalTask: !this.state.modalTask,
@@ -197,7 +204,7 @@ class Hr_Students extends Component {
                 listStudentTask: listStudentTask,
                 months: months,
                 loading: false,
-                isThisMonth: isThisMonth,
+                isThisMonth: isThisMonth + 1,
             });
         } else {
             this.setState({
@@ -288,13 +295,13 @@ class Hr_Students extends Component {
                                             <Table responsive striped>
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ textAlign: "center" }}>STT</th>
-                                                        <th style={{ textAlign: "center" }}>MSSV</th>
-                                                        <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                                        <th style={{ textAlign: "center" }}>Email</th>
-                                                        <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                        <th style={{ textAlign: "center" }}>GPA</th>
-                                                        <th style={{ textAlign: "center" }}></th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Email</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>GPA</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -355,7 +362,7 @@ class Hr_Students extends Component {
                                     </FormGroup>
                                     <FormGroup row>
                                         <Col md="4">
-                                            <h6>Họ và Tên</h6>
+                                            <h6>Họ và tên</h6>
                                         </Col>
                                         <Col xs="12" md="8">
                                             <label>{studentDetail.name}</label>
@@ -464,14 +471,14 @@ class Hr_Students extends Component {
                                     <Table responsive striped>
                                         <thead>
                                             <tr>
-                                                <th style={{ textAlign: "center" }}>STT</th>
-                                                <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                                                <th style={{ textAlign: "center" }}>Người giao</th>
-                                                <th style={{ textAlign: "center" }}>Ưu tiên</th>
-                                                <th style={{ textAlign: "center" }}>Độ khó</th>
-                                                <th style={{ textAlign: "center" }}>Ngày tạo</th>
-                                                <th style={{ textAlign: "center" }}>Hạn cuối</th>
-                                                <th style={{ textAlign: "center" }}>Trạng thái</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nhiệm vụ</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Người giao</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ưu tiên</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Độ khó</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ngày tạo</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hạn cuối</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
                                             </tr>
                                         </thead>
                                         <tbody>

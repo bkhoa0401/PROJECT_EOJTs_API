@@ -170,8 +170,8 @@ public class EventService implements IEventService {
         eventDTO.setStudentList(students);
 
         if (eventDTO != null) {
-            event.setRead(true);
-            IEventRepository.save(event);
+//            event.setRead(true);
+//            IEventRepository.save(event);
             return eventDTO;
         }
         return null;

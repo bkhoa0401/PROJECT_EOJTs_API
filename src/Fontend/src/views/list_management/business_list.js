@@ -154,12 +154,12 @@ class business_list extends Component {
                                                         return (
                                                             <tr>
                                                                 <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                                <td style={{ textAlign: "center" }}>{business.business_name}</td>
+                                                                <td style={{ textAlign: "center" }}>{business.business_name}<br/>({business.business_eng_name})</td>
                                                                 {/* <td style={{ textAlign: "center" }}>{business.business_eng_name}</td> */}
                                                                 <td style={{ textAlign: "center" }}>{business.business_address}</td>
                                                                 {/* <td style={{ textAlign: "center" }}>{business.business_website}</td> */}
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    Email: {business.email}<br />
+                                                                    <span>Email: {business.email}<br /></span>
                                                                     SĐT: {business.business_phone}
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>

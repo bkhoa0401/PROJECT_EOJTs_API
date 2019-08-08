@@ -197,13 +197,13 @@ class Ojt_Registration extends Component {
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ textAlign: "center" }}>STT</th>
-                                                    <th style={{ textAlign: "center" }}>MSSV</th>
-                                                    <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                                    <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                    <th style={{ textAlign: "center" }}>Gửi lời mời</th>
-                                                    <th style={{ textAlign: "center" }}>Nguyện vọng</th>
-                                                    <th style={{ textAlign: "center" }}></th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Gửi lời mời</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nguyện vọng</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -283,7 +283,7 @@ class Ojt_Registration extends Component {
                                     </FormGroup>
                                     <FormGroup row>
                                         <Col md="4">
-                                            <h6>Họ và Tên</h6>
+                                            <h6>Họ và tên</h6>
                                         </Col>
                                         <Col xs="12" md="8">
                                             <label>{studentDetail.name}</label>
