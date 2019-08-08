@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { ToastContainer } from 'react-toastify';
-import { Badge, Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, Label, ListGroup, ListGroupItem, Modal, ModalBody, ModalFooter, ModalHeader, Nav, NavItem, NavLink, Pagination, Row, TabContent, Table, TabPane } from 'reactstrap';
+import { Dropdown, DropdownToggle, DropdownItem, DropdownMenu, Badge, Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, Label, ListGroup, ListGroupItem, Modal, ModalBody, ModalFooter, ModalHeader, Nav, NavItem, NavLink, Pagination, Row, TabContent, Table, TabPane } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import Toastify from '../Toastify/Toastify';
@@ -58,6 +58,8 @@ class student_list extends Component {
             isViewSurvey: 0,
             survey: null,
             businessSurvey: null,
+
+            dropdownOpen: false,
         };
         // this.toggleModal = this.toggleModal.bind(this);
     }
@@ -186,6 +188,12 @@ class student_list extends Component {
             listStudentTask: listStudentTask,
             isThisMonth: -1,
         })
+    }
+
+    toggleDropdown = () => {
+        this.setState({
+            dropdownOpen: !this.state.dropdownOpen,
+        });
     }
 
     toggleModalTask = async (studentDetail) => {
@@ -569,14 +577,34 @@ class student_list extends Component {
                                     <Table responsive striped>
                                         <thead>
                                             <tr>
-                                                <th style={{ textAlign: "center" }}>STT</th>
-                                                <th style={{ textAlign: "center" }}>MSSV</th>
-                                                <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                                <th style={{ textAlign: "center" }}>Email</th>
-                                                <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                {/* <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
-                                                {/* <th style={{ textAlign: "center" }}>GPA</th> */}
-                                                <th style={{ textAlign: "center" }}></th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                    &emsp;&nbsp;MSSV
+                                                    &nbsp;
+                                                    <i onClick={() => this.toggleDropdown()} className="cui-sort-ascending"></i>
+                                                    {/* <i tag="a" onClick={} className="cui-sort-descending"></i> */}
+                                                </th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                    &emsp;&nbsp;Họ và tên
+                                                    &nbsp;
+                                                    <i onClick={() => this.toggleDropdown()} className="cui-sort-ascending"></i>
+                                                    {/* <i tag="a" onClick={} className="cui-sort-descending"></i> */}
+                                                </th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Email</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                    <Dropdown isOpen={this.state.dropdownOpen} toggle={() => this.toggleDropdown()}>
+                                                        <DropdownToggle nav caret style={{ color: "black" }}>
+                                                            Chuyên ngành
+                                                        </DropdownToggle>
+                                                        <DropdownMenu style={{textAlign:'center', right:'auto'}}>
+                                                            <DropdownItem>IS</DropdownItem>
+                                                        </DropdownMenu>
+                                                    </Dropdown>
+                                                </th>
+                                                <th style={{ textAlign: "left" }}></th>
+                                                {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Bảng điểm</th> */}
+                                                {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>GPA</th> */}
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -622,7 +650,7 @@ class student_list extends Component {
                                     <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
                                         <FormGroup row>
                                             <Col md="4">
-                                                <h6>Họ và Tên</h6>
+                                                <h6>Họ và tên</h6>
                                             </Col>
                                             <Col xs="12" md="8">
                                                 <Label id="" name="">{name}</Label>
@@ -938,14 +966,14 @@ class student_list extends Component {
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ textAlign: "center" }}>STT</th>
-                                                    <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                                                    <th style={{ textAlign: "center" }}>Người giao</th>
-                                                    <th style={{ textAlign: "center" }}>Ưu tiên</th>
-                                                    <th style={{ textAlign: "center" }}>Độ khó</th>
-                                                    <th style={{ textAlign: "center" }}>Ngày tạo</th>
-                                                    <th style={{ textAlign: "center" }}>Hạn cuối</th>
-                                                    <th style={{ textAlign: "center" }}>Trạng thái</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nhiệm vụ</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Người giao</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ưu tiên</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Độ khó</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ngày tạo</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hạn cuối</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -1002,14 +1030,14 @@ class student_list extends Component {
                                     <Table responsive striped>
                                         <thead>
                                             <tr>
-                                                <th style={{ textAlign: "center" }}>STT</th>
-                                                <th style={{ textAlign: "center" }}>MSSV</th>
-                                                <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                                <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                <th style={{ textAlign: "center" }}>Nguyện vọng 1</th>
-                                                <th style={{ textAlign: "center" }}>Nguyện vọng 2</th>
-                                                <th style={{ textAlign: "center" }}>Trạng thái</th>
-                                                <th style={{ textAlign: "center" }}></th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nguyện vọng 1</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nguyện vọng 2</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                             </tr>
                                         </thead>
                                         <tbody>

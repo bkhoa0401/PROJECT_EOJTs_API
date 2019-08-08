@@ -25,6 +25,9 @@ class InformMessage_Detail extends Component {
         const informMessageID = window.location.href.split("/").pop();
         const token = localStorage.getItem('id_token');
         const data = await ApiServices.Get(`/event/getEvent?id=${informMessageID}`);
+        if (data != null) {
+            const read = await ApiServices.Put(`/event/setStateEvent?eventId=${data.event.id}`)
+        }
         let isStudentSent = false;
         if (data.studentSent === true) {
             isStudentSent = data.studentSent;

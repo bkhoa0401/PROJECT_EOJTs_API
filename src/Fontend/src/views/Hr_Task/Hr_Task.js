@@ -150,6 +150,20 @@ class Hr_Task extends Component {
         }
     }
 
+    formatDate(inputDate, flag) {
+        var date = inputDate.split('-');
+        let formattedDate = date[2] + "/" + date[1] + "/" + date[0];
+        if (flag === true) {
+            return (
+                <Badge color="primary" style={{fontSize:'12px'}}>{formattedDate}</Badge>
+            )
+        } else if (flag === false) {
+            return (
+                <Badge color="danger" style={{fontSize:'12px'}}>{formattedDate}</Badge>
+            )
+        }
+    }
+
     // showButtonChangeStatus(taskStatus, id) {
     //     if (taskStatus === 'NOTSTART') {
     //         return (
@@ -277,15 +291,15 @@ class Hr_Task extends Component {
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ textAlign: "center" }}>STT</th>
-                                                    <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                                                    {/* <th style={{ textAlign: "center" }}>Ưu tiên</th> */}
-                                                    {/* <th style={{ textAlign: "center" }}>Hạn cuối</th>
-                                                    <th style={{ textAlign: "center" }}>Mức độ</th> */}
-                                                    <th style={{ textAlign: "center" }}>Người giao</th>
-                                                    <th style={{ textAlign: "center" }}>Sinh viên</th>
-                                                    <th style={{ textAlign: "center" }}>Trạng thái</th>
-                                                    <th style={{ textAlign: "center" }}></th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nhiệm vụ</th>
+                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ưu tiên</th> */}
+                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hạn cuối</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Mức độ</th> */}
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Người giao</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Sinh viên</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -368,7 +382,7 @@ class Hr_Task extends Component {
                                                             <h6>Ngày tạo</h6>
                                                         </Col>
                                                         <Col xs="12" md="8">
-                                                            <Label id="time_created" name="time_created">{time_created}</Label>
+                                                            <Label id="time_created" name="time_created">{this.formatDate(time_created, true)}</Label>
                                                         </Col>
                                                     </FormGroup>
                                                     <FormGroup row>
@@ -400,7 +414,7 @@ class Hr_Task extends Component {
                                                             <h6>Ngày hết hạn</h6>
                                                         </Col>
                                                         <Col xs="12" md="8">
-                                                            <Label id="time_end" name="time_end">{time_end}</Label>
+                                                            <Label id="time_end" name="time_end">{this.formatDate(time_end, false)}</Label>
                                                         </Col>
                                                     </FormGroup>
                                                     <FormGroup row>

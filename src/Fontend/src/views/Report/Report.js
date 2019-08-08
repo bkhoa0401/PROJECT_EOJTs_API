@@ -152,15 +152,15 @@ class Report extends Component {
                                             <Table responsive striped>
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ textAlign: "center" }}>STT</th>
-                                                        <th style={{ textAlign: "center" }}>MSSV</th>
-                                                        <th style={{ textAlign: "center" }}>Họ và tên</th>
-                                                        <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                        <th style={{ textAlign: "center" }}>Đánh giá #1</th>
-                                                        <th style={{ textAlign: "center" }}>Đánh giá #2</th>
-                                                        <th style={{ textAlign: "center" }}>Đánh giá #3</th>
-                                                        <th style={{ textAlign: "center" }}>Đánh giá #4</th>
-                                                        <th style={{ textAlign: "center" }}>Kết quả OJT</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Đánh giá #1</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Đánh giá #2</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Đánh giá #3</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Đánh giá #4</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Kết quả OJT</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

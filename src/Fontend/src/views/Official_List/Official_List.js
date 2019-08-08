@@ -556,16 +556,16 @@ class Official_List extends Component {
                     <Table responsive striped>
                       <thead>
                         <tr>
-                          <th style={{ textAlign: "center" }}>STT</th>
-                          <th style={{ textAlign: "center" }}>MSSV</th>
-                          <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                          <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                          {/* <th style={{ textAlign: "center" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
-                          {/* <th style={{ textAlign: "center" }}>GPA</th>
-                      <th style={{ textAlign: "center" }}>CV</th>
-                      <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
-                          <th style={{ textAlign: "center" }}>Người hướng dẫn</th>
-                          <th style={{ textAlign: "center" }}></th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
+                          {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
+                          {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>GPA</th>
+                      <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>CV</th>
+                      <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Bảng điểm</th> */}
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Người hướng dẫn</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -714,7 +714,7 @@ class Official_List extends Component {
                   </FormGroup>
                   <FormGroup row>
                     <Col md="4">
-                      <h6>Họ và Tên</h6>
+                      <h6>Họ và tên</h6>
                     </Col>
                     <Col xs="12" md="8">
                       <label>{studentDetail.name}</label>
@@ -823,14 +823,14 @@ class Official_List extends Component {
                     <Table responsive striped>
                       <thead>
                         <tr>
-                          <th style={{ textAlign: "center" }}>STT</th>
-                          <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                          <th style={{ textAlign: "center" }}>Người giao</th>
-                          <th style={{ textAlign: "center" }}>Ưu tiên</th>
-                          <th style={{ textAlign: "center" }}>Độ khó</th>
-                          <th style={{ textAlign: "center" }}>Ngày tạo</th>
-                          <th style={{ textAlign: "center" }}>Hạn cuối</th>
-                          <th style={{ textAlign: "center" }}>Trạng thái</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nhiệm vụ</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Người giao</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ưu tiên</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Độ khó</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ngày tạo</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hạn cuối</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
                         </tr>
                       </thead>
                       <tbody>

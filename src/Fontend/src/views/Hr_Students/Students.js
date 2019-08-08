@@ -87,14 +87,14 @@ class Students extends Component {
                             <Table responsive striped>
                                 <thead>
                                     <tr>
-                                        <th style={{ textAlign: "center" }}>STT</th>
-                                        <th style={{ textAlign: "center" }}>MSSV</th>
-                                        <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                        <th style={{ textAlign: "center" }}>Email</th>
-                                        <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                        <th style={{ textAlign: "center" }}>Bảng điểm</th>
-                                        <th style={{ textAlign: "center" }}>GPA</th>
-                                        <th style={{ textAlign: "center" }}></th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Email</th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Bảng điểm</th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>GPA</th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -140,14 +140,14 @@ class Students extends Component {
                             <Table responsive striped>
                                 <thead>
                                     <tr>
-                                        <th style={{ textAlign: "center" }}>STT</th>
-                                        <th style={{ textAlign: "center" }}>MSSV</th>
-                                        <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                        <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                        <th style={{ textAlign: "center" }}>Nguyện vọng 1</th>
-                                        <th style={{ textAlign: "center" }}>Nguyện vọng 2</th>
-                                        <th style={{ textAlign: "center" }}>Trạng thái</th>
-                                        <th style={{ textAlign: "center" }}></th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nguyện vọng 1</th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nguyện vọng 2</th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
+                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                     </tr>
                                 </thead>
                                 <tbody>

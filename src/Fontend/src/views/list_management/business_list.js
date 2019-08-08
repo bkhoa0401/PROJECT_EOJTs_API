@@ -88,13 +88,13 @@ class business_list extends Component {
                                             <Table responsive striped>
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ textAlign: "center" }}>STT</th>
-                                                        <th style={{ textAlign: "center" }}>Tên doanh nghiệp</th>
-                                                        {/* <th style={{ textAlign: "center" }}>Tên tiếng Anh</th> */}
-                                                        <th style={{ textAlign: "center" }}>Địa chỉ</th>
-                                                        <th style={{ textAlign: "center" }}>Website</th>
-                                                        <th style={{ textAlign: "center" }}>Liên hệ</th>
-                                                        <th style={{ textAlign: "center" }}></th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Tên doanh nghiệp</th>
+                                                        {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Tên tiếng Anh</th> */}
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Địa chỉ</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Website</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Liên hệ</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -102,12 +102,12 @@ class business_list extends Component {
                                                         return (
                                                             <tr>
                                                                 <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                                <td style={{ textAlign: "center" }}>{business.business_name}</td>
+                                                                <td style={{ textAlign: "center" }}>{business.business_name}<br/>({business.business_eng_name})</td>
                                                                 {/* <td style={{ textAlign: "center" }}>{business.business_eng_name}</td> */}
                                                                 <td style={{ textAlign: "center" }}>{business.business_address}</td>
                                                                 <td style={{ textAlign: "center" }}>{business.business_website}</td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    Email: {business.email}<br />
+                                                                    <span>Email: {business.email}<br /></span>
                                                                     SĐT: {business.business_phone}
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
