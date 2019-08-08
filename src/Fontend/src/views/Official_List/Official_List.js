@@ -405,7 +405,7 @@ class Official_List extends Component {
         date1.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0]));
         // console.log(formatTimeStartShow[1]);
         date2.setFullYear(parseInt(formatTimeEndShow[2]), parseInt(formatTimeEndShow[1] - 1), parseInt(formatTimeEndShow[0]));
-        if (date >= date1 && date <= date2) {
+        if (date >= date1 && date < date2) {
           isThisMonth = index - 1;
         }
         // console.log(date);

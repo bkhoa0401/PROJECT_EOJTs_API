@@ -680,6 +680,10 @@ class student_list extends Component {
                                                             <Button color="primary" onClick={() => this.toggleModalDetail(student.student.email)}><i className="fa cui-magnifying-glass"></i></Button>
                                                             &nbsp;&nbsp;
                                                             {/* <Button style={{ width: "90px" }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.student.email}`)}><i className="fa cui-task"></i></Button> */}
+                                                            {/* {student.businessEnroll !== null ?
+                                                                <Button color="success" onClick={() => this.toggleModalTask(student.student)}><i className="fa cui-task"></i></Button> :
+                                                                <>&emsp;&emsp;&emsp;</>
+                                                            } */}
                                                             <Button color="success" onClick={() => this.toggleModalTask(student.student)}><i className="fa cui-task"></i></Button>
                                                             {/* <Button style={{ width: "70px" }} color="danger">Xoá</Button> */}
                                                         </td>

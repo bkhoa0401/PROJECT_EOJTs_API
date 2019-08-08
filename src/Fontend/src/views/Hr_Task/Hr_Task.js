@@ -155,11 +155,11 @@ class Hr_Task extends Component {
         let formattedDate = date[2] + "/" + date[1] + "/" + date[0];
         if (flag === true) {
             return (
-                <Badge color="primary" style={{fontSize:'12px'}}>{formattedDate}</Badge>
+                <Badge color="primary" style={{ fontSize: '12px' }}>{formattedDate}</Badge>
             )
         } else if (flag === false) {
             return (
-                <Badge color="danger" style={{fontSize:'12px'}}>{formattedDate}</Badge>
+                <Badge color="danger" style={{ fontSize: '12px' }}>{formattedDate}</Badge>
             )
         }
     }
@@ -206,14 +206,15 @@ class Hr_Task extends Component {
     };
 
     handleConfirmSetState = (id, status) => {
-
         var messageStatus = '';
+        this.setState({
+            modal: false,
+        })
         if (status === 3) {
-            messageStatus = 'hoàn thành';
+            messageStatus = 'HOÀN THÀNH';
         } else {
-            messageStatus = 'chưa hoàn thành';
+            messageStatus = 'CHƯA HOÀN THÀNH';
         }
-
         confirmAlert({
             title: 'Xác nhận',
             message: `Bạn có chắc chắn muốn chuyển trạng thái nhiệm vụ '${this.state.title}' thành '${messageStatus}' ?`,
@@ -224,6 +225,7 @@ class Hr_Task extends Component {
                 },
                 {
                     label: 'Hủy bỏ',
+                    onClick: () => this.setState({ modal: true, })
                 }
             ]
         });
@@ -242,20 +244,12 @@ class Hr_Task extends Component {
                 loading: false
             })
 
-            const task = await ApiServices.Get(`/supervisor/task?id=${id}`);
+            const tasks = await ApiServices.Get('/supervisor/tasks');
 
-            if (task !== null) {
+            if (tasks !== null) {
                 this.setState({
-                    id: task.task.id,
-                    title: task.task.title,
-                    description: task.task.description,
-                    time_created: task.task.time_created,
-                    time_end: task.task.time_end,
-                    level_task: task.task.level_task,
-                    priority: task.task.priority,
-                    status: task.task.status,
-                    supervisorName: task.task.supervisor.name,
-                    studentName: task.nameStudent
+                    tasks: tasks,
+                    loading: false
                 });
             }
         } else {
@@ -338,11 +332,11 @@ class Hr_Task extends Component {
                                         <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={'modal-primary ' + this.props.className}>
                                             <ModalHeader toggle={this.toggleModal}>
                                                 {/* <FormGroup row> */}
-                                                    Chi tiết nhiệm vụ &nbsp;&nbsp;
+                                                Chi tiết nhiệm vụ &nbsp;&nbsp;
                                                     {status !== "DONE" ?
-                                                        <Button type="submit" style={{ color:"#20A8D8", backgroundColor:"white" }} onClick={() => this.handleDirect(`/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button> :
-                                                        <></>
-                                                    }
+                                                    <Button type="submit" style={{ color: "#20A8D8", backgroundColor: "white" }} onClick={() => this.handleDirect(`/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button> :
+                                                    <></>
+                                                }
                                                 {/* </FormGroup> */}
                                             </ModalHeader>
                                             <ModalBody>
@@ -364,16 +358,16 @@ class Hr_Task extends Component {
                                                             {
                                                                 this.showTaskState(status)
                                                             }
-                                                             &nbsp;&nbsp;
+                                                            &nbsp;&nbsp;
                                                             {
-                                                                status === "PENDING" ? 
-                                                                <Button type="submit" color="success" onClick={() => this.handleConfirmSetState(id, 3)}><i className="fa cui-circle-check"></i></Button> :
-                                                                <></>
+                                                                status === "PENDING" ?
+                                                                    <Button color="success" onClick={() => this.handleConfirmSetState(id, 3)}><i className="fa cui-circle-check"></i></Button> :
+                                                                    <></>
                                                             }
                                                             {
-                                                                status === "DONE" ? 
-                                                                <Button type="submit" color="danger" onClick={() => this.handleConfirmSetState(id, 2)}><i className="fa cui-circle-x"></i></Button> :
-                                                                <></>
+                                                                status === "DONE" ?
+                                                                    <Button color="danger" onClick={() => this.handleConfirmSetState(id, 2)}><i className="fa cui-circle-x"></i></Button> :
+                                                                    <></>
                                                             }
                                                         </Col>
                                                     </FormGroup>
