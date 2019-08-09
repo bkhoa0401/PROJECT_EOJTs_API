@@ -29,6 +29,7 @@ class business_list extends Component {
         if (businesses !== null) {
             this.setState({
                 businesses: businesses.listData,
+                pageNumber: businesses.pageNumber,
                 loading: false
             });
         }
