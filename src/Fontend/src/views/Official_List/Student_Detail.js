@@ -31,7 +31,8 @@ class Student_Detail extends Component {
             file: null,
             skills: [],
             role: '',
-            loading: true
+            loading: true,
+            resumeLink: '',
         }
     }
 

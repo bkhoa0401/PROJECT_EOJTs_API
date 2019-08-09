@@ -22,6 +22,7 @@ class Ojt_Registration extends Component {
             modal: false,
             studentDetail: null,
             invitationDetail: null,
+            // resumeLink: '',
         }
     }
 
@@ -163,7 +164,7 @@ class Ojt_Registration extends Component {
 
     render() {
         const { students, business_eng_name, searchValue, loading, studentDetail, invitationDetail, listInvitation } = this.state;
-
+        // const linkDownCV = ``;
         let filteredListStudents;
 
         if (students !== null) {
@@ -364,6 +365,19 @@ class Ojt_Registration extends Component {
                                                         <a href={studentDetail.transcriptLink} download>tải</a>
                                                     ) :
                                                         (<label>N/A</label>)
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>CV</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {
+                                                    studentDetail.resumeLink && studentDetail.resumeLink ?
+                                                        <a target="_blank" href={`http://localhost:8000/api/file/downloadFile/${studentDetail.resumeLink}`} download>tải</a>
+                                                        :
+                                                        <label>N/A</label>
                                                 }
                                             </Col>
                                         </FormGroup>
