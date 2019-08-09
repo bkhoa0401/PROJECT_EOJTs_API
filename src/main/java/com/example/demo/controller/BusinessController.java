@@ -146,6 +146,13 @@ public class BusinessController {
         }
     }
 
+    @GetMapping("/pagination")
+    @ResponseBody
+    public ResponseEntity<PagingDTO> getAllBusinessPaging(@RequestParam int currentPage, @RequestParam int rowsPerPage) {
+        PagingDTO pagingBusiness = businessService.pagingBusiness(currentPage, rowsPerPage);
+        return new ResponseEntity<>(pagingBusiness, HttpStatus.OK);
+    }
+
 
     @GetMapping("singlekey/{key}")
     public List<Business> getSingleValue(@PathVariable("key") String key) {

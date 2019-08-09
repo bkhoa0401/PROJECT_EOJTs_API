@@ -153,10 +153,12 @@ public class UsersService implements IUsersService {
             e.printStackTrace();
         }
         if (user != null) {
-            user.setResetToken(resetToken);
-            user.setResetTime(resetTime);
-            usersRepository.save(user);
-            return true;
+            if (user.isActive()) {
+                user.setResetToken(resetToken);
+                user.setResetTime(resetTime);
+                usersRepository.save(user);
+                return true;
+            }
         }
         return false;
     }

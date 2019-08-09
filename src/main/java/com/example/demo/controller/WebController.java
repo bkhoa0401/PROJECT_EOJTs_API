@@ -92,7 +92,7 @@ public class WebController {
     }
 
     //check account existed
-    @GetMapping("/reset")
+    @PutMapping("/reset")
     @ResponseBody
     private ResponseEntity<Void> resetPassword(@RequestParam String email) {
         boolean isSuccess = usersService.createResetToken(email);

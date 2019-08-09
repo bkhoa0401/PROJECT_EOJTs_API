@@ -60,7 +60,7 @@ public class EventService implements IEventService {
         List<Event> finalListEvent = new ArrayList<Event>();
         for (int i = 0; i < eventList.size(); i++) {
             Date dateEventCreate = eventList.get(i).getTime_created();
-            if (dateEventCreate.after(dateStartSemester) && dateEventCreate.before(dateEndSemester)) {
+            if ((dateEventCreate.after(dateStartSemester) || dateEventCreate.equals(dateStartSemester)) && dateEventCreate.before(dateEndSemester)) {
                 if (eventList.get(i).getStudent_events().size() > 1 || eventList.get(i).getStudent_events().get(0).isStudent() == false) {
                     finalListEvent.add(eventList.get(i));
                 }
@@ -77,7 +77,7 @@ public class EventService implements IEventService {
         List<Event> finalListEvent = new ArrayList<Event>();
         for (int i = 0; i < eventList.size(); i++) {
             Date dateEventCreate = eventList.get(i).getTime_created();
-            if (dateEventCreate.after(dateStartSemester) && dateEventCreate.before(dateEndSemester)) {
+            if ((dateEventCreate.after(dateStartSemester) || dateEventCreate.equals(dateStartSemester)) && dateEventCreate.before(dateEndSemester)) {
                 if (eventList.get(i).getStudent_events().size() == 1 && eventList.get(i).getStudent_events().get(0).isStudent() == true) {
                     finalListEvent.add(eventList.get(i));
                 }
@@ -170,8 +170,8 @@ public class EventService implements IEventService {
         eventDTO.setStudentList(students);
 
         if (eventDTO != null) {
-            event.setRead(true);
-            IEventRepository.save(event);
+//            event.setRead(true);
+//            IEventRepository.save(event);
             return eventDTO;
         }
         return null;

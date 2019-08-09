@@ -5,6 +5,8 @@ import com.example.demo.repository.IJob_PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -29,6 +31,9 @@ public class Job_PostService implements IJob_PostService {
 
     @Autowired
     ISemesterService semesterService;
+
+    @Autowired
+    private RedisTemplate<Object, Object> template;
 
     @Override
     public void saveJobPost(Job_Post job_post) {
@@ -76,27 +81,36 @@ public class Job_PostService implements IJob_PostService {
 
     //check semester //ok
 
-    @Cacheable(key = "'all'")
+//    @Cacheable(key = "'all'")
     @Override
     public List<Job_Post> getAllJobPost() {
-        Semester semester = semesterService.getSemesterCurrent();
 
-        List<Job_Post> job_postList = IJob_postRepository.findJob_PostsOrderByTimePostDesc();
+        ValueOperations values = template.opsForValue();
+        List<Job_Post> job_postList = (List<Job_Post>) values.get("job_post");
+        if (job_postList == null) {
 
-        List<Job_Post> job_postListCurrentSemester = new ArrayList<>();
+            Semester semester = semesterService.getSemesterCurrent();
 
-        for (int i = 0; i < job_postList.size(); i++) {
-            Semester semesterOfJobPost = job_postList.get(i).getOjt_enrollment().getSemester();
-            if (semesterOfJobPost != null) {
-                if (semesterOfJobPost.getId() == semester.getId()) {
-                    job_postListCurrentSemester.add(job_postList.get(i));
+            job_postList = IJob_postRepository.findJob_PostsOrderByTimePostDesc();
+
+            List<Job_Post> job_postListCurrentSemester = new ArrayList<>();
+
+            for (int i = 0; i < job_postList.size(); i++) {
+                Semester semesterOfJobPost = job_postList.get(i).getOjt_enrollment().getSemester();
+                if (semesterOfJobPost != null) {
+                    if (semesterOfJobPost.getId() == semester.getId()) {
+                        job_postListCurrentSemester.add(job_postList.get(i));
+                    }
                 }
             }
+            if (job_postListCurrentSemester != null) {
+                values.set("job_post", job_postList);
+                return job_postList;
+            }
+            return null;
+        } else {
+            return job_postList;
         }
-        if (job_postListCurrentSemester != null) {
-            return job_postListCurrentSemester;
-        }
-        return null;
     }
 
     @Override

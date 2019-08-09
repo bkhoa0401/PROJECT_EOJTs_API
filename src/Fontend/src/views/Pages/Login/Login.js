@@ -58,7 +58,7 @@ class Login extends Component {
         this.props.history.push('/headmaster');
       }
     } else if (result === 'false') {
-      Toastify.actionFail("Thông tin chưa chính xác! Vui lòng thử lại!");
+      Toastify.actionFail("Tài khoản hoặc mật khẩu không chính xác. Xin vui lòng thử lại!");
     } else if (result === 'disabled') {
       Toastify.actionFail("Tài khoản của bạn đã bị vô hiệu hóa!");
     }

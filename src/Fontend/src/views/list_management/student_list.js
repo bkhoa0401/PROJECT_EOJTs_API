@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { ToastContainer } from 'react-toastify';
-import { Badge, Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, Label, ListGroup, ListGroupItem, Modal, ModalBody, ModalFooter, ModalHeader, Nav, NavItem, NavLink, Pagination, Row, TabContent, Table, TabPane } from 'reactstrap';
+import { Dropdown, DropdownToggle, DropdownItem, DropdownMenu, Badge, Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, Label, ListGroup, ListGroupItem, Modal, ModalBody, ModalFooter, ModalHeader, Nav, NavItem, NavLink, Pagination, Row, TabContent, Table, TabPane } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import Toastify from '../Toastify/Toastify';
@@ -58,6 +58,10 @@ class student_list extends Component {
             isViewSurvey: 0,
             survey: null,
             businessSurvey: null,
+
+            dropdownOpen: false,
+            nameSortOrder: 0,
+            codeSortOrder: 0,
         };
         // this.toggleModal = this.toggleModal.bind(this);
     }
@@ -67,7 +71,9 @@ class student_list extends Component {
         if (students !== null) {
             this.setState({
                 students,
-                loading: false
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
             });
         }
     }
@@ -188,6 +194,48 @@ class student_list extends Component {
         })
     }
 
+    sortCodeInOrder = (orderBy) => {
+        if (orderBy === 1) {
+            this.setState({
+                students: this.state.students.sort((a, b) => (a.student.code > b.student.code) ? 1 : -1),
+                codeSortOrder: 1,
+                nameSortOrder: 0,
+            });
+        }
+        if (orderBy === 2) {
+            this.setState({
+                students: this.state.students.sort((a, b) => (b.student.code > a.student.code) ? 1 : -1),
+                codeSortOrder: 2,
+                nameSortOrder: 0,
+            });
+        }
+    }
+
+    sortNameInOrder = (orderBy) => {
+        if (orderBy === 1) {
+            // console.log(1);
+            this.setState({
+                students: this.state.students.sort((a, b) => (a.student.name > b.student.name) ? 1 : -1),
+                nameSortOrder: 1,
+                codeSortOrder: 0,
+            });
+            // console.log(this.state.students.sort((a, b) => (a.student.name > b.student.name) ? 1 : -1));
+        }
+        if (orderBy === 2) {
+            this.setState({
+                students: this.state.students.sort((a, b) => (b.student.name > a.student.name) ? 1 : -1),
+                nameSortOrder: 2,
+                codeSortOrder: 0,
+            });
+        }
+    }
+
+    toggleDropdown = () => {
+        this.setState({
+            dropdownOpen: !this.state.dropdownOpen,
+        });
+    }
+
     toggleModalTask = async (studentDetail) => {
         if (this.state.modalTask === false) {
             this.setState({
@@ -277,7 +325,7 @@ class student_list extends Component {
                     date1.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0]));
                     // console.log(formatTimeStartShow[1]);
                     date2.setFullYear(parseInt(formatTimeEndShow[2]), parseInt(formatTimeEndShow[1] - 1), parseInt(formatTimeEndShow[0]));
-                    if (date >= date1 && date <= date2) {
+                    if (date >= date1 && date < date2) {
                         isThisMonth = index - 1;
                     }
                     // console.log(date);
@@ -287,6 +335,7 @@ class student_list extends Component {
                     // console.log(date <= date2);
                     months.push(`${timeStartShow} - ${timeEndShow}`);
                 }
+                // console.log(date);
                 // console.log(months);
                 // console.log(isThisMonth);
                 var date = months[isThisMonth].split(" - ");
@@ -438,7 +487,7 @@ class student_list extends Component {
     showTranscript(transcriptLink) {
         if (transcriptLink !== null) {
             return (
-                <a href={transcriptLink}>Tải về</a>
+                <a href={transcriptLink} download>tải</a>
             )
         } else {
             return (
@@ -538,7 +587,7 @@ class student_list extends Component {
     }
 
     tabPane() {
-        const { student, businessSurvey, months, isThisMonth, isViewSurvey, survey, students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail, typesOfStudent } = this.state;
+        const { codeSortOrder, nameSortOrder, student, businessSurvey, months, isThisMonth, isViewSurvey, survey, students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail, typesOfStudent } = this.state;
 
         const { name, code, email, phone, address, specialized, objective, gpa, skills, resumeLink, transcriptLink, role, isUploadTranscriptLink } = this.state;
         const linkDownCV = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
@@ -569,14 +618,44 @@ class student_list extends Component {
                                     <Table responsive striped>
                                         <thead>
                                             <tr>
-                                                <th style={{ textAlign: "center" }}>STT</th>
-                                                <th style={{ textAlign: "center" }}>MSSV</th>
-                                                <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                                <th style={{ textAlign: "center" }}>Email</th>
-                                                <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                {/* <th style={{ textAlign: "center" }}>Bảng điểm</th> */}
-                                                {/* <th style={{ textAlign: "center" }}>GPA</th> */}
-                                                <th style={{ textAlign: "center" }}></th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                    &emsp;&nbsp;&nbsp;MSSV
+                                                    &nbsp;
+                                                    {codeSortOrder === 0 ?
+                                                        <i onClick={() => this.sortCodeInOrder(1)} className="cui-sort-ascending"></i> :
+                                                        (codeSortOrder === 1 ?
+                                                            <i onClick={() => this.sortCodeInOrder(2)} className="cui-sort-ascending"></i> :
+                                                            <i onClick={() => this.sortCodeInOrder(1)} className="cui-sort-descending"></i>
+                                                        )
+                                                    }
+                                                </th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                    &emsp;&nbsp;&nbsp;Họ và tên
+                                                    &nbsp;
+                                                    {nameSortOrder === 0 ?
+                                                        <i onClick={() => this.sortNameInOrder(1)} className="cui-sort-ascending"></i> :
+                                                        (nameSortOrder === 1 ?
+                                                            <i onClick={() => this.sortNameInOrder(2)} className="cui-sort-ascending"></i> :
+                                                            <i onClick={() => this.sortNameInOrder(1)} className="cui-sort-descending"></i>
+                                                        )
+                                                    }
+                                                </th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Email</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                    <Dropdown isOpen={this.state.dropdownOpen} toggle={() => this.toggleDropdown()}>
+                                                        <DropdownToggle nav caret style={{ color: "black" }}>
+                                                            Chuyên ngành
+                                                        </DropdownToggle>
+                                                        <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
+                                                            <DropdownItem>IS</DropdownItem>
+                                                        </DropdownMenu>
+                                                    </Dropdown>
+                                                </th>
+                                                <th style={{ textAlign: "left" }}></th>
+                                                {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Bảng điểm</th> */}
+                                                {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>GPA</th> */}
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -591,7 +670,7 @@ class student_list extends Component {
                                                         {/* <td style={{ textAlign: "center" }}>
                                                             {
                                                                 student.transcriptLink && student.transcriptLink ? (
-                                                                    <a href={student.student.transcriptLink} download>Tải về</a>
+                                                                    <a href={student.student.transcriptLink} download>tải</a>
                                                                 ) :
                                                                     (<label>N/A</label>)
                                                             }
@@ -602,6 +681,10 @@ class student_list extends Component {
                                                             <Button color="primary" onClick={() => this.toggleModalDetail(student.student.email)}><i className="fa cui-magnifying-glass"></i></Button>
                                                             &nbsp;&nbsp;
                                                             {/* <Button style={{ width: "90px" }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.student.email}`)}><i className="fa cui-task"></i></Button> */}
+                                                            {/* {student.businessEnroll !== null ?
+                                                                <Button color="success" onClick={() => this.toggleModalTask(student.student)}><i className="fa cui-task"></i></Button> :
+                                                                <>&emsp;&emsp;&emsp;</>
+                                                            } */}
                                                             <Button color="success" onClick={() => this.toggleModalTask(student.student)}><i className="fa cui-task"></i></Button>
                                                             {/* <Button style={{ width: "70px" }} color="danger">Xoá</Button> */}
                                                         </td>
@@ -618,49 +701,51 @@ class student_list extends Component {
                             className={'modal-primary ' + this.props.className}>
                             <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
                             <ModalBody>
-                                {isViewSurvey === 0 ?
-                                    <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>Họ và Tên</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                <Label id="" name="">{name}</Label>
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>MSSV</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                <Label id="" name="">{code}</Label>
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>Email</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                <Label id="" name="">{email}</Label>
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>SĐT</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                <Label id="" name="">{phone}</Label>
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>Chuyên ngành</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                <Label id="" name="">{specialized}</Label>
-                                            </Col>
-                                        </FormGroup>
-                                        {/* <FormGroup row>
+                                {/* <div style={{ maxHeight: "563px", overflowY: 'auto', overflowX: 'hidden' }}> */}
+                                <div>
+                                    {isViewSurvey === 0 ?
+                                        <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                            <FormGroup row>
+                                                <Col md="4">
+                                                    <h6>Họ và tên</h6>
+                                                </Col>
+                                                <Col xs="12" md="8">
+                                                    <Label id="" name="">{name}</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="4">
+                                                    <h6>MSSV</h6>
+                                                </Col>
+                                                <Col xs="12" md="8">
+                                                    <Label id="" name="">{code}</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="4">
+                                                    <h6>Email</h6>
+                                                </Col>
+                                                <Col xs="12" md="8">
+                                                    <Label id="" name="">{email}</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="4">
+                                                    <h6>SĐT</h6>
+                                                </Col>
+                                                <Col xs="12" md="8">
+                                                    <Label id="" name="">{phone}</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="4">
+                                                    <h6>Chuyên ngành</h6>
+                                                </Col>
+                                                <Col xs="12" md="8">
+                                                    <Label id="" name="">{specialized}</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            {/* <FormGroup row>
                                         <Col md="4">
                                             <h6>Học kỳ</h6>
                                         </Col>
@@ -668,104 +753,104 @@ class student_list extends Component {
                                             <Label id="" name="">{}</Label>
                                         </Col>
                                     </FormGroup> */}
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>Địa chỉ</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                <Label id="" name="">{address}</Label>
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>Mục tiêu</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                <Label id="" name="">{objective}</Label>
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>GPA</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                <Label id="" name="">{gpa}</Label>
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>Kỹ năng</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
+                                            <FormGroup row>
+                                                <Col md="4">
+                                                    <h6>Địa chỉ</h6>
+                                                </Col>
+                                                <Col xs="12" md="8">
+                                                    <Label id="" name="">{address}</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="4">
+                                                    <h6>Giới thiệu bản thân</h6>
+                                                </Col>
+                                                <Col xs="12" md="8">
+                                                    <Label id="" name="">{objective}</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="4">
+                                                    <h6>Kỹ năng</h6>
+                                                </Col>
+                                                <Col xs="12" md="8">
+                                                    {
+                                                        skills && skills.map((skill, index) => {
+                                                            return (
+                                                                <div>
+                                                                    {
+                                                                        skill.name && skill.name ? (
+                                                                            <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                        ) : (
+                                                                                <label style={{ marginRight: "15px" }}>N/A</label>
+                                                                            )
+                                                                    }
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="4">
+                                                    <h6>CV</h6>
+                                                </Col>
                                                 {
-                                                    skills && skills.map((skill, index) => {
-                                                        return (
-                                                            <div>
-                                                                {
-                                                                    skill.name && skill.name ? (
-                                                                        <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
-                                                                    ) : (
-                                                                            <label style={{ marginRight: "15px" }}>N/A</label>
-                                                                        )
-                                                                }
-                                                            </div>
-                                                        )
-                                                    })
-                                                }
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>CV</h6>
-                                            </Col>
-                                            {
-                                                resumeLink && resumeLink ?
-                                                    (<Col xs="12" md="8">
-                                                        <a target="_blank" href={linkDownCV} download>Tải về</a>
-                                                    </Col>)
-                                                    :
-                                                    (
-                                                        <Col xs="12" md="8">
-                                                            <label>N/A</label>
+                                                    resumeLink && resumeLink ?
+                                                        (<Col xs="12" md="8">
+                                                            <a target="_blank" href={linkDownCV} download>tải</a>
                                                         </Col>)
-                                            }
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>Bảng điểm</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                {
-                                                    role && role === 'ROLE_HR' ?
+                                                        :
                                                         (
-                                                            this.showTranscript(transcriptLink)
-                                                        ) :
-                                                        (<input onChange={this.handleChange} type="file" />)
+                                                            <Col xs="12" md="8">
+                                                                <label>N/A</label>
+                                                            </Col>)
                                                 }
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>Khảo sát ý kiến</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                {
-                                                    survey === null ?
-                                                        <></> :
-                                                        <Button color="primary" onClick={() => this.handleViewSurvey()}><i className="fa cui-magnifying-glass"></i></Button>
-                                                }
-                                            </Col>
-                                        </FormGroup>
-                                    </Form> :
-                                    <Form>
-                                        <div style={{ maxHeight: '563px', overflowY: 'auto', width: "100%", overflowX: "hidden" }}>
-                                            <div style={{ textAlign: "center" }}>
-                                                <img src="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410" width="96%" />
-                                                <br /><br /><br />
-                                                <h3 style={{ fontWeight: "bold" }}>PHIẾU KHẢO SÁT NƠI THỰC TẬP</h3>
-                                            </div>
-                                            <div>
-                                                {/* <FormGroup row>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="4">
+                                                    <h6>GPA</h6>
+                                                </Col>
+                                                <Col xs="12" md="8">
+                                                    <Label id="" name="">{gpa}</Label>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="4">
+                                                    <h6>Bảng điểm</h6>
+                                                </Col>
+                                                <Col xs="12" md="8">
+                                                    {
+                                                        role && role === 'ROLE_HR' ?
+                                                            (
+                                                                this.showTranscript(transcriptLink)
+                                                            ) :
+                                                            (<input onChange={this.handleChange} type="file" />)
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="4">
+                                                    <h6>Khảo sát ý kiến</h6>
+                                                </Col>
+                                                <Col xs="12" md="8">
+                                                    {
+                                                        survey === null ?
+                                                            <></> :
+                                                            <Button color="primary" onClick={() => this.handleViewSurvey()}><i className="fa cui-magnifying-glass"></i></Button>
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                        </Form> :
+                                        <Form>
+                                            <div style={{ maxHeight: '563px', overflowY: 'auto', width: "100%", overflowX: "hidden" }}>
+                                                <div style={{ textAlign: "center" }}>
+                                                    <img src="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410" width="96%" />
+                                                    <br /><br /><br />
+                                                    <h3 style={{ fontWeight: "bold" }}>PHIẾU KHẢO SÁT NƠI THỰC TẬP</h3>
+                                                </div>
+                                                <div>
+                                                    {/* <FormGroup row>
                                                 <h4 style={{ fontWeight: "bold" }}>&emsp;Thông tin cá nhân</h4>
                                             </FormGroup>
                                             <FormGroup row>
@@ -800,18 +885,18 @@ class student_list extends Component {
                                                     <Label>FPT University</Label>
                                                 </Col>
                                             </FormGroup> */}
-                                                <FormGroup row>
-                                                    <h4 style={{ fontWeight: "bold" }}>&emsp;&emsp;Thông tin nơi thực tập</h4>
-                                                </FormGroup>
-                                                <FormGroup row>
-                                                    <Col md="5">
-                                                        <h6 style={{ fontWeight: "bold" }}>Tên công ty thực tập:</h6>
-                                                    </Col>
-                                                    <Col xs="12" md="7">
-                                                        {businessSurvey === null ? <></> : <Label>{businessSurvey.business_name}</Label>}
-                                                    </Col>
-                                                </FormGroup>
-                                                {/* <FormGroup row>
+                                                    <FormGroup row>
+                                                        <h4 style={{ fontWeight: "bold" }}>&emsp;&emsp;Thông tin nơi thực tập</h4>
+                                                    </FormGroup>
+                                                    <FormGroup row>
+                                                        <Col md="5">
+                                                            <h6 style={{ fontWeight: "bold" }}>Tên công ty thực tập:</h6>
+                                                        </Col>
+                                                        <Col xs="12" md="7">
+                                                            {businessSurvey === null ? <></> : <Label>{businessSurvey.business_name}</Label>}
+                                                        </Col>
+                                                    </FormGroup>
+                                                    {/* <FormGroup row>
                                                     <Col md="5">
                                                         <h6 style={{ fontWeight: "bold" }}>Lĩnh vực hoạt động:</h6>
                                                     </Col>
@@ -819,31 +904,31 @@ class student_list extends Component {
                                                         <Label>Ngân hàng</Label>
                                                     </Col>
                                                 </FormGroup> */}
-                                                <FormGroup row>
-                                                    <Col md="5">
-                                                        <h6 style={{ fontWeight: "bold" }}>Địa chỉ:</h6>
-                                                    </Col>
-                                                    <Col xs="12" md="7">
-                                                        {businessSurvey === null ? <></> : <Label>{businessSurvey.business_address}</Label>}
-                                                    </Col>
-                                                </FormGroup>
-                                                <FormGroup row>
-                                                    <Col md="5">
-                                                        <h6 style={{ fontWeight: "bold" }}>Số điện thoại:</h6>
-                                                    </Col>
-                                                    <Col xs="12" md="7">
-                                                        {businessSurvey === null ? <></> : <Label>{businessSurvey.business_phone}</Label>}
-                                                    </Col>
-                                                </FormGroup>
-                                                <FormGroup row>
-                                                    <Col md="5">
-                                                        <h6 style={{ fontWeight: "bold" }}>Tên người hướng dẫn:</h6>
-                                                    </Col>
-                                                    <Col xs="12" md="7">student
+                                                    <FormGroup row>
+                                                        <Col md="5">
+                                                            <h6 style={{ fontWeight: "bold" }}>Địa chỉ:</h6>
+                                                        </Col>
+                                                        <Col xs="12" md="7">
+                                                            {businessSurvey === null ? <></> : <Label>{businessSurvey.business_address}</Label>}
+                                                        </Col>
+                                                    </FormGroup>
+                                                    <FormGroup row>
+                                                        <Col md="5">
+                                                            <h6 style={{ fontWeight: "bold" }}>Số điện thoại:</h6>
+                                                        </Col>
+                                                        <Col xs="12" md="7">
+                                                            {businessSurvey === null ? <></> : <Label>{businessSurvey.business_phone}</Label>}
+                                                        </Col>
+                                                    </FormGroup>
+                                                    <FormGroup row>
+                                                        <Col md="5">
+                                                            <h6 style={{ fontWeight: "bold" }}>Tên người hướng dẫn:</h6>
+                                                        </Col>
+                                                        <Col xs="12" md="7">student
                                                         {student === null ? <></> : (student.supervisor === null ? <></> : <Label>{student.supervisor.name}</Label>)}
-                                                    </Col>
-                                                </FormGroup>
-                                                {/* <FormGroup>
+                                                        </Col>
+                                                    </FormGroup>
+                                                    {/* <FormGroup>
                                                 <Col md="4">
                                                     <h6 style={{ fontWeight: "bold" }}>Chức vụ:</h6>
                                                 </Col>
@@ -851,39 +936,40 @@ class student_list extends Component {
                                                     <Label>Trưởng phòng thực tập</Label>
                                                 </Col>
                                             </FormGroup> */}
+                                                </div>
+                                                <hr />
+                                                <div style={{ paddingTop: "10px", paddingLeft: "5%", paddingRight: "5%" }}>
+                                                    {survey && survey.map((ques, index) => {
+                                                        return (
+                                                            <>
+                                                                <FormGroup>
+                                                                    <row>
+                                                                        &emsp;<u><b>Câu {index + 1}</b></u>: {ques.question.content}
+                                                                    </row>
+                                                                    <row>
+                                                                        <ListGroup>
+                                                                            {ques.question.answers && ques.question.answers.map((answer, index1) => {
+                                                                                return (
+                                                                                    <ListGroupItem tag="button" action active={this.checkChose(ques.answers, answer)} disabled>
+                                                                                        <FormGroup check className="radio">
+                                                                                            <Input className="form-check-input" type="radio" id={answer.id} name={ques.question.id} value={answer.content} checked={this.checkChose(ques.answers, answer)} readOnly />
+                                                                                            <Label check className="form-check-label" htmlFor="radio1">{answer.content}</Label>
+                                                                                        </FormGroup>
+                                                                                    </ListGroupItem>
+                                                                                )
+                                                                            })}
+                                                                        </ListGroup>
+                                                                    </row>
+                                                                </FormGroup>
+                                                                {index === survey.length ? <></> : <hr />}
+                                                            </>
+                                                        )
+                                                    })}
+                                                </div>
                                             </div>
-                                            <hr />
-                                            <div style={{ paddingTop: "10px", paddingLeft: "5%", paddingRight: "5%" }}>
-                                                {survey && survey.map((ques, index) => {
-                                                    return (
-                                                        <>
-                                                            <FormGroup>
-                                                                <row>
-                                                                    &emsp;<u><b>Câu {index + 1}</b></u>: {ques.question.content}
-                                                                </row>
-                                                                <row>
-                                                                    <ListGroup>
-                                                                        {ques.question.answers && ques.question.answers.map((answer, index1) => {
-                                                                            return (
-                                                                                <ListGroupItem tag="button" action active={this.checkChose(ques.answers, answer)} disabled>
-                                                                                    <FormGroup check className="radio">
-                                                                                        <Input className="form-check-input" type="radio" id={answer.id} name={ques.question.id} value={answer.content} checked={this.checkChose(ques.answers, answer)} readOnly />
-                                                                                        <Label check className="form-check-label" htmlFor="radio1">{answer.content}</Label>
-                                                                                    </FormGroup>
-                                                                                </ListGroupItem>
-                                                                            )
-                                                                        })}
-                                                                    </ListGroup>
-                                                                </row>
-                                                            </FormGroup>
-                                                            {index === survey.length ? <></> : <hr />}
-                                                        </>
-                                                    )
-                                                })}
-                                            </div>
-                                        </div>
-                                    </Form>
-                                }
+                                        </Form>
+                                    }
+                                </div>
                             </ModalBody>
                             {isUploadTranscriptLink === true ?
                                 <ModalFooter>
@@ -938,14 +1024,14 @@ class student_list extends Component {
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ textAlign: "center" }}>STT</th>
-                                                    <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
-                                                    <th style={{ textAlign: "center" }}>Người giao</th>
-                                                    <th style={{ textAlign: "center" }}>Ưu tiên</th>
-                                                    <th style={{ textAlign: "center" }}>Độ khó</th>
-                                                    <th style={{ textAlign: "center" }}>Ngày tạo</th>
-                                                    <th style={{ textAlign: "center" }}>Hạn cuối</th>
-                                                    <th style={{ textAlign: "center" }}>Trạng thái</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nhiệm vụ</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Người giao</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ưu tiên</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Độ khó</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ngày tạo</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hạn cuối</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -1002,14 +1088,14 @@ class student_list extends Component {
                                     <Table responsive striped>
                                         <thead>
                                             <tr>
-                                                <th style={{ textAlign: "center" }}>STT</th>
-                                                <th style={{ textAlign: "center" }}>MSSV</th>
-                                                <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                                <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                <th style={{ textAlign: "center" }}>Nguyện vọng 1</th>
-                                                <th style={{ textAlign: "center" }}>Nguyện vọng 2</th>
-                                                <th style={{ textAlign: "center" }}>Trạng thái</th>
-                                                <th style={{ textAlign: "center" }}></th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nguyện vọng 1</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nguyện vọng 2</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                             </tr>
                                         </thead>
                                         <tbody>

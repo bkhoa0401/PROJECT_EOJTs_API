@@ -71,13 +71,13 @@ class Feedback extends Component {
                                             <Table responsive striped>
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ textAlign: "center" }}>STT</th>
-                                                        <th style={{ textAlign: "center" }}>MSSV</th>
-                                                        <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                                        <th style={{ textAlign: "center" }}>Email</th>
-                                                        <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                        {/* <th style={{ textAlign: "center" }}>Mức độ hài lòng</th> */}
-                                                        <th style={{ textAlign: "center" }}></th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Email</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
+                                                        {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Mức độ hài lòng</th> */}
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

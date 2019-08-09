@@ -119,16 +119,16 @@ class Invitation extends Component {
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ textAlign: "center" }}>STT</th>
-                                                    <th style={{ textAlign: "center" }}>MSSV</th>
-                                                    <th style={{ textAlign: "center" }}>Họ và Tên</th>
-                                                    <th style={{ textAlign: "center" }}>Chuyên ngành</th>
-                                                    {/* <th style={{ textAlign: "center" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
-                                                    {/* <th style={{ textAlign: "center" }}>Kỹ năng</th>
-                                                    <th style={{ textAlign: "center" }}>GPA</th> */}
-                                                    {/* <th style={{ textAlign: "center" }}>Nguyện vọng của sinh viên</th> */}
-                                                    <th style={{ textAlign: "center" }}>Trạng thái lời mời</th>
-                                                    <th style={{ textAlign: "center" }}></th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
+                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
+                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Kỹ năng</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>GPA</th> */}
+                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nguyện vọng của sinh viên</th> */}
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái lời mời</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -186,9 +186,9 @@ class Invitation extends Component {
                                                                     {
                                                                         invitationDetail && (
                                                                             invitationDetail.state.toString() === 'true' ? (
-                                                                                <Badge color="success" style={{fontSize:'12px'}}>Đã chấp nhận</Badge>
+                                                                                <Badge color="success" style={{ fontSize: '12px' }}>Đã chấp nhận</Badge>
                                                                             ) : (
-                                                                                    <Badge color="danger" style={{fontSize:'12px'}}>Đang chờ</Badge>
+                                                                                    <Badge color="danger" style={{ fontSize: '12px' }}>Đang chờ</Badge>
                                                                                 )
                                                                         )
                                                                     }
@@ -215,77 +215,80 @@ class Invitation extends Component {
                                 className={'modal-primary ' + this.props.className}>
                                 <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
                                 <ModalBody>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Họ và Tên</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{studentDetail.name}</label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Mã số sinh viên</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{studentDetail.code}</label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Chuyên ngành</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{studentDetail.specialized.name}</label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Giới thiệu bản thân</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{studentDetail.objective}</label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Bảng điểm</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {
-                                                studentDetail.transcriptLink && studentDetail.transcriptLink ? (
-                                                    <a href={studentDetail.transcriptLink} download>Tải về</a>
-                                                ) :
-                                                    (<label>N/A</label>)
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Kỹ năng</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {
-                                                studentDetail.skills && studentDetail.skills.map((skill, index) => {
-                                                    return (
-                                                        <div>
-                                                            {
-                                                                <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
-                                                            }
-                                                        </div>
-                                                    )
-                                                })
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>GPA</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{studentDetail.gpa}</label>
-                                        </Col>
-                                    </FormGroup>
+                                    {/* <div style={{ maxHeight: "563px", overflowY: 'auto', overflowX: 'hidden' }}> */}
+                                    <div>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Họ và tên</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.name}</label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>MSSV</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.code}</label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Chuyên ngành</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.specialized.name}</label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Giới thiệu bản thân</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.objective}</label>
+                                            </Col>
+                                        </FormGroup>
+                                        {/* <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Bảng điểm</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {
+                                                    studentDetail.transcriptLink && studentDetail.transcriptLink ? (
+                                                        <a href={studentDetail.transcriptLink} download>tải</a>
+                                                    ) :
+                                                        (<label>N/A</label>)
+                                                }
+                                            </Col>
+                                        </FormGroup> */}
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Kỹ năng</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {
+                                                    studentDetail.skills && studentDetail.skills.map((skill, index) => {
+                                                        return (
+                                                            <div>
+                                                                {
+                                                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                }
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>GPA</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.gpa}</label>
+                                            </Col>
+                                        </FormGroup>
+                                    </div>
                                 </ModalBody>
                                 <ModalFooter>
                                     <FormGroup row>
@@ -293,7 +296,9 @@ class Invitation extends Component {
                                             <h6>Chi tiết lời mời</h6>
                                         </Col>
                                         <Col xs="12" md="8">
-                                            <label>{invitationDetail}</label>
+                                            <div style={{ maxHeight: "100px", overflowY: "auto", overflowX: "hidden" }}>
+                                                <label>{invitationDetail}</label>
+                                            </div>
                                         </Col>
                                     </FormGroup>
                                 </ModalFooter>

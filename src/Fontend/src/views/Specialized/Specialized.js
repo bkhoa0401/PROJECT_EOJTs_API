@@ -80,15 +80,10 @@ class Specialized extends Component {
         const { currentPage, rowsPerPage } = this.state;
         const specializeds = await ApiServices.Get(`/specialized/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
-        // const specializeds = await ApiServices.Get('/specialized');
         if (specializeds !== null) {
-            // const { currentPage, rowsPerPage } = this.state;
-            // const pageNumber = getPaginationPageNumber(specializeds.length, rowsPerPage);
-            // const specializedsPagination = specializeds.slice(getPaginationCurrentPageNumber(currentPage, rowsPerPage), getPaginationNextPageNumber(currentPage, rowsPerPage));
             this.setState({
                 specializeds: specializeds.listData,
                 pageNumber: specializeds.pageNumber,
-                // specializedsPagination,
                 loading: false
             });
         }
@@ -228,10 +223,10 @@ class Specialized extends Component {
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ textAlign: "center" }}>STT</th>
-                                                    <th style={{ textAlign: "center" }}>Tên Ngành</th>
-                                                    <th style={{ textAlign: "center" }}>Trạng thái</th>
-                                                    <th style={{ textAlign: "center" }}></th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Tên Ngành</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -265,7 +260,7 @@ class Specialized extends Component {
                                         <ToastContainer />
                                         <Pagination style={{marginTop: "3%"}}>
                                             <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                            <h6 style={{marginLeft: "45%", width: "15%", marginTop: "7px"}}>Số dòng trên trang: </h6>
+                                            <h6 style={{marginLeft: "5%", width: "15%", marginTop: "7px"}}>Số dòng trên trang: </h6>
                                             <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{width: "7%"}}>
                                                 <option value={1} selected={rowsPerPage === 1}>1</option>
                                                 <option value={2}>2</option>
