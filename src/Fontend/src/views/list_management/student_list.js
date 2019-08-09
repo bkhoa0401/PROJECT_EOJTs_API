@@ -95,7 +95,7 @@ class student_list extends Component {
             typeSelected: typeSelected,
         });
         // console.log(tabPane);
-        console.log(tab);
+        // console.log(tab);
         // console.log(this.state.activeTab);
     }
 
@@ -623,10 +623,10 @@ class student_list extends Component {
                                                     &emsp;&nbsp;&nbsp;MSSV
                                                     &nbsp;
                                                     {codeSortOrder === 0 ?
-                                                        <i onClick={() => this.sortCodeInOrder(1)} className="cui-sort-ascending"></i> :
+                                                        <i onClick={() => this.sortCodeInOrder(1)} style={{cursor: 'pointer'}} className="fa fa-sort"></i> :
                                                         (codeSortOrder === 1 ?
-                                                            <i onClick={() => this.sortCodeInOrder(2)} className="cui-sort-ascending"></i> :
-                                                            <i onClick={() => this.sortCodeInOrder(1)} className="cui-sort-descending"></i>
+                                                            <i onClick={() => this.sortCodeInOrder(2)} style={{cursor:'pointer'}} className="fa fa-sort-desc"></i> :
+                                                            <i onClick={() => this.sortCodeInOrder(1)} style={{cursor: 'pointer'}} className="fa fa-sort-asc"></i>
                                                         )
                                                     }
                                                 </th>
@@ -634,10 +634,10 @@ class student_list extends Component {
                                                     &emsp;&nbsp;&nbsp;Họ và tên
                                                     &nbsp;
                                                     {nameSortOrder === 0 ?
-                                                        <i onClick={() => this.sortNameInOrder(1)} className="cui-sort-ascending"></i> :
+                                                        <i onClick={() => this.sortNameInOrder(1)} style={{cursor: 'pointer'}} className="fa fa-sort"></i> :
                                                         (nameSortOrder === 1 ?
-                                                            <i onClick={() => this.sortNameInOrder(2)} className="cui-sort-ascending"></i> :
-                                                            <i onClick={() => this.sortNameInOrder(1)} className="cui-sort-descending"></i>
+                                                            <i onClick={() => this.sortNameInOrder(2)} style={{cursor: 'pointer'}} className="fa fa-sort-desc"></i> :
+                                                            <i onClick={() => this.sortNameInOrder(1)} style={{cursor: 'pointer'}} className="fa fa-sort-asc"></i>
                                                         )
                                                     }
                                                 </th>

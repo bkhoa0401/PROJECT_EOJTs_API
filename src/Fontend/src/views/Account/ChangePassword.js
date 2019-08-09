@@ -70,7 +70,7 @@ class ChangePassword extends Component {
             if (oldPassword !== account.password ||
                 confirmPassword !== newPassword) {
                 if (oldPassword !== account.password) {
-                    validatorOldPassword = "Mật khẩu cũ không chính xác";
+                    validatorOldPassword = "Mật khẩu hiện tại không chính xác";
                 }
                 // console.log(account.password);
                 // console.log(oldPassword);
@@ -139,9 +139,9 @@ class ChangePassword extends Component {
                                                         </InputGroupAddon>
                                                         <Input type="password" name="oldPassword" id="oldPassword" placeholder="Mật khẩu cũ" autoComplete="old-password" onChange={this.handleInput} />
                                                     </InputGroup>
-                                                    <FormText className="help-block">Vui lòng nhập lại mật khẩu cũ</FormText>
+                                                    <FormText className="help-block">Mật khẩu hiện tại</FormText>
                                                     <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Mật khẩu cũ', this.state.oldPassword, 'required')}
+                                                        {this.validator.message('Mật khẩu hiện tại', this.state.oldPassword, 'required')}
                                                     </span>
                                                     <span className="form-error is-visible text-danger">
                                                         {validatorOldPassword}
@@ -159,7 +159,7 @@ class ChangePassword extends Component {
                                                     </InputGroup>
                                                     <FormText className="help-block">Vui lòng nhập mật khẩu mới</FormText>
                                                     <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Mật khẩu mới', this.state.newPassword, 'required')}
+                                                        {this.validator.message('Mật khẩu mới', this.state.newPassword, 'required|min:6|max:50|alpha_num')}
                                                     </span>
                                                 </FormGroup>
                                                 <FormGroup>
