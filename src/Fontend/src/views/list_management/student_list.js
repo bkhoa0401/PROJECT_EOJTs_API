@@ -21,6 +21,9 @@ class student_list extends Component {
             modal: false,
             modalDetail: false,
             modalTask: false,
+            modalFeedBack: false,
+            listFeedBack: [],
+            studentFeedBack: null,
             activeTab: new Array(1).fill('1'),
             // open: false,
             students: null,
@@ -361,6 +364,30 @@ class student_list extends Component {
         }
     }
 
+    toggleModalFeedBack = async (studentFeedBack) => {
+        if (this.state.modalFeedBack === false) {
+            this.setState({
+                loading: true,
+            })
+
+            const listFeedBack = await ApiServices.Get(`/admin/feedback?studentEmail=${studentFeedBack.email}`);
+
+            if (listFeedBack != null) {
+                this.setState({
+                    modalFeedBack: !this.state.modalFeedBack,
+                    loading: false,
+                    studentFeedBack,
+                    listFeedBack
+                });
+            }
+
+        } else {
+            this.setState({
+                modalFeedBack: !this.state.modalFeedBack,
+            })
+        }
+    }
+
     uploadTranscriptToFireBase = async () => {
         let { file } = this.state;
 
@@ -587,7 +614,7 @@ class student_list extends Component {
     }
 
     tabPane() {
-        const { codeSortOrder, nameSortOrder, student, businessSurvey, months, isThisMonth, isViewSurvey, survey, students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail, typesOfStudent } = this.state;
+        const { studentFeedBack, listFeedBack, codeSortOrder, nameSortOrder, student, businessSurvey, months, isThisMonth, isViewSurvey, survey, students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail, typesOfStudent } = this.state;
 
         const { name, code, email, phone, address, specialized, objective, gpa, skills, resumeLink, transcriptLink, role, isUploadTranscriptLink } = this.state;
         const linkDownCV = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
@@ -687,6 +714,8 @@ class student_list extends Component {
                                                             } */}
                                                             <Button color="success" onClick={() => this.toggleModalTask(student.student)}><i className="fa cui-task"></i></Button>
                                                             {/* <Button style={{ width: "70px" }} color="danger">Xoá</Button> */}
+                                                            &nbsp;&nbsp;
+                                                            <Button color="warning" onClick={() => this.toggleModalFeedBack(student.student)}><i className="fa cui-note"></i></Button>
                                                         </td>
                                                     </tr>
                                                 )
@@ -1065,6 +1094,26 @@ class student_list extends Component {
                                 </ModalBody>
                                 {/* <ModalFooter>
                                 </ModalFooter> */}
+                            </Modal> :
+                            <></>
+                        }
+                        {studentFeedBack !== null ?
+                            <Modal isOpen={this.state.modalFeedBack} toggle={this.toggleModalFeedBack}
+                                className={'modal-lg ' + this.props.className}>
+                                <ModalHeader style={{ backgroundColor: "#ffc107", color: "black" }} toggle={this.toggleModalFeedBack}>Danh sách feedback của sinh viên {studentFeedBack.name}</ModalHeader>
+                                <ModalBody>
+                                    {
+                                        listFeedBack && listFeedBack.map((feedback, index) => {
+                                            return (
+                                                <FormGroup row>
+                                                    <Col xs="12" md="12">
+                                                        <Label>{index + 1}/ {feedback.content}</Label>
+                                                    </Col>
+                                                </FormGroup>
+                                            )
+                                        })
+                                    }
+                                </ModalBody>
                             </Modal> :
                             <></>
                         }
