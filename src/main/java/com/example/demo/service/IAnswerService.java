@@ -9,4 +9,5 @@ public interface IAnswerService {
     List<Answer> findAnswerByOtherIsTrueAndQuestionId(int id);
     Answer findAnswerById(int id);
     void deleteAnswerById(int id);
+    List<Answer> getAllFeedbackStudent(String email);
 }

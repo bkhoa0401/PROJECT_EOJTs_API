@@ -49,6 +49,9 @@ public class AdminController {
     @Autowired
     IStudent_EventService iStudent_eventService;
 
+    @Autowired
+    IAnswerService iAnswerService;
+
     @GetMapping
     @ResponseBody
     public ResponseEntity<List<Student>> getAllStudentByTypeStatusOption(@RequestParam int typeOfStatus) {
@@ -532,5 +535,16 @@ public class AdminController {
             return new ResponseEntity<>(semesterList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("/feedback")
+    @ResponseBody
+    public ResponseEntity<List<Answer>> getFeedbackStudent(@RequestParam String studentEmail) {
+        List<Answer> answers = iAnswerService.getAllFeedbackStudent(studentEmail);
+
+        if (answers != null) {
+            return new ResponseEntity<>(answers, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(answers, HttpStatus.EXPECTATION_FAILED);
     }
 }
