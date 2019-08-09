@@ -448,15 +448,17 @@ public class StudentService implements IStudentService {
             Answer answer = student_answers.get(i).getAnswer();
             Question question = answer.getQuestion();
 
-            StudentAnswerDTO studentAnswerDTO = new StudentAnswerDTO();
-            studentAnswerDTO.setStudentEmail(student.getEmail());
-            studentAnswerDTO.setBusinessEmail(business.getEmail());
+            if (question != null) {
+                StudentAnswerDTO studentAnswerDTO = new StudentAnswerDTO();
+                studentAnswerDTO.setStudentEmail(student.getEmail());
+                studentAnswerDTO.setBusinessEmail(business.getEmail());
 
-            List<Answer> answers = getListAnswerOfQuestion(student.getEmail(), question.getId(), student_answers);
-            studentAnswerDTO.setAnswers(answers);
-            studentAnswerDTO.setQuestion(question);
+                List<Answer> answers = getListAnswerOfQuestion(student.getEmail(), question.getId(), student_answers);
+                studentAnswerDTO.setAnswers(answers);
+                studentAnswerDTO.setQuestion(question);
 
-            answerDTOS.add(studentAnswerDTO);
+                answerDTOS.add(studentAnswerDTO);
+            }
         }
         return answerDTOS;
     }
@@ -466,8 +468,11 @@ public class StudentService implements IStudentService {
         for (int i = 0; i < student_answers.size(); i++) {
             Student_Answer student_answer = student_answers.get(i);
             if (student_answer.getStudent().getEmail().equals(emailStudent)) {
-                if (student_answer.getAnswer().getQuestion().getId() == idQuestion) {
-                    answers.add(student_answers.get(i).getAnswer());
+                Question question = student_answer.getAnswer().getQuestion();
+                if (question != null) {
+                    if (question.getId() == idQuestion) {
+                        answers.add(student_answers.get(i).getAnswer());
+                    }
                 }
             }
         }

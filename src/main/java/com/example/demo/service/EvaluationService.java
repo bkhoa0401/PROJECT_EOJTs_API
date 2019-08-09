@@ -51,7 +51,7 @@ public class EvaluationService implements IEvaluationService {
 
         //generate final report
         if (evaluation.getTitle().equals(ReportName.EVALUATION4)) {
-            List<Evaluation> evaluationList = ojt_enrollment.getEvaluations();
+            List<Evaluation> evaluationList = getEvaluationsByStudentEmail(ojt_enrollment.getStudent().getEmail());
             Evaluation evaluationFinal = generateFinalEvaluation(evaluationList);
             evaluationFinal.setOjt_enrollment(ojt_enrollment);
             evaluationFinal.setTimeCreated(date);
@@ -71,11 +71,11 @@ public class EvaluationService implements IEvaluationService {
     }
 
     public boolean checkStudentPassOrFail(Evaluation evaluation) {
-        float scoreActivity = evaluation.getScore_activity();
-        float scoreDiscipline = evaluation.getScore_discipline();
-        float scoreWork = evaluation.getScore_work();
+        float scoreActivity = (float) (evaluation.getScore_activity()*0.1);
+        float scoreDiscipline = (float) (evaluation.getScore_discipline()*0.4);
+        float scoreWork = (float) (evaluation.getScore_work()*0.5);
 
-        float result = (scoreActivity + scoreDiscipline + scoreWork) / (float) 3;
+        float result = (scoreActivity + scoreDiscipline + scoreWork);
         if (result >= 5) {
             return true;
         } else {
