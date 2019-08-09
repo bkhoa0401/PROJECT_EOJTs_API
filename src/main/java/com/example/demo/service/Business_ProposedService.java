@@ -205,6 +205,7 @@ public class Business_ProposedService implements IBusiness_ProposedService {
             ojtEnrollmentList.add(ojt_enrollment);
             business.setOjt_enrollments(ojtEnrollmentList);
 
+
             //update status student when raise business success
             Student student=business_proposed.getStudent_proposed();
             student.setStatus(StudentStatus.STARTED);
@@ -212,6 +213,13 @@ public class Business_ProposedService implements IBusiness_ProposedService {
 
             iBusinessService.saveBusiness(business);
             iUsersService.saveUser(users);
+
+            Ojt_Enrollment updateBusinessForStudent=
+                    iOjt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(student.getEmail(),semester.getId());
+            updateBusinessForStudent.setBusiness(business);
+            Date date = new Date(Calendar.getInstance().getTime().getTime());
+            updateBusinessForStudent.setTimeEnroll(date);
+            iOjt_enrollmentService.saveOjtEnrollment(updateBusinessForStudent);
 
             if (iUsersService.saveUser(users)) {
                 iUsersService.sendEmail(business.getBusiness_name(), users.getEmail(), users.getPassword());

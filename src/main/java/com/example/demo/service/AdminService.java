@@ -594,6 +594,8 @@ public class AdminService implements IAdminService {
             }
             if (option1.equals(businessEngName) || option2.equals(businessEngName)) {
                 count++;
+                option1="";
+                option2="";
             }
         }
         return count;

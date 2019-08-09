@@ -340,31 +340,31 @@ class Excels extends Component {
                         loading: false
                     })
                     Toastify.actionSuccess("Thêm tệp thành công!");
+
+                    var currentTime = new Date();
+
+                    var month = ("0" + (currentTime.getMonth() + 1)).slice(-2);
+                    var date = month + '-' + currentTime.getDate() + '-' + currentTime.getFullYear();
+                    var time = currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds();
+
+                    var database = firebase.database();
+                    var ref = database.ref('Users');
+
+                    for (let i = 0; i < listStudents.length; i++) {
+                        var usersRef = ref.child(`${listStudents[i].code}`);
+                        usersRef.set({
+                            userState: {
+                                date: date,
+                                time: time,
+                                type: 'offline'
+                            }
+                        });
+                    }
                 } else {
                     this.setState({
                         loading: false
                     })
                     Toastify.actionFail("Thêm tệp thất bại!");
-                }
-
-                var currentTime = new Date();
-
-                var month = ("0" + (currentTime.getMonth() + 1)).slice(-2);
-                var date = month + '-' + currentTime.getDate() + '-' + currentTime.getFullYear();
-                var time = currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds();
-
-                var database = firebase.database();
-                var ref = database.ref('Users');
-
-                for (let i = 0; i < listStudents.length; i++) {
-                    var usersRef = ref.child(`${listStudents[i].code}`);
-                    usersRef.set({
-                        userState: {
-                            date: date,
-                            time: time,
-                            type: 'offline'
-                        }
-                    });
                 }
             }
         } else if (buttonName === 'Students') {
@@ -488,20 +488,20 @@ class Excels extends Component {
         })
         //const resultAddListSkill = await ApiServices.Post('/skill/listSkill', listSkill);
 
-       // if (resultAddListSkill.status === 200) {
-            const result = await ApiServices.Post('/business', listBusinesses);
-            if (result.status === 201) {
-                this.setState({
-                    loading: false
-                })
-                Toastify.actionSuccess("Thêm tệp thành công!");
+        // if (resultAddListSkill.status === 200) {
+        const result = await ApiServices.Post('/business', listBusinesses);
+        if (result.status === 201) {
+            this.setState({
+                loading: false
+            })
+            Toastify.actionSuccess("Thêm tệp thành công!");
 
-            } else {
-                this.setState({
-                    loading: false
-                })
-                Toastify.actionFail("Thêm tệp thất bại!");
-            }
+        } else {
+            this.setState({
+                loading: false
+            })
+            Toastify.actionFail("Thêm tệp thất bại!");
+        }
         //}
     }
 
