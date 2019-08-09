@@ -111,41 +111,39 @@ class Ojt_Registration extends Component {
             to: `${student.token}`
         }
 
-        console.log(notificationDTO);
+        this.setState({
+            loading: true
+        })
 
-        // this.setState({
-        //     loading: true
-        // })
+        if (numberOfOption === '1, 2') {
+            var numberOfOption = [];
+            numberOfOption.push(1);
+            numberOfOption.push(2);
+        }
+        const result = await ApiServices.Put(`/business/updateStatusOfStudent?numberOfOption=${numberOfOption}&statusOfOption=${statusOfOption}&emailOfStudent=${student.email}`);
 
-        // if (numberOfOption === '1, 2') {
-        //     var numberOfOption = [];
-        //     numberOfOption.push(1);
-        //     numberOfOption.push(2);
-        // }
-        // const result = await ApiServices.Put(`/business/updateStatusOfStudent?numberOfOption=${numberOfOption}&statusOfOption=${statusOfOption}&emailOfStudent=${student.email}`);
+        if (result.status === 200) {
+            Toastify.actionSuccess(`${action} thành công!`);
+            const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
+            this.setState({
+                loading: false
+            })
+        } else {
+            Toastify.actionFail(`${action} thất bại!`);
+            const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
+            this.setState({
+                loading: false
+            })
+        }
 
-        // if (result.status === 200) {
-        //     Toastify.actionSuccess(`${action} thành công!`);
-        //     const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
-        //     this.setState({
-        //         loading: false
-        //     })
-        // } else {
-        //     Toastify.actionFail(`${action} thất bại!`);
-        //     const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
-        //     this.setState({
-        //         loading: false
-        //     })
-        // }
-
-        // const students = await ApiServices.Get('/student/getListStudentByOptionAndStatusOption');
-        // const business = await ApiServices.Get('/business/getBusiness');
-        // if (students !== null) {
-        //     this.setState({
-        //         students,
-        //         business_eng_name: business.business_eng_name
-        //     });
-        // }
+        const students = await ApiServices.Get('/student/getListStudentByOptionAndStatusOption');
+        const business = await ApiServices.Get('/business/getBusiness');
+        if (students !== null) {
+            this.setState({
+                students,
+                business_eng_name: business.business_eng_name
+            });
+        }
     }
 
     toggleModalDetail = async (studentDetail) => {
