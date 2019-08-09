@@ -1113,7 +1113,10 @@ class student_list extends Component {
                                                             {
                                                                 student.businessEnroll === null ?
                                                                     <Button onClick={() => this.toggleModal(student.student)} color="primary">Đăng ký</Button> :
-                                                                    <></>
+                                                                    (student.businessEnroll === "Rớt" ?
+                                                                        <Button onClick={() => this.toggleModal(student.student)} color="primary">Đăng ký</Button> :
+                                                                        <></>
+                                                                    )
                                                             }
                                                         </td>
                                                     </tr>
