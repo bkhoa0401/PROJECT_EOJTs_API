@@ -109,6 +109,7 @@ class Create_InformMessage extends Component {
             informTo: informTo,
             preListStudentEmail: listStudentEmail,
             preIsSelect: this.state.isSelect,
+            searchValue: '',
         })
         // console.log("preIsSelect: " + this.state.preIsSelect);
         // console.log("isSelect: " + this.state.isSelect);
@@ -131,6 +132,7 @@ class Create_InformMessage extends Component {
             isSelect: isSelect,
             listStudentEmail: listStudentEmail,
             informTo: informTo,
+            searchValue: '',
         })
         // console.log(this.state.isSelect);
         // console.log(this.state.listStudentEmail);
@@ -190,23 +192,27 @@ class Create_InformMessage extends Component {
         // console.log(this.state.preListStudentEmail);
     }
 
-    handleSelectAll = () => {
+    handleSelectAll = (listSelect) => {
         let students = this.state.students;
         let preListStudentEmail = this.state.preListStudentEmail;
         let preIsSelect = this.state.preIsSelect;
         let informTo = '';
         let isSelected = false;
         for (let index = 0; index < students.length; index++) {
-            preIsSelect[index] = 1;
-            for (let index1 = 0; index1 < preListStudentEmail.length; index1++) {
-                if (preListStudentEmail[index1] === students[index].email) {
-                    isSelected = true;
+            for (let index0 = 0; index0 < listSelect.length; index0++) {
+                if (listSelect[index0].email === students[index].email) {
+                    preIsSelect[index] = 1;
+                    for (let index1 = 0; index1 < preListStudentEmail.length; index1++) {
+                        if (preListStudentEmail[index1] === students[index].email) {
+                            isSelected = true;
+                        }
+                    }
+                    if (isSelected === false) {
+                        preListStudentEmail.push(students[index].email);
+                    }
+                    isSelected = false;
                 }
             }
-            if (isSelected === false) {
-                preListStudentEmail.push(students[index].email);
-            }
-            isSelected = false;
         }
         // console.log(preListStudentEmail);
         for (let index = 0; index < preListStudentEmail.length; index++) {
@@ -225,14 +231,34 @@ class Create_InformMessage extends Component {
         // console.log(this.state.preListStudentEmail);
     }
 
-    handleDeSelect = () => {
+    handleDeSelect = (listDeSelect) => {
+        let students = this.state.students;
+        let preListStudentEmail = [];
+        // let deSelect = [];
         let preIsSelect = this.state.preIsSelect;
+        let informTo = '';
         for (let index = 0; index < preIsSelect.length; index++) {
-            preIsSelect[index] = 0;
+            for (let index0 = 0; index0 < listDeSelect.length; index0++) {
+                if (listDeSelect[index0].email === students[index].email) {
+                    preIsSelect[index] = 0;
+                }
+            }
+        }
+        for (let index = 0; index < preIsSelect.length; index++) {
+            if (preIsSelect[index] === 1) {
+                preListStudentEmail.push(students[index].email);
+            }
+        }
+        for (let index = 0; index < preListStudentEmail.length; index++) {
+            informTo += preListStudentEmail[index] + "; ";
+            if (informTo.length > 100) {
+                informTo += "...";
+                break;
+            }
         }
         this.setState({
-            preListStudentEmail: [],
-            informTo: '',
+            preListStudentEmail: preListStudentEmail,
+            informTo: informTo,
             preIsSelect: preIsSelect,
         })
     }
@@ -287,10 +313,16 @@ class Create_InformMessage extends Component {
     render() {
         const { loading, searchValue, informFromEmail, students, informTo, title, description, colorTextSelect, colorBackSelect, preIsSelect } = this.state;
         let filteredListStudent;
+        let filteredPreIsSelect = [];
         if (students !== null) {
             filteredListStudent = students.filter(
                 (student) => {
                     if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+                        for (let index = 0; index < students.length; index++) {
+                            if (students[index].email === student.email) {
+                                filteredPreIsSelect.push(preIsSelect[index]);
+                            }
+                        }
                         return student;
                     }
                 }
@@ -392,12 +424,12 @@ class Create_InformMessage extends Component {
                             <div className="TabContent">
                                 <nav className="navbar navbar-light bg-light justify-content-between">
                                     <form className="form-inline">
-                                        <input style={{width: '500px'}} onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                        <input style={{ width: '500px' }} onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
                                     </form>
-                                    <FormGroup row style={{ marginRight: "4px", paddingTop:'15px' }}>
-                                        <Button color="primary" onClick={() => this.handleSelectAll()}>Chọn tất cả</Button>
+                                    <FormGroup row style={{ marginRight: "4px", paddingTop: '15px' }}>
+                                        <Button color="primary" onClick={() => this.handleSelectAll(filteredListStudent)}>Chọn tất cả</Button>
                                         &nbsp;&nbsp;
-                                        <Button color="primary" onClick={() => this.handleDeSelect()}>Huỷ chọn</Button>
+                                        <Button color="primary" onClick={() => this.handleDeSelect(filteredListStudent)}>Huỷ chọn</Button>
                                     </FormGroup>
                                 </nav>
                                 {/* <row>
@@ -410,7 +442,7 @@ class Create_InformMessage extends Component {
                                 <ListGroup>
                                     <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                         {filteredListStudent && filteredListStudent.map((student, index) =>
-                                            <ListGroupItem action onClick={() => this.handleSelect(student.email)} style={{ color: colorTextSelect[preIsSelect[index]], backgroundColor: colorBackSelect[preIsSelect[index]] }}>
+                                            <ListGroupItem action onClick={() => this.handleSelect(student.email)} style={{ color: colorTextSelect[filteredPreIsSelect[index]], backgroundColor: colorBackSelect[filteredPreIsSelect[index]] }}>
                                                 <ListGroupItemHeading style={{ fontWeight: 'bold' }}>{student.name}</ListGroupItemHeading>
                                                 <ListGroupItemText>
                                                     {student.email}

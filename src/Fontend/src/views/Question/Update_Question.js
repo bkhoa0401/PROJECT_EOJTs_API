@@ -250,7 +250,7 @@ class Update_Question extends Component {
                                                             <tr>
                                                                 <td>{index + 1}.</td>
                                                                 <td style={{ width: "900px" }}>
-                                                                    <Input value={answer.content} onChange={e => { this.handleInputAnswer(e, index) }} type="textarea" name="answer" style={{ width: "850px", marginLeft: "2%" }} rows="3" placeholder="Nhập đáp án cho hỏi ..."></Input>
+                                                                    <Input value={answer.content} onChange={e => { this.handleInputAnswer(e, index) }} type="textarea" name="answer" style={{ width: "850px", marginLeft: "2%" }} rows="3" placeholder="Nhập đáp án cho câu hỏi ..."></Input>
                                                                 </td>
                                                                 <td>
                                                                     <Button id={'btnDelete' + index} color="danger" style={{ marginLeft: "2%" }} onClick={() => this.deleteAnswer(index)}>Xóa</Button>
