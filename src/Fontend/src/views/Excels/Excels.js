@@ -174,9 +174,9 @@ class Excels extends Component {
                             </Col>
                         </FormGroup>
                     </ModalBody>
-                    <ModalFooter>
+                    {/* <ModalFooter>
                         <Button style={{ marginRight: "42%", width: "100px" }} color="primary" onClick={this.toggleLarge}>Xác nhận</Button>
-                    </ModalFooter>
+                    </ModalFooter> */}
                 </Modal>
             )
         }
