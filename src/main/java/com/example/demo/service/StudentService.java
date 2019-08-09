@@ -443,6 +443,7 @@ public class StudentService implements IStudentService {
 
         for (int i = 0; i < student_answers.size(); i++) {
             Student student = student_answers.get(i).getStudent();
+            //phải có super trc khi có survey
             Business business = student.getSupervisor().getBusiness();
             Answer answer = student_answers.get(i).getAnswer();
             Question question = answer.getQuestion();

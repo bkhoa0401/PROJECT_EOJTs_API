@@ -325,7 +325,7 @@ class student_list extends Component {
                     date1.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0]));
                     // console.log(formatTimeStartShow[1]);
                     date2.setFullYear(parseInt(formatTimeEndShow[2]), parseInt(formatTimeEndShow[1] - 1), parseInt(formatTimeEndShow[0]));
-                    if (date >= date1 && date <= date2) {
+                    if (date >= date1 && date < date2) {
                         isThisMonth = index - 1;
                     }
                     // console.log(date);
@@ -335,6 +335,7 @@ class student_list extends Component {
                     // console.log(date <= date2);
                     months.push(`${timeStartShow} - ${timeEndShow}`);
                 }
+                // console.log(date);
                 // console.log(months);
                 // console.log(isThisMonth);
                 var date = months[isThisMonth].split(" - ");
@@ -486,7 +487,7 @@ class student_list extends Component {
     showTranscript(transcriptLink) {
         if (transcriptLink !== null) {
             return (
-                <a href={transcriptLink}>Tải về</a>
+                <a href={transcriptLink} download>tải</a>
             )
         } else {
             return (
@@ -669,7 +670,7 @@ class student_list extends Component {
                                                         {/* <td style={{ textAlign: "center" }}>
                                                             {
                                                                 student.transcriptLink && student.transcriptLink ? (
-                                                                    <a href={student.student.transcriptLink} download>Tải về</a>
+                                                                    <a href={student.student.transcriptLink} download>tải</a>
                                                                 ) :
                                                                     (<label>N/A</label>)
                                                             }
@@ -700,7 +701,8 @@ class student_list extends Component {
                             className={'modal-primary ' + this.props.className}>
                             <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
                             <ModalBody>
-                                <div style={{ maxHeight: "563px", overflowY: 'auto', overflowX: 'hidden' }}>
+                                {/* <div style={{ maxHeight: "563px", overflowY: 'auto', overflowX: 'hidden' }}> */}
+                                <div>
                                     {isViewSurvey === 0 ?
                                         <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
                                             <FormGroup row>
@@ -761,18 +763,10 @@ class student_list extends Component {
                                             </FormGroup>
                                             <FormGroup row>
                                                 <Col md="4">
-                                                    <h6>Mục tiêu</h6>
+                                                    <h6>Giới thiệu bản thân</h6>
                                                 </Col>
                                                 <Col xs="12" md="8">
                                                     <Label id="" name="">{objective}</Label>
-                                                </Col>
-                                            </FormGroup>
-                                            <FormGroup row>
-                                                <Col md="4">
-                                                    <h6>GPA</h6>
-                                                </Col>
-                                                <Col xs="12" md="8">
-                                                    <Label id="" name="">{gpa}</Label>
                                                 </Col>
                                             </FormGroup>
                                             <FormGroup row>
@@ -804,7 +798,7 @@ class student_list extends Component {
                                                 {
                                                     resumeLink && resumeLink ?
                                                         (<Col xs="12" md="8">
-                                                            <a target="_blank" href={linkDownCV} download>Tải về</a>
+                                                            <a target="_blank" href={linkDownCV} download>tải</a>
                                                         </Col>)
                                                         :
                                                         (
@@ -812,6 +806,14 @@ class student_list extends Component {
                                                                 <label>N/A</label>
                                                             </Col>)
                                                 }
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="4">
+                                                    <h6>GPA</h6>
+                                                </Col>
+                                                <Col xs="12" md="8">
+                                                    <Label id="" name="">{gpa}</Label>
+                                                </Col>
                                             </FormGroup>
                                             <FormGroup row>
                                                 <Col md="4">

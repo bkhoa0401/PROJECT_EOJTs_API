@@ -203,9 +203,10 @@ class business_list extends Component {
                             </Col>
                         </Row>
                         <Modal isOpen={this.state.modalDetail} toggle={this.toggleModalDetail} className={'modal-primary ' + this.props.className}>
-                            <ModalHeader toggle={this.toggleModalDetail}>Chi tiết sinh viên</ModalHeader>
+                            <ModalHeader toggle={this.toggleModalDetail}>Chi tiết doanh nghiệp</ModalHeader>
                             <ModalBody>
-                                <div style={{ maxHeight: "563px", overflowY: 'auto', overflowX: 'hidden' }}>
+                                {/* <div style={{ maxHeight: "663px", overflowY: 'auto', overflowX: 'hidden' }}> */}
+                                <div>
                                     <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
                                         <FormGroup row>
                                             <Col md="4">
