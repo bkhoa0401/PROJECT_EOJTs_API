@@ -1,11 +1,13 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Answer;
+import com.example.demo.entity.Student_Answer;
 import com.example.demo.repository.IAnswerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,5 +47,19 @@ public class AnswerService implements IAnswerService {
             iStudent_answerService.deleteStudentAnswerByAnswerId(id);
             iAnswerRepository.deleteById(id);
         }
+    }
+
+    @Override
+    public List<Answer> getAllFeedbackStudent(String email) {
+        List<Answer> answers=new ArrayList<>();
+        List<Student_Answer> student_answers = iStudent_answerService.findStudentAnswersByEmail(email);
+        for (int i = 0; i < student_answers.size(); i++) {
+            Student_Answer student_answer = student_answers.get(i);
+            Answer answer=student_answer.getAnswer();
+            if(answer.getQuestion()== null){
+                answers.add(answer);
+            }
+        }
+        return answers;
     }
 }

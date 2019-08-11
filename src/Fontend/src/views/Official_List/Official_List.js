@@ -484,7 +484,7 @@ class Official_List extends Component {
     const result = await ApiServices.Put('/business/assignSupervisor', listDataEdited);
 
     if (result.status === 200) {
-      Toastify.actionSuccess(" thành công!");
+      Toastify.actionSuccess("Thao tác thành công!");
       const students = await ApiServices.Get('/business/getStudentsByBusiness');
       const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness');
       const supervisors_FirstBlank = await ApiServices.Get('/business/getAllSupervisorABusiness');
@@ -501,7 +501,7 @@ class Official_List extends Component {
         loading: false
       });
     } else {
-      Toastify.actionFail(" thất bại!");
+      Toastify.actionFail("Thao tác thất bại!");
       this.setState({
         loading: false
       })

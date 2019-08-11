@@ -55,7 +55,11 @@ public class StudentService implements IStudentService {
     IStudent_EventService iStudent_eventService;
 
     @Autowired
+    IAdminService iAdminService;
+
+    @Autowired
     IEventService iEventService;
+
 
     @Override
     public Student getStudentByEmail(String email) {
@@ -433,6 +437,23 @@ public class StudentService implements IStudentService {
 
         iAnswerService.saveAnswer(answer);
         iStudent_answerService.saveFeedback(student, answer);
+
+        Date date = new Date(Calendar.getInstance().getTime().getTime());
+        Admin admin=iAdminService.findAdminByEmail("admin@gmail.com");
+        Event event=new Event();
+        event.setTitle("Có feedback mới từ sinh viên");
+        event.setDescription("Nội dung feedback: "+content);
+        event.setAdmin(admin);
+        event.setTime_created(date);
+        event.setRead(false);
+
+        iEventService.createEvent(event);
+
+        Student_Event student_event=new Student_Event();
+        student_event.setStudent(student);
+        student_event.setEvent(event);
+        student_event.setStudent(true);
+        iStudent_eventService.saveStudentEvent(student_event);
     }
 
     @Override

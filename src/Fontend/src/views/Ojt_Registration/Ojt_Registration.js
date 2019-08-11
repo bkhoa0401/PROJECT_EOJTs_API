@@ -90,18 +90,20 @@ class Ojt_Registration extends Component {
 
     handleIsAcceptedOption = async (student, numberOfOption, statusOfOption) => {
 
-        var action, message;
+        var action, message, title;
         if (statusOfOption === true) {
+            title = '[' + `${this.state.business_name}` + '] ' + 'ĐÃ CHẤP NHẬN';
             action = 'Duyệt';
             message = `Chúc mừng ${student.name}! Việc đăng kí thực tập của bạn đã được ${this.state.business_name} chấp nhận!`;
         } else {
+            title = '[' + `${this.state.business_name}` + '] ' + 'ĐÃ TỪ CHỐI';
             action = 'Từ chối'
             message = `Xin chào ${student.name}! ${this.state.business_name} đã từ chối việc đăng kí thực tập của bạn tại doanh nghiệp của họ!`;
         }
 
         const notificationDTO = {
             data: {
-                title: `Kết quả đăng kí thực tập tại doanh nghiệp ${this.state.business_name}`,
+                title: title,
                 body: message,
                 click_action: "http://localhost:3000/#/invitation/new",
                 icon: "http://url-to-an-icon/icon.png"
