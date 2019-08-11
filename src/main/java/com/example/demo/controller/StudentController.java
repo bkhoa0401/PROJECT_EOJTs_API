@@ -1117,6 +1117,36 @@ public class StudentController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    //check semester //ok
+    //get all job post of a business for student
+    @GetMapping("/getAllJobPostABusiness")
+    @ResponseBody
+    public ResponseEntity<List<Business_JobPostDTO>> getAllJobPostOfABusiness(@RequestParam  String businessEmail) {
+
+        Business business = businessService.getBusinessByEmail(businessEmail);
+
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
+        Ojt_Enrollment ojt_enrollment =
+                ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(businessEmail, semesterCurrent.getId());
+
+        List<Business_JobPostDTO> business_jobPostDTOList = new ArrayList<>();
+
+        Business_JobPostDTO business_jobPostDTO = new Business_JobPostDTO();
+
+        List<Job_Post> job_postList = job_postService.getAllJobPostOfBusiness(ojt_enrollment);
+        for (int i = 0; i < job_postList.size(); i++) {
+            business_jobPostDTO.setBusiness(business);
+            business_jobPostDTO.setJob_post(job_postList.get(i));
+            business_jobPostDTOList.add(business_jobPostDTO);
+            business_jobPostDTO = new Business_JobPostDTO();
+        }
+
+        if (job_postList != null) {
+            Collections.sort(business_jobPostDTOList);
+            return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 
     //get email from token
     private String getEmailFromToken() {
