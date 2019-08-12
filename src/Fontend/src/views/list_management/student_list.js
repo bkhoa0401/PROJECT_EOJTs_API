@@ -715,7 +715,7 @@ class student_list extends Component {
                                                             <Button color="success" onClick={() => this.toggleModalTask(student.student)}><i className="fa cui-task"></i></Button>
                                                             {/* <Button style={{ width: "70px" }} color="danger">Xoá</Button> */}
                                                             &nbsp;&nbsp;
-                                                            <Button color="warning" onClick={() => this.toggleModalFeedBack(student.student)}><i className="fa cui-note"></i></Button>
+                                                            <Button color="warning" onClick={() => this.toggleModalFeedBack(student.student)}><i className="fa fa-mail-reply"></i></Button>
                                                         </td>
                                                     </tr>
                                                 )
