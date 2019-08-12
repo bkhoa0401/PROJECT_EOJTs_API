@@ -25,17 +25,39 @@ class User_Student_Create extends Component {
             specializedItem: {},
             gpa: '',
             semesterName: '',
+
+            isExisted: true,
         }
     }
 
     async componentDidMount() {
         const specializeds = await ApiServices.Get('/specialized');
-        if (specializeds !== null) {
+        var month = new Date().getMonth() + 1; //Current Month.
+        var year = new Date().getFullYear(); //Current Year.
+        // console.log(month);
+        let semesterName = "";
+        if (parseInt(month) === 1 || parseInt(month) === 2 || parseInt(month) === 3 || parseInt(month) === 4) {
+            semesterName = "SPRING" + year;
+        } else if (parseInt(month) === 5 || parseInt(month) === 6 || parseInt(month) === 7 || parseInt(month) === 8) {
+            semesterName = "SUMMER" + year;
+        } else if (parseInt(month) === 9 || parseInt(month) === 10 || parseInt(month) === 11 || parseInt(month) === 12) {
+            semesterName = "FALL" + year;
+        }
+        const isExisted = await ApiServices.Get(`/admin/checkSemester?semesterName=${semesterName}`);
+        if (isExisted === true) {
+            if (specializeds !== null) {
+                this.setState({
+                    specializeds,
+                    specializedItem: specializeds[0],
+                    loading: false,
+                    semesterName: semesterName,
+                    isExisted: true,
+                });
+            }
+        } else {
             this.setState({
-                specializeds,
-                specializedItem: specializeds[0],
-                loading: false
-            });
+                isExisted: false,
+            })
         }
     }
 
@@ -133,7 +155,7 @@ class User_Student_Create extends Component {
 
 
     render() {
-        const { specializeds, loading } = this.state;
+        const { specializeds, loading, isExisted } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -254,10 +276,15 @@ class User_Student_Create extends Component {
                                                     <Label htmlFor="semesterName">Học kì</Label>
                                                 </Col>
                                                 <Col xs="12" md="10">
-                                                    <Input value={this.state.semesterName} onChange={this.handleInput} type="text" name="semesterName" placeholder="Học kì" />
-                                                    <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Học kì', this.state.semesterName, 'required|alpha_num_space|min:8|max:10')}
-                                                    </span>
+                                                    {isExisted === true ?
+                                                        <Input value={this.state.semesterName} onChange={this.handleInput} type="text" name="semesterName" placeholder="Học kì" readOnly /> :
+                                                        <>
+                                                            <Input value={this.state.semesterName} onChange={this.handleInput} type="text" name="semesterName" placeholder="Học kì" />
+                                                            <span className="form-error is-visible text-danger">
+                                                                {this.validator.message('Học kì', this.state.semesterName, 'required|alpha_num_space|min:8|max:10')}
+                                                            </span>
+                                                        </>
+                                                    }
                                                 </Col>
                                             </FormGroup>
                                         </Form>
