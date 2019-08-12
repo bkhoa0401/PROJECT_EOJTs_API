@@ -160,7 +160,7 @@ class User_Student_Create extends Component {
                                             </FormGroup>
                                             <FormGroup row>
                                                 <Col md="2">
-                                                    <Label htmlFor="email">Họ Tên</Label>
+                                                    <Label htmlFor="email">Họ và tên</Label>
                                                 </Col>
                                                 <Col xs="12" md="10">
                                                     <Input value={this.state.name} onChange={this.handleInput} type="text" name="name" placeholder="Họ và tên" />
@@ -204,7 +204,7 @@ class User_Student_Create extends Component {
                                             </FormGroup>
                                             <FormGroup row>
                                                 <Col md="2">
-                                                    <Label htmlFor="address">Địa chỉ </Label>
+                                                    <Label htmlFor="address">Địa chỉ</Label>
                                                 </Col>
                                                 <Col xs="12" md="10">
                                                     <Input value={this.state.address} onChange={this.handleInput} type="text" name="address" placeholder="Địa chỉ" />
