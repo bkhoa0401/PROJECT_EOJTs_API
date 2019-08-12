@@ -29,6 +29,9 @@ public class Supervisor implements Serializable {
     @Column(name = "address",columnDefinition = "NVARCHAR(150)")
     private String address;
 
+    @Column(name = "project_name",columnDefinition = "NVARCHAR(255)")
+    private String project_name;
+
     @OneToMany(mappedBy = "supervisor")
     @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -145,5 +148,13 @@ public class Supervisor implements Serializable {
 
     public void setLogo(String logo) {
         this.logo = logo;
+    }
+
+    public String getProject_name() {
+        return project_name;
+    }
+
+    public void setProject_name(String project_name) {
+        this.project_name = project_name;
     }
 }

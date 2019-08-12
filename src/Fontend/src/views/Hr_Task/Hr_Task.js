@@ -46,7 +46,7 @@ class Hr_Task extends Component {
             status: '',
             supervisorName: '',
             studentName: '',
-
+            emailStudent: '',
             modal: false,
         }
     }
@@ -54,7 +54,7 @@ class Hr_Task extends Component {
 
     async componentDidMount() {
         const tasks = await ApiServices.Get('/supervisor/tasks');
-
+        console.log(tasks);
         if (tasks !== null) {
             this.setState({
                 tasks: tasks,
@@ -79,7 +79,8 @@ class Hr_Task extends Component {
                     priority: task.task.priority,
                     status: task.task.status,
                     supervisorName: task.task.supervisor.name,
-                    studentName: task.nameStudent
+                    studentName: task.nameStudent,
+                    emailStudent: task.emailStudent
                 });
             }
         } else {
@@ -245,12 +246,34 @@ class Hr_Task extends Component {
             })
 
             const tasks = await ApiServices.Get('/supervisor/tasks');
+            const student = await ApiServices.Get(`/student/student/${this.state.emailStudent}`);
 
             if (tasks !== null) {
                 this.setState({
                     tasks: tasks,
                     loading: false
                 });
+            }
+
+            if (student.token != null) {
+                let body = '';
+                if (status) {
+                    body = 'Trạng thái task ' + '[ ' + this.state.title + '] đã chuyển thành HOÀN THÀNH'
+                } else {
+                    body = 'Trạng thái task ' + '[' + this.state.title + '] đã chuyển thành CHƯA HOÀN THÀNH'
+                }
+                const notificationDTO = {
+                    data: {
+                        title: 'Trạng thái task bị thay đổi',
+                        body: body,
+                        click_action: "http://localhost:3000/#/invitation/new",
+                        icon: "http://url-to-an-icon/icon.png"
+                    },
+                    to: `${student.token}`
+                }
+
+                console.log(notificationDTO);
+                //const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
             }
         } else {
             Toastify.actionFail("Cập nhật trạng thái thất bại!");

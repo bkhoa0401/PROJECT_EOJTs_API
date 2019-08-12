@@ -319,6 +319,17 @@ class Create_Report extends Component {
                 console.log(evaluation);
                 if (result.status === 201) {
                     Toastify.actionSuccess("Tạo đánh giá tháng thành công!");
+                    const notificationDTO = {
+                        data: {
+                            title: this.state.titleHeader,
+                            body: 'Bạn đã có ' + this.state.titleHeader,
+                            click_action: "http://localhost:3000/#/invitation/new",
+                            icon: "http://url-to-an-icon/icon.png"
+                        },
+                        to: `${this.state.student.token}`
+                    }
+
+                    const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
                     this.props.history.push("/Report/Report");
                 } else {
                     Toastify.actionFail("Tạo đánh giá tháng thất bại!");
@@ -352,7 +363,7 @@ class Create_Report extends Component {
                                             <br /><br /><br />
                                             <h2 style={{ fontWeight: "bold" }}>{titleReport}</h2>
                                         </div>
-                                        <hr/>
+                                        <hr />
                                         <FormGroup row>
                                             <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Doanh nghiệp:</h6>
