@@ -141,25 +141,6 @@ class User_Business_Create extends Component {
                                             </FormGroup>
                                             <FormGroup row>
                                                 <Col md="2">
-                                                    <Label htmlFor="business_overview">Giới thiệu</Label>
-                                                </Col>
-                                                <Col xs="12" md="10">
-                                                    <CKEditor
-                                                        editor={ClassicEditor}
-                                                        data={business_overview}
-                                                        onChange={(event, editor) => {
-                                                            this.setState({
-                                                                business_overview: editor.getData(),
-                                                            })
-                                                        }}
-                                                    />
-                                                    <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Giới thiệu', business_overview, 'required|max:255')}
-                                                    </span>
-                                                </Col>
-                                            </FormGroup>
-                                            <FormGroup row>
-                                                <Col md="2">
                                                     <Label htmlFor="business_website">Website</Label>
                                                 </Col>
                                                 <Col xs="12" md="10">
@@ -199,6 +180,25 @@ class User_Business_Create extends Component {
                                                     <Input value={this.state.nameSemester} onChange={this.handleInput} type="text" name="nameSemester" placeholder="Học kì" />
                                                     <span className="form-error is-visible text-danger">
                                                         {this.validator.message('Học kì', this.state.nameSemester, 'required|alpha_num_space|min:8|max:10')}
+                                                    </span>
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="2">
+                                                    <Label htmlFor="business_overview">Giới thiệu</Label>
+                                                </Col>
+                                                <Col xs="12" md="10">
+                                                    <CKEditor
+                                                        editor={ClassicEditor}
+                                                        data={business_overview}
+                                                        onChange={(event, editor) => {
+                                                            this.setState({
+                                                                business_overview: editor.getData(),
+                                                            })
+                                                        }}
+                                                    />
+                                                    <span className="form-error is-visible text-danger">
+                                                        {this.validator.message('Giới thiệu', business_overview, 'required|max:255')}
                                                     </span>
                                                 </Col>
                                             </FormGroup>

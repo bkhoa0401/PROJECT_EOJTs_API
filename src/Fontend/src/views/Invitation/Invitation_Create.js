@@ -71,7 +71,7 @@ class Invitation_Create extends Component {
             large: !this.state.large,
             studentDetail: studentDetail
         });
-        console.log(this.state.large);
+        // console.log(this.state.large);
     }
 
     showModal = () => {

@@ -575,6 +575,7 @@ class Official_List extends Component {
                           <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
                           <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
                           <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Email</th>
                           {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
                           {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>GPA</th>
                       <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>CV</th>
@@ -593,6 +594,7 @@ class Official_List extends Component {
                                 <td style={{ textAlign: "center" }}>{student.code}</td>
                                 <td style={{ textAlign: "center" }}>{student.name}</td>
                                 <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                <td style={{ textAlign: "center" }}>{student.email}</td>
                                 {/* <td style={{ textAlign: "center" }}>{student.gpa}</td>
                             <td style={{ textAlign: "center" }}>
                               {

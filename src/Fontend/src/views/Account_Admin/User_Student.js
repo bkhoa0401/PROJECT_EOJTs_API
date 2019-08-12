@@ -83,7 +83,7 @@ class User_Student extends Component {
                             <Col xs="12" lg="15">
                                 <Card>
                                     <CardHeader>
-                                        <i className="fa fa-align-justify"></i> Danh sách tài khoản học sinh
+                                        <i className="fa fa-align-justify"></i> Danh sách tài khoản sinh viên
                             </CardHeader>
                                     <CardBody>
                                         <Button color="primary" onClick={() => this.handleDirect('/admin_account/studentList/create')}>Tạo tài khoản mới</Button>
