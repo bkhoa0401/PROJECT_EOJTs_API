@@ -40,6 +40,14 @@ public class Event implements Comparable<Event>, Serializable {
     @JsonIgnore
     private Business business;
 
+
+    @ManyToOne
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "supervisor_email")
+    @JsonIgnore
+    private Supervisor supervisor;
+
+
     //@ManyToMany(mappedBy = "events")
 //    @ManyToMany(cascade = CascadeType.MERGE)
 //    @JoinTable(
@@ -149,5 +157,13 @@ public class Event implements Comparable<Event>, Serializable {
 
     public void setStudent_events(List<Student_Event> student_events) {
         this.student_events = student_events;
+    }
+
+    public Supervisor getSupervisor() {
+        return supervisor;
+    }
+
+    public void setSupervisor(Supervisor supervisor) {
+        this.supervisor = supervisor;
     }
 }
