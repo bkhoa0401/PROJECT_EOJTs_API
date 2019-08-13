@@ -809,7 +809,7 @@ class Official_List extends Component {
                       <Col xs="12" md="8">
                         {
                           studentDetail.transcriptLink && studentDetail.transcriptLink ? (
-                            <a href={studentDetail.transcriptLink} download>tải</a>
+                            <a href={studentDetail.transcriptLink} download>Tải về</a>
                           ) :
                             (<label>N/A</label>)
                         }

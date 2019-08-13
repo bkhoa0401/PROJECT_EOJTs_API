@@ -364,7 +364,7 @@ class Ojt_Registration extends Component {
                                             <Col xs="12" md="8">
                                                 {
                                                     studentDetail.transcriptLink && studentDetail.transcriptLink ? (
-                                                        <a href={studentDetail.transcriptLink} download>tải</a>
+                                                        <a href={studentDetail.transcriptLink} download>Tải về</a>
                                                     ) :
                                                         (<label>N/A</label>)
                                                 }
@@ -377,7 +377,7 @@ class Ojt_Registration extends Component {
                                             <Col xs="12" md="8">
                                                 {
                                                     studentDetail.resumeLink && studentDetail.resumeLink ?
-                                                        <a target="_blank" href={`http://localhost:8000/api/file/downloadFile/${studentDetail.resumeLink}`} download>tải</a>
+                                                        <a target="_blank" href={`http://localhost:8000/api/file/downloadFile/${studentDetail.resumeLink}`} download>Tải về</a>
                                                         :
                                                         <label>N/A</label>
                                                 }

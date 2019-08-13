@@ -386,7 +386,7 @@ class SiteAdmin extends Component {
                       <CardHeader>
                         <FormGroup row>
                           <Col md="8">
-                            <h6>Thống kê kết quả đánh giá phản hồi của sinh viên qua các kì</h6>
+                            <h6>Thống kê kết quả đánh giá của sinh viên qua các kì</h6>
                           </Col>
                           <Col md="3" style={{ width: "150px", marginLeft: "1%" }}>
                             <Input onChange={this.handleInput} type="select" name="statisticalStudentInSemester" style={{ width: "140px" }}>

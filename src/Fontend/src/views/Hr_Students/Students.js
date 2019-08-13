@@ -109,7 +109,7 @@ class Students extends Component {
                                                 <td style={{ textAlign: "center" }}>
                                                     {
                                                         student.transcriptLink && student.transcriptLink ? (
-                                                            <a href={student.transcriptLink} download>tải</a>
+                                                            <a href={student.transcriptLink} download>Tải về</a>
                                                         ) :
                                                             (<label>N/A</label>)
                                                     }

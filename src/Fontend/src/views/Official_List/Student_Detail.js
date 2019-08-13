@@ -112,7 +112,7 @@ class Student_Detail extends Component {
     showTranscript(transcriptLink) {
         if (transcriptLink !== null) {
             return (
-                <a href={transcriptLink} download>tải</a>
+                <a href={transcriptLink} download>Tải về</a>
             )
         } else {
             return (
@@ -239,7 +239,7 @@ class Student_Detail extends Component {
                                                 {
                                                     resumeLink && resumeLink ?
                                                         (<Col xs="12" md="10">
-                                                            <a target="_blank" href={linkDownCV} download>tải</a>
+                                                            <a target="_blank" href={linkDownCV} download>Tải về</a>
                                                         </Col>)
                                                         :
                                                         (
