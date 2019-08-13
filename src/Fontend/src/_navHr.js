@@ -44,12 +44,12 @@ export default {
     },
     {
       name: 'Thông báo',
-      url: '/InformMessage/InformMessage',
+      url: '/informmessage',
       icon: 'icon-envelope-letter',
     },
     {
       name: 'Đánh giá',
-      url: '/Report/Report',
+      url: '/report',
       icon: 'icon-docs',
     },
     // {

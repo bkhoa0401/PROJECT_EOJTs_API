@@ -23,7 +23,35 @@ class User_Business_Create extends Component {
             business_phone: '',
             business_website: '',
             nameSemester: '',
+
+            isExisted: true,
         }
+    }
+
+    async componentDidMount() {
+        var month = new Date().getMonth() + 1; //Current Month.
+        var year = new Date().getFullYear(); //Current Year.
+        // console.log(month);
+        let nameSemester = "";
+        if (parseInt(month) === 1 || parseInt(month) === 2 || parseInt(month) === 3 || parseInt(month) === 4) {
+            nameSemester = "SPRING" + year;
+        } else if (parseInt(month) === 5 || parseInt(month) === 6 || parseInt(month) === 7 || parseInt(month) === 8) {
+            nameSemester = "SUMMER" + year;
+        } else if (parseInt(month) === 9 || parseInt(month) === 10 || parseInt(month) === 11 || parseInt(month) === 12) {
+            nameSemester = "FALL" + year;
+        }
+        const isExisted = await ApiServices.Get(`/admin/checkSemester?semesterName=${nameSemester}`);
+        if (isExisted === true) {
+            this.setState({
+                nameSemester: nameSemester,
+                isExisted: true,
+            })
+        } else {
+            this.setState({
+                isExisted: false,
+            })
+        }
+        // console.log(this.state.start_choose_option_time);
     }
 
     handleInput = async (event) => {
@@ -62,7 +90,7 @@ class User_Business_Create extends Component {
             business_overview,
             business_phone,
             business_website,
-            nameSemester
+            nameSemester,
         }
 
         console.log(business);
@@ -92,7 +120,7 @@ class User_Business_Create extends Component {
 
     render() {
         const { email, business_address, business_eng_name, business_name,
-            business_overview, business_phone, business_website, loading } = this.state;
+            business_overview, business_phone, business_website, loading, isExisted } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -177,10 +205,15 @@ class User_Business_Create extends Component {
                                                     <Label htmlFor="nameSemester">Học kì</Label>
                                                 </Col>
                                                 <Col xs="12" md="10">
-                                                    <Input value={this.state.nameSemester} onChange={this.handleInput} type="text" name="nameSemester" placeholder="Học kì" />
-                                                    <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Học kì', this.state.nameSemester, 'required|alpha_num_space|min:8|max:10')}
-                                                    </span>
+                                                    {isExisted === true ?
+                                                        <Input value={this.state.nameSemester} onChange={this.handleInput} type="text" name="nameSemester" placeholder="Học kì" readOnly /> :
+                                                        <>
+                                                            <Input value={this.state.nameSemester} onChange={this.handleInput} type="text" name="nameSemester" placeholder="Học kì" />
+                                                            <span className="form-error is-visible text-danger">
+                                                                {this.validator.message('Học kì', this.state.nameSemester, 'required|alpha_num_space|min:8|max:10')}
+                                                            </span>
+                                                        </>
+                                                    }
                                                 </Col>
                                             </FormGroup>
                                             <FormGroup row>

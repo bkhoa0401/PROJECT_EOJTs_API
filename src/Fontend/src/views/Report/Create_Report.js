@@ -74,7 +74,7 @@ class Create_Report extends Component {
         const student = await ApiServices.Get(`/student/student/${needParam[1]}`);
         const numOfEvaluations = await ApiServices.Get(`/supervisor/getNumOfEvaluationsOfStudent?stuEmail=${needParam[1]}`);
         if (needParam[0] > (numOfEvaluations + 1)) {
-            this.props.history.push("/Report/Report");
+            this.props.history.push("/report");
         }
         const ojtEnrollment = await ApiServices.Get(`/enrollment/getSelectedStuEnrollment?email=${needParam[1]}`);
         var dateEnroll = ojtEnrollment.timeEnroll;
@@ -330,7 +330,7 @@ class Create_Report extends Component {
                     }
 
                     const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
-                    this.props.history.push("/Report/Report");
+                    this.props.history.push("/report");
                 } else {
                     Toastify.actionFail("Tạo đánh giá tháng thất bại!");
                     this.setState({
@@ -493,7 +493,7 @@ class Create_Report extends Component {
                                     <CardFooter>
                                         <Row style={{ marginLeft: "21%" }}>
                                             <Col xs="4" sm="4">
-                                                <Button block color="danger" onClick={() => this.handleDirect('/Report/Report')}>
+                                                <Button block color="danger" onClick={() => this.handleDirect('/report')}>
                                                     Huỷ bỏ
                                                 </Button>
                                             </Col>

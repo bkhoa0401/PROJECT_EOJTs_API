@@ -7,7 +7,7 @@ export default {
     },
     {
       name: 'Đánh giá',
-      url: '/Report/Report',
+      url: '/report',
       icon: 'icon-docs',
     },
     {

@@ -140,7 +140,7 @@ class InformMessage_Detail extends Component {
                                     <CardFooter className="p-3">
                                         <Row>
                                             <Col xs="4" sm="4">
-                                                <Button block color="secondary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
+                                                <Button block color="secondary" onClick={() => this.handleDirect('/informmessage')}>
                                                     Trở về
                                                 </Button>
                                             </Col>

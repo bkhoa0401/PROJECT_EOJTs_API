@@ -345,7 +345,7 @@ class Report_Detail extends Component {
                                     <CardFooter>
                                         <Row>
                                             <Col xs="4" sm="4">
-                                                <Button block color="secondary" onClick={() => this.handleDirect('/Report/Report')}>
+                                                <Button block color="secondary" onClick={() => this.handleDirect('/report')}>
                                                     Trở về
                                                 </Button>
                                             </Col>

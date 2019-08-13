@@ -297,7 +297,7 @@ class Create_InformMessage extends Component {
             // console.log(event);
             if (result.status === 201) {
                 Toastify.actionSuccess("Tạo thông báo thành công!");
-                this.props.history.push("/InformMessage/InformMessage");
+                this.props.history.push("/informmessage");
             } else {
                 Toastify.actionFail("Tạo thông báo thất bại!");
                 this.setState({
@@ -402,7 +402,7 @@ class Create_InformMessage extends Component {
                                     <CardFooter className="p-3">
                                         <Row style={{ marginLeft: "21%" }}>
                                             <Col xs="4" sm="4">
-                                                <Button block color="secondary" onClick={() => this.handleDirect('/InformMessage/InformMessage')}>
+                                                <Button block color="secondary" onClick={() => this.handleDirect('/informmessage')}>
                                                     Trở về
                                                 </Button>
                                             </Col>
