@@ -128,7 +128,7 @@ public class StudentController {
             student.setName(studentList.get(i).getName());
             student.setCode(studentList.get(i).getCode());
             student.setPhone(studentList.get(i).getPhone());
-            student.setGpa(student.getGpa());
+            student.setGpa(studentList.get(i).getGpa());
             ojt_enrollment.setStudent(student);
             ojt_enrollment.setSemester(semester);
 

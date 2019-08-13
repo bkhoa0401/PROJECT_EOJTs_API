@@ -328,9 +328,9 @@ class student_list extends Component {
                     date1.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0]));
                     // console.log(formatTimeStartShow[1]);
                     date2.setFullYear(parseInt(formatTimeEndShow[2]), parseInt(formatTimeEndShow[1] - 1), parseInt(formatTimeEndShow[0]));
-                    if (date >= date1 && date < date2) {
-                        isThisMonth = index - 1;
-                    }
+                    // if (date >= date1 && date < date2) {
+                    //     isThisMonth = index - 1;
+                    // }
                     // console.log(date);
                     // console.log(date1);
                     // console.log(date2);
@@ -341,12 +341,13 @@ class student_list extends Component {
                 // console.log(date);
                 // console.log(months);
                 // console.log(isThisMonth);
-                var date = months[isThisMonth].split(" - ");
-                var formatDateStart = date[0].split("/");
-                let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
-                var formatDateEnd = date[1].split("/");
-                let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
-                listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+                // var date = months[isThisMonth].split(" - ");
+                // var formatDateStart = date[0].split("/");
+                // let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
+                // var formatDateEnd = date[1].split("/");
+                // let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
+                // listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+                listStudentTask = await ApiServices.Get(`/supervisor/allTasksByStudentEmail?emailStudent=${studentDetail.email}`);
                 months.unshift("Tổng");
             }
             this.setState({
@@ -355,7 +356,8 @@ class student_list extends Component {
                 listStudentTask: listStudentTask,
                 months: months,
                 loading: false,
-                isThisMonth: isThisMonth + 1,
+                // isThisMonth: isThisMonth + 1,
+                isThisMonth: 0,
             });
         } else {
             this.setState({
@@ -704,8 +706,8 @@ class student_list extends Component {
                                                         </td> */}
                                                         {/* <td style={{ textAlign: "center" }}>{student.gpa}</td> */}
                                                         <td style={{ textAlign: "center" }}>
-                                                            {/* <Button style={{ width: "80px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.student.email}`)}><i className="fa cui-magnifying-glass"></i></Button> */}
-                                                            <Button color="primary" onClick={() => this.toggleModalDetail(student.student.email)}><i className="fa cui-magnifying-glass"></i></Button>
+                                                            {/* <Button style={{ width: "80px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.student.email}`)}><i className="fa fa-info"></i></Button> */}
+                                                            <Button color="primary" onClick={() => this.toggleModalDetail(student.student.email)}><i className="fa fa-info"></i></Button>
                                                             &nbsp;&nbsp;
                                                             {/* <Button style={{ width: "90px" }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.student.email}`)}><i className="fa cui-task"></i></Button> */}
                                                             {/* {student.businessEnroll !== null ?
@@ -866,7 +868,7 @@ class student_list extends Component {
                                                     {
                                                         survey === null ?
                                                             <></> :
-                                                            <Button color="primary" onClick={() => this.handleViewSurvey()}><i className="fa cui-magnifying-glass"></i></Button>
+                                                            <Button color="primary" onClick={() => this.handleViewSurvey()}><i className="fa fa-eye"></i></Button>
                                                     }
                                                 </Col>
                                             </FormGroup>
@@ -1014,7 +1016,7 @@ class student_list extends Component {
                             {
                                 isViewSurvey === 1 ?
                                     <ModalFooter>
-                                        <Button onClick={() => this.handleBackSurvey()} color="secondary"><i className="fa cui-arrow-left"></i></Button>
+                                        <Button onClick={() => this.handleBackSurvey()} color="secondary"><i className="fa fa-arrow-left"></i></Button>
                                     </ModalFooter> :
                                     <></>
                             }

@@ -93,7 +93,7 @@ class Feedback extends Component {
                                                             <Badge className="mr-1" color="primary" pill>9.5</Badge>
                                                         </td> */}
                                                         <td style={{ textAlign: "center" }}>
-                                                            <Button color="primary" onClick={() => this.handleDirect(`/Feedback/Feedback_Detail/1`)}><i className="fa cui-magnifying-glass"></i></Button>
+                                                            <Button color="primary" onClick={() => this.handleDirect(`/Feedback/Feedback_Detail/1`)}><i className="fa fa-info"></i></Button>
                                                         </td>
                                                     </tr>
                                                     {/* )
