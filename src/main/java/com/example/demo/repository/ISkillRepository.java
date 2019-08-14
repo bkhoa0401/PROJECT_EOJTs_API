@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface ISkillRepository extends JpaRepository<Skill,Integer> {
 
-    List<Skill> findBySpecializedId(int specializedId);
+    List<Skill> findBySpecializedIdOrIsSoftSkillTrue(int specializedId);
 
     Skill findSkillById(int id);
 

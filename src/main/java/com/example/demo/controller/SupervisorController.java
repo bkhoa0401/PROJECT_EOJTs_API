@@ -274,8 +274,8 @@ public class SupervisorController {
     }
 
     @PutMapping("/stateTask")
-    public ResponseEntity<Void> updateStateTask(@RequestParam int id, @RequestParam int typeTask) {
-        boolean updateStateTask = taskService.updateStatusTask(id, typeTask);
+    public ResponseEntity<Void> updateStateTask(@RequestParam int id, @RequestParam int typeTask, @RequestParam String comment) {
+        boolean updateStateTask = taskService.updateStatusTask(id, typeTask, comment);
         if (updateStateTask == true) {
             return new ResponseEntity<>(HttpStatus.OK);
         }

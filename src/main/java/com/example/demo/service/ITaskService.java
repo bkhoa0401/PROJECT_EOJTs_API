@@ -21,7 +21,7 @@ public interface ITaskService {
 
     boolean deleteTask(int id);
 
-    boolean updateStatusTask(int id, int typeStatusTask);
+    boolean updateStatusTask(int id, int typeStatusTask,String comment);
 
     List<Task> findTaskDoneByStudentEmail(String email);
 
