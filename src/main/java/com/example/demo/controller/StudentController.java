@@ -304,7 +304,7 @@ public class StudentController {
 
         int specializedId = studentService.getSpecializedIdByEmail(email);
 
-        List<Skill> skills = skillService.getListSkillBySpecialized(specializedId);
+        List<Skill> skills = skillService.getListSkillBySpecializedOrSoftSkillIsTrue(specializedId);
 
         if (skills != null) {
             return new ResponseEntity<List<Skill>>(skills, HttpStatus.OK);

@@ -11,6 +11,8 @@ public interface ISkillService {
 
     List<Skill> getListSkillBySpecialized(int specializedId);
 
+    List<Skill> getListSkillBySpecializedOrSoftSkillIsTrue(int specializedId);
+
     List<Skill> getAllSkill();
 
     boolean createSkill(Skill skill);

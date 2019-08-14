@@ -28,8 +28,8 @@ public class Task implements Serializable {
     @Column(name = "level_task")
     private Level level_task = Level.EASY;
 
-    @Column(name = "priority")
-    private int priority;
+//    @Column(name = "priority")
+//    private int priority;
 
     @Column(name = "time_created")
     private java.sql.Date time_created;
@@ -60,7 +60,6 @@ public class Task implements Serializable {
     @Column(name = "comment")
     private String comment;
 
-
     public String getTitle() {
         return title;
     }
@@ -77,13 +76,13 @@ public class Task implements Serializable {
         this.level_task = level_task;
     }
 
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
+//    public int getPriority() {
+//        return priority;
+//    }
+//
+//    public void setPriority(int priority) {
+//        this.priority = priority;
+//    }
 
     public Date getTime_created() {
         return time_created;
