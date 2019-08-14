@@ -242,8 +242,8 @@ class Ojt_Registration extends Component {
                                                                     <strong>{numberOfOption}</strong>
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    {/* <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}><i className="fa cui-magnifying-glass"></i></Button> */}
-                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa cui-magnifying-glass"></i></Button>
+                                                                    {/* <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}><i className="fa fa-info"></i></Button> */}
+                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa fa-info"></i></Button>
                                                                     <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(student, numberOfOption, false)}><i className="fa cui-ban"></i></Button>
                                                                     <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(student, numberOfOption, true)}><i className="fa cui-circle-check"></i></Button>
                                                                 </td>
