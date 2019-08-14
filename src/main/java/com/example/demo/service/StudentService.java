@@ -112,10 +112,19 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public boolean updateInforStudent(String email, String ojective, List<Skill> skillList) {
+    public boolean updateInforStudent(String email, String objective, List<Skill> skillList) {
         Student student = getStudentByEmail(email);
+        for (int i = 0; i < skillList.size(); i++) {
+            Skill skill = skillList.get(i);
+            if (skill.getSpecialized() == null) {
+                Skill skillIsExited = skillService.getSkillById(skill.getId());
+                if (skillIsExited == null) {
+                    skillService.saveSkill(skill);
+                }
+            }
+        }
         if (student != null) {
-            student.setObjective(ojective);
+            student.setObjective(objective);
             student.setSkills(skillList);
             IStudentRepository.save(student);
             return true;
@@ -439,17 +448,17 @@ public class StudentService implements IStudentService {
         iStudent_answerService.saveFeedback(student, answer);
 
         Date date = new Date(Calendar.getInstance().getTime().getTime());
-        Admin admin=iAdminService.findAdminByEmail("admin@gmail.com");
-        Event event=new Event();
+        Admin admin = iAdminService.findAdminByEmail("admin@gmail.com");
+        Event event = new Event();
         event.setTitle("Có feedback mới từ sinh viên");
-        event.setDescription("Nội dung feedback: "+content);
+        event.setDescription("Nội dung feedback: " + content);
         event.setAdmin(admin);
         event.setTime_created(date);
         event.setRead(false);
 
         iEventService.createEvent(event);
 
-        Student_Event student_event=new Student_Event();
+        Student_Event student_event = new Student_Event();
         student_event.setStudent(student);
         student_event.setEvent(event);
         student_event.setStudent(true);

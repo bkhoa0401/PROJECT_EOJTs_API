@@ -860,7 +860,7 @@ public class StudentController {
     @PutMapping("/taskStatus")
     public ResponseEntity<Void> updateTaskStatus(@RequestParam int id, @RequestParam int typeStatus) {
         String email = getEmailFromToken();
-        boolean result = taskService.updateStatusTask(id, typeStatus);
+        boolean result = taskService.updateStatusTask(id, typeStatus,null);
         if (result) {
             HistoryDetail historyDetail = null;
             switch (typeStatus) {

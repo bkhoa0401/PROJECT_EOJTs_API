@@ -18,6 +18,7 @@ import java.util.List;
 public class Skill implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
 
@@ -45,6 +46,9 @@ public class Skill implements Serializable {
 
     @Column(name = "isActive")
     private Boolean status;
+
+    @Column(name = "isSoftSkill")
+    private Boolean isSoftSkill;
 
     public int getId() {
         return id;
@@ -103,5 +107,14 @@ public class Skill implements Serializable {
     }
 
     public Skill() {
+    }
+
+
+    public Boolean getSoftSkill() {
+        return isSoftSkill;
+    }
+
+    public void setSoftSkill(Boolean softSkill) {
+        isSoftSkill = softSkill;
     }
 }

@@ -24,4 +24,6 @@ public interface ISkillService {
     List<Skill> getListSkillJobPost(Job_Post job_post);
 
     Skill getSkillByName(String name);
+
+    void saveSkill(Skill skill);
 }

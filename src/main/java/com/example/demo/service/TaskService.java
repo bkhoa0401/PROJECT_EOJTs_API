@@ -98,13 +98,18 @@ public class TaskService implements ITaskService {
     }
 
     @Override
-    public boolean updateStatusTask(int id, int typeStatusTask) {
+    public boolean updateStatusTask(int id, int typeStatusTask,String comment) {
         Task task = findTaskById(id);
         if (task != null) {
             if (typeStatusTask == 2) {
-                task.setStatus(Status.PENDING);
+                if(comment!=null){
+                    task.setStatus(Status.PENDING);
+                    task.setComment(comment);
+                }
             } else if (typeStatusTask == 3) {
                 task.setStatus(Status.DONE);
+            }else if(typeStatusTask == 4) {
+                task.setStatus(Status.APPROVED);
             }
             ITaskRepository.save(task);
             return true;

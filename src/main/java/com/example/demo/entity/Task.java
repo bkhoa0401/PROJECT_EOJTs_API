@@ -39,7 +39,7 @@ public class Task implements Serializable {
 
 
     @Enumerated(EnumType.STRING)
-    @Check(constraints = "status IN ('NOTSTART' ,'PENDING', 'DONE')")
+    @Check(constraints = "status IN ('NOTSTART' ,'PENDING', 'DONE','APPROVED')")
     @Column(name = "status")
     private Status status = Status.NOTSTART;
 
@@ -56,6 +56,10 @@ public class Task implements Serializable {
     @JsonIgnore
     @JoinColumn(name = "ojt_enrollment_id")
     private Ojt_Enrollment ojt_enrollment;
+
+    @Column(name = "comment")
+    private String comment;
+
 
     public String getTitle() {
         return title;
@@ -136,4 +140,13 @@ public class Task implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
 }

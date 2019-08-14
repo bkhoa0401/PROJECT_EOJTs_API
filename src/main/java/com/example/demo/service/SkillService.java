@@ -58,7 +58,7 @@ public class SkillService implements ISkillService {
 
     @Override
     public List<Skill> getListSkillBySpecialized(int specializedId) {
-        return ISkillRepository.findBySpecializedId(specializedId);
+        return ISkillRepository.findBySpecializedIdOrIsSoftSkillTrue(specializedId);
     }
 
     @Override
@@ -133,5 +133,12 @@ public class SkillService implements ISkillService {
             return skill;
         }
         return null;
+    }
+
+    @Override
+    public void saveSkill(Skill skill) {
+        if(skill!=null){
+            ISkillRepository.save(skill);
+        }
     }
 }
