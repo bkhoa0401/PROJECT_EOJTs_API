@@ -265,7 +265,7 @@ class CoreUIIcons extends Component {
                 <div>lock-unlocked</div>
               </Col>
               <Col xs="6" sm="4" md="3" xl="2">
-                <i className="cui-magnifying-glass icons font-2xl d-block mt-4"></i>
+                <i className="fa fa-info icons font-2xl d-block mt-4"></i>
                 <div>magnifying-glass</div>
               </Col>
               <Col xs="6" sm="4" md="3" xl="2">

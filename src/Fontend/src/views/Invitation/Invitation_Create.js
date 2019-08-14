@@ -254,7 +254,7 @@ class Invitation_Create extends Component {
                                                                 }
                                                             </td> */}
                                                             <td style={{ textAlign: "center" }}>
-                                                                <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(student)}><i className="fa cui-magnifying-glass"></i></Button>
+                                                                <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(student)}><i className="fa fa-info"></i></Button>
                                                                 &nbsp;&nbsp;
                                                                 <Button onClick={() => this.toggleModal(student)} type="submit" color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                             </td>
@@ -323,7 +323,7 @@ class Invitation_Create extends Component {
                                                                 }
                                                             </td> */}
                                                             <td style={{ textAlign: "center" }}>
-                                                                <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(suggestedStudent)}><i className="fa cui-magnifying-glass"></i></Button>
+                                                                <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(suggestedStudent)}><i className="fa fa-info"></i></Button>
                                                                 &nbsp;&nbsp;
                                                                 <Button onClick={() => this.toggleModal(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
                                                             </td>
@@ -467,21 +467,20 @@ class Invitation_Create extends Component {
                         var seconds = (tempDate - tempDateFirebase) / 1000;
                         console.log(seconds);
 
-                        // if (type === 'offline') {
-                        //     const result = ApiServices.Post('/business/sms', sms);
-                        // } else if (type === 'online') {
-                        //     if (seconds > 12) {
-                        //         const result = ApiServices.Post('/business/sms', sms);
-                        //     }
-                        // }
+                        if (type === 'offline') {
+                            const result = ApiServices.Post('/business/sms', sms);
+                        } else if (type === 'online') {
+                            if (seconds > 10) {
+                                const result = ApiServices.Post('/business/sms', sms);
+                            }
+                        }
                     }
                 });
             }
                 .bind(this),
-            2000
+            5000
         );
     }
-
     toggle(tabPane, tab) {
         const newArray = this.state.activeTab.slice()
         newArray[tabPane] = tab

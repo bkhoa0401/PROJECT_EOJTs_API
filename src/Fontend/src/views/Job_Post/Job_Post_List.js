@@ -141,7 +141,7 @@ class Job_Post_List extends Component {
                                     <br />
                                     <Row style={{ paddingLeft: "48%" }}>
                                         <Button onClick={this.handleHideAll} type="submit" color="secondary">
-                                            {isShowAll === true ? <i className="fa cui-chevron-top"></i> : <i className="fa cui-chevron-bottom"></i>}
+                                            {isShowAll === true ? <i className="fa fa-eye-slash"></i> : <i className="fa fa-eye"></i>}
                                         </Button>
                                     </Row>
                                     <br />

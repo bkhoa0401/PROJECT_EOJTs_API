@@ -173,29 +173,31 @@ class Hr_Students extends Component {
                 // console.log(timeEndShow);
                 var date1 = new Date();
                 var date2 = new Date();
+                var tmpdate = new Date();
                 date1.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0]));
                 // console.log(formatTimeStartShow[1]);
+                // tmpdate.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0] - 1));
                 date2.setFullYear(parseInt(formatTimeEndShow[2]), parseInt(formatTimeEndShow[1] - 1), parseInt(formatTimeEndShow[0]));
-                if (date >= date1 && date < date2) {
-                    isThisMonth = index - 1;
-                }
+                // if (date > tmpdate && date < date2) {
+                //     isThisMonth = index - 1;
+                // }
+                // console.log(isThisMonth);
                 // console.log(date);
                 // console.log(date1);
                 // console.log(date2);
                 // console.log(date >= date1);
-                // console.log(date <= date2);
                 months.push(`${timeStartShow} - ${timeEndShow}`);
             }
             // console.log(months);
             // console.log(isThisMonth);
 
-
-            var date = months[isThisMonth].split(" - ");
-            var formatDateStart = date[0].split("/");
-            let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
-            var formatDateEnd = date[1].split("/");
-            let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
-            const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+            // var date = months[isThisMonth].split(" - ");
+            // var formatDateStart = date[0].split("/");
+            // let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
+            // var formatDateEnd = date[1].split("/");
+            // let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
+            // const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+            const listStudentTask = await ApiServices.Get(`/supervisor/allTasksByStudentEmail?emailStudent=${studentDetail.email}`);
             months.unshift("Tổng");
 
             this.setState({
@@ -204,7 +206,8 @@ class Hr_Students extends Component {
                 listStudentTask: listStudentTask,
                 months: months,
                 loading: false,
-                isThisMonth: isThisMonth + 1,
+                // isThisMonth: isThisMonth + 1,
+                isThisMonth: 0,
             });
         } else {
             this.setState({
@@ -323,8 +326,8 @@ class Hr_Students extends Component {
                                                         </td> */}
                                                                 <td style={{ textAlign: "center" }}>{student.gpa}</td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    {/* <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}><i className="fa cui-magnifying-glass"></i></Button> */}
-                                                                    <Button color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa cui-magnifying-glass"></i></Button>
+                                                                    {/* <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}><i className="fa fa-info"></i></Button> */}
+                                                                    <Button color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa fa-info"></i></Button>
                                                                     &nbsp;&nbsp;
                                                                     {/* <Button style={{ width: '100px' }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.email}`)}><i className="fa cui-task"></i></Button> */}
                                                                     <Button color="success" onClick={() => this.toggleModalTask(student)}><i className="fa cui-task"></i></Button>

@@ -529,113 +529,114 @@ class Excels extends Component {
 
     fileStudentHandler = (event) => {
         let fileObj = event.target.files[0];
-        if (fileObj !== null) {
-            var fileType = fileObj.type.toString();
-        }
+        // if (fileObj !== null) {
+        //     var fileType = fileObj.type.toString();
+        // }
 
         let flag = true;
         var titles = ["STT", "MSSV", "Họ Tên", "Ngày sinh", "Giới tính", "SĐT", "Email", "Địa chỉ", "Ngành học", "GPA", "Kì"];
 
-        if (fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+        // if (fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 
-            ExcelRenderer(fileObj, (err, resp) => {
-                if (err) {
-                    console.log(err);
-                }
-                else {
-                    let titlesExcel = resp.rows[0];
+        ExcelRenderer(fileObj, (err, resp) => {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                let titlesExcel = resp.rows[0];
 
-                    if (titlesExcel.length !== 11) {
-                        flag = false;
-                    } else {
-                        for (let i = 0; i < titles.length; i++) {
-                            var areEqual = titles[i].toUpperCase() === titlesExcel[i].toUpperCase();
-                            if (!areEqual) {
-                                flag = false;
-                                break;
-                            }
+                if (titlesExcel.length !== 11) {
+                    flag = false;
+                } else {
+                    for (let i = 0; i < titles.length; i++) {
+                        var areEqual = titles[i].toUpperCase() === titlesExcel[i].toUpperCase();
+                        if (!areEqual) {
+                            flag = false;
+                            break;
                         }
                     }
-
-                    if (!flag) {
-                        document.getElementById("file_excel_students").value = "";
-                        Toastify.actionWarning("Cấu trúc file không hợp lệ!");
-                    } else {
-                        const { currentPage } = this.state;
-                        const pageNumber = getPaginationPageNumber(resp.rows.length - 1, 5);
-                        resp.rows.splice(0, 1);
-                        const studentsPagination = resp.rows.slice(getPaginationCurrentPageNumber(currentPage, 5), getPaginationNextPageNumber(currentPage, 5));
-                        this.setState({
-                            files_Students: fileObj,
-                            cols_Students: resp.cols,
-                            rows_Students: resp.rows,
-                            pageNumber,
-                            studentsPagination,
-                        });
-                    }
                 }
-            });
 
-        } else {
-            Toastify.actionWarning("Xin hãy nhập file excel!");
-            document.getElementById("file_excel_students").value = "";
-        }
+                if (!flag) {
+                    document.getElementById("file_excel_students").value = "";
+                    Toastify.actionWarning("Cấu trúc file không hợp lệ!");
+                } else {
+                    const { currentPage } = this.state;
+                    const pageNumber = getPaginationPageNumber(resp.rows.length - 1, 5);
+                    resp.rows.splice(0, 1);
+                    const studentsPagination = resp.rows.slice(getPaginationCurrentPageNumber(currentPage, 5), getPaginationNextPageNumber(currentPage, 5));
+                    this.setState({
+                        files_Students: fileObj,
+                        cols_Students: resp.cols,
+                        rows_Students: resp.rows,
+                        pageNumber,
+                        studentsPagination,
+                    });
+                }
+            }
+        });
+
+        // } else {
+        //     Toastify.actionWarning("Xin hãy nhập file excel!");
+        //     document.getElementById("file_excel_students").value = "";
+        // }
     }
 
     fileBusinessHandler = (event) => {
         let fileObj = event.target.files[0];
-        if (fileObj !== null) {
-            var fileType = fileObj.type.toString();
-        }
+        console.log(fileObj);
+        // if (fileObj !== null) {
+        //     var fileType = fileObj.type.toString();
+        // }
 
         let flag = true;
         var titles = ["STT", "Doanh Nghiệp", "Tên Tiếng Anh", "Email", "SĐT", "Địa chỉ Công ty", "Website", "Địa chỉ nơi SV sẽ thực tập", "Vị trí - Số lượng",
             "Quy trình tuyển", "Liên hệ", "Mô tả", "Giới thiệu công ty", "Chính sách ưu đãi", "Logo", "Kì"];
 
-        if (fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+        // if (fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 
-            ExcelRenderer(fileObj, (err, resp) => {
-                if (err) {
-                    console.log(err);
-                }
-                else {
-                    let titlesExcel = resp.rows[0];
+        ExcelRenderer(fileObj, (err, resp) => {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                let titlesExcel = resp.rows[0];
 
-                    if (titlesExcel.length !== 16) {
-                        flag = false;
-                    } else {
-                        for (let i = 0; i < titles.length; i++) {
-                            var areEqual = titles[i].toUpperCase() === titlesExcel[i].toUpperCase();
-                            if (!areEqual) {
-                                flag = false;
-                                break;
-                            }
+                if (titlesExcel.length !== 16) {
+                    flag = false;
+                } else {
+                    for (let i = 0; i < titles.length; i++) {
+                        var areEqual = titles[i].toUpperCase() === titlesExcel[i].toUpperCase();
+                        if (!areEqual) {
+                            flag = false;
+                            break;
                         }
                     }
-
-                    if (!flag) {
-                        document.getElementById("file_excel_businesses").value = "";
-                        Toastify.actionWarning("Cấu trúc file không hợp lệ!");
-                    } else {
-                        const { currentPageBus } = this.state;
-                        const pageNumberBus = getPaginationPageNumber(resp.rows.length - 1, 5);
-                        resp.rows.splice(0, 1);
-                        const businessesPagination = resp.rows.slice(getPaginationCurrentPageNumber(currentPageBus, 5), getPaginationNextPageNumber(currentPageBus, 5));
-                        this.setState({
-                            files_Businesses: fileObj,
-                            cols_Businesses: resp.cols,
-                            rows_Businesses: resp.rows,
-                            pageNumberBus,
-                            businessesPagination,
-                        });
-                    }
                 }
-            });
 
-        } else {
-            Toastify.actionWarning("Xin hãy nhập file excel");
-            document.getElementById("file_excel_businesses").value = "";
-        }
+                if (!flag) {
+                    document.getElementById("file_excel_businesses").value = "";
+                    Toastify.actionWarning("Cấu trúc file không hợp lệ!");
+                } else {
+                    const { currentPageBus } = this.state;
+                    const pageNumberBus = getPaginationPageNumber(resp.rows.length - 1, 5);
+                    resp.rows.splice(0, 1);
+                    const businessesPagination = resp.rows.slice(getPaginationCurrentPageNumber(currentPageBus, 5), getPaginationNextPageNumber(currentPageBus, 5));
+                    this.setState({
+                        files_Businesses: fileObj,
+                        cols_Businesses: resp.cols,
+                        rows_Businesses: resp.rows,
+                        pageNumberBus,
+                        businessesPagination,
+                    });
+                }
+            }
+        });
+
+        // } else {
+        //     Toastify.actionWarning("Xin hãy nhập file excel");
+        //     document.getElementById("file_excel_businesses").value = "";
+        // }
     }
 
 
@@ -818,7 +819,7 @@ class Excels extends Component {
                                                                                 <td  id={"b-" + index + "-14"} onKeyUp={this.rowBusinessEdited}>{business[14]}</td>
                                                                                 <td  id={"b-" + index + "-15"} onKeyUp={this.rowBusinessEdited}>{business[15]}</td> */}
                                                                             <td style={{ textAlign: "center" }}>
-                                                                                <Button style={{ width: "100px" }} color="primary" onClick={() => this.toggleLarge(business)} className="mr-1"><i className="fa cui-magnifying-glass"></i></Button>
+                                                                                <Button style={{ width: "100px" }} color="primary" onClick={() => this.toggleLarge(business)} className="mr-1"><i className="fa fa-info"></i></Button>
                                                                                 {
                                                                                     this.showModal()
                                                                                 }
