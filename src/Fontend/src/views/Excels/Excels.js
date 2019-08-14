@@ -4,7 +4,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { ExcelRenderer } from 'react-excel-renderer';
 import { ToastContainer } from 'react-toastify';
-import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Row } from 'reactstrap';
+import { Button, Card, CardBody, Input, CardFooter, CardHeader, Col, Form, FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Row } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { getPaginationCurrentPageNumber, getPaginationNextPageNumber, getPaginationPageNumber } from '../../service/common-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
@@ -33,7 +33,12 @@ class Excels extends Component {
             open: false,
             business: null,
             large: false,
-            listBusinessesForSave: []
+            listBusinessesForSave: [],
+            modal: false,
+            listIndexNotFound: [],
+            specializeds: [],
+            specializedItem: {},
+            listSkillForSave: [],
         };
         this.toggleLarge = this.toggleLarge.bind(this);
     }
@@ -111,7 +116,7 @@ class Excels extends Component {
                         </FormGroup>
                         <FormGroup row>
                             <Col md="3">
-                                <h6>Vị trí - Số lượng:</h6>
+                                <h6>Kỹ năng - Số lượng:</h6>
                             </Col>
                             <Col xs="12" md="9">
                                 <label>{business[8]}</label>
@@ -254,46 +259,35 @@ class Excels extends Component {
         this.props.history.push(uri);
     }
 
-    handleConfirm = (listIndexNotFound) => {
-        var skill = '';
+    // handleConfirm = (listIndexNotFound) => {
+    //     var skill = '';
 
-        for (let i = 0; i < listIndexNotFound.length; i++) {
-            if (i + 1 !== listIndexNotFound.length) {
-                skill = skill + ' ' + listIndexNotFound[i] + ', ';
-            } else {
-                skill = skill + ' ' + listIndexNotFound[i];
-            }
-        }
+    //     for (let i = 0; i < listIndexNotFound.length; i++) {
+    //         if (i + 1 !== listIndexNotFound.length) {
+    //             skill = skill + ' ' + listIndexNotFound[i] + ', ';
+    //         } else {
+    //             skill = skill + ' ' + listIndexNotFound[i];
+    //         }
+    //     }
 
-        confirmAlert({
-            title: 'Lưu ý',
-            message: `Những kỹ năng: ${skill} chưa tồn tại trong hệ thống! Vui lòng tạo mới những kỹ năng này và thử lại sau!`,
-            buttons: [
-                // {
-                //     label: 'Xác nhận',
-                //     onClick: () => this.importListBusiness(this.state.listBusinessesForSave, listIndexNotFound)
-                // },
-                {
-                    label: 'Quản lí kỹ năng',
-                    onClick: () => this.handleDirect('/skill')
-                },
-                {
-                    label: 'Hủy bỏ',
-                }
-            ]
-        });
-    };
-
-    openPopUp = (business) => {
-        this.setState({
-            open: true,
-            business: business,
-        })
-    }
-
-    closePopup = () => {
-        this.setState({ open: false })
-    }
+    //     confirmAlert({
+    //         title: 'Lưu ý',
+    //         message: `Những kỹ năng: ${skill} chưa tồn tại trong hệ thống! Vui lòng tạo mới những kỹ năng này và thử lại sau!`,
+    //         buttons: [
+    //             // {
+    //             //     label: 'Xác nhận',
+    //             //     onClick: () => this.importListBusiness(this.state.listBusinessesForSave, listIndexNotFound)
+    //             // },
+    //             {
+    //                 label: 'Quản lí kỹ năng',
+    //                 onClick: () => this.handleDirect('/skill')
+    //             },
+    //             {
+    //                 label: 'Hủy bỏ',
+    //             }
+    //         ]
+    //     });
+    // };
 
     handleSubmit = async (buttonName) => {
         const { rows_Students, rows_Businesses } = this.state;
@@ -437,30 +431,54 @@ class Excels extends Component {
                 console.log("listIndexNotFound", listIndexNotFound);
 
                 if (listIndexNotFound.length !== 0) {
-                    this.setState({
-                        loading: false,
-                        listBusinessesForSave: listBusinesses,
-                    })
-                    this.handleConfirm(listIndexNotFound);
-                } else {
-                    this.setState({
-                        loading: true
-                    })
-                    console.log("LIST BUSINESSES", listBusinesses);
+                    let listSkillForSave = this.state.listSkillForSave;
+                    const specializeds = await ApiServices.Get('/specialized');
 
-                    const result = await ApiServices.Post('/business', listBusinesses);
-                    if (result.status === 201) {
-                        this.setState({
-                            loading: false
-                        })
-                        Toastify.actionSuccess("Thêm tệp thành công!");
+                    if (specializeds !== null) {
+                        for (let i = 0; i < listIndexNotFound.length; i++) {
+                            var specialized = {
+                                id: specializeds[0].id
+                            }
+                            var skill = {
+                                name: listIndexNotFound[i],
+                                status: true,
+                                specialized
+                            }
+                            listSkillForSave.push(skill);
+                            console.log(listSkillForSave);
+                        }
 
-                    } else {
                         this.setState({
-                            loading: false
+                            loading: false,
+                            listBusinessesForSave: listBusinesses,
+                            modal: true,
+                            listIndexNotFound,
+                            specializeds,
+                            specializedItem: specializeds[0],
+                            listSkillForSave
                         })
-                        Toastify.actionFail("Thêm tệp thất bại!");
                     }
+                    // this.handleConfirm(listIndexNotFound);
+                } else {
+                    alert("ahihi");
+                    // this.setState({
+                    //     loading: true
+                    // })
+                    // console.log("LIST BUSINESSES", listBusinesses);
+
+                    // const result = await ApiServices.Post('/business', listBusinesses);
+                    // if (result.status === 201) {
+                    //     this.setState({
+                    //         loading: false
+                    //     })
+                    //     Toastify.actionSuccess("Thêm tệp thành công!");
+
+                    // } else {
+                    //     this.setState({
+                    //         loading: false
+                    //     })
+                    //     Toastify.actionFail("Thêm tệp thất bại!");
+                    // }
                 }
 
                 // setTimeout(
@@ -478,6 +496,48 @@ class Excels extends Component {
             Toastify.actionFail("Không tệp nào được chọn!");
         }
 
+    }
+
+    toggleModalDetail = async () => {
+        this.setState({
+            modal: !this.state.modal
+        })
+    }
+
+    addListSkill = async () => {
+        const listSkillForSave = this.state.listSkillForSave;
+        console.log(listSkillForSave);
+
+        this.setState({
+            loading: true
+        })
+
+        const result = await ApiServices.Post('/skill/listSkill', listSkillForSave);
+        if (result.status === 200) {
+            listSkillForSave.splice(0, listSkillForSave.length);
+            this.setState({
+                loading: false,
+                modal: !this.state.modal,
+                listSkillForSave
+            })
+            Toastify.actionSuccess("Tạo kỹ năng mới thành công!");
+        } else {
+            this.setState({
+                loading: false
+            })
+            Toastify.actionFail("Tạo kỹ năng mới thất bại!");
+        }
+    }
+
+    handleInput = async (event, index) => {
+        const { name, value } = event.target;
+        const { specializeds, listSkillForSave } = this.state;
+        if (name.includes('specialized')) {
+            listSkillForSave[index].specialized.id = specializeds[value].id;
+            await this.setState({
+                listSkillForSave
+            })
+        }
     }
 
     importListBusiness = async (listBusinesses, listSkill) => {
@@ -667,9 +727,9 @@ class Excels extends Component {
     // }
 
     render() {
-        const { files_Students, rows_Students, files_Businesses, rows_Businesses, loading, business } = this.state;
+        const { files_Students, rows_Students, files_Businesses, rows_Businesses, loading, business, listIndexNotFound } = this.state;
         const { studentsPagination, pageNumber, currentPage } = this.state;
-        const { businessesPagination, pageNumberBus, currentPageBus } = this.state;
+        const { businessesPagination, pageNumberBus, currentPageBus, specializeds, specializedItem } = this.state;
 
         return (
             loading.toString() === 'true' ? (
@@ -754,7 +814,6 @@ class Excels extends Component {
                                 </Card>
                             </Col>
                         </Row>
-
                         <Row>
                             <Col xs="12" sm="12">
                                 <Card>
@@ -828,6 +887,41 @@ class Excels extends Component {
                                                                     )
                                                                 })
                                                             }
+                                                            <Modal isOpen={this.state.modal} toggle={this.toggleModalDetail}
+                                                                className={'modal-primary ' + this.props.className}>
+                                                                <ModalHeader toggle={this.toggleModalDetail}>Những kỹ năng chưa có trong hệ thống</ModalHeader>
+                                                                <ModalBody>
+                                                                    <div>
+                                                                        {
+                                                                            listIndexNotFound && listIndexNotFound.map((skill, index) => {
+                                                                                return (
+                                                                                    <FormGroup row>
+                                                                                        <Col md="4">
+                                                                                            <label>{index + 1}/ {skill}</label>
+                                                                                        </Col>
+                                                                                        <Col xs="12" md="8">
+
+                                                                                            <Input onChange={e => { this.handleInput(e, index) }} type="select" name="specialized">
+                                                                                                {specializeds && specializeds.map((specialized, i) => {
+                                                                                                    return (
+                                                                                                        <option value={i}>{specialized.name}</option>
+                                                                                                    )
+                                                                                                })}
+                                                                                            </Input>
+                                                                                        </Col>
+                                                                                    </FormGroup>
+                                                                                )
+                                                                            })
+                                                                        }
+                                                                    </div>
+                                                                    <hr />
+                                                                    <h6>Vui lòng thêm những kỹ năng mới này vào hệ thống và thử lại</h6>
+                                                                </ModalBody>
+                                                                <ModalFooter>
+                                                                    <Button color="primary" onClick={this.addListSkill}>Xác nhận</Button>
+                                                                    <Button color="secondary" onClick={this.toggleModalDetail}>Hủy bỏ</Button>
+                                                                </ModalFooter>
+                                                            </Modal>
                                                         </tbody>
                                                     </table>
                                                 )}

@@ -152,24 +152,17 @@ public class SkillController {
 
     @PostMapping("/listSkill")
     @ResponseBody
-    public ResponseEntity<Void> createListSkill(@RequestBody List<String> skills) {
+    public ResponseEntity<Void> createListSkill(@RequestBody List<Skill> skills) {
 
         for (int i = 0; i < skills.size(); i++) {
 
             List<Skill> skillList = skillService.getAllSkill();
             int sizeList = skillList.size();
 
-            Skill skill = new Skill();
-            Specialized specialized = new Specialized();
-            specialized.setId(1); // ngành chung
-
+            Skill skill = skills.get(i);
             skill.setId(sizeList + 1);
-            skill.setName(skills.get(i));
             skill.setStatus(true);
-            skill.setSpecialized(specialized);
-
             skillService.createSkill(skill);
-
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
