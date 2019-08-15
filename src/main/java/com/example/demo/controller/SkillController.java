@@ -8,6 +8,7 @@ import com.example.demo.entity.Skill;
 import com.example.demo.entity.Specialized;
 import com.example.demo.service.ISkillService;
 import com.example.demo.service.SkillService;
+import com.example.demo.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,18 +27,21 @@ public class SkillController {
 
     @GetMapping
     @ResponseBody
-    public ResponseEntity<List<Skill>> getAllSkill() {
+    public ResponseEntity<PagingDTO> getAllSkill(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
         HttpStatus httpStatus;
         List<Skill> skillList = new ArrayList<>();
 
         skillList = skillService.getAllSkill();
 
         if (skillList != null) {
+            Utils<Skill> utils = new Utils<>();
+            PagingDTO pagingDTO = utils.paging(skillList, currentPage, rowsPerPage);
             httpStatus = HttpStatus.OK;
-            return new ResponseEntity<List<Skill>>(skillList, httpStatus);
+            return new ResponseEntity<PagingDTO>(pagingDTO, httpStatus);
         } else {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-            return new ResponseEntity<List<Skill>>(skillList, httpStatus);
+            return new ResponseEntity<>(httpStatus);
         }
     }
 
