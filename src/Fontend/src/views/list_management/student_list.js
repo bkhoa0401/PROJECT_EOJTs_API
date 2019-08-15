@@ -370,7 +370,7 @@ class student_list extends Component {
                     // tmpdate.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0] - 1))
                     // console.log(formatTimeStartShow[1]);
                     date2.setFullYear(parseInt(formatTimeEndShow[2]), parseInt(formatTimeEndShow[1] - 1), parseInt(formatTimeEndShow[0]));
-                    if ((date > date1 || date.toString() === date1.toString()) && date < date2) {
+                    if (!(date1 > date) && date < date2) {
                         isThisMonth = index - 1;
                     }
                     // console.log(date);
@@ -1320,7 +1320,7 @@ class student_list extends Component {
                                             <h6>{business.business_eng_name}</h6>
                                         </Col>
                                         <Col xs="12" md="2">
-                                            <Button color="primary">Chọn</Button>
+                                            <Button color="primary" onClick={() => this.handleConfirm(studentSelect, business.email, business.business_eng_name)}>Chọn</Button>
                                         </Col>
                                     </FormGroup>
                                 )}

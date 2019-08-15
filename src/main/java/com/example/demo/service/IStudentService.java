@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.PagingDTO;
 import com.example.demo.dto.StudentAnswerDTO;
+import com.example.demo.dto.StudentIsExistedAndNotYet;
 import com.example.demo.entity.*;
 
 import java.text.ParseException;
@@ -65,11 +66,15 @@ public interface IStudentService {
 
     List<StudentAnswerDTO> findListStudentAnswer(String email);
 
-    void studentCreateInformMessage(String email,Event event);
+    void studentCreateInformMessage(String email, Event event);
 
     PagingDTO pagingStudent(int currentPage, int rowsPerPage);
 
     PagingDTO getStudentsWithNoCompany(int currentPage, int rowsPerPage);
 
     PagingDTO getEvaluationsOfStudents(int currentPage, int rowsPerPage);
+
+    StudentIsExistedAndNotYet getStudentsIsExisted(List<Student> students);
+
+    void handlerStudentIsExisted(List<Student> students);
 }

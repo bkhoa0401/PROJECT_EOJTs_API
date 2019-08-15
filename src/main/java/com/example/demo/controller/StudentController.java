@@ -95,23 +95,30 @@ public class StudentController {
         List<Ojt_Enrollment> ojtEnrollmentList = new ArrayList<>();
         List<String> nameList = new ArrayList<>();
 
-        for (int i = 0; i < studentList.size(); i++) {
+        StudentIsExistedAndNotYet studentIsExistedAndNotYet = studentService.getStudentsIsExisted(students);
+
+        List<Student> studentListIsExisted = studentIsExistedAndNotYet.getStudentsIsExisted();
+        studentService.handlerStudentIsExisted(studentListIsExisted);
+
+        List<Student> studentListNotYet = studentIsExistedAndNotYet.getStudentsNotYet();
+
+        for (int i = 0; i < studentListNotYet.size(); i++) {
             Users users = new Users();
             Specialized specialized = new Specialized();
             String specializedName = "";
             int specializedID = 0;
 
-            users.setEmail(studentList.get(i).getEmail());
+            users.setEmail(studentListNotYet.get(i).getEmail());
             String password = usersService.getAlphaNumericString();
             users.setPassword(password);
-            nameList.add(studentList.get(i).getName());
+            nameList.add(studentListNotYet.get(i).getName());
             users.setRoles(roleList);
             users.setActive(true);
 
-            specializedName = studentList.get(i).getSpecialized().getName();
+            specializedName = studentListNotYet.get(i).getSpecialized().getName();
             specializedID = specializedService.getIdByName(specializedName);
             specialized.setId(specializedID);
-            studentList.get(i).setSpecialized(specialized);
+            studentListNotYet.get(i).setSpecialized(specialized);
 
             usersList.add(users);
 
@@ -120,16 +127,16 @@ public class StudentController {
             Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
 //            Student student = studentService.getStudentByEmail(studentList.get(i).getEmail());
             Student student = new Student();
-            student.setEmail(studentList.get(i).getEmail());
-            student.setSpecialized(studentList.get(i).getSpecialized());
+            student.setEmail(studentListNotYet.get(i).getEmail());
+            student.setSpecialized(studentListNotYet.get(i).getSpecialized());
             student.setStatus(StudentStatus.NOTSTART);
-            student.setAddress(studentList.get(i).getAddress());
-            student.setDob(studentList.get(i).getDob());
-            student.setGender(studentList.get(i).isGender());
-            student.setName(studentList.get(i).getName());
-            student.setCode(studentList.get(i).getCode());
-            student.setPhone(studentList.get(i).getPhone());
-            student.setGpa(studentList.get(i).getGpa());
+            student.setAddress(studentListNotYet.get(i).getAddress());
+            student.setDob(studentListNotYet.get(i).getDob());
+            student.setGender(studentListNotYet.get(i).isGender());
+            student.setName(studentListNotYet.get(i).getName());
+            student.setCode(studentListNotYet.get(i).getCode());
+            student.setPhone(studentListNotYet.get(i).getPhone());
+            student.setGpa(studentListNotYet.get(i).getGpa());
             ojt_enrollment.setStudent(student);
             ojt_enrollment.setSemester(semester);
 
@@ -139,7 +146,11 @@ public class StudentController {
 
         try {
             studentService.saveListStudent(students);
-            usersService.saveListUser(usersList);
+
+            List<Users> usersListNotYet = usersService.getUsersNotYet(usersList);
+
+           // usersService.saveListUser(usersList);
+            usersService.saveListUser(usersListNotYet);
             ojt_enrollmentService.saveListOjtEnrollment(ojtEnrollmentList);
 
             if (usersService.saveListUser(usersList)) {
