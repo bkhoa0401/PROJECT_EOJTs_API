@@ -84,7 +84,7 @@ public class StudentController {
     //check semester //ok
     @PostMapping
     public ResponseEntity<Void> addListStudent(@RequestBody List<Student_ImportFileDTO> studentList) throws Exception {
-
+        String semesterName = studentList.get(0).getSemesterName();
         List<Student> students = new ArrayList<>();
 
         List<Role> roleList = new ArrayList<>();
@@ -98,7 +98,7 @@ public class StudentController {
         StudentIsExistedAndNotYet studentIsExistedAndNotYet = studentService.getStudentsIsExisted(students);
 
         List<Student> studentListIsExisted = studentIsExistedAndNotYet.getStudentsIsExisted();
-        studentService.handlerStudentIsExisted(studentListIsExisted);
+        studentService.handlerStudentIsExisted(studentListIsExisted); // handle xong may dua da ton tai
 
         List<Student> studentListNotYet = studentIsExistedAndNotYet.getStudentsNotYet();
 
@@ -122,7 +122,7 @@ public class StudentController {
 
             usersList.add(users);
 
-            Semester semester = semesterService.getSemesterByName(studentList.get(i).getSemesterName());
+            Semester semester = semesterService.getSemesterByName(semesterName);
 
             Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
 //            Student student = studentService.getStudentByEmail(studentList.get(i).getEmail());
@@ -143,14 +143,12 @@ public class StudentController {
             ojtEnrollmentList.add(ojt_enrollment);
             students.add(student);
         }
-
         try {
             studentService.saveListStudent(students);
 
-            List<Users> usersListNotYet = usersService.getUsersNotYet(usersList);
-
-           // usersService.saveListUser(usersList);
-            usersService.saveListUser(usersListNotYet);
+            //List<Users> usersListNotYet = usersService.getUsersNotYet(usersList);
+            //usersService.saveListUser(usersListNotYet);
+            usersService.saveListUser(usersList);
             ojt_enrollmentService.saveListOjtEnrollment(ojtEnrollmentList);
 
             if (usersService.saveListUser(usersList)) {
