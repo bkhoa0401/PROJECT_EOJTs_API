@@ -1,7 +1,7 @@
 import decode from 'jwt-decode';
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Pagination, Row } from 'reactstrap';
+import { FormText, Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Pagination, Row } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import SimpleReactValidator from '../../validator/simple-react-validator';
@@ -42,6 +42,10 @@ class Create_Report extends Component {
             validatorNumRange_score_discipline: '',
             maxWorkDays: 0,
             validatorMaxWorkDays: '',
+            listStudentTask: null,
+            numTaskEasy: 0,
+            numTaskNormal: 0,
+            numTaskDificult: 0, 
         };
     }
 
@@ -50,6 +54,11 @@ class Create_Report extends Component {
         let role = '';
         let actor = null;
         let businessName = '';
+        let listStudentTask = null;
+        let score_work = "";
+        let numTaskEasy = 0;
+        let numTaskNormal = 0;
+        let numTaskDificult = 0; 
         if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
@@ -158,7 +167,36 @@ class Create_Report extends Component {
                 maxWorkDays = 28 - parseInt(formatTimeStartShow[0]) + parseInt(formatTimeEndShow[0]);
             }
         }
-        // console.log(maxWorkDays);
+        var formatDateStart = timeStartShow.split("/");
+        let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
+        var formatDateEnd = timeEndShow.split("/");
+        let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
+        //suggest score work
+        let numApproved = 0;
+        let numRealTask = 0;
+        listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${needParam[1]}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+        for (let index = 0; index < listStudentTask.length; index++) {
+            if (listStudentTask[index].level_task === "EASY") {
+                numRealTask = numRealTask + 1;
+            } else if (listStudentTask[index].level_task === "NORMAL") {
+                numRealTask = numRealTask + 2;
+            } else if (listStudentTask[index].level_task === "DIFFICULT") {
+                numRealTask = numRealTask + 3;
+            }
+            if (listStudentTask[index].status === "APPROVED") {
+                if (listStudentTask[index].level_task === "EASY") {
+                    numApproved = numApproved + 1;
+                    numTaskEasy++;
+                } else if (listStudentTask[index].level_task === "NORMAL") {
+                    numApproved = numApproved + 2;
+                    numTaskNormal++;
+                } else if (listStudentTask[index].level_task === "DIFFICULT") {
+                    numApproved = numApproved + 3;
+                    numTaskDificult++;
+                }
+            }
+        }
+        score_work = "" + parseFloat(10 - ((10/numRealTask)*(numRealTask-numApproved))).toFixed(3);
         this.setState({
             loading: false,
             title: title,
@@ -172,6 +210,11 @@ class Create_Report extends Component {
             maxWorkDays: maxWorkDays,
             titleHeader: titleHeader,
             titleReport: titleReport,
+            listStudentTask : listStudentTask,
+            score_work: score_work,
+            numTaskEasy: numTaskEasy,
+            numTaskNormal: numTaskNormal,
+            numTaskDificult: numTaskDificult,
         });
     }
 
@@ -345,7 +388,7 @@ class Create_Report extends Component {
     }
 
     render() {
-        const { titleReport, titleHeader, maxWorkDays, validatorMaxWorkDays, validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, workDays, remark, project_name, onScore, timeStartShow, timeEndShow } = this.state;
+        const { numTaskEasy, numTaskNormal, numTaskDificult, listStudentTask, titleReport, titleHeader, maxWorkDays, validatorMaxWorkDays, validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, workDays, remark, project_name, onScore, timeStartShow, timeEndShow } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -433,6 +476,7 @@ class Create_Report extends Component {
                                             </Col>
                                             <Col xs="12" md="10">
                                                 <Input value={score_work} type='number' style={{ width: '70px' }} onChange={this.handleInputScore} id="score_work" name="score_work" min="0" max="10"></Input>
+                                                <FormText className="help-block">Tổng số nhiệm vụ: {listStudentTask.length}, Số nhiệm vụ hoàn thành: Dễ({numTaskEasy}), Trung bình({numTaskNormal}), Khó({numTaskDificult})</FormText>
                                                 <span className="form-error is-visible text-danger">
                                                     {this.validator.message('Điểm hiệu quả công việc', score_work, 'required|numeric')}
                                                 </span>

@@ -116,7 +116,7 @@ class Students extends Component {
                                                 </td>
                                                 <td style={{ textAlign: "center" }}>{student.gpa}</td>
                                                 <td style={{ textAlign: "right" }}>
-                                                    <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}><i className="fa fa-info"></i></Button>
+                                                    <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}><i className="fa fa-eye"></i></Button>
                                                     &nbsp;&nbsp;
                                                     <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="danger">Xoá</Button>
                                                 </td>
