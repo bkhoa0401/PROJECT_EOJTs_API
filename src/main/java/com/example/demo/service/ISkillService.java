@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.PagingDTO;
 import com.example.demo.entity.Job_Post;
 import com.example.demo.entity.Skill;
 
@@ -28,4 +29,6 @@ public interface ISkillService {
     Skill getSkillByName(String name);
 
     void saveSkill(Skill skill);
+
+    PagingDTO pagingSkill(int currentPage, int rowsPerPage);
 }

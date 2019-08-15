@@ -4,6 +4,7 @@ package com.example.demo.service;
 import com.example.demo.dto.PagingDTO;
 import com.example.demo.entity.Specialized;
 import com.example.demo.repository.ISpecializedRepository;
+import com.example.demo.utils.Utils;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
@@ -93,26 +94,8 @@ public class SpecializedService implements ISpecializedService {
 
     public PagingDTO pagingSpecialized(int currentPage, int rowsPerPage) {
         List<Specialized> specializedList = getAllSpecialized();
-
-        int pageNumber = (int) Math.ceil((double) specializedList.size() / (double) rowsPerPage); // ra tong so page
-
-        int nextPageNumber = (currentPage + 1) * rowsPerPage;
-
-        int currentPageNumber = (currentPage * rowsPerPage);
-
-        List<Specialized> specializedsPagination = new ArrayList<>();
-
-        for (int i = 0; i < specializedList.size(); i++) {
-            if (i >= currentPageNumber && i < nextPageNumber) {
-                specializedsPagination.add(specializedList.get(i));
-            }
-        }
-
-        PagingDTO specializedPagingDTO = new PagingDTO();
-        specializedPagingDTO.setPageNumber(pageNumber);
-        specializedPagingDTO.setListData(specializedsPagination);
-
-        return specializedPagingDTO;
+        Utils<Specialized> utils = new Utils<>();
+        return utils.paging(specializedList, currentPage, rowsPerPage);
     }
 
     @Override

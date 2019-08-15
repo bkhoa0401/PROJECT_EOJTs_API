@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.PagingDTO;
 import com.example.demo.entity.*;
 
 import java.util.List;
@@ -37,4 +38,6 @@ public interface IUsersService {
     List<Users> getAllUsersByType(int type);
 
     List<Users> getAllUsersBySemester();
+
+    PagingDTO pagingUser(int typeUser,int currentPage, int rowsPerPage);
 }

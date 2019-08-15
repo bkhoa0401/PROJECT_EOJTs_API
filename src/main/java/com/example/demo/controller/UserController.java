@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.PagingDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,10 +98,11 @@ public class UserController {
     //get all users by type
     @GetMapping("/getUsersByType")
     @ResponseBody
-    public ResponseEntity<List<Users>> getUsersByType(@RequestParam int type) {
-        List<Users> usersList = userService.getAllUsersByType(type);
+    public ResponseEntity<PagingDTO> getUsersByType(@RequestParam int type, @RequestParam int currentPage, @RequestParam int rowsPerPage) {
+        //List<Users> usersList = userService.getAllUsersByType(type);
+        PagingDTO usersList = userService.pagingUser(type, currentPage, rowsPerPage);
         if (usersList != null) {
-            return new ResponseEntity<List<Users>>(usersList, HttpStatus.OK);
+            return new ResponseEntity<PagingDTO>(usersList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
