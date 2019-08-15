@@ -371,6 +371,7 @@ class student_list extends Component {
                     var date1 = new Date();
                     var date2 = new Date();
                     var tmpdate = "";
+                    var tmpdate1 = "";
                     date1.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0]));
                     // tmpdate.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0] - 1))
                     // console.log(formatTimeStartShow[1]);
