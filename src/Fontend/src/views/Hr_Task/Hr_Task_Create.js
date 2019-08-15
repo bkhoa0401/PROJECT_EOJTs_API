@@ -19,7 +19,7 @@ class Hr_Task_Create extends Component {
             description: '',
             time_end: '',
             level_task: 'EASY',
-            priority: '',
+            // priority: '',
             status: 'NOTSTART',
             students: [],
             studentItem: {},
@@ -66,13 +66,13 @@ class Hr_Task_Create extends Component {
             description: '',
             time_end: '',
             level_task: 'EASY',
-            priority: '',
+            // priority: '',
             studentItem: this.state.students[0],
         })
     }
 
     handleSubmit = async () => {
-        const { title, description, time_end, level_task, priority, status, studentItem } = this.state;
+        const { title, description, time_end, level_task, status, studentItem } = this.state;
         const emailStudent = studentItem.email;
 
         const notificationDTO = {
@@ -90,7 +90,7 @@ class Hr_Task_Create extends Component {
             description,
             time_end,
             level_task,
-            priority,
+            // priority,
             status
         }
 
@@ -201,18 +201,18 @@ class Hr_Task_Create extends Component {
                                                     </Input>
                                                 </Col>
                                             </FormGroup>
-                                            <FormGroup row>
+                                            {/* <FormGroup row>
                                                 <Col md="2">
                                                     <Label htmlFor="priority">Ưu tiên</Label>
                                                 </Col>
                                                 <Col xs="12" md="10">
                                                     <Input value={priority} onChange={this.handleInput} type="number" id="priority" name="priority" placeholder="Ưu tiên" />
                                                     <span className="form-error is-visible text-danger">
-                                                        {/* <i class="fa fa-exclamation-circle" /> */}
+                                                        <i class="fa fa-exclamation-circle" />
                                                         {this.validator.message('Độ ưu tiên', priority, 'required|numberic')}
                                                     </span>
                                                 </Col>
-                                            </FormGroup>
+                                            </FormGroup> */}
                                         </Form>
                                         <ToastContainer />
                                     </CardBody>

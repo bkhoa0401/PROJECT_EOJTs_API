@@ -109,6 +109,7 @@ public class TaskService implements ITaskService {
             } else if (typeStatusTask == 3) {
                 task.setStatus(Status.DONE);
             }else if(typeStatusTask == 4) {
+                task.setComment(comment);
                 task.setStatus(Status.APPROVED);
             }
             ITaskRepository.save(task);
