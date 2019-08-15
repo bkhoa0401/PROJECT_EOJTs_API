@@ -1,9 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.PagingDTO;
-import com.example.demo.dto.StudentAnswerDTO;
-import com.example.demo.dto.Student_EvaluationDTO;
-import com.example.demo.dto.Student_OjtenrollmentDTO;
+import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IStudentRepository;
 import com.example.demo.repository.ISupervisorRepository;
@@ -14,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class StudentService implements IStudentService {
@@ -75,6 +74,9 @@ public class StudentService implements IStudentService {
 
     @Autowired
     private RedisTemplate<Object, Object> template;
+
+    @Autowired
+    IUsersService iUsersService;
 
 
     @Override
@@ -141,6 +143,8 @@ public class StudentService implements IStudentService {
             if (skill.getSpecialized() == null) {
                 Skill skillIsExited = skillService.getSkillById(skill.getId());
                 if (skillIsExited == null) {
+                    skill.setStatus(true);
+                    skill.setSoftSkill(true);
                     skillService.saveSkill(skill);
                 }
             }
@@ -619,6 +623,46 @@ public class StudentService implements IStudentService {
             return utils.paging(student_evaluationDTOS, currentPage, rowsPerPage);
         }
         return null;
+    }
+
+    @Override
+    public StudentIsExistedAndNotYet getStudentsIsExisted(List<Student> students) {
+        List<Student> studentListIsExisted = new ArrayList<>();
+        List<Student> studentNotYet = new ArrayList<>();
+        for (int i = 0; i < students.size(); i++) {
+            Student student = students.get(i);
+            Student studentIsExisted = getStudentByEmail(student.getEmail()); // da co trong ds cu
+            if (studentIsExisted != null) {
+                studentListIsExisted.add(studentIsExisted);
+            } else if (studentIsExisted == null) {
+                studentNotYet.add(student);
+            }
+        }
+        StudentIsExistedAndNotYet existedAndNotYets = new StudentIsExistedAndNotYet();
+        existedAndNotYets.setStudentsIsExisted(studentListIsExisted);
+        existedAndNotYets.setStudentsNotYet(studentNotYet);
+        return existedAndNotYets;
+    }
+
+    @Override
+    public void handlerStudentIsExisted(List<Student> students) {
+        try {
+            Semester semester = semesterService.getSemesterCurrent();
+
+            for (int i = 0; i < students.size(); i++) {
+                Student student = students.get(i);
+                Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
+                ojt_enrollment.setSemester(semester);
+                ojt_enrollment.setStudent(student);
+                ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);
+
+                saveStudent(student);
+
+                iUsersService.sendEmailToStudentIsExisted(student.getName(), student.getEmail());
+            }
+        } catch (Exception e) {
+            Logger.getLogger(e.getMessage());
+        }
     }
 }
 
