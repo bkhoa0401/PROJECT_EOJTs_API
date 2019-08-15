@@ -45,7 +45,7 @@ class Hr_Task_Create extends Component {
             let validPassed = '';
             let date = new Date();
             let endDate = new Date();
-            var formatEndDate = endDate.split("-");
+            var formatEndDate = value.split("-");
             endDate.setFullYear(formatEndDate[0], formatEndDate[1] - 1, formatEndDate[2]);
             if (!(endDate > date  || date.toString() === endDate.toString())) {
                 validPassed = "Không thể chọn ngày quá khứ";
@@ -109,7 +109,7 @@ class Hr_Task_Create extends Component {
         }
 
         if (this.validator.allValid()) {
-            if (validPassed === "") {
+            if (this.state.validPassed === "") {
                 this.setState({
                     loading: true
                 })
