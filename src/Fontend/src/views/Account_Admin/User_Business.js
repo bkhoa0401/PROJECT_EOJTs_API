@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { ToastContainer } from 'react-toastify';
-import { Badge, Button, Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
+import { Badge, Button, Card, CardBody, CardHeader, Col, Row, Table, Pagination, Input } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import Toastify from '../../views/Toastify/Toastify';
+import PaginationComponent from '../Paginations/pagination';
 
 class User_Business extends Component {
 
@@ -13,7 +14,10 @@ class User_Business extends Component {
         super(props);
         this.state = {
             businesses: null,
-            loading: true
+            loading: true,
+            pageNumber: 1,
+            currentPage: 0,
+            rowsPerPage: 10
         }
     }
 
@@ -47,10 +51,13 @@ class User_Business extends Component {
 
     handleUpdateStatus = async (email, status) => {
         const result = await ApiServices.Put(`/user/updateStatus?email=${email}&isActive=${status}`);
-        const businesses = await ApiServices.Get('/user/getUsersByType?type=3');
+        const { currentPage, rowsPerPage } = this.state;
+        const businesses = await ApiServices.Get(`/user/getUsersByType?type=3&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         if (businesses !== null) {
             this.setState({
-                businesses,
+                businesses: businesses.listData,
+                pageNumber: businesses.pageNumber,
+                loading: false
             });
         }
 
@@ -62,17 +69,76 @@ class User_Business extends Component {
     }
 
     async componentDidMount() {
-        const businesses = await ApiServices.Get('/user/getUsersByType?type=3');
+        const { currentPage, rowsPerPage } = this.state;
+        const businesses = await ApiServices.Get(`/user/getUsersByType?type=3&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         if (businesses !== null) {
             this.setState({
-                businesses,
+                businesses: businesses.listData,
+                pageNumber: businesses.pageNumber,
                 loading: false
             });
         }
     }
 
+    handlePageNumber = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/user/getUsersByType?type=3&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
+    handlePagePrevious = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/user/getUsersByType?type=3&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
+    handlePageNext = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/user/getUsersByType?type=3&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
+    handleInput = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value
+        })
+
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/user/getUsersByType?type=3&currentPage=0&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage: 0,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
     render() {
-        const { businesses, loading } = this.state;
+        const { businesses, loading, pageNumber, currentPage, rowsPerPage } = this.state;
 
         return (
             loading.toString() === 'true' ? (
@@ -134,9 +200,15 @@ class User_Business extends Component {
                                             </tbody>
                                         </Table>
                                         <ToastContainer />
-                                        {/* <Pagination>
-                                        <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                    </Pagination> */}
+                                        <Pagination style={{ marginTop: "3%" }}>
+                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                            <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                            <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "7%" }}>
+                                                <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                <option value={20}>20</option>
+                                                <option value={50}>50</option>
+                                            </Input>
+                                        </Pagination>
                                     </CardBody>
                                 </Card>
                             </Col>

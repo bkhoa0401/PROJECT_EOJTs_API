@@ -43,6 +43,23 @@ class Excels extends Component {
         this.toggleLarge = this.toggleLarge.bind(this);
     }
 
+    async componentDidMount() {
+        const dateButtonStudent = localStorage.getItem("dateButtonStudent");
+        const dateButtonBusiness = localStorage.getItem("dateButtonBusiness");
+
+        if (dateButtonStudent.toString() === "true") {
+            document.getElementById("submitStudents").setAttribute("disabled", "disabled");
+        } else {
+            document.getElementById("submitStudents").removeAttribute("disabled", "disabled");
+        }
+
+        if (dateButtonBusiness.toString() === "true") {
+            document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
+        } else {
+            document.getElementById("submitStudents").removeAttribute("disabled", "disabled");
+        }
+    }
+
     toggleLarge = (business) => {
         this.setState({
             large: !this.state.large,
@@ -300,7 +317,6 @@ class Excels extends Component {
                 loading: true
             })
             if (buttonName === 'Students') {
-
                 rows_Students && rows_Students.map((student, index) => {
                     var tmp = student[4];
                     let gender;
@@ -328,32 +344,38 @@ class Excels extends Component {
 
                 console.log("LIST STUDENTS", listStudents);
 
-                const resultStudents = await ApiServices.Post('/student', listStudents);
-                if (resultStudents.status === 201) {
+                // const resultStudents = await ApiServices.Post('/student', listStudents);
+                const resultStudents = 201;
+                if (resultStudents === 201) {
                     this.setState({
                         loading: false
                     })
-                    Toastify.actionSuccess("Thêm tệp thành công!");
+                    // Toastify.actionSuccess("Thêm tệp thành công!");
 
-                    var currentTime = new Date();
+                    // var currentTime = new Date();
 
-                    var month = ("0" + (currentTime.getMonth() + 1)).slice(-2);
-                    var date = month + '-' + currentTime.getDate() + '-' + currentTime.getFullYear();
-                    var time = currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds();
+                    // var month = ("0" + (currentTime.getMonth() + 1)).slice(-2);
+                    // var date = month + '-' + currentTime.getDate() + '-' + currentTime.getFullYear();
+                    // var time = currentTime.getHours() + ':' + currentTime.getMinutes() + ':' + currentTime.getSeconds();
 
-                    var database = firebase.database();
-                    var ref = database.ref('Users');
+                    // var database = firebase.database();
+                    // var ref = database.ref('Users');
 
-                    for (let i = 0; i < listStudents.length; i++) {
-                        var usersRef = ref.child(`${listStudents[i].code}`);
-                        usersRef.set({
-                            userState: {
-                                date: date,
-                                time: time,
-                                type: 'offline'
-                            }
-                        });
-                    }
+                    // for (let i = 0; i < listStudents.length; i++) {
+                    //     var usersRef = ref.child(`${listStudents[i].code}`);
+                    //     usersRef.set({
+                    //         userState: {
+                    //             date: date,
+                    //             time: time,
+                    //             type: 'offline'
+                    //         }
+                    //     });
+                    // }
+
+                    // var dateButton = new Date();
+                    // alert(dateButton);
+                    localStorage.setItem('dateButtonStudent', true);
+                    document.getElementById("submitStudents").setAttribute("disabled", "disabled");
                 } else {
                     this.setState({
                         loading: false
@@ -460,25 +482,28 @@ class Excels extends Component {
                     }
                     // this.handleConfirm(listIndexNotFound);
                 } else {
-                    alert("ahihi");
-                    // this.setState({
-                    //     loading: true
-                    // })
-                    // console.log("LIST BUSINESSES", listBusinesses);
+                    this.setState({
+                        loading: true
+                    })
+                    console.log("LIST BUSINESSES", listBusinesses);
 
                     // const result = await ApiServices.Post('/business', listBusinesses);
-                    // if (result.status === 201) {
-                    //     this.setState({
-                    //         loading: false
-                    //     })
-                    //     Toastify.actionSuccess("Thêm tệp thành công!");
+                    const result = 201;
+                    if (result === 201) {
+                        this.setState({
+                            loading: false
+                        })
+                        // Toastify.actionSuccess("Thêm tệp thành công!");
 
-                    // } else {
-                    //     this.setState({
-                    //         loading: false
-                    //     })
-                    //     Toastify.actionFail("Thêm tệp thất bại!");
-                    // }
+                        localStorage.setItem('dateButtonBusiness', true);
+                        document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
+
+                    } else {
+                        this.setState({
+                            loading: false
+                        })
+                        Toastify.actionFail("Thêm tệp thất bại!");
+                    }
                 }
 
                 // setTimeout(
