@@ -1205,7 +1205,7 @@ class student_list extends Component {
                                             <h6>{business.business_eng_name}</h6>
                                         </Col>
                                         <Col xs="12" md="2">
-                                            <Button color="primary">Chọn</Button>
+                                            <Button color="primary" onClick={() => this.handleConfirm(studentSelect, business.email, business.business_eng_name)}>Chọn</Button>
                                         </Col>
                                     </FormGroup>
                                 )}
