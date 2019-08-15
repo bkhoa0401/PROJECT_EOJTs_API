@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.dto.PagingDTO;
 import com.example.demo.dto.StudentAnswerDTO;
+import com.example.demo.dto.Student_EvaluationDTO;
+import com.example.demo.dto.Student_OjtenrollmentDTO;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IStudentRepository;
 import com.example.demo.repository.ISupervisorRepository;
@@ -10,14 +12,18 @@ import com.example.demo.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.rmi.CORBA.Util;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -63,6 +69,9 @@ public class StudentService implements IStudentService {
 
     @Autowired
     IEventService iEventService;
+
+    @Autowired
+    IEvaluationService iEvaluationService;
 
     @Autowired
     private RedisTemplate<Object, Object> template;
@@ -548,4 +557,68 @@ public class StudentService implements IStudentService {
         Utils<Student> studentUtils = new Utils<>();
         return studentUtils.paging(studentList, currentPage, rowsPerPage);
     }
+
+    @Override
+    public PagingDTO getStudentsWithNoCompany(int currentPage, int rowsPerPage) {
+        Semester semester = semesterService.getSemesterCurrent();
+        List<Student> studentList = getAllStudentsBySemesterId();
+
+        List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOList = new ArrayList<>();
+        List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOWithNoCompanyList = new ArrayList<>();
+
+        for (int i = 0; i < studentList.size(); i++) {
+            Student_OjtenrollmentDTO student_ojtenrollmentDTO = new Student_OjtenrollmentDTO();
+            student_ojtenrollmentDTO.setStudent(studentList.get(i));
+            Ojt_Enrollment ojt_enrollment =
+                    ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(studentList.get(i).getEmail(), semester.getId());
+            if (ojt_enrollment.getBusiness() != null) {
+                student_ojtenrollmentDTO.setBusinessEnroll(ojt_enrollment.getBusiness().getBusiness_eng_name());
+            } else {
+                if (studentList.get(i).isInterviewed1() == true && studentList.get(i).isInterviewed2() == true) {
+                    if (studentList.get(i).isAcceptedOption1() == false && studentList.get(i).isAcceptedOption2() == false) {
+                        student_ojtenrollmentDTO.setBusinessEnroll("Rớt");
+                    }
+                }
+            }
+            student_ojtenrollmentDTOList.add(student_ojtenrollmentDTO);
+        }
+        for (int i = 0; i < student_ojtenrollmentDTOList.size(); i++) {
+            if (student_ojtenrollmentDTOList.get(i).getBusinessEnroll() == null || student_ojtenrollmentDTOList.get(i).getBusinessEnroll().equals("Rớt")) {
+                student_ojtenrollmentDTOWithNoCompanyList.add(student_ojtenrollmentDTOList.get(i));
+            }
+        }
+        Utils<Student_OjtenrollmentDTO> utils = new Utils<>();
+
+        return utils.paging(student_ojtenrollmentDTOWithNoCompanyList, currentPage, rowsPerPage);
+    }
+
+    @Override
+    public PagingDTO getEvaluationsOfStudents(int currentPage, int rowsPerPage) {
+        List<Student> studentList = getAllStudentsBySemesterId();
+
+        List<Student_EvaluationDTO> student_evaluationDTOS = new ArrayList<>();
+
+        for (int i = 0; i < studentList.size(); i++) {
+            List<Evaluation> evaluationList = iEvaluationService.getEvaluationsByStudentEmail(studentList.get(i).getEmail());
+            Collections.sort(evaluationList);
+            if (evaluationList.size() < 4) {
+                for (int j = evaluationList.size(); j < 4; j++) {
+                    evaluationList.add(null);
+                }
+            }
+            evaluationList = iEvaluationService.checkSemesterOfListEvaluation(evaluationList);
+            Student_EvaluationDTO student_evaluationDTO = new Student_EvaluationDTO();
+            student_evaluationDTO.setEvaluationList(evaluationList);
+            student_evaluationDTO.setStudent(studentList.get(i));
+
+            student_evaluationDTOS.add(student_evaluationDTO);
+        }
+
+        if (student_evaluationDTOS != null) {
+            Utils<Student_EvaluationDTO> utils = new Utils<>();
+            return utils.paging(student_evaluationDTOS, currentPage, rowsPerPage);
+        }
+        return null;
+    }
 }
+

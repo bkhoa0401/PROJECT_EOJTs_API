@@ -1,12 +1,13 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.EventDTO;
-import com.example.demo.entity.Event;
-import com.example.demo.entity.Semester;
-import com.example.demo.entity.Student;
-import com.example.demo.entity.Student_Event;
+import com.example.demo.dto.PagingDTO;
+import com.example.demo.entity.*;
 import com.example.demo.repository.IEventRepository;
+import com.example.demo.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -24,6 +25,12 @@ public class EventService implements IEventService {
 
     @Autowired
     ISemesterService iSemesterService;
+
+    @Autowired
+    IUsersService iUsersService;
+
+    @Autowired
+    private RedisTemplate<Object, Object> template;
 
     @Override
     public List<Event> getEventList(String email) {
@@ -94,7 +101,7 @@ public class EventService implements IEventService {
                 finalListEvent.add(eventList.get(i));
             }
         }
-        return  finalListEvent;
+        return finalListEvent;
     }
 
     @Override
@@ -105,7 +112,7 @@ public class EventService implements IEventService {
                 finalListEvent.add(eventList.get(i));
             }
         }
-        return  finalListEvent;
+        return finalListEvent;
     }
 
     @Override
@@ -192,4 +199,25 @@ public class EventService implements IEventService {
         }
         return eventDTOList;
     }
+
+    @Override
+    public PagingDTO pagingEvent(String email, int currentPage, int rowsPerPage) {
+        Users users = iUsersService.findUserByEmail(email);
+        List<Role> roleList = users.getRoles();
+        Utils<Event> eventUtils = new Utils<>();
+
+        List<Event> eventListResult;
+        for (int i = 0; i < roleList.size(); i++) {
+            Role role = roleList.get(i);
+            if (role.getDescription().equals("ROLE_ADMIN")) {
+                eventListResult = getEventListOfAdmin(email);
+                return eventUtils.paging(eventListResult, currentPage, rowsPerPage);
+            } else if (role.getDescription().equals("ROLE_HR")) {
+                eventListResult = getEventListOfBusiness(email);
+                return eventUtils.paging(eventListResult, currentPage, rowsPerPage);
+            }
+        }
+        return null;
+    }
 }
+
