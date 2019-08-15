@@ -294,6 +294,18 @@ public class SupervisorController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/studentsEvaluations")
+    @ResponseBody
+    public ResponseEntity<PagingDTO> getEvaluationsOfStudents(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
+        String email = getEmailFromToken();
+        PagingDTO pagingDTO = supervisorService.getEvaluationListOfSupervisor(email, currentPage, rowsPerPage);
+        if (pagingDTO != null) {
+            return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     //get email from token
     private String getEmailFromToken() {
         String email = "";

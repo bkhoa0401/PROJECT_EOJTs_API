@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.Business_JobPostDTO;
 import com.example.demo.dto.PagingDTO;
+import com.example.demo.dto.Student_EvaluationDTO;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IBusinessRepository;
 import com.example.demo.repository.IEvaluationRepository;
@@ -37,6 +38,10 @@ public class BusinessService implements IBusinessService {
 
     @Autowired
     ISupervisorService iSupervisorService;
+
+
+    @Autowired
+    IEvaluationService iEvaluationService;
 
     @Autowired
     private RedisTemplate<Object, Object> template;
@@ -297,6 +302,34 @@ public class BusinessService implements IBusinessService {
                 }
             }
             return evaluationListResult;
+        }
+        return null;
+    }
+
+    @Override
+    public PagingDTO getEvaluationListOfBusiness(String email, int currentPage, int rowsPerPage) {
+        List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(email);
+        List<Student_EvaluationDTO> student_evaluationDTOS = new ArrayList<>();
+
+        for (int i = 0; i < studentList.size(); i++) {
+            List<Evaluation> evaluationList = iEvaluationService.getEvaluationsByStudentEmail(studentList.get(i).getEmail());
+            Collections.sort(evaluationList);
+            if (evaluationList.size() < 4) {
+                for (int j = evaluationList.size(); j < 4; j++) {
+                    evaluationList.add(null);
+                }
+            }
+            evaluationList = iEvaluationService.checkSemesterOfListEvaluation(evaluationList);
+            Student_EvaluationDTO student_evaluationDTO = new Student_EvaluationDTO();
+            student_evaluationDTO.setEvaluationList(evaluationList);
+            student_evaluationDTO.setStudent(studentList.get(i));
+
+            student_evaluationDTOS.add(student_evaluationDTO);
+        }
+
+        if (student_evaluationDTOS != null) {
+            Utils<Student_EvaluationDTO> utils = new Utils<>();
+            return utils.paging(student_evaluationDTOS, currentPage, rowsPerPage);
         }
         return null;
     }

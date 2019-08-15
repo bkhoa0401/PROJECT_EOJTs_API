@@ -18,4 +18,6 @@ public interface ISupervisorService {
 
     boolean updateSupervisor(Supervisor supervisor);
 
+    PagingDTO getEvaluationListOfSupervisor(String email, int currentPage, int rowsPerPage);
+
 }

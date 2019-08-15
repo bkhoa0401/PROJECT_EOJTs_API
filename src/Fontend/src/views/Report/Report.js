@@ -42,11 +42,23 @@ class Report extends Component {
             role = decoded.role;
         }
         if (role === 'ROLE_SUPERVISOR') {
-            students = await ApiServices.Get('/supervisor/students');
-            overviewReports = await ApiServices.Get('/supervisor/evaluations');
+            // thoi de con tu viet luon, lam theo kieu cha la tra ve list data : student + evaluation list ma cai nay api cu~ ==', thoi may di ngu me di, de anh=='
+            listStudentAndReport = await ApiServices.Get(`/supervisor/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+            for (let index = 0; index < listStudentAndReport.listData.length; index++) {
+                students.push(listStudentAndReport.listData[index].student);
+                for (let index1 = 0; index1 < listStudentAndReport.listData[index].evaluationList.length; index1++) {
+                    overviewReports.push(listStudentAndReport.listData[index].evaluationList[index1]);
+                }
+            }
         } else if (role === 'ROLE_HR') {
-            students = await ApiServices.Get('/business/getStudentsByBusiness');
-            overviewReports = await ApiServices.Get('/business/evaluations');
+            listStudentAndReport = await ApiServices.Get(`/business/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+            console.log(listStudentAndReport);
+            for (let index = 0; index < listStudentAndReport.listData.length; index++) {
+                students.push(listStudentAndReport.listData[index].student);
+                for (let index1 = 0; index1 < listStudentAndReport.listData[index].evaluationList.length; index1++) {
+                    overviewReports.push(listStudentAndReport.listData[index].evaluationList[index1]);
+                }
+            }
         } else if (role === 'ROLE_ADMIN') {
             listStudentAndReport = await ApiServices.Get(`/student/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
             console.log(listStudentAndReport);

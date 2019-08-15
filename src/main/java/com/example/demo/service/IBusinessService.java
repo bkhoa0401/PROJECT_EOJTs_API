@@ -34,4 +34,6 @@ public interface IBusinessService {
     List<Evaluation> getEvaluationsOfSupervisor(String email);
 
     PagingDTO pagingBusiness(int currentPage, int rowsPerPage);
+
+    PagingDTO getEvaluationListOfBusiness(String email, int currentPage, int rowsPerPage);
 }
