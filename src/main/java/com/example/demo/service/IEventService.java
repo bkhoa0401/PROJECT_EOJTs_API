@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.EventDTO;
+import com.example.demo.dto.PagingDTO;
 import com.example.demo.entity.Event;
 
 import java.util.List;
@@ -34,4 +35,6 @@ public interface IEventService {
     boolean updateEvent(Event event);
 
     boolean updateStatusIsRead(int id);
+
+    PagingDTO pagingEvent(String email,int currentPage, int rowsPerPage);
 }

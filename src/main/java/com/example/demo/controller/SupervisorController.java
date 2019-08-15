@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.PagingDTO;
 import com.example.demo.dto.SupervisorDTO;
 import com.example.demo.dto.TaskDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
+import com.example.demo.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -89,7 +91,8 @@ public class SupervisorController {
 
     @GetMapping("/tasks")
     @ResponseBody
-    public ResponseEntity<List<TaskDTO>> findTasksBySupervisorEmail() {
+    public ResponseEntity<PagingDTO> findTasksBySupervisorEmail(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
         String email = getEmailFromToken();
         List<Task> taskList = taskService.findTaskBySupervisorEmail(email);
 
@@ -102,7 +105,10 @@ public class SupervisorController {
             taskDTOList.add(taskDTO);
         }
         if (taskDTOList != null) {
-            return new ResponseEntity<List<TaskDTO>>(taskDTOList, HttpStatus.OK);
+            Utils<TaskDTO> supervisorUtils = new Utils<>();
+            PagingDTO pagingDTO = supervisorUtils.paging(taskDTOList, currentPage, rowsPerPage);
+
+            return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -193,13 +199,19 @@ public class SupervisorController {
     //check semester //ok
     @GetMapping("/students")
     @ResponseBody
-    public ResponseEntity<List<Student>> getAllStudentBySupervisorEmail() {
+    public ResponseEntity<PagingDTO> getAllStudentBySupervisorEmail(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
         String email = getEmailFromToken();
 
         List<Student> studentList = studentService.getAllStudentOfASupervisor(email);
+
         if (studentList != null) {
-            return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
+            Utils<Student> supervisorUtils = new Utils<>();
+            PagingDTO pagingDTO = supervisorUtils.paging(studentList, currentPage, rowsPerPage);
+
+            return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
         }
+
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
