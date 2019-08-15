@@ -23,6 +23,7 @@ class Hr_Task_Create extends Component {
             status: 'NOTSTART',
             students: [],
             studentItem: {},
+            validPassed: '',
         }
     }
 
@@ -40,6 +41,20 @@ class Hr_Task_Create extends Component {
     handleInput = async (event) => {
         const { name, value } = event.target;
         const { students } = this.state;
+        if (name.includes('time_end')) {
+            let validPassed = '';
+            let date = new Date();
+            let endDate = new Date();
+            var formatEndDate = value.split("-");
+            endDate.setFullYear(formatEndDate[0], formatEndDate[1] - 1, formatEndDate[2]);
+            if (!(endDate > date  || date.toString() === endDate.toString())) {
+                validPassed = "Không thể chọn ngày quá khứ";
+            }
+            await this.setState({
+                validPassed: validPassed,
+                [name]: value
+            })
+        }
         if (name.includes('student')) {
             await this.setState({
                 studentItem: students[value]
@@ -48,8 +63,7 @@ class Hr_Task_Create extends Component {
             await this.setState({
                 level_task: value
             })
-        }
-        else {
+        } else {
             await this.setState({
                 [name]: value
             })
@@ -95,22 +109,24 @@ class Hr_Task_Create extends Component {
         }
 
         if (this.validator.allValid()) {
-            this.setState({
-                loading: true
-            })
-            const result = await ApiServices.Post(`/supervisor?emailStudent=${emailStudent}`, task);
-            if (result.status === 201) {
-                Toastify.actionSuccess("Tạo nhiệm vụ mới thành công!");
+            if (this.state.validPassed === "") {
                 this.setState({
-                    loading: false
+                    loading: true
                 })
-                const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
-            } else {
-                Toastify.actionFail("Tạo nhiệm vụ mới thất bại!");
-                this.setState({
-                    loading: false
-                })
-            }
+                const result = await ApiServices.Post(`/supervisor?emailStudent=${emailStudent}`, task);
+                if (result.status === 201) {
+                    Toastify.actionSuccess("Tạo nhiệm vụ mới thành công!");
+                    this.setState({
+                        loading: false
+                    })
+                    const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
+                } else {
+                    Toastify.actionFail("Tạo nhiệm vụ mới thất bại!");
+                    this.setState({
+                        loading: false
+                    })
+                }
+            } 
         } else {
             this.validator.showMessages();
             this.forceUpdate();
@@ -119,7 +135,7 @@ class Hr_Task_Create extends Component {
 
 
     render() {
-        const { title, description, time_end, level_task, priority, students, studentItem, loading } = this.state;
+        const { validPassed, title, description, time_end, level_task, priority, students, studentItem, loading } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -185,6 +201,9 @@ class Hr_Task_Create extends Component {
                                                     <Input value={time_end} onChange={this.handleInput} type="date" id="time_end" name="time_end" placeholder="Thời hạn hoàn thành" />
                                                     <span className="form-error is-visible text-danger">
                                                         {this.validator.message('Thời hạn hoàn thành', time_end, 'required')}
+                                                    </span>
+                                                    <span className="form-error is-visible text-danger">
+                                                        {validPassed}
                                                     </span>
                                                 </Col>
                                             </FormGroup>
