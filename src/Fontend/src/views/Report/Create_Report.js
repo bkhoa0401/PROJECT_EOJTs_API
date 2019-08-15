@@ -1,7 +1,7 @@
 import decode from 'jwt-decode';
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Pagination, Row } from 'reactstrap';
+import { FormText, Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Pagination, Row } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import SimpleReactValidator from '../../validator/simple-react-validator';
@@ -42,7 +42,7 @@ class Create_Report extends Component {
             validatorNumRange_score_discipline: '',
             maxWorkDays: 0,
             validatorMaxWorkDays: '',
-            listStudentTask,
+            listStudentTask: null,
             numTaskEasy: 0,
             numTaskNormal: 0,
             numTaskDificult: 0, 
@@ -55,7 +55,7 @@ class Create_Report extends Component {
         let actor = null;
         let businessName = '';
         let listStudentTask = null;
-        let validatorNumRange_score_work = "";
+        let score_work = "";
         let numTaskEasy = 0;
         let numTaskNormal = 0;
         let numTaskDificult = 0; 
@@ -174,7 +174,7 @@ class Create_Report extends Component {
         //suggest score work
         let numApproved = 0;
         let numRealTask = 0;
-        listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+        listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${needParam[1]}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
         for (let index = 0; index < listStudentTask.length; index++) {
             if (listStudentTask[index].level_task === "EASY") {
                 numRealTask = numRealTask + 1;
@@ -196,7 +196,7 @@ class Create_Report extends Component {
                 }
             }
         }
-        validatorNumRange_score_work = "" + parseFloat(10 - ((10/numRealTask)*(numRealTask-numApproved))).toFixed(3);
+        score_work = "" + parseFloat(10 - ((10/numRealTask)*(numRealTask-numApproved))).toFixed(3);
         this.setState({
             loading: false,
             title: title,
@@ -211,7 +211,10 @@ class Create_Report extends Component {
             titleHeader: titleHeader,
             titleReport: titleReport,
             listStudentTask : listStudentTask,
-            validatorNumRange_score_work: validatorNumRange_score_work,
+            score_work: score_work,
+            numTaskEasy: numTaskEasy,
+            numTaskNormal: numTaskNormal,
+            numTaskDificult: numTaskDificult,
         });
     }
 
@@ -472,8 +475,8 @@ class Create_Report extends Component {
                                                 <h6 style={{ fontWeight: "bold" }}>Điểm hiệu quả công việc:</h6>
                                             </Col>
                                             <Col xs="12" md="10">
-                                                <FormText className="help-block">Tổng số nhiệm vụ: {listStudentTask.length}, Số nhiệm vụ hoàn thành: Dễ({numTaskEasy}), Trung bình({numTaskNormal}), Khó({numTaskDificult})</FormText>
                                                 <Input value={score_work} type='number' style={{ width: '70px' }} onChange={this.handleInputScore} id="score_work" name="score_work" min="0" max="10"></Input>
+                                                <FormText className="help-block">Tổng số nhiệm vụ: {listStudentTask.length}, Số nhiệm vụ hoàn thành: Dễ({numTaskEasy}), Trung bình({numTaskNormal}), Khó({numTaskDificult})</FormText>
                                                 <span className="form-error is-visible text-danger">
                                                     {this.validator.message('Điểm hiệu quả công việc', score_work, 'required|numeric')}
                                                 </span>
