@@ -69,8 +69,12 @@ class student_list extends Component {
             pageNumber: 1,
             currentPage: 0,
             rowsPerPage: 10,
-            currentPageTab2: 0,
-            rowsPerPageTab2: 10
+            pageNumberSuggest: 1,
+            currentPageSuggest: 0,
+            rowsPerPageSuggest: 10,
+            pageNumberCbAll: 1,
+            currentPageCbAll: 0,
+            rowsPerPageCbAll: 10
         };
         // this.toggleModal = this.toggleModal.bind(this);
     }
@@ -106,40 +110,41 @@ class student_list extends Component {
         if (tab == 1) {
             const { currentPage, rowsPerPage } = this.state;
             students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
-            // if (students !== null) {
-            //     this.setState({
-            //         students: students.listData,
-            //         pageNumber: students.pageNumber,
-            //         loading: false,
-            //         nameSortOrder: 0,
-            //         codeSortOrder: 0,
-            //     });
-            // }
+            if (students !== null) {
+                this.setState({
+                    students: students.listData,
+                    pageNumber: students.pageNumber,
+                    loading: false,
+                    nameSortOrder: 0,
+                    codeSortOrder: 0,
+                });
+            }
             // students = await ApiServices.Get('/student/getAllStudent');
         } else if (tab == 2) {
-            const { currentPageTab2, rowsPerPageTab2 } = this.state;
-            students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=${currentPageTab2}&rowsPerPage=${rowsPerPageTab2}`);
-            // if (students !== null) {
-            //     this.setState({
-            //         students: students.listData,
-            //         pageNumber: students.pageNumber,
-            //         loading: false,
-            //         nameSortOrder: 0,
-            //         codeSortOrder: 0,
-            //     });
-            // }
+            const { currentPageSuggest, rowsPerPageSuggest } = this.state;
+            students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
+            if (students !== null) {
+                this.setState({
+                    students: students.listData,
+                    pageNumberSuggest: students.pageNumber,
+                    loading: false,
+                    nameSortOrder: 0,
+                    codeSortOrder: 0,
+                });
+            }
             // students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
             typeSelected = 1;
         }
-        this.setState({
-            activeTab: newArray,
-            students: students,
-            typeSelected: typeSelected,
-        });
+        if (students != null) {
+            this.setState({
+                activeTab: newArray,
+                // students: students,
+                typeSelected: typeSelected,
+            });
+        }
         // console.log(tabPane);
         // console.log(tab);
         // console.log(this.state.activeTab);
-        console.log(students);
     }
 
     toggleModal = async (studentSelect) => {
@@ -365,12 +370,14 @@ class student_list extends Component {
                     // console.log(timeEndShow);
                     var date1 = new Date();
                     var date2 = new Date();
-                    // var tmpdate = new Date();
+                    var tmpdate = "";
                     date1.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0]));
                     // tmpdate.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0] - 1))
                     // console.log(formatTimeStartShow[1]);
+                    tmpdate = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                    tmpdate1 = parseInt(formatTimeStartShow[2]) + "-" + parseInt(formatTimeStartShow[1]) + "-" + parseInt(formatTimeStartShow[0]);
                     date2.setFullYear(parseInt(formatTimeEndShow[2]), parseInt(formatTimeEndShow[1] - 1), parseInt(formatTimeEndShow[0]));
-                    if (!(date1 > date) && date < date2) {
+                    if ((date > date1 || tmpdate === tmpdate1) && date < date2) {
                         isThisMonth = index - 1;
                     }
                     // console.log(date);
@@ -582,14 +589,39 @@ class student_list extends Component {
         // console.log(value);
         if (value == 0) {
             typeSelected = 0;
-            students = await ApiServices.Get('/student/getAllStudent');
+            // students = await ApiServices.Get('/student/getAllStudent');
+            const { rowsPerPageCbAll, currentPageCbAll } = this.state;
+            const students = await ApiServices.Get(`/student/getAllStudent?currentPage=0&rowsPerPage=${rowsPerPageCbAll}`);
+            if (students !== null) {
+                this.setState({
+                    students: students.listData,
+                    pageNumberCbAll: students.pageNumber,
+                    currentPageCbAll: 0,
+                    loading: false,
+                    nameSortOrder: 0,
+                    codeSortOrder: 0,
+                });
+            }
+
         } else if (value == 1) {
             typeSelected = 1;
-            students = await ApiServices.Get('/student/getStudentsWithNoCompany');
+            const { rowsPerPageSuggest } = this.state;
+            const students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=0&rowsPerPage=${rowsPerPageSuggest}`);
+            if (students !== null) {
+                this.setState({
+                    students: students.listData,
+                    pageNumberSuggest: students.pageNumber,
+                    loading: false,
+                    nameSortOrder: 0,
+                    codeSortOrder: 0,
+                    currentPageSuggest: 0
+                });
+            }
+            // students = await ApiServices.Get('/student/getStudentsWithNoCompany');
         }
         await this.setState({
             typeSelected: typeSelected,
-            students: students,
+            // students: students,
         })
         // console.log(this.state.typeSelected);
         // console.log(this.state.students);
@@ -644,16 +676,95 @@ class student_list extends Component {
         if (result.status === 200) {
             Toastify.actionSuccess(`Đăng ký thành công!`);
             const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
-            const students = await ApiServices.Get('/student/getAllStudent');
-            this.setState({
-                students: students,
-                loading: false
-            })
+
+            const { currentPageSuggest, rowsPerPageSuggest } = this.state;
+            const students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
+            if (students !== null) {
+                this.setState({
+                    students: students.listData,
+                    pageNumberSuggest: students.pageNumber,
+                    loading: false,
+                    nameSortOrder: 0,
+                    codeSortOrder: 0,
+                    typeSelected: 1
+                });
+            }
+            // const students = await ApiServices.Get('/student/getAllStudent');
+            // this.setState({
+            //     students: students,
+            //     loading: false
+            // })
+
         } else {
             Toastify.actionFail(`Đăng ký thất bại!`);
             this.setState({
                 loading: false
             })
+        }
+    }
+
+    handlePageNumberCbAll = async (currentPageCbAll) => {
+        const { rowsPerPageCbAll } = this.state;
+        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPageCbAll}&rowsPerPage=${rowsPerPageCbAll}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumberCbAll: students.pageNumber,
+                currentPageCbAll,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+            });
+        }
+    }
+
+    handlePagePreviousCbAll = async (currentPageCbAll) => {
+        const { rowsPerPageCbAll } = this.state;
+        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPageCbAll}&rowsPerPage=${rowsPerPageCbAll}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumberCbAll: students.pageNumber,
+                currentPageCbAll,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+            });
+        }
+    }
+
+    handlePageNextCbAll = async (currentPageCbAll) => {
+        const { rowsPerPageCbAll } = this.state;
+        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPageCbAll}&rowsPerPage=${rowsPerPageCbAll}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumberCbAll: students.pageNumber,
+                currentPageCbAll,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+            });
+        }
+    }
+
+    handleInputPagingCbAll = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value
+        })
+
+        const { rowsPerPageCbAll } = this.state;
+        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=0&rowsPerPage=${rowsPerPageCbAll}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumberCbAll: students.pageNumber,
+                loading: false,
+                currentPageCbAll: 0,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+            });
         }
     }
 
@@ -722,15 +833,81 @@ class student_list extends Component {
         }
     }
 
+    handlePageNumberSuggest = async (currentPageSuggest) => {
+        const { rowsPerPageSuggest } = this.state;
+        const students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+                currentPageSuggest
+            });
+        }
+    }
+
+    handlePagePreviousSuggest = async (currentPageSuggest) => {
+        const { rowsPerPageSuggest } = this.state;
+        const students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+                currentPageSuggest
+            });
+        }
+    }
+
+    handlePageNextSuggest = async (currentPageSuggest) => {
+        const { rowsPerPageSuggest } = this.state;
+        const students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+                currentPageSuggest
+            });
+        }
+    }
+
+    handleInputPagingSuggest = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value
+        })
+
+        const { rowsPerPageSuggest } = this.state;
+        const students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=0&rowsPerPage=${rowsPerPageSuggest}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+                currentPageSuggest: 0
+            });
+        }
+    }
+
     tabPane() {
         const { studentFeedBack, listFeedBack, codeSortOrder, nameSortOrder, student, businessSurvey, months, isThisMonth, isViewSurvey, survey, students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail, typesOfStudent } = this.state;
-        const { pageNumber, currentPage, rowsPerPage } = this.state;
+        const { pageNumber, currentPage, rowsPerPage, pageNumberSuggest, currentPageSuggest, rowsPerPageSuggest, pageNumberCbAll, currentPageCbAll, rowsPerPageCbAll } = this.state;
 
         const { name, code, email, phone, address, specialized, objective, gpa, skills, resumeLink, transcriptLink, role, isUploadTranscriptLink } = this.state;
         const linkDownCV = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
         let filteredListStudents;
 
         if (students !== null) {
+            console.log(students);
             filteredListStudents = students.filter(
                 (student) => {
                     if (student.student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
@@ -780,14 +957,15 @@ class student_list extends Component {
                                                 </th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Email</th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                                                    <Dropdown isOpen={this.state.dropdownOpen} toggle={() => this.toggleDropdown()}>
+                                                    Chuyên ngành
+                                                    {/* <Dropdown isOpen={this.state.dropdownOpen} toggle={() => this.toggleDropdown()}>
                                                         <DropdownToggle nav caret style={{ color: "black" }}>
                                                             Chuyên ngành
                                                         </DropdownToggle>
                                                         <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
                                                             <DropdownItem>IS</DropdownItem>
                                                         </DropdownMenu>
-                                                    </Dropdown>
+                                                    </Dropdown> */}
                                                 </th>
                                                 <th style={{ textAlign: "left" }}></th>
                                                 {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Bảng điểm</th> */}
@@ -837,7 +1015,7 @@ class student_list extends Component {
                                         <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
                                         <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
                                         <Input onChange={this.handleInputPagingAll} type="select" name="rowsPerPage" style={{ width: "7%" }}>
-                                            <option value={10} selected={rowsPerPage === 10}>10</option>
+                                            <option value={10} selected={rowsPerPageSuggest === 10}>10</option>
                                             <option value={20}>20</option>
                                             <option value={50}>50</option>
                                         </Input>
@@ -1293,6 +1471,30 @@ class student_list extends Component {
                                             }
                                         </tbody>
                                     </Table>
+                                    {
+                                        (this.state.typeSelected) === 0 ? (
+                                            <Pagination style={{ marginTop: "3%" }}>
+                                                <PaginationComponent pageNumber={pageNumberCbAll} handlePageNumber={this.handlePageNumberCbAll} handlePageNext={this.handlePageNextCbAll} handlePagePrevious={this.handlePagePreviousCbAll} currentPage={currentPageCbAll} />
+                                                <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                                <Input onChange={this.handleInputPagingCbAll} type="select" name="rowsPerPageCbAll" style={{ width: "7%" }}>
+                                                    <option value={10} selected={rowsPerPageCbAll === 10}>10</option>
+                                                    <option value={20}>20</option>
+                                                    <option value={50}>50</option>
+                                                </Input>
+                                            </Pagination>
+                                        ) : (
+                                                <Pagination style={{ marginTop: "3%" }}>
+                                                    <PaginationComponent pageNumber={pageNumberSuggest} handlePageNumber={this.handlePageNumberSuggest} handlePageNext={this.handlePageNextSuggest} handlePagePrevious={this.handlePagePreviousSuggest} currentPage={currentPageSuggest} />
+                                                    <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                                    <Input onChange={this.handleInputPagingSuggest} type="select" name="rowsPerPageSuggest" style={{ width: "7%" }}>
+                                                        <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                        <option value={20}>20</option>
+                                                        <option value={50}>50</option>
+                                                    </Input>
+                                                </Pagination>
+                                            )
+                                    }
+
                                 </div>
                             }
                         </TabPane>
