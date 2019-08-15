@@ -194,7 +194,7 @@ class Invitation extends Component {
                                                                     }
                                                                 </td>
                                                                 <td>
-                                                                    <Button color="primary" onClick={() => this.toggleModalDetail(student.student)}><i className="fa fa-info"></i></Button>
+                                                                    <Button color="primary" onClick={() => this.toggleModalDetail(student.student)}><i className="fa fa-eye"></i></Button>
                                                                 </td>
                                                             </tr>
                                                         )

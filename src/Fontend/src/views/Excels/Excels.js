@@ -878,7 +878,7 @@ class Excels extends Component {
                                                                                 <td  id={"b-" + index + "-14"} onKeyUp={this.rowBusinessEdited}>{business[14]}</td>
                                                                                 <td  id={"b-" + index + "-15"} onKeyUp={this.rowBusinessEdited}>{business[15]}</td> */}
                                                                             <td style={{ textAlign: "center" }}>
-                                                                                <Button style={{ width: "100px" }} color="primary" onClick={() => this.toggleLarge(business)} className="mr-1"><i className="fa fa-info"></i></Button>
+                                                                                <Button style={{ width: "100px" }} color="primary" onClick={() => this.toggleLarge(business)} className="mr-1"><i className="fa fa-eye"></i></Button>
                                                                                 {
                                                                                     this.showModal()
                                                                                 }
