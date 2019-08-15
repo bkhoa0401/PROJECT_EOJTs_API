@@ -79,6 +79,7 @@ public class QuestionService implements IQuestionService {
         if (question != null) {
             question.setActive(status);
             iQuestionRepository.save(question);
+
         }
     }
 

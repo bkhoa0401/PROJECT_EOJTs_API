@@ -69,6 +69,16 @@ public class HistoryAction implements Serializable {
         this.details = details;
     }
 
+    public HistoryAction(String email, String role, ActionEnum function_type, String controller, String function_name, String targetEmail, Date actionTime) {
+        this.email = email;
+        this.role = role;
+        this.function_type = function_type;
+        this.controller = controller;
+        this.function_name = function_name;
+        this.targetEmail = targetEmail;
+        this.actionTime = actionTime;
+    }
+
     public HistoryAction() {
     }
 

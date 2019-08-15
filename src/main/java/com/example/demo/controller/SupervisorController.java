@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.ActionEnum;
 import com.example.demo.dto.PagingDTO;
 import com.example.demo.dto.SupervisorDTO;
 import com.example.demo.dto.TaskDTO;
@@ -23,6 +24,7 @@ import java.sql.Date;
 @RestController
 @RequestMapping("/api/supervisor")
 public class SupervisorController {
+    private final String TAG ="SupervisorController";
 
     @Autowired
     ITaskService taskService;
@@ -41,6 +43,9 @@ public class SupervisorController {
 
     @Autowired
     ISemesterService semesterService;
+
+    @Autowired
+    IHistoryActionService iHistoryActionService;
 
     @GetMapping("")
     @ResponseBody
@@ -86,6 +91,16 @@ public class SupervisorController {
         task.setOjt_enrollment(ojt_enrollment);
         task.setSupervisor(supervisor);
         taskService.createTaskForStudent(task);
+        HistoryDetail historyDetail = new HistoryDetail(Task.class.getName(), null, null, task.toString());
+        HistoryAction action =
+                new HistoryAction(getEmailFromToken()
+                        , "ROLE_SUPERVISOR", ActionEnum.INSERT, TAG, new Object() {
+                }
+                        .getClass()
+                        .getEnclosingMethod()
+                        .getName(), emailStudent, new java.util.Date(), historyDetail);
+        historyDetail.setHistoryAction(action);
+        iHistoryActionService.createHistory(action);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -122,6 +137,16 @@ public class SupervisorController {
         evaluation.setSupervisor(supervisor);
 
         evaluationService.createNewEvaluation(evaluation, emailStudent);
+        HistoryDetail historyDetail = new HistoryDetail(Evaluation.class.getName(), null, null, evaluation.toString());
+        HistoryAction action =
+                new HistoryAction(getEmailFromToken()
+                        , "ROLE_SUPERVISOR", ActionEnum.INSERT, TAG, new Object() {
+                }
+                        .getClass()
+                        .getEnclosingMethod()
+                        .getName(), emailStudent, new java.util.Date(), historyDetail);
+        historyDetail.setHistoryAction(action);
+        iHistoryActionService.createHistory(action);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

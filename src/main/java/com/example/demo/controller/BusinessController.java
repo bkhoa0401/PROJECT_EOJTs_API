@@ -28,6 +28,8 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/business")
 public class BusinessController {
+    private final String TAG = "BusinessController";
+
     @Autowired
     IBusinessService businessService;
 
@@ -66,6 +68,9 @@ public class BusinessController {
 
     @Autowired
     ISemesterService semesterService;
+
+    @Autowired
+    IHistoryActionService iHistoryActionService;
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -190,6 +195,17 @@ public class BusinessController {
         String email = getEmailFromToken();
         boolean update = businessService.updateBusiness(email, business);
         if (update == true) {
+            HistoryDetail historyDetail = new HistoryDetail(Business.class.getName(), "ALL", business.getEmail(), business.toString());
+            HistoryAction action =
+                    new HistoryAction(email
+                            , "ROLE_HR", ActionEnum.UPDATE, TAG, new Object() {
+                    }
+                            .getClass()
+                            .getEnclosingMethod()
+                            .getName(), null, new java.util.Date(), historyDetail);
+            historyDetail.setHistoryAction(action);
+            iHistoryActionService.createHistory(action);
+
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -285,6 +301,17 @@ public class BusinessController {
         invitation.setStudent(student);
         invitation.setBusiness(business);
         invitationService.createInvitation(invitation);
+        HistoryDetail historyDetail = new HistoryDetail(Invitation.class.getName(), null, null, invitation.toString());
+        HistoryAction action =
+                new HistoryAction(getEmailFromToken()
+                        , "ROLE_HR", ActionEnum.INSERT, TAG, new Object() {
+                }
+                        .getClass()
+                        .getEnclosingMethod()
+                        .getName(), emailStudent, new java.util.Date(), historyDetail);
+        historyDetail.setHistoryAction(action);
+        iHistoryActionService.createHistory(action);
+
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -294,6 +321,16 @@ public class BusinessController {
             , @RequestParam String emailOfStudent) {
         boolean updateStatus = studentService.updateStatusOptionOfStudent(numberOfOption, statusOfOption, emailOfStudent);
         if (updateStatus == true) {
+            HistoryDetail historyDetail = new HistoryDetail(Student.class.getName(), numberOfOption.get(0) == 1?"isAcceptedOption1":"isAcceptedOption2", null, String.valueOf(statusOfOption));
+            HistoryAction action =
+                    new HistoryAction(getEmailFromToken()
+                            , "ROLE_HR", ActionEnum.UPDATE, TAG, new Object() {
+                    }
+                            .getClass()
+                            .getEnclosingMethod()
+                            .getName(), emailOfStudent, new java.util.Date(), historyDetail);
+            historyDetail.setHistoryAction(action);
+            iHistoryActionService.createHistory(action);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);

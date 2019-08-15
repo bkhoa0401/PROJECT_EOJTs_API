@@ -6,6 +6,8 @@ import com.example.demo.entity.*;
 import com.example.demo.repository.IInvitationRepository;
 import com.example.demo.repository.IOjt_EnrollmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -32,6 +34,9 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
 
     @Autowired
     IStudentService iStudentService;
+
+    @Autowired
+    IHistoryActionService iHistoryActionService;
 
     @Override
     public boolean saveListOjtEnrollment(List<Ojt_Enrollment> ojtEnrollmentList) {
@@ -189,6 +194,17 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
 
             ojtEnrollmentRepository.save(ojt_enrollment);
 
+            HistoryDetail historyDetail = new HistoryDetail(Ojt_Enrollment.class.getName(), "business_email", String.valueOf(ojt_enrollment.getId()), emailBusiness);
+            HistoryAction action =
+                    new HistoryAction(getEmailFromToken()
+                            , "ROLE_ADMIN", ActionEnum.UPDATE, "AdminController", new Object() {
+                    }
+                            .getClass()
+                            .getEnclosingMethod()
+                            .getName(), emailStudent, new java.util.Date(), historyDetail);
+            historyDetail.setHistoryAction(action);
+            iHistoryActionService.createHistory(action);
+
             flag = true;
         }
         return flag;
@@ -248,5 +264,16 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
     @Override
     public Ojt_Enrollment findOjt_EnrollmentByStudentEmailAndBusinessIsNull(String email) {
         return ojtEnrollmentRepository.findOjt_EnrollmentByStudentEmailAndBusinessIsNull(email);
+    }
+
+    private String getEmailFromToken() {
+        String email = "";
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            email = ((UserDetails) principal).getUsername();
+        } else {
+            email = principal.toString();
+        }
+        return email;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.ActionEnum;
 import com.example.demo.dto.EventDTO;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/event")
 public class EventController {
+    private String TAG = "EventController";
 
     @Autowired
     IEventService eventService;
@@ -37,6 +39,9 @@ public class EventController {
 
     @Autowired
     IStudent_EventService iStudent_eventService;
+
+    @Autowired
+    IHistoryActionService iHistoryActionService;
 
     @GetMapping("/getEvent")
     @ResponseBody
@@ -92,8 +97,10 @@ public class EventController {
         //event.setStudents(studentList);
         boolean create = eventService.createEvent(event);
 
+        String allStudentEmail = "";
         for (int i = 0; i < studentList.size(); i++) {
             Student student = studentList.get(i);
+            allStudentEmail+=student.getEmail() + "; ";
             Student_Event student_event = new Student_Event();
             student_event.setStudent(student);
             student_event.setEvent(event);
@@ -101,7 +108,18 @@ public class EventController {
 
             iStudent_eventService.saveStudentEvent(student_event);
         }
+        allStudentEmail = allStudentEmail.substring(0, allStudentEmail.lastIndexOf(';'));
         if (create == true) {
+            HistoryDetail historyDetail = new HistoryDetail(Event.class.getName(), null, null, event.toString());
+            HistoryAction action =
+                    new HistoryAction(getEmailFromToken()
+                            , users.getRoles().get(users.getRoles().size()-1).getDescription(), ActionEnum.INSERT, TAG, new Object() {
+                    }
+                            .getClass()
+                            .getEnclosingMethod()
+                            .getName(), null, new java.util.Date(), historyDetail);
+            historyDetail.setHistoryAction(action);
+            iHistoryActionService.createHistory(action);
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);

@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.ActionEnum;
 import com.example.demo.dto.*;
 
 import com.example.demo.entity.*;
@@ -22,6 +23,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
+    private final String TAG = "AdminController";
+
     @Autowired
     IStudentService studentService;
 
@@ -51,6 +54,9 @@ public class AdminController {
 
     @Autowired
     IAnswerService iAnswerService;
+
+    @Autowired
+    IHistoryActionService iHistoryActionService;
 
     @GetMapping
     @ResponseBody
@@ -459,6 +465,16 @@ public class AdminController {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
         iQuestionService.addNewQuestion(question);
+        HistoryDetail historyDetail = new HistoryDetail(Question.class.getName(), null, null, question.toString());
+        HistoryAction action =
+                new HistoryAction(getEmailFromToken()
+                        , "ROLE_ADMIN", ActionEnum.INSERT, TAG, new Object() {
+                }
+                        .getClass()
+                        .getEnclosingMethod()
+                        .getName(), null, new java.util.Date(), historyDetail);
+        historyDetail.setHistoryAction(action);
+        iHistoryActionService.createHistory(action);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -485,12 +501,32 @@ public class AdminController {
     @PutMapping("/question")
     public ResponseEntity<Void> deleteQuestion(@RequestParam int id, @RequestParam boolean status) {
         iQuestionService.deleteQuestion(id, status);
+        HistoryDetail historyDetail = new HistoryDetail(Question.class.getName(), null, String.valueOf(id), null);
+        HistoryAction action =
+                new HistoryAction(getEmailFromToken()
+                        , "ROLE_ADMIN", ActionEnum.DELETE, "AdminController", new Object() {
+                }
+                        .getClass()
+                        .getEnclosingMethod()
+                        .getName(), null, new java.util.Date(), historyDetail);
+        historyDetail.setHistoryAction(action);
+        iHistoryActionService.createHistory(action);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/question-content")
     public ResponseEntity<Void> updateQuestion(@RequestBody Question question) {
         iQuestionService.updateQuestion(question);
+        HistoryDetail historyDetail = new HistoryDetail(Question.class.getName(), "business_email", String.valueOf(question.getId()), question.toString());
+        HistoryAction action =
+                new HistoryAction(getEmailFromToken()
+                        , "ROLE_ADMIN", ActionEnum.UPDATE, "AdminController", new Object() {
+                }
+                        .getClass()
+                        .getEnclosingMethod()
+                        .getName(), null, new java.util.Date(), historyDetail);
+        historyDetail.setHistoryAction(action);
+        iHistoryActionService.createHistory(action);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -522,6 +558,16 @@ public class AdminController {
     public ResponseEntity<Semester> saveParameter(@RequestBody Semester ScheduleParameters) {
         boolean save = semesterService.saveSemester(ScheduleParameters);
         if (save == true) {
+            HistoryDetail historyDetail = new HistoryDetail(Semester.class.getName(), null, null, ScheduleParameters.getName());
+            HistoryAction action =
+                    new HistoryAction(getEmailFromToken()
+                            , "ROLE_ADMIN", ActionEnum.INSERT, TAG, new Object() {
+                    }
+                            .getClass()
+                            .getEnclosingMethod()
+                            .getName(), null, new java.util.Date(), historyDetail);
+            historyDetail.setHistoryAction(action);
+            iHistoryActionService.createHistory(action);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
