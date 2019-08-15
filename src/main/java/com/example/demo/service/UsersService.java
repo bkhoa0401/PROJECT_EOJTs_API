@@ -1,8 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.PagingDTO;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IUsersRepository;
+import com.example.demo.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -29,6 +33,15 @@ public class UsersService implements IUsersService {
 
     @Autowired
     ISemesterService semesterService;
+
+    @Autowired
+    IStudentService iStudentService;
+
+    @Autowired
+    IBusinessService iBusinessService;
+
+    @Autowired
+    private RedisTemplate<Object, Object> template;
 
     @Override
     public void sendEmail(String name, String mail, String password) throws Exception {
@@ -192,14 +205,20 @@ public class UsersService implements IUsersService {
 
     @Override
     public List<Users> getAllUsersByType(int type) {
+        ValueOperations values = template.opsForValue();
+
         Role role = roleService.findRoleById(type);
         List<Role> roleList = new ArrayList<>();
         roleList.add(role);
 
-        List<Users> usersList = usersRepository.findUsersByRoles(roleList);
-
-
-        return usersList;
+        List<Users> users = (List<Users>) values.get(role.getDescription() + "users");
+        if (users == null) {
+            users = usersRepository.findUsersByRoles(roleList);
+            values.set(role.getDescription() + "users", users);
+            return users;
+        } else {
+            return users;
+        }
     }
 
     @Override
@@ -246,5 +265,12 @@ public class UsersService implements IUsersService {
             return usersListCurrentSemester;
         }
         return null;
+    }
+
+    @Override
+    public PagingDTO pagingUser(int typeUser, int currentPage, int rowsPerPage) {
+        List<Users> usersList = getAllUsersByType(typeUser);
+        Utils<Users> usersUtils = new Utils<>();
+        return usersUtils.paging(usersList, currentPage, rowsPerPage);
     }
 }

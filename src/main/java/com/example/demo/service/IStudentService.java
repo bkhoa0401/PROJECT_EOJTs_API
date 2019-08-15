@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.PagingDTO;
 import com.example.demo.dto.StudentAnswerDTO;
 import com.example.demo.entity.*;
 
@@ -65,4 +66,6 @@ public interface IStudentService {
     List<StudentAnswerDTO> findListStudentAnswer(String email);
 
     void studentCreateInformMessage(String email,Event event);
+
+    PagingDTO pagingStudent(int currentPage, int rowsPerPage);
 }

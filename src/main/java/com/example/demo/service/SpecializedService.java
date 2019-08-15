@@ -4,6 +4,7 @@ package com.example.demo.service;
 import com.example.demo.dto.PagingDTO;
 import com.example.demo.entity.Specialized;
 import com.example.demo.repository.ISpecializedRepository;
+import com.example.demo.utils.Utils;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
@@ -91,61 +92,10 @@ public class SpecializedService implements ISpecializedService {
         }
     }
 
-    //    @Cacheable(key = "{#currentPage,#rowsPerPage}")
     public PagingDTO pagingSpecialized(int currentPage, int rowsPerPage) {
-//        if (specializedListAll == null || specializedListAll.size() == 0) {
-//            specializedListAll = ISpecializedRepository.findAll();
-//        }
         List<Specialized> specializedList = getAllSpecialized();
-
-//        int length = specializedListAll.size();
-//
-//        double pageCount = Math.ceil((double) length / (double) pageSize);
-//
-//        int currentItemStart;
-//
-//        if (page == 1) {
-//            currentItemStart = 0;
-//        } else {
-//            currentItemStart = ((page - 1) * pageSize);
-//        }
-//
-//        int count = 0;
-//        List<Specialized> listPaging = new ArrayList<>();
-//        for (int i = currentItemStart; i < specializedListAll.size(); i++) {
-//            if (count < pageSize) {
-//                Specialized specialized = specializedListAll.get(i);
-//                if (specialized != null) {
-//                    listPaging.add(specialized);
-//                    count++;
-//                } else {
-//                    break;
-//                }
-//            } else {
-//                break;
-//            }
-//        }
-//        return listPaging;
-
-        int pageNumber = (int) Math.ceil((double) specializedList.size() / (double) rowsPerPage); // ra tong so page
-
-        int nextPageNumber = (currentPage + 1) * rowsPerPage;
-
-        int currentPageNumber = (currentPage * rowsPerPage);
-
-        List<Specialized> specializedsPagination = new ArrayList<>();
-
-        for (int i = 0; i < specializedList.size(); i++) {
-            if (i >= currentPageNumber && i < nextPageNumber) {
-                specializedsPagination.add(specializedList.get(i));
-            }
-        }
-
-        PagingDTO specializedPagingDTO = new PagingDTO();
-        specializedPagingDTO.setPageNumber(pageNumber);
-        specializedPagingDTO.setListData(specializedsPagination);
-
-        return specializedPagingDTO;
+        Utils<Specialized> utils = new Utils<>();
+        return utils.paging(specializedList, currentPage, rowsPerPage);
     }
 
     @Override

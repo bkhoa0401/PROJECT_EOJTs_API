@@ -5,6 +5,7 @@ import com.example.demo.dto.PagingDTO;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IBusinessRepository;
 import com.example.demo.repository.IEvaluationRepository;
+import com.example.demo.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -89,26 +90,8 @@ public class BusinessService implements IBusinessService {
     @Override
     public PagingDTO pagingBusiness(int currentPage, int rowsPerPage) {
         List<Business> businessList = getAllBusinessBySemester();
-
-        int pageNumber = (int) Math.ceil((double) businessList.size() / (double) rowsPerPage);
-
-        int nextPageNumber = (currentPage + 1) * rowsPerPage;
-
-        int currentPageNumber = (currentPage * rowsPerPage);
-
-        List<Business> businessPagination = new ArrayList<>();
-
-        for (int i = 0; i < businessList.size(); i++) {
-            if (i >= currentPageNumber && i < nextPageNumber) {
-                businessPagination.add(businessList.get(i));
-            }
-        }
-
-        PagingDTO businessPagingDTO = new PagingDTO();
-        businessPagingDTO.setPageNumber(pageNumber);
-        businessPagingDTO.setListData(businessPagination);
-
-        return businessPagingDTO;
+        Utils<Business> businessUtils = new Utils<>();
+        return businessUtils.paging(businessList, currentPage, rowsPerPage);
     }
 
     @Override

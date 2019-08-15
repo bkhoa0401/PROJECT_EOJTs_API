@@ -1,13 +1,18 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.PagingDTO;
+import com.example.demo.entity.Business;
 import com.example.demo.entity.Job_Post;
 import com.example.demo.entity.Job_Post_Skill;
 import com.example.demo.entity.Skill;
 import com.example.demo.repository.ISkillRepository;
+import com.example.demo.utils.Utils;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -24,6 +29,9 @@ public class SkillService implements ISkillService {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Autowired
+    private RedisTemplate<Object, Object> template;
 
     @Override
     public int fullTextSearch(String skillName) {
@@ -58,18 +66,36 @@ public class SkillService implements ISkillService {
 
     @Override
     public List<Skill> getListSkillBySpecialized(int specializedId) {
+        return ISkillRepository.findBySpecializedId(specializedId);
+    }
+
+    @Override
+    public List<Skill> getListSkillBySpecializedOrSoftSkillIsTrue(int specializedId) {
         return ISkillRepository.findBySpecializedIdOrIsSoftSkillTrue(specializedId);
     }
 
     @Override
     public List<Skill> getAllSkill() {
-        List<Skill> list = new ArrayList<>();
-        list = ISkillRepository.findAll();
-        if (list != null) {
-            return list;
+        ValueOperations values = template.opsForValue();
+        List<Skill> skills = (List<Skill>) values.get("skills");
+
+        if (skills == null) {
+            List<Skill> list;
+            list = ISkillRepository.findAll();
+            List<Skill> skillListResult = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getSpecialized() != null) {
+                    skillListResult.add(list.get(i));
+                }
+            }
+            if (skillListResult != null) {
+                values.set("skills", skillListResult);
+                return skillListResult;
+            }
         } else {
-            return null;
+            return skills;
         }
+        return null;
     }
 
     @Override
@@ -137,8 +163,15 @@ public class SkillService implements ISkillService {
 
     @Override
     public void saveSkill(Skill skill) {
-        if(skill!=null){
+        if (skill != null) {
             ISkillRepository.save(skill);
         }
+    }
+
+    @Override
+    public PagingDTO pagingSkill(int currentPage, int rowsPerPage) {
+        List<Skill> skillList = getAllSkill();
+        Utils<Skill> skillUtils = new Utils<>();
+        return skillUtils.paging(skillList, currentPage, rowsPerPage);
     }
 }

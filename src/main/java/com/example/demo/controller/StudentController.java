@@ -304,7 +304,7 @@ public class StudentController {
 
         int specializedId = studentService.getSpecializedIdByEmail(email);
 
-        List<Skill> skills = skillService.getListSkillBySpecialized(specializedId);
+        List<Skill> skills = skillService.getListSkillBySpecializedOrSoftSkillIsTrue(specializedId);
 
         if (skills != null) {
             return new ResponseEntity<List<Skill>>(skills, HttpStatus.OK);
@@ -860,7 +860,7 @@ public class StudentController {
     @PutMapping("/taskStatus")
     public ResponseEntity<Void> updateTaskStatus(@RequestParam int id, @RequestParam int typeStatus) {
         String email = getEmailFromToken();
-        boolean result = taskService.updateStatusTask(id, typeStatus,null);
+        boolean result = taskService.updateStatusTask(id, typeStatus, null);
         if (result) {
             HistoryDetail historyDetail = null;
             switch (typeStatus) {
@@ -1114,7 +1114,7 @@ public class StudentController {
     @PostMapping("/event")
     public ResponseEntity<Void> studentCreateInformMessage(@RequestBody Event event) {
         String email = getEmailFromToken();
-        studentService.studentCreateInformMessage(email,event);
+        studentService.studentCreateInformMessage(email, event);
         HistoryDetail historyDetail = new HistoryDetail(Event.class.getName(), null, null, event.toString());
         HistoryAction action =
                 new HistoryAction(email
@@ -1128,11 +1128,12 @@ public class StudentController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     //check semester //ok
     //get all job post of a business for student
     @GetMapping("/getAllJobPostABusiness")
     @ResponseBody
-    public ResponseEntity<List<Business_JobPostDTO>> getAllJobPostOfABusiness(@RequestParam  String businessEmail) {
+    public ResponseEntity<List<Business_JobPostDTO>> getAllJobPostOfABusiness(@RequestParam String businessEmail) {
 
         Business business = businessService.getBusinessByEmail(businessEmail);
 
@@ -1157,6 +1158,13 @@ public class StudentController {
             return new ResponseEntity<List<Business_JobPostDTO>>(business_jobPostDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/pagination")
+    @ResponseBody
+    public ResponseEntity<PagingDTO> getAllStudentPaging(@RequestParam int currentPage, @RequestParam int rowsPerPage) {
+        PagingDTO pagingStudent = studentService.pagingStudent(currentPage, rowsPerPage);
+        return new ResponseEntity<>(pagingStudent, HttpStatus.OK);
     }
 
     //get email from token

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 
+import com.example.demo.dto.PagingDTO;
 import com.example.demo.dto.SkillDTO;
 import com.example.demo.dto.SpecializedDTO;
 import com.example.demo.entity.Skill;
@@ -165,5 +166,12 @@ public class SkillController {
             skillService.createSkill(skill);
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/pagination")
+    @ResponseBody
+    public ResponseEntity<PagingDTO> getAllSkillPaging(@RequestParam int currentPage, @RequestParam int rowsPerPage) {
+        PagingDTO pagingSkill = skillService.pagingSkill(currentPage, rowsPerPage);
+        return new ResponseEntity<>(pagingSkill, HttpStatus.OK);
     }
 }

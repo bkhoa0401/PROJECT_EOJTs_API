@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.PagingDTO;
 import com.example.demo.dto.StudentAnswerDTO;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IStudentRepository;
@@ -7,7 +8,10 @@ import com.example.demo.repository.ISupervisorRepository;
 import com.example.demo.repository.ITaskRepository;
 import com.example.demo.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.sql.Date;
 import java.text.ParseException;
@@ -60,6 +64,9 @@ public class StudentService implements IStudentService {
     @Autowired
     IEventService iEventService;
 
+    @Autowired
+    private RedisTemplate<Object, Object> template;
+
 
     @Override
     public Student getStudentByEmail(String email) {
@@ -89,18 +96,24 @@ public class StudentService implements IStudentService {
     //@Cacheable("students")
     @Override
     public List<Student> getAllStudentsBySemesterId() {
-        List<Student> studentList = new ArrayList<>();
-        Semester semester = semesterService.getSemesterCurrent();
-        List<Ojt_Enrollment> ojt_enrollmentList =
-                ojt_enrollmentService.getOjt_EnrollmentsBySemesterIdAndStudentEmailNotNull(semester.getId());
-        for (int i = 0; i < ojt_enrollmentList.size(); i++) {
-            Student student = ojt_enrollmentList.get(i).getStudent();
-            studentList.add(student);
+        ValueOperations values = template.opsForValue();
+        List<Student> studentList = (List<Student>) values.get("students");
+
+        if (studentList == null) {
+            studentList = new ArrayList<>();
+            Semester semester = semesterService.getSemesterCurrent();
+            List<Ojt_Enrollment> ojt_enrollmentList =
+                    ojt_enrollmentService.getOjt_EnrollmentsBySemesterIdAndStudentEmailNotNull(semester.getId());
+            for (int i = 0; i < ojt_enrollmentList.size(); i++) {
+                Student student = ojt_enrollmentList.get(i).getStudent();
+                studentList.add(student);
+            }
+            if (studentList != null) {
+                values.set("students", studentList);
+                return studentList;
+            }
         }
-        if (studentList != null) {
-            return studentList;
-        }
-        return null;
+        return studentList;
     }
 
     @Override
@@ -527,5 +540,12 @@ public class StudentService implements IStudentService {
 
         iEventService.createEvent(event);
         iStudent_eventService.saveStudentEvent(student_event);
+    }
+
+    @Override
+    public PagingDTO pagingStudent(int currentPage, int rowsPerPage) {
+        List<Student> studentList = getAllStudentsBySemesterId();
+        Utils<Student> studentUtils = new Utils<>();
+        return studentUtils.paging(studentList, currentPage, rowsPerPage);
     }
 }

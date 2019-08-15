@@ -1,9 +1,14 @@
 package com.example.demo.utils;
 
-import java.sql.Date;
-import java.util.Calendar;
+import com.example.demo.dto.PagingDTO;
+import com.example.demo.entity.Specialized;
 
-public class Utils {
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+public class Utils<T>{
 
     //so sanh ty le giong nhau 2 chuoi
     public static double similarity(String s1, String s2) {
@@ -49,7 +54,7 @@ public class Utils {
         return costs[s2.length()];
     }
 
-    public static boolean aDateBetweenTwoDate(String minDate,String maxDate){
+    public static boolean aDateBetweenTwoDate(String minDate, String maxDate) {
         Date min = Date.valueOf(minDate);
 
         Date max = Date.valueOf(maxDate);
@@ -57,5 +62,27 @@ public class Utils {
         Date current = new Date(Calendar.getInstance().getTime().getTime());
 
         return current.after(min) && current.before(max);
+    }
+
+    public  PagingDTO<T> paging(List<T> list, int currentPage, int rowsPerPage) {
+        int pageNumber = (int) Math.ceil((double) list.size() / (double) rowsPerPage); // ra tong so page
+
+        int nextPageNumber = (currentPage + 1) * rowsPerPage;
+
+        int currentPageNumber = (currentPage * rowsPerPage);
+
+        List<T> listPagination = new ArrayList<>();
+
+        for (int i = 0; i < list.size(); i++) {
+            if (i >= currentPageNumber && i < nextPageNumber) {
+                listPagination.add(list.get(i));
+            }
+        }
+
+        PagingDTO pagingDTO = new PagingDTO();
+        pagingDTO.setPageNumber(pageNumber);
+        pagingDTO.setListData(listPagination);
+
+        return pagingDTO;
     }
 }
