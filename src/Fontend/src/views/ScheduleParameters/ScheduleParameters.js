@@ -47,7 +47,7 @@ class ScheduleParameters extends Component {
             // console.log(semester);
             var date = new Date();
             var dateStart = new Date();
-            var paramDateStart = dateStart.split("-");
+            var paramDateStart = semester.start_date.split("-");
             dateStart.setFullYear(paramDateStart[0], paramDateStart[1] - 1, paramDateStart[2]);
             let isInavalid = false;
             if (date > dateStart) {
@@ -231,7 +231,16 @@ class ScheduleParameters extends Component {
                                         </Col>
                                     </Row>
                                 </CardFooter> :
-                                <></>
+                                <CardFooter className="p-4">
+                                    <Row style={{ paddingLeft: "23%" }}>
+                                        <Col xs="4" sm="4">
+                                            <Button disabled color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>
+                                        </Col>
+                                        <Col xs="4" sm="4">
+                                            <Button disabled onClick={() => this.handleSubmit()} type="submit" color="primary" block>Xác nhận</Button>
+                                        </Col>
+                                    </Row>
+                                </CardFooter>
                             }
                         </Card>
                     </Col>

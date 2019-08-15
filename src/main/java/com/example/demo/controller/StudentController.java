@@ -226,7 +226,8 @@ public class StudentController {
     //check semester //ok
     @GetMapping("/getAllStudent")
     @ResponseBody
-    public ResponseEntity<List<Student_OjtenrollmentDTO>> getAllStudentsWithInternOptionState() throws Exception {
+    public ResponseEntity<PagingDTO> getAllStudentsWithInternOptionState(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
         LOG.info("Getting all student");
         Semester semester = semesterService.getSemesterCurrent();
         List<Student> studentList;
@@ -256,7 +257,10 @@ public class StudentController {
             LOG.info(ex.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(student_ojtenrollmentDTOList, HttpStatus.OK);
+        Utils<Student_OjtenrollmentDTO> utils = new Utils<>();
+        PagingDTO pagingDTO = utils.paging(student_ojtenrollmentDTOList, currentPage, rowsPerPage);
+
+        return new ResponseEntity<>(pagingDTO, HttpStatus.OK);
     }
 
     @GetMapping("/getStudentsWithNoCompany")
