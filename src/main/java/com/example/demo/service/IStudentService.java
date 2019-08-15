@@ -68,4 +68,8 @@ public interface IStudentService {
     void studentCreateInformMessage(String email,Event event);
 
     PagingDTO pagingStudent(int currentPage, int rowsPerPage);
+
+    PagingDTO getStudentsWithNoCompany(int currentPage, int rowsPerPage);
+
+    PagingDTO getEvaluationsOfStudents(int currentPage, int rowsPerPage);
 }

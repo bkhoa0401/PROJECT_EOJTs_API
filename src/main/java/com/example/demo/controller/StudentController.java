@@ -6,6 +6,7 @@ import com.example.demo.config.StudentStatus;
 import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
+import com.example.demo.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -249,40 +250,14 @@ public class StudentController {
 
     @GetMapping("/getStudentsWithNoCompany")
     @ResponseBody
-    public ResponseEntity<List<Student_OjtenrollmentDTO>> getStudentsWithNoCompany() throws Exception {
+    public ResponseEntity<PagingDTO> getStudentsWithNoCompany(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
 //        LOG.info("Getting all student");
-        Semester semester = semesterService.getSemesterCurrent();
-        List<Student> studentList = studentService.getAllStudentsBySemesterId();
-        ;
-        List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOList = new ArrayList<>();
-        List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOWithNoCompanyList = new ArrayList<>();
-        try {
-            for (int i = 0; i < studentList.size(); i++) {
-                Student_OjtenrollmentDTO student_ojtenrollmentDTO = new Student_OjtenrollmentDTO();
-                student_ojtenrollmentDTO.setStudent(studentList.get(i));
-                Ojt_Enrollment ojt_enrollment =
-                        ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(studentList.get(i).getEmail(), semester.getId());
-                if (ojt_enrollment.getBusiness() != null) {
-                    student_ojtenrollmentDTO.setBusinessEnroll(ojt_enrollment.getBusiness().getBusiness_eng_name());
-                } else {
-                    if (studentList.get(i).isInterviewed1() == true && studentList.get(i).isInterviewed2() == true) {
-                        if (studentList.get(i).isAcceptedOption1() == false && studentList.get(i).isAcceptedOption2() == false) {
-                            student_ojtenrollmentDTO.setBusinessEnroll("Rớt");
-                        }
-                    }
-                }
-                student_ojtenrollmentDTOList.add(student_ojtenrollmentDTO);
-            }
-            for (int i = 0; i < student_ojtenrollmentDTOList.size(); i++) {
-                if (student_ojtenrollmentDTOList.get(i).getBusinessEnroll() == null || student_ojtenrollmentDTOList.get(i).getBusinessEnroll().equals("Rớt")) {
-                    student_ojtenrollmentDTOWithNoCompanyList.add(student_ojtenrollmentDTOList.get(i));
-                }
-            }
-        } catch (Exception ex) {
-            LOG.info(ex.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        PagingDTO pagingDTO = studentService.getStudentsWithNoCompany(currentPage, rowsPerPage);
+        if (pagingDTO != null) {
+            return new ResponseEntity<>(pagingDTO, HttpStatus.OK);
         }
-        return new ResponseEntity<>(student_ojtenrollmentDTOWithNoCompanyList, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
     //get listspecialzed
@@ -525,7 +500,8 @@ public class StudentController {
     //danh sach nhung dua set cong ty vao nguyen vong va trang thai cua nv đó
     @GetMapping("/getListStudentByOptionAndStatusOption")
     @ResponseBody
-    public ResponseEntity<List<Student>> getListStudentByOptionNameBusinessAndStatusOption() {
+    public ResponseEntity<PagingDTO> getListStudentByOptionNameBusinessAndStatusOption(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
         //email of business
         String email = getEmailFromToken();
 
@@ -573,7 +549,10 @@ public class StudentController {
         }
 
         if (listResult != null) {
-            return new ResponseEntity<List<Student>>(listResult, HttpStatus.OK);
+            Utils<Student> studentUtils = new Utils<>();
+            PagingDTO pagingDTO = studentUtils.paging(listResult, currentPage, rowsPerPage);
+
+            return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -582,7 +561,8 @@ public class StudentController {
     // lay list student chua duoc moi boi cong ty
     @GetMapping("/getListStudentNotYetInvited")
     @ResponseBody
-    public ResponseEntity<List<Student>> getListStudentNotYetInvited() {
+    public ResponseEntity<PagingDTO> getListStudentNotYetInvited(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
         getListStudentOfBusiness();
 
         List<Student> listStudentIsInvited = studentListIsInvited;
@@ -599,7 +579,11 @@ public class StudentController {
                 }
             }
         }
-        return new ResponseEntity<List<Student>>(listAllStudent, HttpStatus.OK);
+
+        Utils<Student> studentUtils = new Utils<>();
+        PagingDTO pagingDTO = studentUtils.paging(listAllStudent, currentPage, rowsPerPage);
+
+        return new ResponseEntity<>(pagingDTO, HttpStatus.OK);
     }
 
     @PutMapping("/updateToken")
@@ -738,7 +722,8 @@ public class StudentController {
     //check semester //chua test
     @GetMapping("/studentsSuggest")
     @ResponseBody
-    public ResponseEntity<List<Student>> getListSuggestStudent() {
+    public ResponseEntity<PagingDTO> getListSuggestStudent(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
         getListStudentOfBusiness(); // lay ra nhung dua da moi
 
         String email = getEmailFromToken();
@@ -754,7 +739,9 @@ public class StudentController {
             }
         }
         if (studentList != null) {
-            return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
+            Utils<Student> studentUtils = new Utils<>();
+            PagingDTO pagingDTO = studentUtils.paging(studentList, currentPage, rowsPerPage);
+            return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -964,6 +951,8 @@ public class StudentController {
             taskList = taskService.findTasksOfStudentByStatus(email, Status.PENDING);
         } else if (type == 3) {
             taskList = taskService.findTasksOfStudentByStatus(email, Status.DONE);
+        } else if (type == 4) {
+            taskList = taskService.findTasksOfStudentByStatus(email, Status.APPROVED);
         }
         if (taskList != null) {
             return new ResponseEntity<List<Task>>(taskList, HttpStatus.OK);
@@ -975,29 +964,11 @@ public class StudentController {
     //check semester ok
     @GetMapping("/studentsEvaluations")
     @ResponseBody
-    public ResponseEntity<List<Student_EvaluationDTO>> getEvaluationsOfStudents() {
-        List<Student> studentList = studentService.getAllStudentsBySemesterId();
-
-        List<Student_EvaluationDTO> student_evaluationDTOS = new ArrayList<>();
-
-        for (int i = 0; i < studentList.size(); i++) {
-            List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(studentList.get(i).getEmail());
-            Collections.sort(evaluationList);
-            if (evaluationList.size() < 4) {
-                for (int j = evaluationList.size(); j < 4; j++) {
-                    evaluationList.add(null);
-                }
-            }
-            evaluationList = evaluationService.checkSemesterOfListEvaluation(evaluationList);
-            Student_EvaluationDTO student_evaluationDTO = new Student_EvaluationDTO();
-            student_evaluationDTO.setEvaluationList(evaluationList);
-            student_evaluationDTO.setStudent(studentList.get(i));
-
-            student_evaluationDTOS.add(student_evaluationDTO);
-        }
-
-        if (student_evaluationDTOS != null) {
-            return new ResponseEntity<List<Student_EvaluationDTO>>(student_evaluationDTOS, HttpStatus.OK);
+    public ResponseEntity<PagingDTO> getEvaluationsOfStudents(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
+        PagingDTO pagingDTO = studentService.getEvaluationsOfStudents(currentPage, rowsPerPage);
+        if (pagingDTO != null) {
+            return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

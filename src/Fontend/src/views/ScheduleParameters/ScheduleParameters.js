@@ -20,6 +20,7 @@ class ScheduleParameters extends Component {
             start_choose_option_time: '',
             virgin: false,
             name: '',
+            isInavalid: false,
         }
     }
 
@@ -28,22 +29,30 @@ class ScheduleParameters extends Component {
         var year = new Date().getFullYear(); //Current Year.
         // console.log(month);
         let semesterName = "";
-        if ( parseInt(month) === 1 || parseInt(month) === 2 || parseInt(month) === 3 || parseInt(month) === 4 ) {
+        if (parseInt(month) === 1 || parseInt(month) === 2 || parseInt(month) === 3 || parseInt(month) === 4) {
             semesterName = "SPRING" + year;
-        } else if ( parseInt(month) === 5 || parseInt(month) === 6 || parseInt(month) === 7 || parseInt(month) === 8 ) {
+        } else if (parseInt(month) === 5 || parseInt(month) === 6 || parseInt(month) === 7 || parseInt(month) === 8) {
             semesterName = "SUMMER" + year;
-        } else if ( parseInt(month) === 9 || parseInt(month) === 10 || parseInt(month) === 11 || parseInt(month) === 12 ) {
+        } else if (parseInt(month) === 9 || parseInt(month) === 10 || parseInt(month) === 11 || parseInt(month) === 12) {
             semesterName = "FALL" + year;
         }
         const isExisted = await ApiServices.Get(`/admin/checkSemester?semesterName=${semesterName}`);
-        if (isExisted === false ) {
+        if (isExisted === false) {
             this.setState({
                 virgin: true,
                 name: semesterName,
             })
         } else {
             const semester = await ApiServices.Get(`/admin/getSemesterByName?semesterName=${semesterName}`);
-            console.log(semester);
+            // console.log(semester);
+            var date = new Date();
+            var dateStart = new Date();
+            var paramDateStart = dateStart.split("-");
+            dateStart.setFullYear(paramDateStart[0], paramDateStart[1] - 1, paramDateStart[2]);
+            let isInavalid = false;
+            if (date > dateStart) {
+                isInavalid = true;
+            }
             this.setState({
                 start_choose_option_time: semester.start_choose_option_time,
                 finish_choose_option_time: semester.finish_choose_option_time,
@@ -52,6 +61,7 @@ class ScheduleParameters extends Component {
                 start_date: semester.start_date,
                 end_date: semester.end_date,
                 name: semesterName,
+                isInavalid: isInavalid,
             })
         }
         // console.log(this.state.start_choose_option_time);
@@ -60,7 +70,7 @@ class ScheduleParameters extends Component {
     handleInput = async (event) => {
         const { name, value } = event.target;
         let virgin = this.state.virgin;
-        if ( name === 'start_choose_option_time' && virgin === true ) {
+        if (name === 'start_choose_option_time' && virgin === true) {
             await this.setState({
                 [name]: value,
                 virgin: !virgin,
@@ -122,7 +132,7 @@ class ScheduleParameters extends Component {
     }
 
     render() {
-        const { name, finish_choose_option_time, finish_interview_time, finish_choose_business_time, end_date, start_date, start_choose_option_time } = this.state;
+        const { isInavalid, name, finish_choose_option_time, finish_interview_time, finish_choose_business_time, end_date, start_date, start_choose_option_time } = this.state;
         return (
             <div className="animated fadeIn">
                 <ToastContainer />
@@ -139,7 +149,7 @@ class ScheduleParameters extends Component {
                                             <h4>Học kỳ:</h4>
                                         </Col>
                                         <Col xs="12" md="11">
-                                            <Label style={{ fontWeight: "bold", fontSize:'21px' }}>{name}</Label>
+                                            <Label style={{ fontWeight: "bold", fontSize: '21px' }}>{name}</Label>
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -210,16 +220,19 @@ class ScheduleParameters extends Component {
                                     </FormGroup>
                                 </Form>
                             </CardBody>
-                            <CardFooter className="p-4">
-                                <Row style={{paddingLeft: "23%"}}>
-                                    <Col xs="4" sm="4">
-                                        <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>
-                                    </Col>
-                                    <Col xs="4" sm="4">
-                                        <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Xác nhận</Button>
-                                    </Col>
-                                </Row>
-                            </CardFooter>
+                            {isInavalid === false ?
+                                <CardFooter className="p-4">
+                                    <Row style={{ paddingLeft: "23%" }}>
+                                        <Col xs="4" sm="4">
+                                            <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>
+                                        </Col>
+                                        <Col xs="4" sm="4">
+                                            <Button onClick={() => this.handleSubmit()} type="submit" color="primary" block>Xác nhận</Button>
+                                        </Col>
+                                    </Row>
+                                </CardFooter> :
+                                <></>
+                            }
                         </Card>
                     </Col>
                 </Row>

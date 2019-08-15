@@ -4,6 +4,7 @@ import com.example.demo.config.*;
 import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
+import com.example.demo.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -328,12 +329,15 @@ public class BusinessController {
     //get ds chinh thuc cua cong ty
     @GetMapping("/getStudentsByBusiness")
     @ResponseBody
-    public ResponseEntity<List<Student>> getListStudentByBusiness() {
+    public ResponseEntity<PagingDTO> getListStudentByBusiness(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
         String emailBusiness = getEmailFromToken();
         List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
 
         if (studentList != null) {
-            return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
+            Utils<Student> studentUtils = new Utils<>();
+            PagingDTO pagingDTO = studentUtils.paging(studentList, currentPage, rowsPerPage);
+            return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -412,12 +416,17 @@ public class BusinessController {
     //get all supervisor of business
     @GetMapping("/getAllSupervisorABusiness")
     @ResponseBody
-    public ResponseEntity<List<Supervisor>> getSupervisorOfABusiness() {
+    public ResponseEntity<PagingDTO> getSupervisorOfABusiness(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
         String email = getEmailFromToken();
 
         List<Supervisor> supervisors = supervisorService.getAllSupervisorOfABusiness(email);
+
+        Utils<Supervisor> supervisorUtils = new Utils<>();
+        PagingDTO pagingDTO = supervisorUtils.paging(supervisors, currentPage, rowsPerPage);
+
         if (supervisors != null) {
-            return new ResponseEntity<List<Supervisor>>(supervisors, HttpStatus.OK);
+            return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

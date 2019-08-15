@@ -330,9 +330,9 @@ class student_list extends Component {
                     // tmpdate.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0] - 1))
                     // console.log(formatTimeStartShow[1]);
                     date2.setFullYear(parseInt(formatTimeEndShow[2]), parseInt(formatTimeEndShow[1] - 1), parseInt(formatTimeEndShow[0]));
-                    // if (date > tmpdate && date < date2) {
-                    //     isThisMonth = index - 1;
-                    // }
+                    if ((date > date1 || date.toString() === date1.toString() ) && date < date2) {
+                        isThisMonth = index - 1;
+                    }
                     // console.log(date);
                     // console.log(date1);
                     // console.log(date2);
@@ -343,13 +343,13 @@ class student_list extends Component {
                 // console.log(date);
                 // console.log(months);
                 // console.log(isThisMonth);
-                // var date = months[isThisMonth].split(" - ");
-                // var formatDateStart = date[0].split("/");
-                // let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
-                // var formatDateEnd = date[1].split("/");
-                // let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
-                // listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
-                listStudentTask = await ApiServices.Get(`/supervisor/allTasksByStudentEmail?emailStudent=${studentDetail.email}`);
+                var date = months[isThisMonth].split(" - ");
+                var formatDateStart = date[0].split("/");
+                let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
+                var formatDateEnd = date[1].split("/");
+                let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
+                listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${studentDetail.email}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+                // listStudentTask = await ApiServices.Get(`/supervisor/allTasksByStudentEmail?emailStudent=${studentDetail.email}`);
                 months.unshift("Tổng");
             }
             this.setState({
@@ -358,8 +358,8 @@ class student_list extends Component {
                 listStudentTask: listStudentTask,
                 months: months,
                 loading: false,
-                // isThisMonth: isThisMonth + 1,
-                isThisMonth: 0,
+                isThisMonth: isThisMonth + 1,
+                // isThisMonth: 0,
             });
         } else {
             this.setState({

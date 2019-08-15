@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.PagingDTO;
 import com.example.demo.entity.Student;
 import com.example.demo.entity.Supervisor;
 
@@ -16,4 +17,5 @@ public interface ISupervisorService {
     boolean updateStateSupervisor(String email, boolean isActive);
 
     boolean updateSupervisor(Supervisor supervisor);
+
 }
