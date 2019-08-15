@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { ToastContainer } from 'react-toastify';
-import { Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
+import { Pagination, Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import Toastify from '../../views/Toastify/Toastify';
-
+import PaginationComponent from '../Paginations/pagination';
 
 const invertDirection = {
   asc: 'desc',
@@ -48,17 +48,22 @@ class Official_List extends Component {
       listStudentTask: null,
       months: null,
       isThisMonth: -1,
+      pageNumber: 1,
+      currentPage: 0,
+      rowsPerPage: 10
     }
   }
 
 
   async componentDidMount() {
     // await ApiServices.Put('/admin');
-    const students = await ApiServices.Get('/business/getStudentsByBusiness');
-    const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness');
+    const { currentPage, rowsPerPage } = this.state;
+    const students = await ApiServices.Get(`/business/getStudentsByBusiness?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+    const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness?currentPage=0&rowsPerPage=100');
+    console.log(supervisors.listData);
     let supervisors_FirstBlank = null;
     if (supervisors !== null) {
-      supervisors_FirstBlank = supervisors;
+      supervisors_FirstBlank = supervisors.listData;
     } else {
       supervisors_FirstBlank = [];
     }
@@ -67,6 +72,8 @@ class Official_List extends Component {
       email: '',
       name: ''
     }
+
+    console.log(supervisors_FirstBlank);
     if (supervisors_FirstBlank.length >= 1) {
       // console.log(supervisors_FirstBlank.length);
       supervisors_FirstBlank.unshift(supervisors_FirstBlank_Obj);
@@ -75,8 +82,9 @@ class Official_List extends Component {
     }
     if (students !== null && supervisors !== null && supervisors_FirstBlank !== null) {
       this.setState({
-        students,
-        supervisors,
+        students: students.listData,
+        pageNumber: students.pageNumber,
+        supervisors: supervisors.listData,
         supervisors_FirstBlank,
         loading: false
       });
@@ -266,7 +274,7 @@ class Official_List extends Component {
 
   toggleModalWithConfirm = async () => {
     let { listDataEdited, preListStudent } = this.state;
-    // console.log(preListStudent);
+    console.log(listDataEdited);
     // console.log(this.state.preSupervisor);
     if (preListStudent.length === 0 || this.state.preSupervisor.email === "") {
       this.setState({
@@ -488,26 +496,58 @@ class Official_List extends Component {
 
     if (result.status === 200) {
       Toastify.actionSuccess("Thao tác thành công!");
-      const students = await ApiServices.Get('/business/getStudentsByBusiness');
-      const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness');
-      const supervisors_FirstBlank = await ApiServices.Get('/business/getAllSupervisorABusiness');
+
+      const { currentPage, rowsPerPage } = this.state;
+      const students = await ApiServices.Get(`/business/getStudentsByBusiness?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+      const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness?currentPage=0&rowsPerPage=100');
+      let supervisors_FirstBlank = null;
+      if (supervisors !== null) {
+        supervisors_FirstBlank = supervisors.listData;
+      } else {
+        supervisors_FirstBlank = [];
+      }
 
       const supervisors_FirstBlank_Obj = {
         email: '',
         name: ''
       }
-      supervisors_FirstBlank.unshift(supervisors_FirstBlank_Obj);
-      this.setState({
-        students: students,
-        supervisors: supervisors,
-        supervisors_FirstBlank: supervisors_FirstBlank,
-        loading: false
-      });
+
+      if (supervisors_FirstBlank.length >= 1) {
+        supervisors_FirstBlank.unshift(supervisors_FirstBlank_Obj);
+      } else {
+        supervisors_FirstBlank.push(supervisors_FirstBlank_Obj);
+      }
+      if (students !== null && supervisors !== null && supervisors_FirstBlank !== null) {
+        this.setState({
+          students: students.listData,
+          pageNumber: students.pageNumber,
+          supervisors: supervisors.listData,
+          supervisors_FirstBlank,
+          loading: false
+        });
+      }
+
+      // const students = await ApiServices.Get('/business/getStudentsByBusiness');
+      // const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness');
+      // const supervisors_FirstBlank = await ApiServices.Get('/business/getAllSupervisorABusiness');
+
+      // const supervisors_FirstBlank_Obj = {
+      //   email: '',
+      //   name: ''
+      // }
+      // supervisors_FirstBlank.unshift(supervisors_FirstBlank_Obj);
+      // this.setState({
+      //   students: students,
+      //   supervisors: supervisors,
+      //   supervisors_FirstBlank: supervisors_FirstBlank,
+      //   loading: false
+      // });
     } else {
-      Toastify.actionFail("Thao tác thất bại!");
       this.setState({
         loading: false
       })
+      Toastify.actionFail("Thao tác thất bại!");
+      window.location.reload(true);
     }
   }
 
@@ -525,8 +565,69 @@ class Official_List extends Component {
     }
   }
 
+  handlePageNumber = async (currentPage) => {
+    const { rowsPerPage } = this.state;
+    const students = await ApiServices.Get(`/business/getStudentsByBusiness?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+    if (students !== null) {
+      this.setState({
+        students: students.listData,
+        currentPage,
+        pageNumber: students.pageNumber
+      })
+    }
+  }
+
+  handlePagePrevious = async (currentPage) => {
+    const { rowsPerPage } = this.state;
+    const students = await ApiServices.Get(`/business/getStudentsByBusiness?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+    if (students !== null) {
+      this.setState({
+        students: students.listData,
+        currentPage,
+        pageNumber: students.pageNumber
+      })
+    }
+  }
+
+  handlePageNext = async (currentPage) => {
+    const { rowsPerPage } = this.state;
+    const students = await ApiServices.Get(`/business/getStudentsByBusiness?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+    if (students !== null) {
+      this.setState({
+        students: students.listData,
+        currentPage,
+        pageNumber: students.pageNumber
+      })
+    }
+  }
+
+  handleInput = async (event) => {
+    const { name, value } = event.target;
+    await this.setState({
+      [name]: value
+    })
+
+    const { rowsPerPage } = this.state;
+    const students = await ApiServices.Get(`/business/getStudentsByBusiness?currentPage=0&rowsPerPage=${rowsPerPage}`);
+
+    if (students !== null) {
+      this.setState({
+        students: students.listData,
+        currentPage: 0,
+        pageNumber: students.pageNumber
+      })
+    }
+  }
+
   render() {
     const { isThisMonth, months, studentDetail, students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection, loading, suggestedStudents, isSelect, colorBackSelect, colorTextSelect } = this.state;
+    const { pageNumber, currentPage, rowsPerPage } = this.state;
+    if (supervisors_FirstBlank != null) {
+      console.log(supervisors_FirstBlank);
+    }
     let filteredListStudents = orderBy(students, columnToSort, sortDirection);
     if (students !== null) {
       filteredListStudents = students.filter(
@@ -651,6 +752,15 @@ class Official_List extends Component {
                         }
                       </tbody>
                     </Table>
+                    <Pagination style={{ marginTop: "3%" }}>
+                      <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                      <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
+                      <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "7%" }}>
+                        <option value={10} selected={rowsPerPage === 10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                      </Input>
+                    </Pagination>
                     <ToastContainer />
                   </CardBody>
                   <CardFooter className="p-4">
