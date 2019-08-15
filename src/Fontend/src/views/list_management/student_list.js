@@ -708,8 +708,8 @@ class student_list extends Component {
                                                         </td> */}
                                                         {/* <td style={{ textAlign: "center" }}>{student.gpa}</td> */}
                                                         <td style={{ textAlign: "center" }}>
-                                                            {/* <Button style={{ width: "80px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.student.email}`)}><i className="fa fa-info"></i></Button> */}
-                                                            <Button color="primary" onClick={() => this.toggleModalDetail(student.student.email)}><i className="fa fa-info"></i></Button>
+                                                            {/* <Button style={{ width: "80px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.student.email}`)}><i className="fa fa-eye"></i></Button> */}
+                                                            <Button color="primary" onClick={() => this.toggleModalDetail(student.student.email)}><i className="fa fa-eye"></i></Button>
                                                             &nbsp;&nbsp;
                                                             {/* <Button style={{ width: "90px" }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.student.email}`)}><i className="fa cui-task"></i></Button> */}
                                                             {/* {student.businessEnroll !== null ?
