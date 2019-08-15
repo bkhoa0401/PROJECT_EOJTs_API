@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -114,6 +115,23 @@ public class SemesterService implements ISemesterService {
             return true;
         }
         return false;
+    }
 
+    @Override
+    public List<Semester> getSemesterCurrentAndNext() {
+        List<Semester> semesters = getAllSemester();
+        Semester semesterCurrent;
+
+        List<Semester> semesterListResult = new ArrayList<>();
+        for (int i = 0; i < semesters.size(); i++) {
+            String minDate = semesters.get(i).getStart_choose_option_time().toString();
+            String maxDate = semesters.get(i).getEnd_date().toString();
+            boolean getCurrentSemester = Utils.aDateBetweenTwoDate(minDate, maxDate);
+            if (getCurrentSemester == true) {
+                semesterCurrent = semesters.get(i);
+                semesterListResult.add(semesterCurrent);
+            }
+        }
+        return semesterListResult;
     }
 }

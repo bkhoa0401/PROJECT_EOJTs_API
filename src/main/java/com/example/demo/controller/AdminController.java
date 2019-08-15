@@ -551,4 +551,14 @@ public class AdminController {
         }
         return new ResponseEntity<>(answers, HttpStatus.EXPECTATION_FAILED);
     }
+
+    @GetMapping("/semester")
+    @ResponseBody
+    public ResponseEntity<List<Semester>> getSemesterCurrentAndNext() {
+        List<Semester> semesters = semesterService.getSemesterCurrentAndNext();
+        if (semesters != null) {
+            return new ResponseEntity<List<Semester>>(semesters, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 }
