@@ -40,4 +40,8 @@ public interface IUsersService {
     List<Users> getAllUsersBySemester();
 
     PagingDTO pagingUser(int typeUser,int currentPage, int rowsPerPage);
+
+    void sendEmailToStudentIsExisted(String name, String mail) throws Exception;
+
+    List<Users> getUsersNotYet(List<Users> users);
 }

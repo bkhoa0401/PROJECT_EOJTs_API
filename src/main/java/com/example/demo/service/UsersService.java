@@ -49,8 +49,21 @@ public class UsersService implements IUsersService {
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
         helper.setTo(mail);
-        helper.setText("Hi " + name + ",\n" + "welcome you to my system.\n Your password are : " + password + "\nThanks and Regards");
+        helper.setText("Hi " + name + ",\n" + "welcome you to my system.\nYour password are : " + password + "\nThanks and Regards");
         helper.setSubject("[TEST EOJTs]");
+
+        sender.send(message);
+    }
+
+    @Override
+    public void sendEmailToStudentIsExisted(String name, String mail) throws Exception {
+        MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setTo(mail);
+        helper.setText("Xin chào " + name + " , đã tới kì OJT mới. Vui lòng sử dụng tài khoản kì vừa rồi để tiếp tục sử dụng hệ thống" +
+                ". Chúc bạn có kì OJT thật tốt và nhiều thành công! \nThanks and Regards");
+        helper.setSubject("[Thông báo]");
 
         sender.send(message);
     }
@@ -272,5 +285,20 @@ public class UsersService implements IUsersService {
         List<Users> usersList = getAllUsersByType(typeUser);
         Utils<Users> usersUtils = new Utils<>();
         return usersUtils.paging(usersList, currentPage, rowsPerPage);
+    }
+
+    @Override
+    public List<Users> getUsersNotYet(List<Users> users) {
+        List<Users> usersListNotYet= new ArrayList<>();
+
+        for (int i = 0; i < users.size(); i++) {
+            Users user = users.get(i);
+
+            Users userNotYet = findUserByEmail(user.getEmail());
+            if (userNotYet == null) {
+                usersListNotYet.add(user);
+            }
+        }
+        return usersListNotYet;
     }
 }
