@@ -174,7 +174,7 @@ class Create_Report extends Component {
         //suggest score work
         let numApproved = 0;
         let numRealTask = 0;
-        listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${needParam[0]}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+        listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${needParam[1]}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
         for (let index = 0; index < listStudentTask.length; index++) {
             if (listStudentTask[index].level_task === "EASY") {
                 numRealTask = numRealTask + 1;
