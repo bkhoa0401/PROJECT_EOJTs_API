@@ -325,12 +325,14 @@ class student_list extends Component {
                     // console.log(timeEndShow);
                     var date1 = new Date();
                     var date2 = new Date();
-                    // var tmpdate = new Date();
+                    var tmpdate = "";
                     date1.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0]));
                     // tmpdate.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0] - 1))
                     // console.log(formatTimeStartShow[1]);
+                    tmpdate = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                    tmpdate1 = parseInt(formatTimeStartShow[2]) + "-" + parseInt(formatTimeStartShow[1]) + "-" + parseInt(formatTimeStartShow[0]);
                     date2.setFullYear(parseInt(formatTimeEndShow[2]), parseInt(formatTimeEndShow[1] - 1), parseInt(formatTimeEndShow[0]));
-                    if (!(date1 > date) && date < date2) {
+                    if ((date > date1 || tmpdate === tmpdate1) && date < date2) {
                         isThisMonth = index - 1;
                     }
                     // console.log(date);
