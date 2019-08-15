@@ -101,6 +101,7 @@ public class BusinessController {
         String password = usersService.getAlphaNumericString();
 
         role.setId(3);
+        role.setDescription("ROLE_HR");
         roleList.add(role);
         users.setRoles(roleList);
         users.setEmail(businessDTO.getEmail());
@@ -109,7 +110,8 @@ public class BusinessController {
 
         Semester semester = semesterService.getSemesterByName(businessDTO.getNameSemester());
 
-        Business business = businessService.getBusinessByEmail(businessDTO.getEmail());
+        //Business business = businessService.getBusinessByEmail(businessDTO.getEmail());
+        Business business = transferBusinessDTOtoBusiness(businessDTO);
 
         ojt_enrollment.setBusiness(business);
         ojt_enrollment.setSemester(semester);
@@ -132,6 +134,19 @@ public class BusinessController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    public Business transferBusinessDTOtoBusiness(BusinessDTO businessDTO) {
+        Business business = new Business();
+        business.setEmail(businessDTO.getEmail());
+        business.setBusiness_name(businessDTO.getBusiness_name());
+        business.setBusiness_eng_name(businessDTO.getBusiness_eng_name());
+        business.setBusiness_website(businessDTO.getBusiness_website());
+        business.setBusiness_phone(businessDTO.getBusiness_phone());
+        business.setBusiness_address(businessDTO.getBusiness_address());
+        business.setBusiness_overview(businessDTO.getBusiness_overview());
+
+        return business;
     }
 
     //check semester //ok

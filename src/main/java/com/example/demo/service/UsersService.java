@@ -137,6 +137,25 @@ public class UsersService implements IUsersService {
 
     @Override
     public boolean saveUser(Users users) {
+        ValueOperations values = template.opsForValue();
+
+        List<Role> roleList = users.getRoles();
+        for (int i = 0; i < roleList.size(); i++) {
+            Role role = roleList.get(i);
+            if (role.getDescription().equals("ROLE_STUDENT")) {
+                List<Users> usersList = (List<Users>) values.get("ROLE_STUDENTusers");
+                if (usersList != null) {
+                    usersList.add(users);
+                    values.set("ROLE_STUDENTusers", usersList);
+                }
+            } else if (role.getDescription().equals("ROLE_HR")) {
+                List<Users> usersList = (List<Users>) values.get("ROLE_HRusers");
+                if (usersList != null) {
+                    usersList.add(users);
+                    values.set("ROLE_HRusers", usersList);
+                }
+            }
+        }
         usersRepository.save(users);
         return true;
     }
@@ -159,13 +178,51 @@ public class UsersService implements IUsersService {
 
     @Override
     public boolean updateStatus(String email, boolean isActive) {
+        ValueOperations values = template.opsForValue();
+
         Users users = usersRepository.findUserByEmail(email);
+
+        List<Role> roleList = users.getRoles();
+        for (int i = 0; i < roleList.size(); i++) {
+            Role role = roleList.get(i);
+            if (role.getDescription().equals("ROLE_STUDENT")) {
+                List<Users> usersList = (List<Users>) values.get("ROLE_STUDENTusers");
+                if (usersList != null) {
+                    int index = findPositionOfUsers(usersList, users);
+                    usersList.remove(index);
+
+                    users.setActive(isActive);
+                    usersList.add(index,users);
+                    values.set("ROLE_STUDENTusers", usersList);
+                }
+            } else if (role.getDescription().equals("ROLE_HR")) {
+                List<Users> usersList = (List<Users>) values.get("ROLE_HRusers");
+                if (usersList != null) {
+                    int index = findPositionOfUsers(usersList, users);
+                    usersList.remove(index);
+
+                    users.setActive(isActive);
+                    usersList.add(index,users);
+                    values.set("ROLE_HRusers", usersList);
+                }
+            }
+        }
         if (users != null) {
             users.setActive(isActive);
             usersRepository.save(users);
             return true;
         }
         return false;
+    }
+
+    public int findPositionOfUsers(List<Users> usersList, Users users) {
+        for (int i = 0; i < usersList.size(); i++) {
+            Users usersOfList = usersList.get(i);
+            if (usersOfList.getEmail().equals(users.getEmail())) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -289,7 +346,7 @@ public class UsersService implements IUsersService {
 
     @Override
     public List<Users> getUsersNotYet(List<Users> users) {
-        List<Users> usersListNotYet= new ArrayList<>();
+        List<Users> usersListNotYet = new ArrayList<>();
 
         for (int i = 0; i < users.size(); i++) {
             Users user = users.get(i);
