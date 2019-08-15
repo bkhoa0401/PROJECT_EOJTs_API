@@ -30,6 +30,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import SimpleReactValidator from '../../validator/simple-react-validator';
+import PaginationComponent from '../Paginations/pagination';
 
 class Hr_Task extends Component {
 
@@ -55,18 +56,22 @@ class Hr_Task extends Component {
             comment: false,
             contentComment: '',
             contentCommentNew: '',
-            statusUpdate: ''
+            statusUpdate: '',
+            pageNumber: 1,
+            currentPage: 0,
+            rowsPerPage: 10
         }
     }
 
 
     async componentDidMount() {
-        const tasks = await ApiServices.Get('/supervisor/tasks');
-        console.log(tasks);
+        const { currentPage, rowsPerPage } = this.state;
+        const tasks = await ApiServices.Get(`/supervisor/tasks?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         if (tasks !== null) {
             this.setState({
-                tasks: tasks,
-                loading: false
+                tasks: tasks.listData,
+                pageNumber: tasks.pageNumber,
+                loading: false,
             });
         }
     }
@@ -111,16 +116,16 @@ class Hr_Task extends Component {
         const result = await ApiServices.Delete(`/supervisor/task?id=${deletedId}`);
 
         if (result.status === 200) {
-            const tasks = await ApiServices.Get('/supervisor/tasks');
+            const { currentPage, rowsPerPage } = this.state;
+            const tasks = await ApiServices.Get(`/supervisor/tasks?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
             if (tasks !== null) {
                 this.setState({
-                    tasks: tasks
+                    tasks: tasks.listData,
+                    pageNumber: tasks.pageNumber,
+                    loading: false,
                 });
             }
             Toastify.actionSuccess("Xóa nhiệm vụ thành công!");
-            this.setState({
-                loading: false
-            })
         } else {
             Toastify.actionFail("Xóa nhiệm vụ thất bại!");
             this.setState({
@@ -287,37 +292,38 @@ class Hr_Task extends Component {
                     contentCommentNew: ''
                 })
 
-                const tasks = await ApiServices.Get('/supervisor/tasks');
-                // const student = await ApiServices.Get(`/student/student/${this.state.emailStudent}`);
-
+                const { currentPage, rowsPerPage } = this.state;
+                const tasks = await ApiServices.Get(`/supervisor/tasks?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
                 if (tasks !== null) {
                     this.setState({
-                        tasks: tasks,
+                        tasks: tasks.listData,
+                        pageNumber: tasks.pageNumber,
                         loading: false,
                         contentCommentNew: ''
                     });
                 }
 
-                // if (student.token != null) {
-                //     let body = '';
-                //     if (status) {
-                //         body = 'Trạng thái task ' + '[ ' + this.state.title + '] đã chuyển thành HOÀN THÀNH'
-                //     } else {
-                //         body = 'Trạng thái task ' + '[' + this.state.title + '] đã chuyển thành CHƯA HOÀN THÀNH'
-                //     }
-                //     const notificationDTO = {
-                //         data: {
-                //             title: 'Trạng thái task bị thay đổi',
-                //             body: body,
-                //             click_action: "http://localhost:3000/#/invitation/new",
-                //             icon: "http://url-to-an-icon/icon.png"
-                //         },
-                //         to: `${student.token}`
-                //     }
+                const student = await ApiServices.Get(`/student/student/${this.state.emailStudent}`);
 
-                //     console.log(notificationDTO);
-                //     //const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
-                // }
+                if (student.token != null) {
+                    let body = '';
+                    if (statusUpdate === 4) {
+                        body = 'Trạng thái task ' + '[ ' + this.state.title + '] đã chuyển thành HOÀN THÀNH'
+                    } else {
+                        body = 'Trạng thái task ' + '[' + this.state.title + '] đã chuyển thành CHƯA HOÀN THÀNH'
+                    }
+                    const notificationDTO = {
+                        data: {
+                            title: 'Trạng thái task bị thay đổi',
+                            body: body,
+                            click_action: "http://localhost:3000/#/invitation/new",
+                            icon: "http://url-to-an-icon/icon.png"
+                        },
+                        to: `${student.token}`
+                    }
+
+                    const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
+                }
             } else {
                 Toastify.actionFail("Cập nhật trạng thái thất bại!");
                 this.setState({
@@ -330,10 +336,68 @@ class Hr_Task extends Component {
         }
     }
 
+    handlePageNumber = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const tasks = await ApiServices.Get(`/supervisor/tasks?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (tasks !== null) {
+            this.setState({
+                tasks: tasks.listData,
+                currentPage,
+                pageNumber: tasks.pageNumber
+            })
+        }
+    }
+
+    handlePagePrevious = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const tasks = await ApiServices.Get(`/supervisor/tasks?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (tasks !== null) {
+            this.setState({
+                tasks: tasks.listData,
+                currentPage,
+                pageNumber: tasks.pageNumber
+            })
+        }
+    }
+
+    handlePageNext = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const tasks = await ApiServices.Get(`/supervisor/tasks?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (tasks !== null) {
+            this.setState({
+                tasks: tasks.listData,
+                currentPage,
+                pageNumber: tasks.pageNumber
+            })
+        }
+    }
+
+    handleInput = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value
+        })
+
+        const { rowsPerPage } = this.state;
+        const tasks = await ApiServices.Get(`/supervisor/tasks?currentPage=0&rowsPerPage=${rowsPerPage}`);
+
+        if (tasks !== null) {
+            this.setState({
+                tasks: tasks.listData,
+                currentPage: 0,
+                pageNumber: tasks.pageNumber
+            })
+        }
+    }
+
     render() {
         const { tasks, loading } = this.state;
         const { id, title, description, time_created, time_end, level_task, priority, status, supervisorName,
             studentName, contentComment, contentCommentNew, statusUpdate } = this.state;
+        const { pageNumber, currentPage, rowsPerPage } = this.state;
 
         return (
             loading.toString() === 'true' ? (
@@ -413,6 +477,15 @@ class Hr_Task extends Component {
                                                 }
                                             </tbody>
                                         </Table>
+                                        <Pagination style={{ marginTop: "3%" }}>
+                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                            <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                            <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "7%" }}>
+                                                <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                <option value={20}>20</option>
+                                                <option value={50}>50</option>
+                                            </Input>
+                                        </Pagination>
                                         <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={'modal-primary ' + this.props.className}>
                                             <ModalHeader toggle={this.toggleModal}>
                                                 {/* <FormGroup row> */}

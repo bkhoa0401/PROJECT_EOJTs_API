@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { ToastContainer } from 'react-toastify';
-import { Badge, Button, Card, CardBody, CardHeader, Col, FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Row, Table } from 'reactstrap';
+import { Badge, Button, Card, CardBody, CardHeader, Col, FormGroup, Input, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Row, Table } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import Toastify from '../Toastify/Toastify';
+import PaginationComponent from '../Paginations/pagination';
 
 class Ojt_Registration extends Component {
 
@@ -23,20 +24,24 @@ class Ojt_Registration extends Component {
             studentDetail: null,
             invitationDetail: null,
             // resumeLink: '',
+            pageNumber: 1,
+            currentPage: 0,
+            rowsPerPage: 10
         }
     }
 
 
     async componentDidMount() {
-        const students = await ApiServices.Get('/student/getListStudentByOptionAndStatusOption');
+        const { currentPage, rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         const business = await ApiServices.Get('/business/getBusiness');
         const invitations = await ApiServices.Get('/student/getListStudentIsInvited');
         let listInvitation = [];
         if (students !== null) {
-            for (let index = 0; index < students.length; index++) {
+            for (let index = 0; index < students.listData.length; index++) {
                 listInvitation.push(false);
                 for (let index1 = 0; index1 < invitations.length; index1++) {
-                    if (invitations[index1].student.email === students[index].email) {
+                    if (invitations[index1].student.email === students.listData[index].email) {
                         listInvitation.splice(index, 1);
                         listInvitation.push(true);
                         break;
@@ -44,7 +49,8 @@ class Ojt_Registration extends Component {
                 }
             }
             this.setState({
-                students,
+                students: students.listData,
+                pageNumber: students.pageNumber,
                 business_name: business.business_name,
                 business_eng_name: business.business_eng_name,
                 loading: false,
@@ -164,8 +170,66 @@ class Ojt_Registration extends Component {
         }
     }
 
+    handlePageNumber = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
+    handlePagePrevious = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
+    handlePageNext = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
+    handleInput = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value
+        })
+
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?currentPage=0&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage: 0,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
     render() {
         const { students, business_eng_name, searchValue, loading, studentDetail, invitationDetail, listInvitation } = this.state;
+        const { pageNumber, currentPage, rowsPerPage } = this.state;
         // const linkDownCV = ``;
         let filteredListStudents;
 
@@ -254,8 +318,14 @@ class Ojt_Registration extends Component {
                                             </tbody>
                                         </Table>
                                         <ToastContainer />
-                                        <Pagination>
-                                            {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                                        <Pagination style={{ marginTop: "3%" }}>
+                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                            <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                            <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "7%" }}>
+                                                <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                <option value={20}>20</option>
+                                                <option value={50}>50</option>
+                                            </Input>
                                         </Pagination>
                                     </CardBody>
                                     {/* <CardFooter className="p-4">

@@ -149,7 +149,7 @@ public class StudentController {
 
             List<Users> usersListNotYet = usersService.getUsersNotYet(usersList);
 
-           // usersService.saveListUser(usersList);
+            // usersService.saveListUser(usersList);
             usersService.saveListUser(usersListNotYet);
             ojt_enrollmentService.saveListOjtEnrollment(ojtEnrollmentList);
 
@@ -461,6 +461,40 @@ public class StudentController {
     //da fix
     @GetMapping("/getListStudentIsInvited")
     @ResponseBody
+    public ResponseEntity<PagingDTO> getListStudentIsInvited(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
+        String email = getEmailFromToken();
+        List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);
+        List<Student> studentListIsInvitedInFunc = new ArrayList<>();
+        List<Student_InvitationDTO> studentList = new ArrayList<>();
+
+        Semester semester = semesterService.getSemesterCurrent();
+
+        for (int i = 0; i < invitationList.size(); i++) {
+            if (invitationList.get(i).getSemester().getId() != semester.getId()) {
+                invitationList.remove(invitationList.get(i));
+            }
+        }
+
+        for (int i = 0; i < invitationList.size(); i++) {
+            Student_InvitationDTO student_invitationDTO = new Student_InvitationDTO();
+            Student student = studentService.getStudentIsInvited(invitationList.get(i).getStudent().getEmail());
+            List<Invitation> invitations = invitationService.getListInvitationByStudentEmail(student.getEmail());
+            student_invitationDTO.setInvitations(invitations);
+            student_invitationDTO.setStudent(student);
+            studentList.add(student_invitationDTO);
+            studentListIsInvitedInFunc.add(student);
+        }
+        if (studentList != null) {
+            studentListIsInvited = studentListIsInvitedInFunc;
+
+            Utils<Student_InvitationDTO> student_invitationDTOUtils = new Utils<>();
+            PagingDTO pagingDTO = student_invitationDTOUtils.paging(studentList, currentPage, rowsPerPage);
+            return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     public ResponseEntity<List<Student_InvitationDTO>> getListStudentOfBusiness() {
         String email = getEmailFromToken();
         List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);

@@ -3,7 +3,7 @@ import { ToastContainer } from 'react-toastify';
 import { Badge, Button, Card, CardBody, CardHeader, Col, FormGroup, Input, Label, Modal, ModalBody, ModalHeader, Pagination, Row, Table } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
-
+import PaginationComponent from '../Paginations/pagination';
 
 class Hr_Students extends Component {
 
@@ -19,15 +19,20 @@ class Hr_Students extends Component {
             listStudentTask: null,
             months: null,
             isThisMonth: -1,
+            pageNumber: 1,
+            currentPage: 0,
+            rowsPerPage: 10
         };
     }
 
     async componentDidMount() {
-        const students = await ApiServices.Get('/supervisor/students');
+        const { currentPage, rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/supervisor/students?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         if (students !== null) {
             this.setState({
-                students,
-                loading: false
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                loading: false,
             });
         }
     }
@@ -263,8 +268,66 @@ class Hr_Students extends Component {
         }
     }
 
+    handlePageNumber = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/supervisor/students?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
+    handlePagePrevious = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/supervisor/students?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
+    handlePageNext = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/supervisor/students?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
+    handleInput = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value
+        })
+
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/supervisor/students?currentPage=0&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage: 0,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
     render() {
         const { months, isThisMonth, studentDetail, listStudentTask, students, searchValue, loading } = this.state;
+        const { pageNumber, currentPage, rowsPerPage } = this.state;
         let filteredListStudents;
 
         if (students !== null) {
@@ -340,8 +403,14 @@ class Hr_Students extends Component {
                                             </Table>
                                         </div>
                                         <ToastContainer />
-                                        <Pagination>
-                                            {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                                        <Pagination style={{ marginTop: "3%" }}>
+                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                            <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                            <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "7%" }}>
+                                                <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                <option value={20}>20</option>
+                                                <option value={50}>50</option>
+                                            </Input>
                                         </Pagination>
                                     </CardBody>
                                 </Card>
@@ -354,88 +423,88 @@ class Hr_Students extends Component {
                                 <ModalBody>
                                     {/* <div style={{maxHeight:"663px", overflowY:'auto', overflowX:'hidden'}}> */}
                                     <div>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Ảnh đại diện</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {studentDetail.avatarLink === null ?
-                                                <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "100px", height: "100px" }} alt="usericon" /> :
-                                                <img src={studentDetail.avatarLink} className="img-avatar" style={{ width: "100px", height: "100px" }} />
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Họ và tên</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{studentDetail.name}</label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>MSSV</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{studentDetail.code}</label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Chuyên ngành</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{studentDetail.specialized.name}</label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Giới thiệu bản thân</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{studentDetail.objective}</label>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Bảng điểm</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {
-                                                studentDetail.transcriptLink && studentDetail.transcriptLink ? (
-                                                    <a href={studentDetail.transcriptLink} download>Tải về</a>
-                                                ) :
-                                                    (<label>N/A</label>)
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>Kỹ năng</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            {
-                                                studentDetail.skills && studentDetail.skills.map((skill, index) => {
-                                                    return (
-                                                        <div>
-                                                            {
-                                                                <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
-                                                            }
-                                                        </div>
-                                                    )
-                                                })
-                                            }
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="4">
-                                            <h6>GPA</h6>
-                                        </Col>
-                                        <Col xs="12" md="8">
-                                            <label>{studentDetail.gpa}</label>
-                                        </Col>
-                                    </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Ảnh đại diện</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {studentDetail.avatarLink === null ?
+                                                    <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "100px", height: "100px" }} alt="usericon" /> :
+                                                    <img src={studentDetail.avatarLink} className="img-avatar" style={{ width: "100px", height: "100px" }} />
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Họ và tên</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.name}</label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>MSSV</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.code}</label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Chuyên ngành</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.specialized.name}</label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Giới thiệu bản thân</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.objective}</label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Bảng điểm</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {
+                                                    studentDetail.transcriptLink && studentDetail.transcriptLink ? (
+                                                        <a href={studentDetail.transcriptLink} download>Tải về</a>
+                                                    ) :
+                                                        (<label>N/A</label>)
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Kỹ năng</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {
+                                                    studentDetail.skills && studentDetail.skills.map((skill, index) => {
+                                                        return (
+                                                            <div>
+                                                                {
+                                                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                }
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>GPA</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.gpa}</label>
+                                            </Col>
+                                        </FormGroup>
                                     </div>
                                 </ModalBody>
                                 {/* <ModalFooter>
@@ -474,46 +543,46 @@ class Hr_Students extends Component {
                                         </Input>
                                     </FormGroup>
                                     <div style={{ maxHeight: '492px', overflowY: 'auto' }}>
-                                    <Table responsive striped>
-                                        <thead>
-                                            <tr>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nhiệm vụ</th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Người giao</th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ưu tiên</th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Độ khó</th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ngày tạo</th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hạn cuối</th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                this.state.listStudentTask && this.state.listStudentTask.map((task, index) => {
-                                                    return (
-                                                        <tr>
-                                                            <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                            <td style={{ textAlign: "center" }}>{task.title}</td>
-                                                            <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
-                                                            <td style={{ textAlign: "center" }}>{task.priority}</td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                {
-                                                                    this.showTaskLevel(task.level_task)
-                                                                }
-                                                            </td>
-                                                            <td style={{ textAlign: "center" }}>{this.formatDate(task.time_created, true)}</td>
-                                                            <td style={{ textAlign: "center" }}>{this.formatDate(task.time_end, false)}</td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                {
-                                                                    this.showTaskState(task.status)
-                                                                }
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                                })
-                                            }
-                                        </tbody>
-                                    </Table>
+                                        <Table responsive striped>
+                                            <thead>
+                                                <tr>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nhiệm vụ</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Người giao</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ưu tiên</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Độ khó</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ngày tạo</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hạn cuối</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    this.state.listStudentTask && this.state.listStudentTask.map((task, index) => {
+                                                        return (
+                                                            <tr>
+                                                                <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                                <td style={{ textAlign: "center" }}>{task.title}</td>
+                                                                <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
+                                                                <td style={{ textAlign: "center" }}>{task.priority}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {
+                                                                        this.showTaskLevel(task.level_task)
+                                                                    }
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }}>{this.formatDate(task.time_created, true)}</td>
+                                                                <td style={{ textAlign: "center" }}>{this.formatDate(task.time_end, false)}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {
+                                                                        this.showTaskState(task.status)
+                                                                    }
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </tbody>
+                                        </Table>                                        
                                     </div>
                                 </ModalBody>
                                 {/* <ModalFooter>

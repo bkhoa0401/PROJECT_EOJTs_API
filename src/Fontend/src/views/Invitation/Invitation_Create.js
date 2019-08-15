@@ -10,6 +10,7 @@ import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import SimpleReactValidator from '../../validator/simple-react-validator';
 import Toastify from '../Toastify/Toastify';
+import PaginationComponent from '../Paginations/pagination';
 
 class Invitation_Create extends Component {
     constructor(props) {
@@ -29,21 +30,31 @@ class Invitation_Create extends Component {
             studentDetail: null,
             invitationContent: '',
             student: null,
+            pageNumber: 1,
+            currentPage: 0,
+            rowsPerPage: 10,
+            pageNumberSuggest: 1,
+            currentPageSuggest: 0,
+            rowsPerPageSuggest: 10
         }
         // this.toggleLarge = this.toggleLarge.bind(this);
     }
 
     async componentDidMount() {
-        const students = await ApiServices.Get('/student/getListStudentNotYetInvited');
-        const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
+        const { currentPage, rowsPerPage, currentPageSuggest, rowsPerPageSuggest } = this.state;
+
+        const students = await ApiServices.Get(`/student/getListStudentNotYetInvited?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const suggestedStudents = await ApiServices.Get(`/student/studentsSuggest?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
 
         const business = await ApiServices.Get('/business/getBusiness');
         if (students !== null && suggestedStudents !== null) {
             this.setState({
-                students,
-                suggestedStudents,
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                suggestedStudents: suggestedStudents.listData,
+                pageNumberSuggest: suggestedStudents.pageNumber,
                 business_name: business.business_name,
-                loading: false
+                loading: false,
             });
         }
     }
@@ -164,10 +175,123 @@ class Invitation_Create extends Component {
             )
         }
     }
+    handlePageNumberSuggest = async (currentPageSuggest) => {
+        const { rowsPerPageSuggest } = this.state;
+        const studentsSuggest = await ApiServices.Get(`/student/getListStudentNotYetInvited?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
+
+        if (studentsSuggest !== null) {
+            this.setState({
+                suggestedStudents: studentsSuggest.listData,
+                currentPageSuggest,
+                pageNumberSuggest: studentsSuggest.pageNumber
+            })
+        }
+    }
+
+    handlePagePreviousSuggest = async (currentPageSuggest) => {
+        const { rowsPerPageSuggest } = this.state;
+        const studentsSuggest = await ApiServices.Get(`/student/getListStudentNotYetInvited?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
+
+        if (studentsSuggest !== null) {
+            this.setState({
+                suggestedStudents: studentsSuggest.listData,
+                currentPageSuggest,
+                pageNumberSuggest: studentsSuggest.pageNumber
+            })
+        }
+    }
+
+    handlePageNextSuggest = async (currentPageSuggest) => {
+        const { rowsPerPageSuggest } = this.state;
+        const studentsSuggest = await ApiServices.Get(`/student/getListStudentNotYetInvited?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
+
+        if (studentsSuggest !== null) {
+            this.setState({
+                suggestedStudents: studentsSuggest.listData,
+                currentPageSuggest,
+                pageNumberSuggest: studentsSuggest.pageNumber
+            })
+        }
+    }
+
+    handleInputSuggest = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value
+        })
+
+        const { rowsPerPageSuggest } = this.state;
+        const studentsSuggest = await ApiServices.Get(`/student/getListStudentNotYetInvited?currentPage=0&rowsPerPage=${rowsPerPageSuggest}`);
+
+        if (studentsSuggest !== null) {
+            this.setState({
+                studentsSuggest: studentsSuggest.listData,
+                currentPageSuggest: 0,
+                pageNumberSuggest: studentsSuggest.pageNumber
+            })
+        }
+    }
+
+    handlePageNumber = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentNotYetInvited?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
+    handlePagePrevious = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentNotYetInvited?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
+    handlePageNext = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentNotYetInvited?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
+    handleInput = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value
+        })
+
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentNotYetInvited?currentPage=0&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage: 0,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
 
     tabPane() {
         const { students, suggestedStudents, business_name, searchValue, searchSuggestedValue, loading } = this.state;
-
+        const { pageNumber, currentPage, rowsPerPage, pageNumberSuggest, currentPageSuggest, rowsPerPageSuggest } = this.state;
         let filteredListStudents, filteredSuggestedListStudents;
 
         if (students !== null) {
@@ -264,6 +388,15 @@ class Invitation_Create extends Component {
                                             }
                                         </tbody>
                                     </Table>
+                                    <Pagination style={{ marginTop: "3%" }}>
+                                        <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                        <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                        <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "7%" }}>
+                                            <option value={10} selected={rowsPerPage === 10}>10</option>
+                                            <option value={20}>20</option>
+                                            <option value={50}>50</option>
+                                        </Input>
+                                    </Pagination>
                                 </div>
                             }
                         </TabPane>
@@ -333,6 +466,15 @@ class Invitation_Create extends Component {
                                             }
                                         </tbody>
                                     </Table>
+                                    <Pagination style={{ marginTop: "3%" }}>
+                                        <PaginationComponent pageNumber={pageNumberSuggest} handlePageNumber={this.handlePageNumberSuggest} handlePageNext={this.handlePageNextSuggest} handlePagePrevious={this.handlePagePreviousSuggest} currentPage={currentPageSuggest} />
+                                        <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                        <Input onChange={this.handleInputSuggest} type="select" name="rowsPerPageSuggest" style={{ width: "7%" }}>
+                                            <option value={10} selected={rowsPerPageSuggest === 10}>10</option>
+                                            <option value={20}>20</option>
+                                            <option value={50}>50</option>
+                                        </Input>
+                                    </Pagination>
                                 </div>
                             }
                         </TabPane>

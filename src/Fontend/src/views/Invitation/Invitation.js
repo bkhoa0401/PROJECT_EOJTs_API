@@ -1,9 +1,10 @@
 import orderBy from "lodash/orderBy";
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { Badge, Button, Card, CardBody, CardHeader, Col, FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Row, Table } from 'reactstrap';
+import { Badge, Button, Card, CardBody, CardHeader, Col, FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Row, Table, Input } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import PaginationComponent from '../Paginations/pagination';
 
 const invertDirection = {
     asc: 'desc',
@@ -23,22 +24,25 @@ class Invitation extends Component {
             modal: false,
             studentDetail: null,
             invitationDetail: null,
+            pageNumber: 1,
+            currentPage: 0,
+            rowsPerPage: 10
         }
     }
 
 
     async componentDidMount() {
-        const students = await ApiServices.Get('/student/getListStudentIsInvited');
+        const { currentPage, rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentIsInvited?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         const business = await ApiServices.Get('/business/getBusiness');
         if (students !== null) {
             this.setState({
-                students,
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                loading: false,
                 business_eng_name: business.business_eng_name,
-                loading: false
             });
         }
-
-        console.log(this.state.students);
     }
 
     handleDirect = (uri) => {
@@ -79,8 +83,67 @@ class Invitation extends Component {
     //     console.log(this.state);
     // }
 
+    handlePageNumber = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentIsInvited?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
+    handlePagePrevious = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentIsInvited?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
+    handlePageNext = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentIsInvited?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
+    handleInput = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value
+        })
+
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentIsInvited?currentPage=0&rowsPerPage=${rowsPerPage}`);
+
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                currentPage: 0,
+                pageNumber: students.pageNumber
+            })
+        }
+    }
+
     render() {
         const { students, business_eng_name, searchValue, columnToSort, sortDirection, loading, studentDetail, invitationDetail } = this.state;
+        const { pageNumber, currentPage, rowsPerPage } = this.state;
+
         let filteredListStudents = orderBy(students, columnToSort, sortDirection);
 
         if (students !== null) {
@@ -203,8 +266,14 @@ class Invitation extends Component {
                                             </tbody>
                                         </Table>
                                         <ToastContainer />
-                                        <Pagination>
-                                            {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                                        <Pagination style={{ marginTop: "3%" }}>
+                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                            <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                            <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "7%" }}>
+                                                <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                <option value={20}>20</option>
+                                                <option value={50}>50</option>
+                                            </Input>
                                         </Pagination>
                                     </CardBody>
                                 </Card>

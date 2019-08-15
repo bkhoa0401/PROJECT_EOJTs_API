@@ -46,21 +46,13 @@ class Excels extends Component {
     // async componentDidMount() {
     //     const dateButtonStudent = localStorage.getItem("dateButtonStudent");
     //     const dateButtonBusiness = localStorage.getItem("dateButtonBusiness");
-<<<<<<< HEAD
     //
-=======
-
->>>>>>> DucNH
     //     if (dateButtonStudent.toString() === "true") {
     //         document.getElementById("submitStudents").setAttribute("disabled", "disabled");
     //     } else {
     //         document.getElementById("submitStudents").removeAttribute("disabled", "disabled");
     //     }
-<<<<<<< HEAD
     //
-=======
-
->>>>>>> DucNH
     //     if (dateButtonBusiness.toString() === "true") {
     //         document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
     //     } else {
