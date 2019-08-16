@@ -128,8 +128,12 @@ public class SemesterService implements ISemesterService {
             String maxDate = semesters.get(i).getEnd_date().toString();
             boolean getCurrentSemester = Utils.aDateBetweenTwoDate(minDate, maxDate);
             if (getCurrentSemester == true) {
-                semesterCurrent = semesters.get(i);
-                semesterListResult.add(semesterCurrent);
+//                semesterCurrent = semesters.get(i);
+//                semesterListResult.add(semesterCurrent);
+                if (i + 1 <= semesters.size()) {
+                    semesterListResult.add(semesters.get(i + 1));
+                }
+                break;
             }
         }
         return semesterListResult;
