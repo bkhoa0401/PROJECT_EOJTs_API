@@ -178,6 +178,7 @@ public class StudentController {
         String password = usersService.getAlphaNumericString();
 
         role.setId(2);
+        role.setDescription("ROLE_STUDENT");
         roleList.add(role);
         users.setRoles(roleList);
         users.setEmail(student.getEmail());
@@ -204,7 +205,7 @@ public class StudentController {
         ojt_enrollment.setSemester(semester);
         try {
             studentService.saveStudent(student1);
-            usersService.saveUser(users);
+           // usersService.saveUser(users);
             ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);
 
             if (usersService.saveUser(users)) {
