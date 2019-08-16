@@ -119,10 +119,18 @@ class User_Student_Create extends Component {
             })
             const result = await ApiServices.Post('/student/new', student);
             if (result.status === 201) {
-                Toastify.actionSuccess("Tạo tài khoản mới thành công!");
                 this.setState({
                     loading: false
                 })
+                Toastify.actionSuccess("Tạo tài khoản mới thành công!");
+                setTimeout(
+                    function () {
+                        this.props.history.push('/admin_account/studentList');
+                    }
+                        .bind(this),
+                    3500
+                );
+
                 var currentTime = new Date();
 
                 var month = ("0" + (currentTime.getMonth() + 1)).slice(-2);
