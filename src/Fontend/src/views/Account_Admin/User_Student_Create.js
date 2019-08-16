@@ -117,8 +117,8 @@ class User_Student_Create extends Component {
             this.setState({
                 loading: true
             })
-            // const result = await ApiServices.Post('/student/new', student);
-            if (201 === 201) {
+            const result = await ApiServices.Post('/student/new', student);
+            if (result.status === 201) {
                 this.setState({
                     loading: false
                 })
