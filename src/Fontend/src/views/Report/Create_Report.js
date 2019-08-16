@@ -46,6 +46,9 @@ class Create_Report extends Component {
             numTaskEasy: 0,
             numTaskNormal: 0,
             numTaskDificult: 0, 
+            numTaskEasyFinish: 0,
+            numTaskNormalFinish: 0,
+            numTaskDificultFinish: 0, 
         };
     }
 
@@ -59,6 +62,9 @@ class Create_Report extends Component {
         let numTaskEasy = 0;
         let numTaskNormal = 0;
         let numTaskDificult = 0; 
+        let numTaskEasyFinish = 0;
+        let numTaskNormalFinish = 0;
+        let numTaskDificultFinish = 0; 
         if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
@@ -178,21 +184,24 @@ class Create_Report extends Component {
         for (let index = 0; index < listStudentTask.length; index++) {
             if (listStudentTask[index].level_task === "EASY") {
                 numRealTask = numRealTask + 1;
+                numTaskEasy++;
             } else if (listStudentTask[index].level_task === "NORMAL") {
                 numRealTask = numRealTask + 2;
+                numTaskNormal++;
             } else if (listStudentTask[index].level_task === "DIFFICULT") {
                 numRealTask = numRealTask + 3;
+                numTaskDificult++;
             }
             if (listStudentTask[index].status === "APPROVED") {
                 if (listStudentTask[index].level_task === "EASY") {
                     numApproved = numApproved + 1;
-                    numTaskEasy++;
+                    numTaskEasyFinish++;
                 } else if (listStudentTask[index].level_task === "NORMAL") {
                     numApproved = numApproved + 2;
-                    numTaskNormal++;
+                    numTaskNormalFinish++;
                 } else if (listStudentTask[index].level_task === "DIFFICULT") {
                     numApproved = numApproved + 3;
-                    numTaskDificult++;
+                    numTaskDificultFinish++;
                 }
             }
         }
@@ -215,6 +224,9 @@ class Create_Report extends Component {
             numTaskEasy: numTaskEasy,
             numTaskNormal: numTaskNormal,
             numTaskDificult: numTaskDificult,
+            numTaskEasyFinish: numTaskEasyFinish,
+            numTaskNormalFinish: numTaskNormalFinish,
+            numTaskDificultFinish: numTaskDificultFinish,
         });
     }
 
@@ -388,7 +400,7 @@ class Create_Report extends Component {
     }
 
     render() {
-        const { numTaskEasy, numTaskNormal, numTaskDificult, listStudentTask, titleReport, titleHeader, maxWorkDays, validatorMaxWorkDays, validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, workDays, remark, project_name, onScore, timeStartShow, timeEndShow } = this.state;
+        const { numTaskEasy, numTaskNormal, numTaskDificult, numTaskEasyFinish, numTaskNormalFinish, numTaskDificultFinish, listStudentTask, titleReport, titleHeader, maxWorkDays, validatorMaxWorkDays, validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, workDays, remark, project_name, onScore, timeStartShow, timeEndShow } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -476,7 +488,7 @@ class Create_Report extends Component {
                                             </Col>
                                             <Col xs="12" md="10">
                                                 <Input value={score_work} type='number' style={{ width: '70px' }} onChange={this.handleInputScore} id="score_work" name="score_work" min="0" max="10"></Input>
-                                                <FormText className="help-block">Tổng số nhiệm vụ: {listStudentTask.length}, Số nhiệm vụ hoàn thành: Dễ({numTaskEasy}), Trung bình({numTaskNormal}), Khó({numTaskDificult})</FormText>
+                                                <FormText className="help-block">Tổng số nhiệm vụ: {listStudentTask.length}, Số nhiệm vụ hoàn thành: Dễ({numTaskEasyFinish}/{numTaskEasy}), Trung bình({numTaskNormalFinish}/{numTaskNormal}), Khó({numTaskDificultFinish}/{numTaskDificult})</FormText>
                                                 <span className="form-error is-visible text-danger">
                                                     {this.validator.message('Điểm hiệu quả công việc', score_work, 'required|numeric')}
                                                 </span>
