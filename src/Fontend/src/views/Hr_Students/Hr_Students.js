@@ -27,7 +27,7 @@ class Hr_Students extends Component {
 
     async componentDidMount() {
         const { currentPage, rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/supervisor/students?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/supervisor/students/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         if (students !== null) {
             this.setState({
                 students: students.listData,
@@ -273,7 +273,7 @@ class Hr_Students extends Component {
 
     handlePageNumber = async (currentPage) => {
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/supervisor/students?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/supervisor/students/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
         if (students !== null) {
             this.setState({
@@ -286,7 +286,7 @@ class Hr_Students extends Component {
 
     handlePagePrevious = async (currentPage) => {
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/supervisor/students?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/supervisor/students/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
         if (students !== null) {
             this.setState({
@@ -299,7 +299,7 @@ class Hr_Students extends Component {
 
     handlePageNext = async (currentPage) => {
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/supervisor/students?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/supervisor/students/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
         if (students !== null) {
             this.setState({
@@ -317,7 +317,7 @@ class Hr_Students extends Component {
         })
 
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/supervisor/students?currentPage=0&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/supervisor/students/pagination?currentPage=0&rowsPerPage=${rowsPerPage}`);
 
         if (students !== null) {
             this.setState({

@@ -43,22 +43,22 @@ class Excels extends Component {
         this.toggleLarge = this.toggleLarge.bind(this);
     }
 
-    // async componentDidMount() {
-    //     const dateButtonStudent = localStorage.getItem("dateButtonStudent");
-    //     const dateButtonBusiness = localStorage.getItem("dateButtonBusiness");
-    //
-    //     if (dateButtonStudent.toString() === "true") {
-    //         document.getElementById("submitStudents").setAttribute("disabled", "disabled");
-    //     } else {
-    //         document.getElementById("submitStudents").removeAttribute("disabled", "disabled");
-    //     }
-    //
-    //     if (dateButtonBusiness.toString() === "true") {
-    //         document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
-    //     } else {
-    //         document.getElementById("submitStudents").removeAttribute("disabled", "disabled");
-    //     }
-    // }
+    async componentDidMount() {
+        const dateButtonStudent = localStorage.getItem("dateButtonStudent");
+        const dateButtonBusiness = localStorage.getItem("dateButtonBusiness");
+    
+        if (dateButtonStudent.toString() === "true") {
+            document.getElementById("submitStudents").setAttribute("disabled", "disabled");
+        } else {
+            document.getElementById("submitStudents").removeAttribute("disabled", "disabled");
+        }
+    
+        if (dateButtonBusiness.toString() === "true") {
+            document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
+        } else {
+            document.getElementById("submitStudents").removeAttribute("disabled", "disabled");
+        }
+    }
 
     toggleLarge = (business) => {
         this.setState({
@@ -374,8 +374,8 @@ class Excels extends Component {
 
                     // var dateButton = new Date();
                     // alert(dateButton);
-                    // localStorage.setItem('dateButtonStudent', true);
-                    // document.getElementById("submitStudents").setAttribute("disabled", "disabled");
+                    localStorage.setItem('dateButtonStudent', true);
+                    document.getElementById("submitStudents").setAttribute("disabled", "disabled");
                 } else {
                     this.setState({
                         loading: false
@@ -495,8 +495,8 @@ class Excels extends Component {
                         })
                         Toastify.actionSuccess("Thêm tệp thành công!");
 
-                        // localStorage.setItem('dateButtonBusiness', true);
-                        // document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
+                        localStorage.setItem('dateButtonBusiness', true);
+                        document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
 
                     } else {
                         this.setState({
