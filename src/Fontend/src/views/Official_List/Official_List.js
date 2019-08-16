@@ -8,6 +8,7 @@ import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import Toastify from '../../views/Toastify/Toastify';
 import PaginationComponent from '../Paginations/pagination';
+import { async } from "q";
 
 const invertDirection = {
   asc: 'desc',
@@ -186,7 +187,7 @@ class Official_List extends Component {
     }
   };
 
-  handleSelectAll = () => {
+  handleSelectAll = async() => {
     let suggestedStudents = this.state.suggestedStudents;
     let preListStudent = [];
     let isSelect = [];
@@ -194,10 +195,12 @@ class Official_List extends Component {
       isSelect.push(1);
       preListStudent.push(suggestedStudents[index]);
     }
-    this.setState({
+    await this.setState({
       preListStudent: preListStudent,
       isSelect: isSelect,
     })
+    // console.log(this.state.suggestedStudents);
+    // console.log(this.state.preListStudent);
   }
 
   handleDeSelect = () => {

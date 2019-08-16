@@ -82,39 +82,39 @@ class User_Business extends Component {
 
     handlePageNumber = async (currentPage) => {
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/user/getUsersByType?type=3&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const businesses = await ApiServices.Get(`/user/getUsersByType?type=3&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
-        if (students !== null) {
+        if (businesses !== null) {
             this.setState({
-                students: students.listData,
+                businesses: businesses.listData,
                 currentPage,
-                pageNumber: students.pageNumber
+                pageNumber: businesses.pageNumber
             })
         }
     }
 
     handlePagePrevious = async (currentPage) => {
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/user/getUsersByType?type=3&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const businesses = await ApiServices.Get(`/user/getUsersByType?type=3&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
-        if (students !== null) {
+        if (businesses !== null) {
             this.setState({
-                students: students.listData,
+                businesses: businesses.listData,
                 currentPage,
-                pageNumber: students.pageNumber
+                pageNumber: businesses.pageNumber
             })
         }
     }
 
     handlePageNext = async (currentPage) => {
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/user/getUsersByType?type=3&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const businesses = await ApiServices.Get(`/user/getUsersByType?type=3&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
-        if (students !== null) {
+        if (businesses !== null) {
             this.setState({
-                students: students.listData,
+                businesses: businesses.listData,
                 currentPage,
-                pageNumber: students.pageNumber
+                pageNumber: businesses.pageNumber
             })
         }
     }
@@ -126,13 +126,13 @@ class User_Business extends Component {
         })
 
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/user/getUsersByType?type=3&currentPage=0&rowsPerPage=${rowsPerPage}`);
+        const businesses = await ApiServices.Get(`/user/getUsersByType?type=3&currentPage=0&rowsPerPage=${rowsPerPage}`);
 
-        if (students !== null) {
+        if (businesses !== null) {
             this.setState({
-                students: students.listData,
+                businesses: businesses.listData,
                 currentPage: 0,
-                pageNumber: students.pageNumber
+                pageNumber: businesses.pageNumber
             })
         }
     }

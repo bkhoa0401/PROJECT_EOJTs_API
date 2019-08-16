@@ -199,7 +199,22 @@ public class SupervisorController {
     //check semester //ok
     @GetMapping("/students")
     @ResponseBody
-    public ResponseEntity<PagingDTO> getAllStudentBySupervisorEmail(@RequestParam int currentPage
+    public ResponseEntity<List<Student>> getAllStudentBySupervisorEmail() {
+        String email = getEmailFromToken();
+
+        List<Student> studentList = studentService.getAllStudentOfASupervisor(email);
+
+        if (studentList != null) {
+            return new ResponseEntity<List<Student>>(studentList, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    //check semester //ok
+    @GetMapping("/students/pagination")
+    @ResponseBody
+    public ResponseEntity<PagingDTO> getAllStudentBySupervisorEmailPagination(@RequestParam int currentPage
             , @RequestParam int rowsPerPage) {
         String email = getEmailFromToken();
 

@@ -42,7 +42,6 @@ class Report extends Component {
             role = decoded.role;
         }
         if (role === 'ROLE_SUPERVISOR') {
-            // thoi de con tu viet luon, lam theo kieu cha la tra ve list data : student + evaluation list ma cai nay api cu~ ==', thoi may di ngu me di, de anh=='
             listStudentAndReport = await ApiServices.Get(`/supervisor/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
             for (let index = 0; index < listStudentAndReport.listData.length; index++) {
                 students.push(listStudentAndReport.listData[index].student);
