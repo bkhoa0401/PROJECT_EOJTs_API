@@ -93,6 +93,12 @@ public class StudentService implements IStudentService {
 
     @Override
     public boolean saveStudent(Student student) {
+        ValueOperations values = template.opsForValue();
+        List<Student> studentList = (List<Student>) values.get("students");
+        if (studentList != null) {
+            studentList.add(student);
+            values.set("students", studentList);
+        }
         IStudentRepository.save(student);
         return true;
     }

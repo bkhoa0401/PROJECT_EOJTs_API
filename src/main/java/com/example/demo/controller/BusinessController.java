@@ -120,7 +120,6 @@ public class BusinessController {
 
         try {
             businessService.saveBusiness(business);
-           // usersService.saveUser(users);
 
             if (usersService.saveUser(users)) {
                 usersService.sendEmail(business.getBusiness_name(), users.getEmail(), users.getPassword());

@@ -187,8 +187,6 @@ public class StudentController {
 
         Semester semester = semesterService.getSemesterByName(student.getSemesterName());
 
-
-//        Student studentGetByEmail=studentService.getStudentByEmail(student.getEmail());
         Student student1 = new Student();
         student1.setEmail(student.getEmail());
         student1.setSpecialized(student.getSpecialized());
@@ -205,7 +203,6 @@ public class StudentController {
         ojt_enrollment.setSemester(semester);
         try {
             studentService.saveStudent(student1);
-           // usersService.saveUser(users);
             ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);
 
             if (usersService.saveUser(users)) {
