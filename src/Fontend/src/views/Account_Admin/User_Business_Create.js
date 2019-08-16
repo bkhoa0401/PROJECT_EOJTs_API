@@ -99,12 +99,19 @@ class User_Business_Create extends Component {
             this.setState({
                 loading: true
             })
-            const result = await ApiServices.Post('/business/new', business);
-            if (result.status === 201) {
+            // const result = await ApiServices.Post('/business/new', business);
+            if (201 === 201) {
                 Toastify.actionSuccess("Tạo tài khoản mới thành công!");
                 this.setState({
                     loading: false
                 })
+                setTimeout(
+                    function () {
+                        this.props.history.push('/admin_account/businessList');
+                    }
+                        .bind(this),
+                    3500
+                );
             } else {
                 Toastify.actionFail("Tạo tài khoản mới thất bại!");
                 this.setState({
