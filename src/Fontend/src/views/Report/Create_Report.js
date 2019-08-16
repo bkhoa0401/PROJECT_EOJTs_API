@@ -1,7 +1,7 @@
 import decode from 'jwt-decode';
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { FormText, Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Pagination, Row } from 'reactstrap';
+import { Modal, ModalHeader, ModalFooter, ModalBody, Table, FormText, Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Pagination, Row } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import SimpleReactValidator from '../../validator/simple-react-validator';
@@ -45,10 +45,15 @@ class Create_Report extends Component {
             listStudentTask: null,
             numTaskEasy: 0,
             numTaskNormal: 0,
-            numTaskDificult: 0, 
+            numTaskDificult: 0,
             numTaskEasyFinish: 0,
             numTaskNormalFinish: 0,
-            numTaskDificultFinish: 0, 
+            numTaskDificultFinish: 0,
+
+            modalTask: false,
+            listStudentTask: null,
+            months: null,
+            isThisMonth: -1,
         };
     }
 
@@ -61,10 +66,10 @@ class Create_Report extends Component {
         let score_work = "";
         let numTaskEasy = 0;
         let numTaskNormal = 0;
-        let numTaskDificult = 0; 
+        let numTaskDificult = 0;
         let numTaskEasyFinish = 0;
         let numTaskNormalFinish = 0;
-        let numTaskDificultFinish = 0; 
+        let numTaskDificultFinish = 0;
         if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
@@ -205,7 +210,11 @@ class Create_Report extends Component {
                 }
             }
         }
-        score_work = "" + parseFloat(10 - ((10/numRealTask)*(numRealTask-numApproved))).toFixed(3);
+        score_work = "" + parseFloat(10 - ((10 / numRealTask) * (numRealTask - numApproved))).toFixed(1);
+        if (!(parseFloat(score_work).toFixed(1) > 0 && parseFloat(score_work).toFixed(1) <= 10)) {
+            score_work = "0";
+        }
+        // console.log(score_work);
         this.setState({
             loading: false,
             title: title,
@@ -219,7 +228,7 @@ class Create_Report extends Component {
             maxWorkDays: maxWorkDays,
             titleHeader: titleHeader,
             titleReport: titleReport,
-            listStudentTask : listStudentTask,
+            listStudentTask: listStudentTask,
             score_work: score_work,
             numTaskEasy: numTaskEasy,
             numTaskNormal: numTaskNormal,
@@ -227,7 +236,177 @@ class Create_Report extends Component {
             numTaskEasyFinish: numTaskEasyFinish,
             numTaskNormalFinish: numTaskNormalFinish,
             numTaskDificultFinish: numTaskDificultFinish,
+            
+            isThisMonth: needParam[0],
         });
+        console.log(this.state.isThisMonth);
+    }
+
+    handleSelectMonth = async (event) => {
+        let emailStudent = this.state.emailStudent;
+        const { name, value } = event.target;
+        const { months } = this.state;
+        let listStudentTask = null;
+        // console.log(value);
+        if (value <= 0) {
+            listStudentTask = await ApiServices.Get(`/supervisor/allTasksByStudentEmail?emailStudent=${emailStudent}`);
+            // console.log(listStudentTask);
+        } else {
+            var date = months[value].split(" - ");
+            // console.log(date[0]);
+            // console.log(date[1]);
+            var formatDateStart = date[0].split("/");
+            let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
+            // console.log(dateStart);
+            var formatDateEnd = date[1].split("/");
+            let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
+            // console.log(dateEnd);
+            listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${emailStudent}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+        }
+        await this.setState({
+            listStudentTask: listStudentTask,
+            isThisMonth: -1,
+        })
+    }
+
+    toggleModalTask = async () => {
+        let emailStudent = this.state.emailStudent;
+        if (this.state.modalTask === false) {
+            this.setState({
+                loading: true,
+            })
+            let months = [];
+            let listStudentTask = null;
+
+            const ojtEnrollment = await ApiServices.Get(`/enrollment/getSelectedStuEnrollment?email=${emailStudent}`);
+            var dateEnroll = ojtEnrollment.timeEnroll;
+            if (dateEnroll !== null) {
+                var splitDate = dateEnroll.split('-');
+                let dd = parseInt(splitDate[2]);
+                let mm = parseInt(splitDate[1]);
+                // let mm31 = [1, 3, 5, 7, 8, 10, 12];
+                let mm30 = [4, 6, 9, 11];
+                let yyyy = parseInt(splitDate[0]);
+                for (let index = 1; index < 5; index++) {
+                    let timeStartShow = "";
+                    if (mm + parseInt(index) > 13) {
+                        if ((mm + parseInt(index) - 12 - 1) === 2 && (yyyy + 1) % 4 === 0 && dd > 29) {
+                            timeStartShow = 29 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+                        } else if ((mm + parseInt(index) - 12 - 1) === 2 && (yyyy + 1) % 4 !== 0 && dd > 28) {
+                            timeStartShow = 28 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+                        } else if (mm30.includes((mm + parseInt(index) - 12 - 1)) && dd > 30) {
+                            timeStartShow = 30 + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+                        } else {
+                            timeStartShow = dd + "/" + (mm + parseInt(index) - 12 - 1) + "/" + (yyyy + 1);
+                        }
+                    } else {
+                        if ((mm + parseInt(index) - 1) === 2 && yyyy % 4 === 0 && dd > 29) {
+                            timeStartShow = 29 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+                        } else if ((mm + parseInt(index) - 1) === 2 && yyyy % 4 !== 0 && dd > 28) {
+                            timeStartShow = 28 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+                        } else if (mm30.includes((mm + parseInt(index) - 1)) && dd > 30) {
+                            timeStartShow = 30 + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+                        } else {
+                            timeStartShow = dd + "/" + (mm + parseInt(index) - 1) + "/" + yyyy;
+                        }
+                    }
+                    let formatTimeStartShow = timeStartShow.split('/');
+                    // console.log(formatTimeStartShow[1]);
+                    // console.log(formatTimeStartShow[0]);
+                    if (parseInt(formatTimeStartShow[1]) < 10) {
+                        formatTimeStartShow[1] = "0" + formatTimeStartShow[1];
+                    }
+                    if (parseInt(formatTimeStartShow[0]) < 10) {
+                        formatTimeStartShow[0] = "0" + formatTimeStartShow[0];
+                    }
+                    timeStartShow = formatTimeStartShow[0] + "/" + formatTimeStartShow[1] + "/" + formatTimeStartShow[2];
+                    // console.log(timeStartShow);
+                    let timeEndShow = "";
+                    if (mm + parseInt(index) > 12) {
+                        if ((mm + parseInt(index) - 12) === 2 && (yyyy + 1) % 4 === 0 && dd > 29) {
+                            timeEndShow = 29 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+                        } else if ((mm + parseInt(index) - 12) === 2 && (yyyy + 1) % 4 !== 0 && dd > 28) {
+                            timeEndShow = 28 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+                        } else if (mm30.includes((mm + parseInt(index) - 12)) && dd > 30) {
+                            timeEndShow = 30 + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+                        } else {
+                            timeEndShow = dd + "/" + (mm + parseInt(index) - 12) + "/" + (yyyy + 1);
+                        }
+                    } else {
+                        if ((mm + parseInt(index)) === 2 && yyyy % 4 === 0 && dd > 29) {
+                            timeEndShow = 29 + "/" + (mm + parseInt(index)) + "/" + yyyy;
+                        } else if ((mm + parseInt(index)) === 2 && yyyy % 4 !== 0 && dd > 28) {
+                            timeEndShow = 28 + "/" + (mm + parseInt(index)) + "/" + yyyy;
+                        } else if (mm30.includes((mm + parseInt(index))) && dd > 30) {
+                            timeEndShow = 30 + "/" + (mm + parseInt(index)) + "/" + yyyy;
+                        } else {
+                            timeEndShow = dd + "/" + (mm + parseInt(index)) + "/" + yyyy;
+                        }
+                    }
+                    let formatTimeEndShow = timeEndShow.split('/');
+                    if (parseInt(formatTimeEndShow[1]) < 10) {
+                        formatTimeEndShow[1] = "0" + formatTimeEndShow[1];
+                    }
+                    if (parseInt(formatTimeEndShow[0]) < 10) {
+                        formatTimeEndShow[0] = "0" + formatTimeEndShow[0];
+                    }
+                    timeEndShow = formatTimeEndShow[0] + "/" + formatTimeEndShow[1] + "/" + formatTimeEndShow[2];
+                    months.push(`${timeStartShow} - ${timeEndShow}`);
+                }
+                months.unshift("Tổng");
+                var date = months[this.state.isThisMonth].split(" - ");
+                console.log(this.state.isThisMonth);
+                console.log(months[this.state.isThisMonth]);
+                var formatDateStart = date[0].split("/");
+                let dateStart = formatDateStart[2] + "-" + formatDateStart[1] + "-" + formatDateStart[0];
+                var formatDateEnd = date[1].split("/");
+                let dateEnd = formatDateEnd[2] + "-" + formatDateEnd[1] + "-" + formatDateEnd[0];
+                listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${emailStudent}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
+            }
+            this.setState({
+                modalTask: !this.state.modalTask,
+                listStudentTask: listStudentTask,
+                months: months,
+                loading: false,
+            });
+        } else {
+            this.setState({
+                modalTask: !this.state.modalTask,
+            })
+        }
+    }
+
+    showTaskLevel(taskLevel) {
+        if (taskLevel === 'DIFFICULT') {
+            return (
+                <Badge color="danger">Khó</Badge>
+            )
+        } else if (taskLevel === 'EASY') {
+            return (
+                <Badge color="primary">Dễ</Badge>
+            )
+        } else if (taskLevel === 'NORMAL') {
+            return (
+                <Badge color="warning">Trung bình</Badge>
+            )
+        }
+    }
+
+    showTaskState(taskStatus) {
+        // console.log(taskStatus);
+        if (taskStatus === 'NOTSTART') {
+            return (
+                <Badge color="secondary">Chưa bắt đầu</Badge>
+            )
+        } else if (taskStatus === 'PENDING') {
+            return (
+                <Badge color="warning">Chưa xong</Badge>
+            )
+        } else if (taskStatus === 'DONE') {
+            return (
+                <Badge color="success">Hoàn Thành</Badge>
+            )
+        }
     }
 
     handleInput = async (event) => {
@@ -400,7 +579,7 @@ class Create_Report extends Component {
     }
 
     render() {
-        const { numTaskEasy, numTaskNormal, numTaskDificult, numTaskEasyFinish, numTaskNormalFinish, numTaskDificultFinish, listStudentTask, titleReport, titleHeader, maxWorkDays, validatorMaxWorkDays, validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, workDays, remark, project_name, onScore, timeStartShow, timeEndShow } = this.state;
+        const { isThisMonth, months, numTaskEasy, numTaskNormal, numTaskDificult, numTaskEasyFinish, numTaskNormalFinish, numTaskDificultFinish, listStudentTask, titleReport, titleHeader, maxWorkDays, validatorMaxWorkDays, validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, workDays, remark, project_name, onScore, timeStartShow, timeEndShow } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -487,14 +666,17 @@ class Create_Report extends Component {
                                                 <h6 style={{ fontWeight: "bold" }}>Điểm hiệu quả công việc:</h6>
                                             </Col>
                                             <Col xs="12" md="10">
-                                                <Input value={score_work} type='number' style={{ width: '70px' }} onChange={this.handleInputScore} id="score_work" name="score_work" min="0" max="10"></Input>
-                                                <FormText className="help-block">Tổng số nhiệm vụ: {listStudentTask.length}, Số nhiệm vụ hoàn thành: Dễ({numTaskEasyFinish}/{numTaskEasy}), Trung bình({numTaskNormalFinish}/{numTaskNormal}), Khó({numTaskDificultFinish}/{numTaskDificult})</FormText>
+                                                <Row>
+                                                    &emsp;<Input value={score_work} type='number' style={{ width: '70px' }} onChange={this.handleInputScore} id="score_work" name="score_work" min="0" max="10"></Input>
+                                                    &nbsp;&nbsp;<Button color="success" onClick={() => this.toggleModalTask()}><i className="fa cui-task"></i></Button>
+                                                </Row>
                                                 <span className="form-error is-visible text-danger">
                                                     {this.validator.message('Điểm hiệu quả công việc', score_work, 'required|numeric')}
                                                 </span>
                                                 <span className="form-error is-visible text-danger">
                                                     {validatorNumRange_score_work}
                                                 </span>
+                                                <FormText className="help-block">Tổng số nhiệm vụ: {listStudentTask.length} - Số nhiệm vụ hoàn thành: Dễ({numTaskEasyFinish}/{numTaskEasy}), Trung bình({numTaskNormalFinish}/{numTaskNormal}), Khó({numTaskDificultFinish}/{numTaskDificult})</FormText>
                                             </Col>
                                         </FormGroup>
                                         <FormGroup row>
@@ -541,6 +723,84 @@ class Create_Report extends Component {
                                                 <Input value={remark} type="textarea" rows="9" placeholder="Nhập nhận xét..." onChange={this.handleInput} id="remark" name="remark" />
                                             </Col>
                                         </FormGroup>
+                                        {student !== null ?
+                                            <Modal isOpen={this.state.modalTask} toggle={this.toggleModalTask}
+                                                className={'modal-lg ' + this.props.className}>
+                                                <ModalHeader style={{ backgroundColor: "#4DBD74", color: "white" }} toggle={this.toggleModalTask}>Nhiệm vụ của sinh viên</ModalHeader>
+                                                <ModalBody>
+                                                    <FormGroup row>
+                                                        <Col md="3">
+                                                            <h6>Người hướng dẫn</h6>
+                                                        </Col>
+                                                        <Col xs="12" md="9">
+                                                            <Label>{student.supervisor === null ? <></> : (student.supervisor.name)}</Label>
+                                                        </Col>
+                                                    </FormGroup>
+                                                    <FormGroup row>
+                                                        <Col md="3">
+                                                            <h6>Sinh viên</h6>
+                                                        </Col>
+                                                        <Col xs="12" md="9">
+                                                            <label>{student.name}</label>
+                                                        </Col>
+                                                    </FormGroup>
+                                                    <FormGroup row style={{ paddingLeft: '38%' }}>
+                                                        <Input onChange={e => { this.handleSelectMonth(e, student) }} type="select" name="months" style={{ width: '250px' }}>
+                                                            {months && months.map((month, i) => {
+                                                                return (
+                                                                    <option value={i} selected={i == isThisMonth}>{month}</option>
+                                                                )
+                                                            })}
+                                                        </Input>
+                                                    </FormGroup>
+                                                    <div style={{ maxHeight: '492px', overflowY: 'auto' }}>
+                                                        <Table responsive striped>
+                                                            <thead>
+                                                                <tr>
+                                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
+                                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nhiệm vụ</th>
+                                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Người giao</th>
+                                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ưu tiên</th>
+                                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Độ khó</th>
+                                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ngày tạo</th>
+                                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hạn cuối</th>
+                                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {
+                                                                    this.state.listStudentTask && this.state.listStudentTask.map((task, index) => {
+                                                                        return (
+                                                                            <tr>
+                                                                                <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                                                <td style={{ textAlign: "center" }}>{task.title}</td>
+                                                                                <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
+                                                                                <td style={{ textAlign: "center" }}>{task.priority}</td>
+                                                                                <td style={{ textAlign: "center" }}>
+                                                                                    {
+                                                                                        this.showTaskLevel(task.level_task)
+                                                                                    }
+                                                                                </td>
+                                                                                <td style={{ textAlign: "center" }}>{this.formatDate(task.time_created, true)}</td>
+                                                                                <td style={{ textAlign: "center" }}>{this.formatDate(task.time_end, false)}</td>
+                                                                                <td style={{ textAlign: "center" }}>
+                                                                                    {
+                                                                                        this.showTaskState(task.status)
+                                                                                    }
+                                                                                </td>
+                                                                            </tr>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </tbody>
+                                                        </Table>
+                                                    </div>
+                                                </ModalBody>
+                                                {/* <ModalFooter>
+                                </ModalFooter> */}
+                                            </Modal> :
+                                            <></>
+                                        }
                                         <ToastContainer />
                                         <Pagination>
                                             {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
