@@ -8,6 +8,7 @@ import com.example.demo.entity.Skill;
 import com.example.demo.entity.Specialized;
 import com.example.demo.service.ISkillService;
 import com.example.demo.service.SkillService;
+import com.example.demo.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,18 +27,21 @@ public class SkillController {
 
     @GetMapping
     @ResponseBody
-    public ResponseEntity<List<Skill>> getAllSkill() {
+    public ResponseEntity<PagingDTO> getAllSkill(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
         HttpStatus httpStatus;
         List<Skill> skillList = new ArrayList<>();
 
         skillList = skillService.getAllSkill();
 
         if (skillList != null) {
+            Utils<Skill> utils = new Utils<>();
+            PagingDTO pagingDTO = utils.paging(skillList, currentPage, rowsPerPage);
             httpStatus = HttpStatus.OK;
-            return new ResponseEntity<List<Skill>>(skillList, httpStatus);
+            return new ResponseEntity<PagingDTO>(pagingDTO, httpStatus);
         } else {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-            return new ResponseEntity<List<Skill>>(skillList, httpStatus);
+            return new ResponseEntity<>(httpStatus);
         }
     }
 
@@ -153,24 +157,17 @@ public class SkillController {
 
     @PostMapping("/listSkill")
     @ResponseBody
-    public ResponseEntity<Void> createListSkill(@RequestBody List<String> skills) {
+    public ResponseEntity<Void> createListSkill(@RequestBody List<Skill> skills) {
 
         for (int i = 0; i < skills.size(); i++) {
 
             List<Skill> skillList = skillService.getAllSkill();
             int sizeList = skillList.size();
 
-            Skill skill = new Skill();
-            Specialized specialized = new Specialized();
-            specialized.setId(1); // ngành chung
-
+            Skill skill = skills.get(i);
             skill.setId(sizeList + 1);
-            skill.setName(skills.get(i));
             skill.setStatus(true);
-            skill.setSpecialized(specialized);
-
             skillService.createSkill(skill);
-
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

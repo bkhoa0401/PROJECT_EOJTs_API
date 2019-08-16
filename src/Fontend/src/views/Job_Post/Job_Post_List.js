@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { Button, Card, CardBody, CardHeader, Col, Collapse, Pagination, Row } from 'reactstrap';
+import { Button, Card, CardBody, CardHeader, Col, Collapse, Pagination, Row, Input } from 'reactstrap';
 import ApiServices from '../../service/api-service';
+import PaginationComponent from '../Paginations/pagination';
 
 
 class Job_Post_List extends Component {
@@ -13,43 +14,27 @@ class Job_Post_List extends Component {
             searchValue: '',
             accordion: [],
             isShowAll: true,
-            // countJobPostList: [],
-            // countJobPostSkillList: [],
-            // businessList:[],
-            // jobPostList:[],
-            // skillList:[],
+            pageNumber: 1,
+            currentPage: 0,
+            rowsPerPage: 10
         };
     }
 
     async componentDidMount() {
-        const businesses = await ApiServices.Get('/admin/jobPostsBusinesses');
+        const { currentPage, rowsPerPage } = this.state;
+
+        const businesses = await ApiServices.Get(`/admin/jobPostsBusinesses?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         let accordion = [];
-        // const businessList = businesses.business;
-        // const jobPostList = businesses.job_postList;
-        // const skillList = jobPostList.job_post_skills;
-        // let countJobPostList = [];
-        // let countJobPostSkillList = [];
         if (businesses !== null) {
             for (let i = 0; i < businesses.length; i++) {
-                // countJobPostList.push(businesses[i].job_postList.length);
-                // for (let j = 0; j < businesses[i].job_postList.length; j++) {
-                //     countJobPostSkillList.push(businesses[i].job_postList[j].job_post_skills.length);
-                // }
                 accordion.push(true);
             }
             this.setState({
-                businesses: businesses,
+                businesses: businesses.listData,
                 accordion: accordion,
                 isShowAll: true,
-                // jobPostList: jobPostList,
-                // skillList: skillList,
-                // countJobPostList: countJobPostList,
-                // countJobPostSkillList: countJobPostSkillList,
-                // businessList: businessList,
-                // jobPostList: jobPostList,
+                pageNumber: businesses.pageNumber
             });
-            console.log(this.state.countJobPostList);
-            console.log(this.state.countJobPostSkillList);
         }
     }
 
@@ -109,8 +94,67 @@ class Job_Post_List extends Component {
         });
     }
 
+    handlePageNumber = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const businesses = await ApiServices.Get(`/admin/jobPostsBusinesses?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (businesses !== null) {
+            this.setState({
+                businesses: businesses.listData,
+                currentPage,
+                pageNumber: businesses.pageNumber
+            })
+        }
+    }
+
+    handlePagePrevious = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const businesses = await ApiServices.Get(`/admin/jobPostsBusinesses?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (businesses !== null) {
+            this.setState({
+                businesses: businesses.listData,
+                currentPage,
+                pageNumber: businesses.pageNumber
+            })
+        }
+    }
+
+    handlePageNext = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const businesses = await ApiServices.Get(`/admin/jobPostsBusinesses?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+
+        if (businesses !== null) {
+            this.setState({
+                businesses: businesses.listData,
+                currentPage,
+                pageNumber: businesses.pageNumber
+            })
+        }
+    }
+
+    handleInputPaging = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value
+        })
+
+        const { rowsPerPage } = this.state;
+        const businesses = await ApiServices.Get(`/admin/jobPostsBusinesses?currentPage=0&rowsPerPage=${rowsPerPage}`);
+
+        if (businesses !== null) {
+            this.setState({
+                businesses: businesses.listData,
+                currentPage: 0,
+                pageNumber: businesses.pageNumber
+            })
+        }
+    }
+
     render() {
         const { businesses, searchValue, isShowAll } = this.state;
+        const { pageNumber, currentPage, rowsPerPage } = this.state;
+
         let filteredListBusinesses;
         if (businesses !== null) {
             filteredListBusinesses = businesses.filter(
@@ -234,8 +278,14 @@ class Job_Post_List extends Component {
                                     </div>
                                 </div>
                                 <ToastContainer />
-                                <Pagination>
-                                    {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
+                                <Pagination style={{ marginTop: "3%" }}>
+                                    <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                    <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                    <Input onChange={this.handleInputPaging} type="select" name="rowsPerPage" style={{ width: "7%" }}>
+                                        <option value={10} selected={rowsPerPage === 10}>10</option>
+                                        <option value={20}>20</option>
+                                        <option value={50}>50</option>
+                                    </Input>
                                 </Pagination>
                             </CardBody>
                             {/* <CardFooter className="p-4">

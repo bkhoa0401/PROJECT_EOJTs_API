@@ -17,8 +17,7 @@ class Specialized extends Component {
             loading: true,
             pageNumber: 1,
             currentPage: 0,
-            specializedsPagination: null,
-            rowsPerPage: 1,
+            rowsPerPage: 10,
         }
     }
 
@@ -262,10 +261,9 @@ class Specialized extends Component {
                                             <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
                                             <h6 style={{marginLeft: "5%", width: "15%", marginTop: "7px"}}>Số dòng trên trang: </h6>
                                             <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{width: "7%"}}>
-                                                <option value={1} selected={rowsPerPage === 1}>1</option>
-                                                <option value={2}>2</option>
-                                                <option value={3}>3</option>
-                                                <option value={100}>100</option>
+                                                <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                <option value={20}>20</option>
+                                                <option value={50}>50</option>
                                             </Input>
                                         </Pagination>
                                     </CardBody>

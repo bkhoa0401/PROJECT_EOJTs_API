@@ -1,12 +1,15 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.PagingDTO;
+import com.example.demo.dto.Student_EvaluationDTO;
 import com.example.demo.entity.*;
 import com.example.demo.repository.ISupervisorRepository;
+import com.example.demo.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -28,6 +31,9 @@ public class SupervisorService implements ISupervisorService {
 
     @Autowired
     IStudentService iStudentService;
+
+    @Autowired
+    IEvaluationService iEvaluationService;
 
 
     @Override
@@ -103,6 +109,34 @@ public class SupervisorService implements ISupervisorService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public PagingDTO getEvaluationListOfSupervisor(String email, int currentPage, int rowsPerPage) {
+        List<Student> studentList = iStudentService.getAllStudentOfASupervisor(email);
+        List<Student_EvaluationDTO> student_evaluationDTOS = new ArrayList<>();
+
+        for (int i = 0; i < studentList.size(); i++) {
+            List<Evaluation> evaluationList = iEvaluationService.getEvaluationsByStudentEmail(studentList.get(i).getEmail());
+            Collections.sort(evaluationList);
+            if (evaluationList.size() < 4) {
+                for (int j = evaluationList.size(); j < 4; j++) {
+                    evaluationList.add(null);
+                }
+            }
+            evaluationList = iEvaluationService.checkSemesterOfListEvaluation(evaluationList);
+            Student_EvaluationDTO student_evaluationDTO = new Student_EvaluationDTO();
+            student_evaluationDTO.setEvaluationList(evaluationList);
+            student_evaluationDTO.setStudent(studentList.get(i));
+
+            student_evaluationDTOS.add(student_evaluationDTO);
+        }
+
+        if (student_evaluationDTOS != null) {
+            Utils<Student_EvaluationDTO> utils = new Utils<>();
+            return utils.paging(student_evaluationDTOS, currentPage, rowsPerPage);
+        }
+        return null;
     }
 
 

@@ -5,6 +5,7 @@ import com.example.demo.dto.*;
 
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
+import com.example.demo.utils.Utils;
 import com.nimbusds.jwt.JWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -227,16 +228,19 @@ public class AdminController {
 
     @GetMapping("/jobPostsBusinesses")
     @ResponseBody
-    public ResponseEntity<List<Business_ListJobPostDTO>> getJobPostsOfBusinesses() {
+    public ResponseEntity<PagingDTO> getJobPostsOfBusinesses(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
         List<Business_ListJobPostDTO> business_listJobPostDTOS = adminService.getJobPostsOfBusinesses();
 
         if (business_listJobPostDTOS != null) {
-            return new ResponseEntity<List<Business_ListJobPostDTO>>(business_listJobPostDTOS, HttpStatus.OK);
+            Utils<Business_ListJobPostDTO> utils = new Utils<>();
+            PagingDTO pagingDTO = utils.paging(business_listJobPostDTOS, currentPage, rowsPerPage);
+            return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-    //get email from token
+    //get email from token  
     private String getEmailFromToken() {
         String email = "";
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -592,5 +596,15 @@ public class AdminController {
             return new ResponseEntity<>(answers, HttpStatus.OK);
         }
         return new ResponseEntity<>(answers, HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/semester")
+    @ResponseBody
+    public ResponseEntity<List<Semester>> getSemesterCurrentAndNext() {
+        List<Semester> semesters = semesterService.getSemesterCurrentAndNext();
+        if (semesters != null) {
+            return new ResponseEntity<List<Semester>>(semesters, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 }

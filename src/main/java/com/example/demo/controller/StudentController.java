@@ -84,7 +84,7 @@ public class StudentController {
     //check semester //ok
     @PostMapping
     public ResponseEntity<Void> addListStudent(@RequestBody List<Student_ImportFileDTO> studentList) throws Exception {
-
+        String semesterName = studentList.get(0).getSemesterName();
         List<Student> students = new ArrayList<>();
 
         List<Role> roleList = new ArrayList<>();
@@ -95,51 +95,60 @@ public class StudentController {
         List<Ojt_Enrollment> ojtEnrollmentList = new ArrayList<>();
         List<String> nameList = new ArrayList<>();
 
-        for (int i = 0; i < studentList.size(); i++) {
+        StudentIsExistedAndNotYet studentIsExistedAndNotYet = studentService.getStudentsIsExisted(students);
+
+        List<Student> studentListIsExisted = studentIsExistedAndNotYet.getStudentsIsExisted();
+        studentService.handlerStudentIsExisted(studentListIsExisted); // handle xong may dua da ton tai
+
+        List<Student> studentListNotYet = studentIsExistedAndNotYet.getStudentsNotYet();
+
+        for (int i = 0; i < studentListNotYet.size(); i++) {
             Users users = new Users();
             Specialized specialized = new Specialized();
             String specializedName = "";
             int specializedID = 0;
 
-            users.setEmail(studentList.get(i).getEmail());
+            users.setEmail(studentListNotYet.get(i).getEmail());
             String password = usersService.getAlphaNumericString();
             users.setPassword(password);
-            nameList.add(studentList.get(i).getName());
+            nameList.add(studentListNotYet.get(i).getName());
             users.setRoles(roleList);
             users.setActive(true);
 
-            specializedName = studentList.get(i).getSpecialized().getName();
+            specializedName = studentListNotYet.get(i).getSpecialized().getName();
             specializedID = specializedService.getIdByName(specializedName);
             specialized.setId(specializedID);
-            studentList.get(i).setSpecialized(specialized);
+            studentListNotYet.get(i).setSpecialized(specialized);
 
             usersList.add(users);
 
-            Semester semester = semesterService.getSemesterByName(studentList.get(i).getSemesterName());
+            Semester semester = semesterService.getSemesterByName(semesterName);
 
             Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
 //            Student student = studentService.getStudentByEmail(studentList.get(i).getEmail());
             Student student = new Student();
-            student.setEmail(studentList.get(i).getEmail());
-            student.setSpecialized(studentList.get(i).getSpecialized());
+            student.setEmail(studentListNotYet.get(i).getEmail());
+            student.setSpecialized(studentListNotYet.get(i).getSpecialized());
             student.setStatus(StudentStatus.NOTSTART);
-            student.setAddress(studentList.get(i).getAddress());
-            student.setDob(studentList.get(i).getDob());
-            student.setGender(studentList.get(i).isGender());
-            student.setName(studentList.get(i).getName());
-            student.setCode(studentList.get(i).getCode());
-            student.setPhone(studentList.get(i).getPhone());
-            student.setGpa(studentList.get(i).getGpa());
+            student.setAddress(studentListNotYet.get(i).getAddress());
+            student.setDob(studentListNotYet.get(i).getDob());
+            student.setGender(studentListNotYet.get(i).isGender());
+            student.setName(studentListNotYet.get(i).getName());
+            student.setCode(studentListNotYet.get(i).getCode());
+            student.setPhone(studentListNotYet.get(i).getPhone());
+            student.setGpa(studentListNotYet.get(i).getGpa());
             ojt_enrollment.setStudent(student);
             ojt_enrollment.setSemester(semester);
 
             ojtEnrollmentList.add(ojt_enrollment);
             students.add(student);
         }
-
         try {
             studentService.saveListStudent(students);
+            //List<Users> usersListNotYet = usersService.getUsersNotYet(usersList);
+            //usersService.saveListUser(usersListNotYet);
             usersService.saveListUser(usersList);
+
             ojt_enrollmentService.saveListOjtEnrollment(ojtEnrollmentList);
 
             if (usersService.saveListUser(usersList)) {
@@ -169,6 +178,7 @@ public class StudentController {
         String password = usersService.getAlphaNumericString();
 
         role.setId(2);
+        role.setDescription("ROLE_STUDENT");
         roleList.add(role);
         users.setRoles(roleList);
         users.setEmail(student.getEmail());
@@ -195,7 +205,7 @@ public class StudentController {
         ojt_enrollment.setSemester(semester);
         try {
             studentService.saveStudent(student1);
-            usersService.saveUser(users);
+           // usersService.saveUser(users);
             ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);
 
             if (usersService.saveUser(users)) {
@@ -215,7 +225,8 @@ public class StudentController {
     //check semester //ok
     @GetMapping("/getAllStudent")
     @ResponseBody
-    public ResponseEntity<List<Student_OjtenrollmentDTO>> getAllStudentsWithInternOptionState() throws Exception {
+    public ResponseEntity<PagingDTO> getAllStudentsWithInternOptionState(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
         LOG.info("Getting all student");
         Semester semester = semesterService.getSemesterCurrent();
         List<Student> studentList;
@@ -245,7 +256,10 @@ public class StudentController {
             LOG.info(ex.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(student_ojtenrollmentDTOList, HttpStatus.OK);
+        Utils<Student_OjtenrollmentDTO> utils = new Utils<>();
+        PagingDTO pagingDTO = utils.paging(student_ojtenrollmentDTOList, currentPage, rowsPerPage);
+
+        return new ResponseEntity<>(pagingDTO, HttpStatus.OK);
     }
 
     @GetMapping("/getStudentsWithNoCompany")
@@ -446,6 +460,40 @@ public class StudentController {
     //da fix
     @GetMapping("/getListStudentIsInvited")
     @ResponseBody
+    public ResponseEntity<PagingDTO> getListStudentIsInvited(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
+        String email = getEmailFromToken();
+        List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);
+        List<Student> studentListIsInvitedInFunc = new ArrayList<>();
+        List<Student_InvitationDTO> studentList = new ArrayList<>();
+
+        Semester semester = semesterService.getSemesterCurrent();
+
+        for (int i = 0; i < invitationList.size(); i++) {
+            if (invitationList.get(i).getSemester().getId() != semester.getId()) {
+                invitationList.remove(invitationList.get(i));
+            }
+        }
+
+        for (int i = 0; i < invitationList.size(); i++) {
+            Student_InvitationDTO student_invitationDTO = new Student_InvitationDTO();
+            Student student = studentService.getStudentIsInvited(invitationList.get(i).getStudent().getEmail());
+            List<Invitation> invitations = invitationService.getListInvitationByStudentEmail(student.getEmail());
+            student_invitationDTO.setInvitations(invitations);
+            student_invitationDTO.setStudent(student);
+            studentList.add(student_invitationDTO);
+            studentListIsInvitedInFunc.add(student);
+        }
+        if (studentList != null) {
+            studentListIsInvited = studentListIsInvitedInFunc;
+
+            Utils<Student_InvitationDTO> student_invitationDTOUtils = new Utils<>();
+            PagingDTO pagingDTO = student_invitationDTOUtils.paging(studentList, currentPage, rowsPerPage);
+            return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     public ResponseEntity<List<Student_InvitationDTO>> getListStudentOfBusiness() {
         String email = getEmailFromToken();
         List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);

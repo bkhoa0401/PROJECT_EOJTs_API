@@ -121,6 +121,7 @@ public class TaskService implements ITaskService {
                 task.setStatus(Status.DONE);
                 historyDetail = new HistoryDetail(Task.class.getName(), "status", String.valueOf(id), Status.DONE.toString());
             }else if(typeStatusTask == 4) {
+                task.setComment(comment);
                 task.setStatus(Status.APPROVED);
                 historyDetail = new HistoryDetail(Task.class.getName(), "status", String.valueOf(id), Status.APPROVED.toString());
 

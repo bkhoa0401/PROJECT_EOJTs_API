@@ -8,6 +8,7 @@ import { Dropdown, DropdownToggle, DropdownItem, DropdownMenu, Badge, Button, Ca
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import Toastify from '../Toastify/Toastify';
+import PaginationComponent from '../Paginations/pagination';
 
 const storage = firebase.storage();
 
@@ -65,20 +66,40 @@ class student_list extends Component {
             dropdownOpen: false,
             nameSortOrder: 0,
             codeSortOrder: 0,
+            pageNumber: 1,
+            currentPage: 0,
+            rowsPerPage: 10,
+            pageNumberSuggest: 1,
+            currentPageSuggest: 0,
+            rowsPerPageSuggest: 10,
+            pageNumberCbAll: 1,
+            currentPageCbAll: 0,
+            rowsPerPageCbAll: 10
         };
         // this.toggleModal = this.toggleModal.bind(this);
     }
 
     async componentDidMount() {
-        const students = await ApiServices.Get('/student/getAllStudent');
+        const { currentPage, rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         if (students !== null) {
             this.setState({
-                students,
+                students: students.listData,
+                pageNumber: students.pageNumber,
                 loading: false,
                 nameSortOrder: 0,
                 codeSortOrder: 0,
             });
         }
+        // const students = await ApiServices.Get('/student/getAllStudent');
+        // if (students !== null) {
+        //     this.setState({
+        //         students,
+        //         loading: false,
+        //         nameSortOrder: 0,
+        //         codeSortOrder: 0,
+        //     });
+        // }
     }
 
     toggle = async (tabPane, tab) => {
@@ -87,16 +108,40 @@ class student_list extends Component {
         let students = null;
         let typeSelected;
         if (tab == 1) {
-            students = await ApiServices.Get('/student/getAllStudent');
+            const { currentPage, rowsPerPage } = this.state;
+            students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+            if (students !== null) {
+                this.setState({
+                    students: students.listData,
+                    pageNumber: students.pageNumber,
+                    loading: false,
+                    nameSortOrder: 0,
+                    codeSortOrder: 0,
+                });
+            }
+            // students = await ApiServices.Get('/student/getAllStudent');
         } else if (tab == 2) {
-            students = await ApiServices.Get('/student/getStudentsWithNoCompany');
+            const { currentPageSuggest, rowsPerPageSuggest } = this.state;
+            students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
+            if (students !== null) {
+                this.setState({
+                    students: students.listData,
+                    pageNumberSuggest: students.pageNumber,
+                    loading: false,
+                    nameSortOrder: 0,
+                    codeSortOrder: 0,
+                });
+            }
+            // students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
             typeSelected = 1;
         }
-        this.setState({
-            activeTab: newArray,
-            students: students,
-            typeSelected: typeSelected,
-        });
+        if (students != null) {
+            this.setState({
+                activeTab: newArray,
+                // students: students,
+                typeSelected: typeSelected,
+            });
+        }
         // console.log(tabPane);
         // console.log(tab);
         // console.log(this.state.activeTab);
@@ -325,12 +370,15 @@ class student_list extends Component {
                     // console.log(timeEndShow);
                     var date1 = new Date();
                     var date2 = new Date();
-                    // var tmpdate = new Date();
+                    var tmpdate = "";
+                    var tmpdate1 = "";
                     date1.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0]));
                     // tmpdate.setFullYear(parseInt(formatTimeStartShow[2]), parseInt(formatTimeStartShow[1] - 1), parseInt(formatTimeStartShow[0] - 1))
                     // console.log(formatTimeStartShow[1]);
+                    tmpdate = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                    tmpdate1 = parseInt(formatTimeStartShow[2]) + "-" + parseInt(formatTimeStartShow[1]) + "-" + parseInt(formatTimeStartShow[0]);
                     date2.setFullYear(parseInt(formatTimeEndShow[2]), parseInt(formatTimeEndShow[1] - 1), parseInt(formatTimeEndShow[0]));
-                    if ((date > date1 || date.toString() === date1.toString() ) && date < date2) {
+                    if ((date > date1 || tmpdate === tmpdate1) && date < date2) {
                         isThisMonth = index - 1;
                     }
                     // console.log(date);
@@ -518,7 +566,7 @@ class student_list extends Component {
     showTranscript(transcriptLink) {
         if (transcriptLink !== null) {
             return (
-                <a href={transcriptLink} download>tải</a>
+                <a href={transcriptLink} download>Tải về</a>
             )
         } else {
             return (
@@ -542,14 +590,39 @@ class student_list extends Component {
         // console.log(value);
         if (value == 0) {
             typeSelected = 0;
-            students = await ApiServices.Get('/student/getAllStudent');
+            // students = await ApiServices.Get('/student/getAllStudent');
+            const { rowsPerPageCbAll, currentPageCbAll } = this.state;
+            const students = await ApiServices.Get(`/student/getAllStudent?currentPage=0&rowsPerPage=${rowsPerPageCbAll}`);
+            if (students !== null) {
+                this.setState({
+                    students: students.listData,
+                    pageNumberCbAll: students.pageNumber,
+                    currentPageCbAll: 0,
+                    loading: false,
+                    nameSortOrder: 0,
+                    codeSortOrder: 0,
+                });
+            }
+
         } else if (value == 1) {
             typeSelected = 1;
-            students = await ApiServices.Get('/student/getStudentsWithNoCompany');
+            const { rowsPerPageSuggest } = this.state;
+            const students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=0&rowsPerPage=${rowsPerPageSuggest}`);
+            if (students !== null) {
+                this.setState({
+                    students: students.listData,
+                    pageNumberSuggest: students.pageNumber,
+                    loading: false,
+                    nameSortOrder: 0,
+                    codeSortOrder: 0,
+                    currentPageSuggest: 0
+                });
+            }
+            // students = await ApiServices.Get('/student/getStudentsWithNoCompany');
         }
         await this.setState({
             typeSelected: typeSelected,
-            students: students,
+            // students: students,
         })
         // console.log(this.state.typeSelected);
         // console.log(this.state.students);
@@ -604,11 +677,25 @@ class student_list extends Component {
         if (result.status === 200) {
             Toastify.actionSuccess(`Đăng ký thành công!`);
             const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
-            const students = await ApiServices.Get('/student/getAllStudent');
-            this.setState({
-                students: students,
-                loading: false
-            })
+
+            const { currentPageSuggest, rowsPerPageSuggest } = this.state;
+            const students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
+            if (students !== null) {
+                this.setState({
+                    students: students.listData,
+                    pageNumberSuggest: students.pageNumber,
+                    loading: false,
+                    nameSortOrder: 0,
+                    codeSortOrder: 0,
+                    typeSelected: 1
+                });
+            }
+            // const students = await ApiServices.Get('/student/getAllStudent');
+            // this.setState({
+            //     students: students,
+            //     loading: false
+            // })
+
         } else {
             Toastify.actionFail(`Đăng ký thất bại!`);
             this.setState({
@@ -617,14 +704,211 @@ class student_list extends Component {
         }
     }
 
+    handlePageNumberCbAll = async (currentPageCbAll) => {
+        const { rowsPerPageCbAll } = this.state;
+        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPageCbAll}&rowsPerPage=${rowsPerPageCbAll}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumberCbAll: students.pageNumber,
+                currentPageCbAll,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+            });
+        }
+    }
+
+    handlePagePreviousCbAll = async (currentPageCbAll) => {
+        const { rowsPerPageCbAll } = this.state;
+        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPageCbAll}&rowsPerPage=${rowsPerPageCbAll}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumberCbAll: students.pageNumber,
+                currentPageCbAll,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+            });
+        }
+    }
+
+    handlePageNextCbAll = async (currentPageCbAll) => {
+        const { rowsPerPageCbAll } = this.state;
+        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPageCbAll}&rowsPerPage=${rowsPerPageCbAll}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumberCbAll: students.pageNumber,
+                currentPageCbAll,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+            });
+        }
+    }
+
+    handleInputPagingCbAll = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value
+        })
+
+        const { rowsPerPageCbAll } = this.state;
+        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=0&rowsPerPage=${rowsPerPageCbAll}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumberCbAll: students.pageNumber,
+                loading: false,
+                currentPageCbAll: 0,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+            });
+        }
+    }
+
+    handlePageNumber = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                currentPage,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+            });
+        }
+    }
+
+    handlePagePrevious = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                currentPage,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+            });
+        }
+    }
+
+    handlePageNext = async (currentPage) => {
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                currentPage,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+            });
+        }
+    }
+
+    handleInputPagingAll = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value
+        })
+
+        const { rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=0&rowsPerPage=${rowsPerPage}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                loading: false,
+                currentPage: 0,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+            });
+        }
+    }
+
+    handlePageNumberSuggest = async (currentPageSuggest) => {
+        const { rowsPerPageSuggest } = this.state;
+        const students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+                currentPageSuggest
+            });
+        }
+    }
+
+    handlePagePreviousSuggest = async (currentPageSuggest) => {
+        const { rowsPerPageSuggest } = this.state;
+        const students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+                currentPageSuggest
+            });
+        }
+    }
+
+    handlePageNextSuggest = async (currentPageSuggest) => {
+        const { rowsPerPageSuggest } = this.state;
+        const students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+                currentPageSuggest
+            });
+        }
+    }
+
+    handleInputPagingSuggest = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value
+        })
+
+        const { rowsPerPageSuggest } = this.state;
+        const students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=0&rowsPerPage=${rowsPerPageSuggest}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                loading: false,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+                currentPageSuggest: 0
+            });
+        }
+    }
+
     tabPane() {
         const { studentFeedBack, listFeedBack, codeSortOrder, nameSortOrder, student, businessSurvey, months, isThisMonth, isViewSurvey, survey, students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail, typesOfStudent } = this.state;
+        const { pageNumber, currentPage, rowsPerPage, pageNumberSuggest, currentPageSuggest, rowsPerPageSuggest, pageNumberCbAll, currentPageCbAll, rowsPerPageCbAll } = this.state;
 
         const { name, code, email, phone, address, specialized, objective, gpa, skills, resumeLink, transcriptLink, role, isUploadTranscriptLink } = this.state;
         const linkDownCV = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
         let filteredListStudents;
 
         if (students !== null) {
+            console.log(students);
             filteredListStudents = students.filter(
                 (student) => {
                     if (student.student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
@@ -654,10 +938,10 @@ class student_list extends Component {
                                                     &emsp;&nbsp;&nbsp;MSSV
                                                     &nbsp;
                                                     {codeSortOrder === 0 ?
-                                                        <i onClick={() => this.sortCodeInOrder(1)} style={{cursor: 'pointer'}} className="fa fa-sort"></i> :
+                                                        <i onClick={() => this.sortCodeInOrder(1)} style={{ cursor: 'pointer' }} className="fa fa-sort"></i> :
                                                         (codeSortOrder === 1 ?
-                                                            <i onClick={() => this.sortCodeInOrder(2)} style={{cursor:'pointer'}} className="fa fa-sort-desc"></i> :
-                                                            <i onClick={() => this.sortCodeInOrder(1)} style={{cursor: 'pointer'}} className="fa fa-sort-asc"></i>
+                                                            <i onClick={() => this.sortCodeInOrder(2)} style={{ cursor: 'pointer' }} className="fa fa-sort-desc"></i> :
+                                                            <i onClick={() => this.sortCodeInOrder(1)} style={{ cursor: 'pointer' }} className="fa fa-sort-asc"></i>
                                                         )
                                                     }
                                                 </th>
@@ -665,23 +949,24 @@ class student_list extends Component {
                                                     &emsp;&nbsp;&nbsp;Họ và tên
                                                     &nbsp;
                                                     {nameSortOrder === 0 ?
-                                                        <i onClick={() => this.sortNameInOrder(1)} style={{cursor: 'pointer'}} className="fa fa-sort"></i> :
+                                                        <i onClick={() => this.sortNameInOrder(1)} style={{ cursor: 'pointer' }} className="fa fa-sort"></i> :
                                                         (nameSortOrder === 1 ?
-                                                            <i onClick={() => this.sortNameInOrder(2)} style={{cursor: 'pointer'}} className="fa fa-sort-desc"></i> :
-                                                            <i onClick={() => this.sortNameInOrder(1)} style={{cursor: 'pointer'}} className="fa fa-sort-asc"></i>
+                                                            <i onClick={() => this.sortNameInOrder(2)} style={{ cursor: 'pointer' }} className="fa fa-sort-desc"></i> :
+                                                            <i onClick={() => this.sortNameInOrder(1)} style={{ cursor: 'pointer' }} className="fa fa-sort-asc"></i>
                                                         )
                                                     }
                                                 </th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Email</th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                                                    <Dropdown isOpen={this.state.dropdownOpen} toggle={() => this.toggleDropdown()}>
+                                                    Chuyên ngành
+                                                    {/* <Dropdown isOpen={this.state.dropdownOpen} toggle={() => this.toggleDropdown()}>
                                                         <DropdownToggle nav caret style={{ color: "black" }}>
                                                             Chuyên ngành
                                                         </DropdownToggle>
                                                         <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
                                                             <DropdownItem>IS</DropdownItem>
                                                         </DropdownMenu>
-                                                    </Dropdown>
+                                                    </Dropdown> */}
                                                 </th>
                                                 <th style={{ textAlign: "left" }}></th>
                                                 {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Bảng điểm</th> */}
@@ -727,6 +1012,15 @@ class student_list extends Component {
                                             }
                                         </tbody>
                                     </Table>
+                                    <Pagination style={{ marginTop: "3%" }}>
+                                        <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                        <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                        <Input onChange={this.handleInputPagingAll} type="select" name="rowsPerPage" style={{ width: "7%" }}>
+                                            <option value={10} selected={rowsPerPageSuggest === 10}>10</option>
+                                            <option value={20}>20</option>
+                                            <option value={50}>50</option>
+                                        </Input>
+                                    </Pagination>
                                 </div>
                             }
                         </TabPane>
@@ -831,7 +1125,7 @@ class student_list extends Component {
                                                 {
                                                     resumeLink && resumeLink ?
                                                         (<Col xs="12" md="8">
-                                                            <a target="_blank" href={linkDownCV} download>tải</a>
+                                                            <a target="_blank" href={linkDownCV} download>Tải về</a>
                                                         </Col>)
                                                         :
                                                         (
@@ -1178,6 +1472,30 @@ class student_list extends Component {
                                             }
                                         </tbody>
                                     </Table>
+                                    {
+                                        (this.state.typeSelected) === 0 ? (
+                                            <Pagination style={{ marginTop: "3%" }}>
+                                                <PaginationComponent pageNumber={pageNumberCbAll} handlePageNumber={this.handlePageNumberCbAll} handlePageNext={this.handlePageNextCbAll} handlePagePrevious={this.handlePagePreviousCbAll} currentPage={currentPageCbAll} />
+                                                <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                                <Input onChange={this.handleInputPagingCbAll} type="select" name="rowsPerPageCbAll" style={{ width: "7%" }}>
+                                                    <option value={10} selected={rowsPerPageCbAll === 10}>10</option>
+                                                    <option value={20}>20</option>
+                                                    <option value={50}>50</option>
+                                                </Input>
+                                            </Pagination>
+                                        ) : (
+                                                <Pagination style={{ marginTop: "3%" }}>
+                                                    <PaginationComponent pageNumber={pageNumberSuggest} handlePageNumber={this.handlePageNumberSuggest} handlePageNext={this.handlePageNextSuggest} handlePagePrevious={this.handlePagePreviousSuggest} currentPage={currentPageSuggest} />
+                                                    <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                                    <Input onChange={this.handleInputPagingSuggest} type="select" name="rowsPerPageSuggest" style={{ width: "7%" }}>
+                                                        <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                        <option value={20}>20</option>
+                                                        <option value={50}>50</option>
+                                                    </Input>
+                                                </Pagination>
+                                            )
+                                    }
+
                                 </div>
                             }
                         </TabPane>
@@ -1205,7 +1523,7 @@ class student_list extends Component {
                                             <h6>{business.business_eng_name}</h6>
                                         </Col>
                                         <Col xs="12" md="2">
-                                            <Button color="primary">Chọn</Button>
+                                            <Button color="primary" onClick={() => this.handleConfirm(studentSelect, business.email, business.business_eng_name)}>Chọn</Button>
                                         </Col>
                                     </FormGroup>
                                 )}

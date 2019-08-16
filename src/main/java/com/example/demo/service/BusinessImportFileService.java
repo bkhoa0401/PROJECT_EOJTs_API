@@ -50,7 +50,6 @@ public class BusinessImportFileService implements IBusinessImportFileService{
 
         Job_Post_Skill job_post_skill = new Job_Post_Skill();
 
-
         //import all file to db
         for (int i = 0; i < skillDTOList.size(); i++) {
             job_post_skill.setJob_post(job_post);

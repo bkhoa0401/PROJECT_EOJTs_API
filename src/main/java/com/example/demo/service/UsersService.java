@@ -49,8 +49,21 @@ public class UsersService implements IUsersService {
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
         helper.setTo(mail);
-        helper.setText("Hi " + name + ",\n" + "welcome you to my system.\n Your password are : " + password + "\nThanks and Regards");
+        helper.setText("Hi " + name + ",\n" + "welcome you to my system.\nYour password are : " + password + "\nThanks and Regards");
         helper.setSubject("[TEST EOJTs]");
+
+        sender.send(message);
+    }
+
+    @Override
+    public void sendEmailToStudentIsExisted(String name, String mail) throws Exception {
+        MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setTo(mail);
+        helper.setText("Xin chào " + name + " , đã tới kì OJT mới. Vui lòng sử dụng tài khoản kì vừa rồi để tiếp tục sử dụng hệ thống" +
+                ". Chúc bạn có kì OJT thật tốt và nhiều thành công! \nThanks and Regards");
+        helper.setSubject("[Thông báo]");
 
         sender.send(message);
     }
@@ -124,6 +137,25 @@ public class UsersService implements IUsersService {
 
     @Override
     public boolean saveUser(Users users) {
+        ValueOperations values = template.opsForValue();
+
+        List<Role> roleList = users.getRoles();
+        for (int i = 0; i < roleList.size(); i++) {
+            Role role = roleList.get(i);
+            if (role.getDescription().equals("ROLE_STUDENT")) {
+                List<Users> usersList = (List<Users>) values.get("ROLE_STUDENTusers");
+                if (usersList != null) {
+                    usersList.add(users);
+                    values.set("ROLE_STUDENTusers", usersList);
+                }
+            } else if (role.getDescription().equals("ROLE_HR")) {
+                List<Users> usersList = (List<Users>) values.get("ROLE_HRusers");
+                if (usersList != null) {
+                    usersList.add(users);
+                    values.set("ROLE_HRusers", usersList);
+                }
+            }
+        }
         usersRepository.save(users);
         return true;
     }
@@ -146,13 +178,51 @@ public class UsersService implements IUsersService {
 
     @Override
     public boolean updateStatus(String email, boolean isActive) {
+        ValueOperations values = template.opsForValue();
+
         Users users = usersRepository.findUserByEmail(email);
+
+        List<Role> roleList = users.getRoles();
+        for (int i = 0; i < roleList.size(); i++) {
+            Role role = roleList.get(i);
+            if (role.getDescription().equals("ROLE_STUDENT")) {
+                List<Users> usersList = (List<Users>) values.get("ROLE_STUDENTusers");
+                if (usersList != null) {
+                    int index = findPositionOfUsers(usersList, users);
+                    usersList.remove(index);
+
+                    users.setActive(isActive);
+                    usersList.add(index,users);
+                    values.set("ROLE_STUDENTusers", usersList);
+                }
+            } else if (role.getDescription().equals("ROLE_HR")) {
+                List<Users> usersList = (List<Users>) values.get("ROLE_HRusers");
+                if (usersList != null) {
+                    int index = findPositionOfUsers(usersList, users);
+                    usersList.remove(index);
+
+                    users.setActive(isActive);
+                    usersList.add(index,users);
+                    values.set("ROLE_HRusers", usersList);
+                }
+            }
+        }
         if (users != null) {
             users.setActive(isActive);
             usersRepository.save(users);
             return true;
         }
         return false;
+    }
+
+    public int findPositionOfUsers(List<Users> usersList, Users users) {
+        for (int i = 0; i < usersList.size(); i++) {
+            Users usersOfList = usersList.get(i);
+            if (usersOfList.getEmail().equals(users.getEmail())) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -272,5 +342,20 @@ public class UsersService implements IUsersService {
         List<Users> usersList = getAllUsersByType(typeUser);
         Utils<Users> usersUtils = new Utils<>();
         return usersUtils.paging(usersList, currentPage, rowsPerPage);
+    }
+
+    @Override
+    public List<Users> getUsersNotYet(List<Users> users) {
+        List<Users> usersListNotYet = new ArrayList<>();
+
+        for (int i = 0; i < users.size(); i++) {
+            Users user = users.get(i);
+
+            Users userNotYet = findUserByEmail(user.getEmail());
+            if (userNotYet == null) {
+                usersListNotYet.add(user);
+            }
+        }
+        return usersListNotYet;
     }
 }

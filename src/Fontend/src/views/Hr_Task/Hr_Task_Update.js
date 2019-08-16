@@ -20,7 +20,7 @@ class Hr_Task_Update extends Component {
             description: '',
             time_end: '',
             level_task: 'EASY',
-            priority: '',
+            // priority: '',
             status: '',
             students: [],
             studentItem: '',
@@ -46,7 +46,7 @@ class Hr_Task_Update extends Component {
                 description: task.task.description,
                 time_end: task.task.time_end,
                 level_task: task.task.level_task,
-                priority: task.task.priority,
+                // priority: task.task.priority,
                 status: task.task.status,
                 studentItem: task.emailStudent
             });
@@ -78,13 +78,13 @@ class Hr_Task_Update extends Component {
             description: '',
             time_end: '',
             level_task: 'EASY',
-            priority: '',
+            // priority: '',
             studentItem: this.state.students[0].email,
         })
     }
 
     handleSubmit = async () => {
-        const { id, title, description, time_end, level_task, priority, status, studentItem } = this.state;
+        const { id, title, description, time_end, level_task, status, studentItem } = this.state;
         const emailStudent = studentItem;
         const task = {
             id,
@@ -92,7 +92,7 @@ class Hr_Task_Update extends Component {
             description,
             time_end,
             level_task,
-            priority,
+            // priority,
             status,
         }
 
@@ -123,7 +123,7 @@ class Hr_Task_Update extends Component {
 
 
     render() {
-        const { id, title, description, time_end, level_task, priority, students, studentItem, loading } = this.state;
+        const { id, title, description, time_end, level_task, students, studentItem, loading } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -205,18 +205,18 @@ class Hr_Task_Update extends Component {
                                                     </Input>
                                                 </Col>
                                             </FormGroup>
-                                            <FormGroup row>
+                                            {/* <FormGroup row>
                                                 <Col md="2">
                                                     <Label htmlFor="priority">Ưu tiên</Label>
                                                 </Col>
                                                 <Col xs="12" md="10">
                                                     <Input value={priority} onChange={this.handleInput} type="number" id="priority" name="priority" placeholder="Ưu tiên" />
                                                     <span className="form-error is-visible text-danger">
-                                                        {/* <i class="fa fa-exclamation-circle" /> */}
+                                                        <i class="fa fa-exclamation-circle" />
                                                         {this.validator.message('Độ ưu tiên', priority, 'required|numberic')}
                                                     </span>
                                                 </Col>
-                                            </FormGroup>
+                                            </FormGroup> */}
                                         </Form>
                                         <ToastContainer />
                                     </CardBody>
