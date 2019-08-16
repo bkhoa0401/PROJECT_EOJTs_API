@@ -6,6 +6,26 @@ export default {
       icon: 'icon-speedometer',
     },
     {
+      name: 'Thông số lịch trình',
+      url: '/scheduleparameters',
+      icon: 'icon-calendar',
+    },
+    {
+      name: 'Nhập tập tin',
+      url: '/importfiles',
+      icon: 'icon-folder',
+    },
+    {
+      name: 'Chuyên ngành',
+      url: '/specialized',
+      icon: 'icon-compass',
+    },
+    {
+      name: 'Kỹ năng',
+      url: '/skill',
+      icon: 'icon-puzzle',
+    },
+    {
       name: 'Quản lý tài khoản',
       url: '/admin_account',
       icon: 'icon-user',
@@ -23,17 +43,6 @@ export default {
       ]
     },
     {
-      name: 'Nhập tập tin',
-      url: '/importfiles',
-      icon: 'icon-folder',
-
-    },
-    {
-      name: 'Thông số lịch trình',
-      url: '/scheduleparameters',
-      icon: 'icon-calendar',
-    },
-    {
       name: 'Quản lý danh sách',
       url: '/list_management',
       icon: 'icon-list',
@@ -49,16 +58,6 @@ export default {
           icon: 'icon-briefcase',
         },
       ]
-    },
-    {
-      name: 'Chuyên ngành',
-      url: '/specialized',
-      icon: 'icon-compass',
-    },
-    {
-      name: 'Kỹ năng',
-      url: '/skill',
-      icon: 'icon-puzzle',
     },
     {
       name: 'Tuyển dụng',
@@ -81,14 +80,14 @@ export default {
     //   icon: 'icon-star',
     // },
     {
+      name: 'Quản lí câu hỏi',
+      url: '/question',
+      icon: 'icon-question',
+    },
+    {
       name: 'Thống kê khảo sát',
       url: '/answer-statistics',
       icon: 'icon-book-open',
     },
-    {
-      name: 'Quản lí câu hỏi',
-      url: '/question',
-      icon: 'icon-question',
-    }
   ]
 };
