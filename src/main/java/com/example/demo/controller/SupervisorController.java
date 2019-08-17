@@ -161,7 +161,7 @@ public class SupervisorController {
         List<TaskDTO> taskDTOList = new ArrayList<>();
         for (int i = 0; i < taskList.size(); i++) {
             Task task = taskList.get(i);
-            if (task.getTitle().contains(valueSearch) || task.getOjt_enrollment().getStudent().getName().contains(valueSearch)) {
+            if (task.getTitle().toLowerCase().contains(valueSearch.toLowerCase()) || task.getOjt_enrollment().getStudent().getName().toLowerCase().contains(valueSearch.toLowerCase())) {
                 Student student = task.getOjt_enrollment().getStudent();
 
                 TaskDTO taskDTO = new TaskDTO(task, student.getEmail(), student.getName());
@@ -170,6 +170,17 @@ public class SupervisorController {
         }
         if (taskDTOList != null) {
             return new ResponseEntity<List<TaskDTO>>(taskDTOList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/getNumTask")
+    @ResponseBody
+    public ResponseEntity<Integer> getNumTask() {
+        String email = getEmailFromToken();
+        List<Task> taskList = taskService.findTaskBySupervisorEmail(email);
+        if (taskList != null) {
+            return new ResponseEntity<Integer>(taskList.size(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -288,6 +299,37 @@ public class SupervisorController {
             return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
         }
 
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/getNumStudent")
+    @ResponseBody
+    public ResponseEntity<Integer> getNumStudent() {
+        String email = getEmailFromToken();
+
+        List<Student> studentList = studentService.getAllStudentOfASupervisor(email);
+        if (studentList != null) {
+            return new ResponseEntity<Integer>(studentList.size(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/searchingStudentAllFields")
+    @ResponseBody
+    public ResponseEntity<List<Student>> searchingStudentAllFields(@RequestParam String valueSearch) {
+        String email = getEmailFromToken();
+
+        List<Student> studentList = studentService.getAllStudentOfASupervisor(email);
+        List<Student> searchStudentList = new ArrayList<Student>();
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            if (student.getCode().toLowerCase().contains(valueSearch.toLowerCase()) || student.getName().toLowerCase().contains(valueSearch.toLowerCase()) || student.getEmail().toLowerCase().contains(valueSearch.toLowerCase())) {
+                searchStudentList.add(student);
+            }
+        }
+        if (searchStudentList != null) {
+            return new ResponseEntity<List<Student>>(searchStudentList, HttpStatus.OK);
+        }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 

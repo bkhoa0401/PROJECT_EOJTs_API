@@ -75,6 +75,7 @@ class Hr_Task extends Component {
 
             isSearching: false,
             searchingTaskList: null,
+            numOfTask: 0,
         }
     }
 
@@ -82,11 +83,16 @@ class Hr_Task extends Component {
     async componentDidMount() {
         const { currentPage, rowsPerPage } = this.state;
         const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=${this.state.taskStatus}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const numOfTask = await ApiServices.Get("/supervisor/getNumTask");
+        if (numOfTask === null) {
+            numOfTask = 0;
+        }
         if (tasks !== null) {
             this.setState({
                 tasks: tasks.listData,
                 pageNumber: tasks.pageNumber,
                 loading: false,
+                numOfTask: numOfTask,
             });
         }
     }
@@ -538,7 +544,7 @@ class Hr_Task extends Component {
         const { id, title, description, time_created, time_end, level_task, priority, status, supervisorName,
             studentName, contentComment, contentCommentNew, statusUpdate } = this.state;
         const { pageNumber, currentPage, rowsPerPage } = this.state;
-        const { dropdownState, dropdownApproved, isSearching, searchingTaskList } = this.state;
+        const { dropdownState, dropdownApproved, isSearching, searchingTaskList, numOfTask } = this.state;
 
         return (
             loading.toString() === 'true' ? (
@@ -626,7 +632,7 @@ class Hr_Task extends Component {
                                                         tasks && tasks.map((task, index) => {
                                                             return (
                                                                 <tr>
-                                                                    <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                                    <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
                                                                     <td style={{ textAlign: "center" }}>{task.task.title}</td>
                                                                     {/* <td style={{ textAlign: "center" }}>{task.priority}</td> */}
                                                                     {/* <td style={{ textAlign: "center" }}>{task.time_end}</td>
@@ -715,7 +721,7 @@ class Hr_Task extends Component {
                                         {isSearching === false ?
                                             <Row>
                                                 <Col>
-                                                    <Label>Bạn đang xem kết quả từ 1 - 50 trên tổng số 100 kết quả</Label>
+                                                    <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + tasks.length} trên tổng số {numOfTask} kết quả</Label>
                                                 </Col>
                                                 <Col>
                                                     <Row className="float-right">
