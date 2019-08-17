@@ -356,6 +356,53 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/getNumStudent")
+    @ResponseBody
+    public ResponseEntity<Integer> getNumStudent() {
+        String emailBusiness = getEmailFromToken();
+        List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
+
+        if (studentList != null) {
+            return new ResponseEntity<Integer>(studentList.size(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/getSpecializedsOfStudentsInBusiness")
+    @ResponseBody
+    public ResponseEntity<List<Specialized>> getSpecializedsOfStudentsInBusiness() {
+        String emailBusiness = getEmailFromToken();
+        List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
+        List<Specialized> specializeds = new ArrayList<Specialized>();
+        if (studentList != null) {
+            for (int i = 0; i < studentList.size(); i++) {
+                if (specializeds.size() >= 1) {
+                    boolean flagExist = false;
+                    for (int j = 0; j < specializeds.size(); j++) {
+                        if (specializeds.get(j).getId() == studentList.get(i).getSpecialized().getId()) {
+                            flagExist = true;
+                        }
+                    }
+                    if (flagExist == false) {
+                        specializeds.add(studentList.get(i).getSpecialized());
+                    }
+                } else {
+                    specializeds.add(studentList.get(i).getSpecialized());
+                }
+            }
+            Collections.sort(specializeds, new Comparator<Specialized>() {
+                @Override
+                public int compare(Specialized o1, Specialized o2) {
+                    String name1 = o1.getName();
+                    String name2 = o2.getName();
+                    return name1.compareTo(name2);
+                }
+            });
+            return new ResponseEntity<List<Specialized>>(specializeds, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     @GetMapping("/getStudentsByBusinessNotPaging")
     @ResponseBody
     public ResponseEntity<List<Student>> getListStudentByBusinessNotPaging() {

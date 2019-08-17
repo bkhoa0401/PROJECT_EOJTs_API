@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -52,6 +49,9 @@ public class AdminController {
 
     @Autowired
     IAnswerService iAnswerService;
+
+    @Autowired
+    ISpecializedService specializedService;
 
     @GetMapping
     @ResponseBody
@@ -558,6 +558,41 @@ public class AdminController {
         List<Semester> semesters = semesterService.getSemesterCurrentAndNext();
         if (semesters != null) {
             return new ResponseEntity<List<Semester>>(semesters, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/getSpecializedsActive")
+    @ResponseBody
+    public ResponseEntity<List<Specialized>> getSpecializedsActive() {
+        String emailBusiness = getEmailFromToken();
+        List<Specialized> specializeds = specializedService.getAllSpecialized();
+        List<Specialized> selectedSpecializeds = new ArrayList<Specialized>();
+        if (specializeds != null) {
+            for (int i = 0; i < specializeds.size(); i++) {
+                if (specializeds.get(i).getStatus() == true) {
+                    selectedSpecializeds.add(specializeds.get(i));
+                }
+            }
+            Collections.sort(selectedSpecializeds, new Comparator<Specialized>() {
+                @Override
+                public int compare(Specialized o1, Specialized o2) {
+                    String name1 = o1.getName();
+                    String name2 = o2.getName();
+                    return name1.compareTo(name2);
+                }
+            });
+            return new ResponseEntity<List<Specialized>>(selectedSpecializeds, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/getNumStudent")
+    @ResponseBody
+    public ResponseEntity<Integer> getNumStudent() {
+        List<Student> studentList = studentService.getAllStudentsBySemesterId();
+        if (studentList != null) {
+            return new ResponseEntity<Integer>(studentList.size(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

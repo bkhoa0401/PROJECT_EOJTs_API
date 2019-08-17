@@ -588,9 +588,9 @@ class Hr_Task extends Component {
                                                 <tr>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nhiệm vụ</th>
-                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ưu tiên</th> */}
-                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hạn cuối</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Mức độ</th> */}
+                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Ưu tiên</th> */}
+                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Hạn cuối</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Mức độ</th> */}
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Người giao</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Sinh viên</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
@@ -623,7 +623,7 @@ class Hr_Task extends Component {
                                                             </DropdownMenu>
                                                         </Dropdown>
                                                     </th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>

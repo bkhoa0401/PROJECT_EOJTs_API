@@ -1,7 +1,7 @@
 import decode from 'jwt-decode';
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { Button, Card, CardBody, CardFooter, CardHeader, Col, Row, Table, Input, Pagination } from 'reactstrap';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Row, Table, Input, Pagination, Label, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import PaginationComponent from '../Paginations/pagination';
@@ -23,7 +23,11 @@ class Report extends Component {
             finalOnScreenStatus: null,
             pageNumber: 1,
             currentPage: 0,
-            rowsPerPage: 10
+            rowsPerPage: 10,
+
+            numOfStudent: 0,
+            dropdownSpecializedOpen: false,
+            dropdownSpecialized: [],
         };
     }
 
@@ -37,12 +41,15 @@ class Report extends Component {
         let overviewReports = [];
         let finalOnScreenStatus = [];
         let listStudentAndReport = null;
+        let numOfStudent = 0;
+        let dropdownSpecialized = [];
         if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
         }
         if (role === 'ROLE_SUPERVISOR') {
             listStudentAndReport = await ApiServices.Get(`/supervisor/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+            numOfStudent = await ApiServices.Get("/supervisor/getNumStudent");
             for (let index = 0; index < listStudentAndReport.listData.length; index++) {
                 students.push(listStudentAndReport.listData[index].student);
                 for (let index1 = 0; index1 < listStudentAndReport.listData[index].evaluationList.length; index1++) {
@@ -51,7 +58,11 @@ class Report extends Component {
             }
         } else if (role === 'ROLE_HR') {
             listStudentAndReport = await ApiServices.Get(`/business/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
-            console.log(listStudentAndReport);
+            // console.log(listStudentAndReport);
+            numOfStudent = await ApiServices.Get("/business/getNumStudent");
+            // console.log(numOfStudent);
+            dropdownSpecialized = await ApiServices.Get("/business/getSpecializedsOfStudentsInBusiness");
+            console.log(dropdownSpecialized);
             for (let index = 0; index < listStudentAndReport.listData.length; index++) {
                 students.push(listStudentAndReport.listData[index].student);
                 for (let index1 = 0; index1 < listStudentAndReport.listData[index].evaluationList.length; index1++) {
@@ -60,7 +71,9 @@ class Report extends Component {
             }
         } else if (role === 'ROLE_ADMIN') {
             listStudentAndReport = await ApiServices.Get(`/student/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
-            console.log(listStudentAndReport);
+            // console.log(listStudentAndReport);
+            numOfStudent = await ApiServices.Get("/admin/getNumStudent");
+            dropdownSpecialized = await ApiServices.Get("/admin/getSpecializedsActive");
             for (let index = 0; index < listStudentAndReport.listData.length; index++) {
                 students.push(listStudentAndReport.listData[index].student);
                 for (let index1 = 0; index1 < listStudentAndReport.listData[index].evaluationList.length; index1++) {
@@ -68,7 +81,7 @@ class Report extends Component {
                 }
             }
         }
-        console.log(students);
+        // console.log(students);
         // console.log(overviewReports);
         if (overviewReports !== null) {
             for (let index = 0; index < overviewReports.length; index++) {
@@ -129,11 +142,19 @@ class Report extends Component {
             onScreenStatus: onScreenStatus,
             finalOnScreenStatus: finalOnScreenStatus,
             pageNumber: listStudentAndReport.pageNumber,
+            numOfStudent: numOfStudent,
+            dropdownSpecialized: dropdownSpecialized,
         });
         // console.log(this.state.onScreenStatus);
         // console.log(this.state.overviewReports);
         // console.log(this.state.students);
         // console.log(this.state.finalOnScreenStatus);
+    }
+
+    toggleDropdownSpecialized = () => {
+        this.setState({
+            dropdownSpecializedOpen: !this.state.dropdownSpecializedOpen,
+        });
     }
 
     handleInput = async (event) => {
@@ -152,7 +173,7 @@ class Report extends Component {
         var overviewReports = [];
         var overviewReportsRate = [];
         var onScreenStatus = [];
-        var finalOnScreenStatus = [];        
+        var finalOnScreenStatus = [];
 
         const { rowsPerPage } = this.state;
 
@@ -402,13 +423,13 @@ class Report extends Component {
         const { name, value } = event.target;
         await this.setState({
             [name]: value,
-            students: null,
+            // students: null,
         })
 
         const { rowsPerPage } = this.state;
 
         const studentsPaging = await ApiServices.Get(`/student/studentsEvaluations?currentPage=0&rowsPerPage=${rowsPerPage}`);
-        console.log(studentsPaging);
+        // console.log(studentsPaging);
         for (let index = 0; index < studentsPaging.listData.length; index++) {
             students.push(studentsPaging.listData[index].student);
             for (let index1 = 0; index1 < studentsPaging.listData[index].evaluationList.length; index1++) {
@@ -479,15 +500,17 @@ class Report extends Component {
                 finalOnScreenStatus: finalOnScreenStatus,
             })
         }
+        // console.log(this.state.students);
     }
 
     render() {
         const { loading, reportColor, rate, role, students, overviewReports, onScreenStatus, finalOnScreenStatus, finalReportColor } = this.state;
         const { pageNumber, currentPage, rowsPerPage } = this.state;
+        const { numOfStudent, dropdownSpecialized } = this.state;
 
-        if (students != null) {
-            console.log(students);
-        }
+        // if (students != null) {
+        //     console.log(students);
+        // }
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -500,6 +523,16 @@ class Report extends Component {
                                         <i className="fa fa-align-justify"></i>Đánh giá
                                     </CardHeader>
                                     <CardBody>
+                                        <Row className="float-right">
+                                            <h6>Số dòng trên trang: </h6>
+                                            &nbsp;&nbsp;
+                                            <Input onChange={this.handleInputPaging} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
+                                                <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                <option value={20}>20</option>
+                                                <option value={50}>50</option>
+                                            </Input>
+                                        </Row>
+                                        <br /><br /><br />
                                         <div>
                                             <nav className="navbar navbar-light bg-light justify-content-between">
                                                 <form className="form-inline">
@@ -509,21 +542,59 @@ class Report extends Component {
                                             <Table responsive striped>
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Đánh giá #1</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Đánh giá #2</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Đánh giá #3</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Đánh giá #4</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Kết quả OJT</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>MSSV</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Họ và tên</th>
+                                                        {role && role === 'ROLE_SUPERVISOR' ?
+                                                            <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Chuyên ngành</th> :
+                                                            (role && role === 'ROLE_HR' ?
+                                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                                    <Dropdown isOpen={this.state.dropdownSpecializedOpen} toggle={() => this.toggleDropdownSpecialized()}>
+                                                                        <DropdownToggle nav caret style={{ color: "black" }}>
+                                                                            Chuyên ngành
+                                                                        </DropdownToggle>
+                                                                        <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
+                                                                            <DropdownItem>Tổng</DropdownItem>
+                                                                            {dropdownSpecialized && dropdownSpecialized.map((specialized, index) => {
+                                                                                return (
+                                                                                    <DropdownItem>{specialized.name}</DropdownItem>
+                                                                                )
+                                                                            })
+                                                                            }
+                                                                        </DropdownMenu>
+                                                                    </Dropdown>
+                                                                </th> :
+                                                                (role && role === 'ROLE_ADMIN' ?
+                                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                                        <Dropdown isOpen={this.state.dropdownSpecializedOpen} toggle={() => this.toggleDropdownSpecialized()}>
+                                                                            <DropdownToggle nav caret style={{ color: "black" }}>
+                                                                                Chuyên ngành
+                                                                            </DropdownToggle>
+                                                                            <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
+                                                                                <DropdownItem>Tổng</DropdownItem>
+                                                                                {dropdownSpecialized && dropdownSpecialized.map((specialized, index) => {
+                                                                                    return (
+                                                                                        <DropdownItem>{specialized.name}</DropdownItem>
+                                                                                    )
+                                                                                })
+                                                                                }
+                                                                            </DropdownMenu>
+                                                                        </Dropdown>
+                                                                    </th> :
+                                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Chuyên ngành</th>)
+                                                            )
+                                                        }
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Đánh giá #1</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Đánh giá #2</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Đánh giá #3</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Đánh giá #4</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Kết quả OJT</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {students && students.map((student, index) =>
                                                         <tr>
-                                                            <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                            <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
                                                             <td style={{ textAlign: "center" }}>{student.code}</td>
                                                             <td style={{ textAlign: "center" }}>{student.name}</td>
                                                             <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
@@ -610,18 +681,21 @@ class Report extends Component {
                                             </Table>
                                         </div>
                                         <ToastContainer />
-                                        <Pagination style={{ marginTop: "3%" }}>
-                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                            <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
-                                            <Input onChange={this.handleInputPaging} type="select" name="rowsPerPage" style={{ width: "7%" }}>
-                                                <option value={10} selected={rowsPerPage === 10}>10</option>
-                                                <option value={20}>20</option>
-                                                <option value={50}>50</option>
-                                            </Input>
-                                        </Pagination>
+                                        <Row>
+                                            <Col>
+                                                <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
+                                            </Col>
+                                            <Col>
+                                                <Row className="float-right">
+                                                    <Pagination>
+                                                        <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                                    </Pagination>
+                                                </Row>
+                                            </Col>
+                                        </Row>
                                     </CardBody>
-                                    <CardFooter>
-                                    </CardFooter>
+                                    {/* <CardFooter>
+                                    </CardFooter> */}
                                 </Card>
                             </Col>
                         </Row>

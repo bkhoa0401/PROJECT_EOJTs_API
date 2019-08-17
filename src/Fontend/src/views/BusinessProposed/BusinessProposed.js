@@ -145,31 +145,31 @@ class BusinessProposed extends Component {
                                             <Table responsive striped>
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Tên doanh nghiệp</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Đề xuất bởi</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Tên doanh nghiệp</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Đề xuất bởi</th>
                                                         {
                                                             (role === 'ROLE_STARTUP' || role === 'ROLE_HEADTRAINING' || role === 'ROLE_HEADMASTER') ? (
-                                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ý kiến phòng khởi nghiệp</th>
+                                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Ý kiến phòng khởi nghiệp</th>
                                                             ) : (
                                                                     <th></th>
                                                                 )
                                                         }
                                                         {
                                                             (role === 'ROLE_HEADTRAINING' || role === 'ROLE_HEADMASTER') ? (
-                                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ý kiến phòng đào tạo</th>
+                                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Ý kiến phòng đào tạo</th>
                                                             ) : (
                                                                     <th></th>
                                                                 )
                                                         }
                                                         {
                                                             (role === 'ROLE_HEADMASTER') ? (
-                                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ý kiến ban giám hiệu</th>
+                                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Ý kiến ban giám hiệu</th>
                                                             ) : (
                                                                     <th></th>
                                                                 )
                                                         }
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
