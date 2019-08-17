@@ -129,7 +129,7 @@ class DefaultHeader extends Component {
           <NavItem className="d-md-down-none">
             <NavLink to="#" className="nav-link"><i className="icon-location-pin"></i></NavLink>
           </NavItem> */}
-          {/* <AppHeaderDropdown direction="down">
+          <AppHeaderDropdown direction="down">
             <DropdownToggle nav>
               {logo === null ?
                 <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="usericon" /> :
@@ -209,7 +209,7 @@ class DefaultHeader extends Component {
                 </div>
               </DropdownMenu>
             </AppHeaderDropdown> : <></>
-          } */}
+          }
         </Nav>
         {/* <AppAsideToggler className="d-md-down-none" /> */}
         {/*<AppAsideToggler className="d-lg-none" mobile />*/}
