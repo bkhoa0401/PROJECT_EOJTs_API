@@ -66,14 +66,15 @@ public class SkillController {
         boolean result = false;
         HttpStatus httpStatus;
 
-        int skillId = skillService.fullTextSearch(skill.getName());
+        // int skillId = skillService.fullTextSearch(skill.getName());
+        Skill skillIsExisted = skillService.getSkillByName(skill.getName());
 
         List<Skill> skillList = skillService.getAllSkill();
 
         int sizeList = skillList.size();
 
-        if (skillId == 0) {
-            skill.setId(sizeList + 1);
+        if (skillIsExisted == null) {
+           // skill.setId(sizeList + 1);
             if (skillService.createSkill(skill)) {
                 result = true;
                 httpStatus = HttpStatus.OK;

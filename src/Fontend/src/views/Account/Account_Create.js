@@ -63,6 +63,13 @@ class Account_Create extends Component {
                 this.setState({
                     loading: false
                 })
+              setTimeout(
+                function () {
+                  this.props.history.push('/manage_account');
+                }
+                  .bind(this),
+                1000
+              );
             } else {
                 Toastify.actionFail("Tạo tài khoản mới thất bại!");
                 this.setState({

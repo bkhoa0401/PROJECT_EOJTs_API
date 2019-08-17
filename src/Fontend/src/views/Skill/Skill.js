@@ -74,6 +74,7 @@ class Skill extends Component {
         const { currentPage, rowsPerPage } = this.state;
         const skills = await ApiServices.Get(`/skill?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
+        console.log(skills);
         if (skills !== null) {
             this.setState({
                 skills: skills.listData,

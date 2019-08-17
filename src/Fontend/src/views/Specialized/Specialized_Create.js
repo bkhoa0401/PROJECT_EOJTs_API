@@ -78,7 +78,29 @@ class Specialized_Create extends Component {
             this.setState({
                 loading: false
             })
-        } else {
+          setTimeout(
+            function () {
+              this.props.history.push('/specialized');
+            }
+              .bind(this),
+            1000
+          );
+        }else if(result.status===409){
+          confirmAlert({
+              title: 'Xác nhận',
+              message: ` Chuyên ngành '${name}' đã tồn tại. Vui lòng thử lại!`,
+              buttons: [
+                {
+                  label: 'Xác nhận'
+            }
+        ]
+        });
+          this.setState({
+            loading: false,
+            name:"",
+          })
+        }
+        else {
             Toastify.actionFail("Tạo chuyên ngành mới thất bại!");
             this.setState({
                 loading: false

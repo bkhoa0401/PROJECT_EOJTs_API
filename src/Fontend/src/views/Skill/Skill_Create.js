@@ -80,7 +80,29 @@ class Skill_Create extends Component {
             this.setState({
                 loading: false
             })
-        } else {
+          setTimeout(
+            function () {
+              this.props.history.push('/skill');
+            }
+              .bind(this),
+            1000
+          );
+        } else if(result.status===409){
+          confirmAlert({
+            title: 'Xác nhận',
+            message: ` Kỹ năng '${name}' đã tồn tại. Vui lòng thử lại!`,
+            buttons: [
+              {
+                label: 'Xác nhận'
+              }
+            ]
+          });
+          this.setState({
+            loading: false,
+            name:"",
+          })
+        }
+          else {
             Toastify.actionFail("Tạo kỹ năng mới thất bại!");
             this.setState({
                 loading: false

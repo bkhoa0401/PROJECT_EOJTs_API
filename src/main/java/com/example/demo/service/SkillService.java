@@ -99,17 +99,19 @@ public class SkillService implements ISkillService {
     }
 
     @Override
-    public boolean createSkill(Skill skill) {
+    public boolean  createSkill(Skill skill) {
         ValueOperations values = template.opsForValue();
         List<Skill> skillList = (List<Skill>) values.get("skills");
         try {
+            Specialized specialized = iSpecializedService.getSpecializedById(skill.getSpecialized().getId());
+            skill.setSpecialized(specialized);
+            skill.setSoftSkill(false);
+            ISkillRepository.save(skill);
             if (skillList != null) {
-                Specialized specialized = iSpecializedService.getSpecializedById(skill.getSpecialized().getId());
-                skill.setSpecialized(specialized);
-                skillList.add(skill);
+                Skill isAddDB=getSkillByName(skill.getName());
+                skillList.add(isAddDB);
                 values.set("skills", skillList);
             }
-            ISkillRepository.save(skill);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

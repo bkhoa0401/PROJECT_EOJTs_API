@@ -82,7 +82,14 @@ class Specialized_Update extends Component {
         }
         const result = await ApiServices.Put('/specialized', specialized);
         if (result) {
-            Toastify.actionSuccess("Cập nhật chuyên ngành thành công");
+          Toastify.actionSuccess("Cập nhật chuyên ngành thành công");
+          setTimeout(
+            function () {
+              this.props.history.push('/specialized');
+            }
+              .bind(this),
+            1000
+          );
         } else {
             Toastify.actionFail("Cập nhật chuyên ngành thất bại!");
         }
