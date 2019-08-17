@@ -18,6 +18,6 @@ public interface ISemesterService {
 
     boolean saveSemester(Semester semester);
 
-    List<Semester> getSemesterCurrentAndNext();
+    Semester getSemesterNext();
 
 }

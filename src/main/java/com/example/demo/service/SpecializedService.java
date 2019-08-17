@@ -110,17 +110,14 @@ public class SpecializedService implements ISpecializedService {
     public boolean createSpecialized(Specialized specialized) {
         ValueOperations values = template.opsForValue();
         List<Specialized> specializeds = (List<Specialized>) values.get("specialized");
+        ISpecializedRepository.save(specialized);
         if (specializeds != null) {
-            specializeds.add(specialized);
+            Specialized specializedIsSave=ISpecializedRepository.findByName(specialized.getName());
+            specializeds.add(specializedIsSave);
             values.set("specialized", specializeds);
         }
-        try {
-            ISpecializedRepository.save(specialized);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+
+        return true;
     }
 
     public List<Specialized> updateSpecialized(Specialized specialized) {
@@ -142,21 +139,7 @@ public class SpecializedService implements ISpecializedService {
 
 
     @Override
-//    @CachePut(key = "'all'")
-//    @CacheEvict(allEntries = true)
     public List<Specialized> updateStatusSpecialized(int specializedId, boolean status) {
-//        Specialized specializedFound = ISpecializedRepository.findSpecializedById(specializedId);
-//        if (specializedFound != null) {
-//            specializedFound.setStatus(status);
-//            ISpecializedRepository.save(specializedFound);
-//
-//            if (this.specializedListAll.size() == 0) {
-//                this.specializedListAll = ISpecializedRepository.findAll();
-//            }
-//            this.specializedListAll.set(specializedId - 1, specializedFound); // save redis
-//            return specializedListAll;
-//        }
-//        return null;
         Specialized specializedFound = ISpecializedRepository.findSpecializedById(specializedId);
         ValueOperations values = template.opsForValue();
         List<Specialized> specializeds = (List<Specialized>) values.get("specialized");
@@ -176,7 +159,6 @@ public class SpecializedService implements ISpecializedService {
     }
 
     @Override
-//    @Cacheable(value = "specializedID", key = "#id")
     public Specialized getSpecializedById(int id) {
         Specialized specialized = ISpecializedRepository.findSpecializedById(id);
         if (specialized != null) {
