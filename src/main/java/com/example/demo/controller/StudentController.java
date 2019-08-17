@@ -78,6 +78,8 @@ public class StudentController {
     @Autowired
     IHistoryActionService iHistoryActionService;
 
+    @Autowired
+    ISpecializedService iSpecializedService;
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -189,7 +191,8 @@ public class StudentController {
 
         Student student1 = new Student();
         student1.setEmail(student.getEmail());
-        student1.setSpecialized(student.getSpecialized());
+        Specialized specialized=iSpecializedService.getSpecializedById(student.getSpecialized().getId());
+        student1.setSpecialized(specialized);
         student1.setStatus(StudentStatus.NOTSTART);
         student1.setAddress(student.getAddress());
         student1.setDob(student.getDob());

@@ -142,13 +142,15 @@ public class UsersService implements IUsersService {
         List<Role> roleList = users.getRoles();
         for (int i = 0; i < roleList.size(); i++) {
             Role role = roleList.get(i);
-            if (role.getDescription().equals("ROLE_STUDENT")) {
+           // if (role.getDescription().equals("ROLE_STUDENT")) {
+            if (role.getId()==2) {
                 List<Users> usersList = (List<Users>) values.get("ROLE_STUDENTusers");
                 if (usersList != null) {
                     usersList.add(users);
                     values.set("ROLE_STUDENTusers", usersList);
                 }
-            } else if (role.getDescription().equals("ROLE_HR")) {
+            //} else if (role.getDescription().equals("ROLE_HR")) {
+            } else if (role.getId()==3) {
                 List<Users> usersList = (List<Users>) values.get("ROLE_HRusers");
                 if (usersList != null) {
                     usersList.add(users);

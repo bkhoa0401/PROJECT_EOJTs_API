@@ -69,6 +69,9 @@ public class SpecializedService implements ISpecializedService {
 
         try {
             Specialized specialized = (Specialized) jpaQuery.getSingleResult();
+            if (specialized == null) {
+                return 0;
+            }
             specializedId = specialized.getId();
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,6 +108,12 @@ public class SpecializedService implements ISpecializedService {
 
     @Override
     public boolean createSpecialized(Specialized specialized) {
+        ValueOperations values = template.opsForValue();
+        List<Specialized> specializeds = (List<Specialized>) values.get("specialized");
+        if (specializeds != null) {
+            specializeds.add(specialized);
+            values.set("specialized", specializeds);
+        }
         try {
             ISpecializedRepository.save(specialized);
             return true;
@@ -175,6 +184,15 @@ public class SpecializedService implements ISpecializedService {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public boolean checkSpecializedIsExisted(String name) {
+        Specialized specialized = ISpecializedRepository.findByName(name);
+        if (specialized != null) {
+            return true;
+        }
+        return false;
     }
 }
 

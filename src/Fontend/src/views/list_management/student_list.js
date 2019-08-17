@@ -1131,7 +1131,7 @@ class student_list extends Component {
                                             </FormGroup>
                                             <FormGroup row>
                                                 <Col md="4">
-                                                    <h6>Kỹ năng</h6>
+                                                    <h6>Kỹ năng chuyên ngành</h6>
                                                 </Col>
                                                 <Col xs="12" md="8">
                                                     {
@@ -1139,11 +1139,33 @@ class student_list extends Component {
                                                             return (
                                                                 <div>
                                                                     {
-                                                                        skill.name && skill.name ? (
+                                                                        skill.name && skill.name && skill.softSkill.toString() === 'false' ? (
                                                                             <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
                                                                         ) : (
-                                                                                <label style={{ marginRight: "15px" }}>N/A</label>
+                                                                                <></>
                                                                             )
+                                                                    }
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="4">
+                                                    <h6>Kỹ năng mềm</h6>
+                                                </Col>
+                                                <Col xs="12" md="8">
+                                                    {
+                                                        skills && skills.map((skill, index) => {
+                                                            return (
+                                                                <div>
+                                                                    {
+                                                                        skill.softSkill.toString() === 'true' ? (
+                                                                            <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                        ) : (
+                                                                            <></>
+                                                                        )
                                                                     }
                                                                 </div>
                                                             )

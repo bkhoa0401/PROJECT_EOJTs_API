@@ -97,10 +97,17 @@ class Skill_Update extends Component {
             status,
             specialized
         }
-
+        console.log(skill);
         const result = await ApiServices.Put('/skill', skill);
         if (result.status === 200) {
             Toastify.actionSuccess("Cập nhật kỹ năng thành công!");
+          setTimeout(
+            function () {
+              this.props.history.push('/skill');
+            }
+              .bind(this),
+            2000
+          );
         } else {
             Toastify.actionFail("Cập nhật kỹ năng thất bại!");
         }

@@ -128,7 +128,7 @@ class User_Student_Create extends Component {
                         this.props.history.push('/admin_account/studentList');
                     }
                         .bind(this),
-                    3500
+                    2000
                 );
 
                 var currentTime = new Date();

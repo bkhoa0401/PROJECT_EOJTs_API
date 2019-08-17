@@ -47,7 +47,7 @@ public class SemesterService implements ISemesterService {
             boolean getCurrentSemester = Utils.aDateBetweenTwoDate(minDate, maxDate);
             if (getCurrentSemester == true) {
                 semesterCurrent = semesters.get(i);
-                //        break;
+                break;
             }
         }
         return semesterCurrent;

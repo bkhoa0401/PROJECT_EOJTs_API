@@ -930,7 +930,7 @@ class Official_List extends Component {
                     </FormGroup> */}
                     <FormGroup row>
                       <Col md="4">
-                        <h6>Kỹ năng</h6>
+                        <h6>Kỹ năng chuyên ngành</h6>
                       </Col>
                       <Col xs="12" md="8">
                         {
@@ -938,7 +938,33 @@ class Official_List extends Component {
                             return (
                               <div>
                                 {
-                                  <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                  skill.name && skill.name && skill.softSkill.toString() === 'false' ? (
+                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                  ) : (
+                                      <></>
+                                    )
+                                }
+                              </div>
+                            )
+                          })
+                        }
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Col md="4">
+                        <h6>Kỹ năng mềm</h6>
+                      </Col>
+                      <Col xs="12" md="8">
+                        {
+                          studentDetail.skills && studentDetail.skills.map((skill, index) => {
+                            return (
+                              <div>
+                                {
+                                  skill.softSkill.toString() === 'true' ? (
+                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                  ) : (
+                                      <></>
+                                    )
                                 }
                               </div>
                             )

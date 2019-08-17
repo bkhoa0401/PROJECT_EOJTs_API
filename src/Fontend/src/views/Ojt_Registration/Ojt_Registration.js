@@ -142,14 +142,40 @@ class Ojt_Registration extends Component {
             })
         }
 
-        const students = await ApiServices.Get('/student/getListStudentByOptionAndStatusOption');
+        const { currentPage, rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         const business = await ApiServices.Get('/business/getBusiness');
+        const invitations = await ApiServices.Get('/student/getListStudentIsInvited');
+        let listInvitation = [];
         if (students !== null) {
+            for (let index = 0; index < students.listData.length; index++) {
+                listInvitation.push(false);
+                for (let index1 = 0; index1 < invitations.length; index1++) {
+                    if (invitations[index1].student.email === students.listData[index].email) {
+                        listInvitation.splice(index, 1);
+                        listInvitation.push(true);
+                        break;
+                    }
+                }
+            }
             this.setState({
-                students,
-                business_eng_name: business.business_eng_name
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                business_name: business.business_name,
+                business_eng_name: business.business_eng_name,
+                loading: false,
+                listInvitation: listInvitation,
             });
         }
+
+        // const students = await ApiServices.Get('/student/getListStudentByOptionAndStatusOption');
+        // const business = await ApiServices.Get('/business/getBusiness');
+        // if (students !== null) {
+        //     this.setState({
+        //         students,
+        //         business_eng_name: business.business_eng_name
+        //     });
+        // }
     }
 
     toggleModalDetail = async (studentDetail) => {
@@ -403,7 +429,7 @@ class Ojt_Registration extends Component {
                                         </FormGroup> */}
                                         <FormGroup row>
                                             <Col md="4">
-                                                <h6>Kỹ năng</h6>
+                                                <h6>Kỹ năng chuyên ngành</h6>
                                             </Col>
                                             <Col xs="12" md="8">
                                                 {
@@ -411,7 +437,33 @@ class Ojt_Registration extends Component {
                                                         return (
                                                             <div>
                                                                 {
-                                                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                    skill.name && skill.name && skill.softSkill.toString() === 'false' ? (
+                                                                        <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                    ) : (
+                                                                            <></>
+                                                                        )
+                                                                }
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Kỹ năng mềm</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {
+                                                    studentDetail.skills && studentDetail.skills.map((skill, index) => {
+                                                        return (
+                                                            <div>
+                                                                {
+                                                                    skill.softSkill.toString() === 'true' ? (
+                                                                        <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                    ) : (
+                                                                            <></>
+                                                                        )
                                                                 }
                                                             </div>
                                                         )

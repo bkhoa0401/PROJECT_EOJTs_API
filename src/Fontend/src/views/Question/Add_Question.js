@@ -147,6 +147,13 @@ class Add_Question extends Component {
                 this.setState({
                     loading: false
                 })
+              setTimeout(
+                function () {
+                  this.props.history.push('/question');
+                }
+                  .bind(this),
+                2000
+              );
             } else {
                 Toastify.actionFail("Tạo câu hỏi thất bại!");
                 this.setState({

@@ -110,7 +110,7 @@ class User_Business_Create extends Component {
                         this.props.history.push('/admin_account/businessList');
                     }
                         .bind(this),
-                    3500
+                    2000
                 );
             } else {
                 Toastify.actionFail("Tạo tài khoản mới thất bại!");

@@ -25,4 +25,6 @@ public interface ISpecializedService {
 //    List<Specialized> pagingSpecialized(int page, int pageSize);
 
     PagingDTO pagingSpecialized(int currentPage, int rowsPerPage);
+
+    boolean checkSpecializedIsExisted(String name);
 }

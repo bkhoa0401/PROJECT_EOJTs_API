@@ -167,6 +167,13 @@ class Update_Question extends Component {
                     loading: false
                 })
                 Toastify.actionSuccess("Chỉnh sửa câu hỏi thành công!");
+              setTimeout(
+                function () {
+                  this.props.history.push('/question');
+                }
+                  .bind(this),
+                2000
+              );
             } else {                
                 this.setState({
                     loading: false
