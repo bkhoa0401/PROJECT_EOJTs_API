@@ -141,16 +141,42 @@ class Invitation_Create extends Component {
                             </Col>
                         </FormGroup> */}
                             <FormGroup row>
-                                <Col md="3">
-                                    <h6>Kỹ năng:</h6>
+                                <Col md="4">
+                                    <h6>Kỹ năng chuyên ngành</h6>
                                 </Col>
-                                <Col xs="12" md="9">
+                                <Col xs="12" md="8">
                                     {
                                         studentDetail.skills && studentDetail.skills.map((skill, index) => {
                                             return (
                                                 <div>
                                                     {
-                                                        <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                        skill.name && skill.name && skill.softSkill.toString() === 'false' ? (
+                                                            <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                        ) : (
+                                                                <></>
+                                                            )
+                                                    }
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </Col>
+                            </FormGroup>
+                            <FormGroup row>
+                                <Col md="4">
+                                    <h6>Kỹ năng mềm</h6>
+                                </Col>
+                                <Col xs="12" md="8">
+                                    {
+                                        studentDetail.skills && studentDetail.skills.map((skill, index) => {
+                                            return (
+                                                <div>
+                                                    {
+                                                        skill.softSkill.toString() === 'true' ? (
+                                                            <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                        ) : (
+                                                                <></>
+                                                            )
                                                     }
                                                 </div>
                                             )
@@ -570,17 +596,33 @@ class Invitation_Create extends Component {
                 loading: false
             })
         }
+        const { currentPage, rowsPerPage, currentPageSuggest, rowsPerPageSuggest } = this.state;
 
-        const students2nd = await ApiServices.Get('/student/getListStudentNotYetInvited');
-        const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
+        const students2nd = await ApiServices.Get(`/student/getListStudentNotYetInvited?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const suggestedStudents = await ApiServices.Get(`/student/studentsSuggest?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
+
         const business = await ApiServices.Get('/business/getBusiness');
         if (students2nd !== null && suggestedStudents !== null) {
             this.setState({
-                students: students2nd,
-                suggestedStudents: suggestedStudents,
-                business_name: business.business_name
+                students: students2nd.listData,
+                pageNumber: students2nd.pageNumber,
+                suggestedStudents: suggestedStudents.listData,
+                pageNumberSuggest: suggestedStudents.pageNumber,
+                business_name: business.business_name,
+                loading: false,
             });
         }
+
+        // const students2nd = await ApiServices.Get('/student/getListStudentNotYetInvited');
+        // const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
+        // const business = await ApiServices.Get('/business/getBusiness');
+        // if (students2nd !== null && suggestedStudents !== null) {
+        //     this.setState({
+        //         students: students2nd,
+        //         suggestedStudents: suggestedStudents,
+        //         business_name: business.business_name
+        //     });
+        // }
 
 
         setTimeout(

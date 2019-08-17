@@ -172,7 +172,7 @@ class Update_Question extends Component {
                   this.props.history.push('/question');
                 }
                   .bind(this),
-                1000
+                2000
               );
             } else {                
                 this.setState({

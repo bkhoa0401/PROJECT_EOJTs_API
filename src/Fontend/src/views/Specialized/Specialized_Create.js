@@ -83,7 +83,7 @@ class Specialized_Create extends Component {
               this.props.history.push('/specialized');
             }
               .bind(this),
-            1000
+            2000
           );
         }else if(result.status===409){
           confirmAlert({

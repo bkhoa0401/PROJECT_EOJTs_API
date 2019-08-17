@@ -106,7 +106,7 @@ class Skill_Update extends Component {
               this.props.history.push('/skill');
             }
               .bind(this),
-            1000
+            2000
           );
         } else {
             Toastify.actionFail("Cập nhật kỹ năng thất bại!");

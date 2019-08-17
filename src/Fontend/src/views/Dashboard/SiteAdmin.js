@@ -281,6 +281,32 @@ class SiteAdmin extends Component {
         this.setState({
           polar: polar
         })
+      } else {
+        var polar = {
+          datasets: [
+            {
+              data: ['', '', '', '', ''],
+              backgroundColor: [
+                '#FF6384',
+                '#4BC0C0',
+                '#FFCE56',
+                '#E7E9ED',
+                '#36A2EB',
+              ],
+              label: 'My dataset'
+            }],
+          labels: [
+            'Xuất sắc',
+            'Tốt',
+            'Khá',
+            'Trung Bình',
+            'Yếu',
+          ],
+        }
+
+        this.setState({
+          polar: polar
+        })
       }
     } else if (name.includes('result')) {
       await this.setState({
@@ -299,6 +325,29 @@ class SiteAdmin extends Component {
           datasets: [
             {
               data: statisticalStudentInSemester.countStudentByStatus,
+              backgroundColor: [
+                '#FF6384',
+                '#36A2EB'
+              ],
+              hoverBackgroundColor: [
+                '#FF6384',
+                '#36A2EB'
+              ],
+            }],
+        }
+
+        this.setState({
+          pie: pie
+        })
+      } else {
+        var pie = {
+          labels: [
+            'Pass',
+            'Fail',
+          ],
+          datasets: [
+            {
+              data: ['', ''],
               backgroundColor: [
                 '#FF6384',
                 '#36A2EB'

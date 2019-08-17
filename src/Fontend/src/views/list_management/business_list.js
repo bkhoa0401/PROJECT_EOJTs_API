@@ -295,7 +295,7 @@ class business_list extends Component {
                                             <Col xs="12" md="8">
                                                 {business === null ?
                                                     <></> :
-                                                    <Label>{business.business_overview}</Label>
+                                                    <Label dangerouslySetInnerHTML={{ __html: business.business_overview }} />
                                                 }
                                             </Col>
                                         </FormGroup>

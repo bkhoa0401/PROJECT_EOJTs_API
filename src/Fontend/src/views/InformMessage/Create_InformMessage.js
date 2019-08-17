@@ -297,7 +297,13 @@ class Create_InformMessage extends Component {
             // console.log(event);
             if (result.status === 201) {
                 Toastify.actionSuccess("Tạo thông báo thành công!");
-                this.props.history.push("/informmessage");
+                setTimeout(
+                    function () {
+                        this.props.history.push('/informmessage');
+                    }
+                        .bind(this),
+                    2000
+                );
             } else {
                 Toastify.actionFail("Tạo thông báo thất bại!");
                 this.setState({

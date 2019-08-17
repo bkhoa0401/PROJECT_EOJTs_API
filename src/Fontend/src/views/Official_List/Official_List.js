@@ -187,7 +187,7 @@ class Official_List extends Component {
     }
   };
 
-  handleSelectAll = async() => {
+  handleSelectAll = async () => {
     let suggestedStudents = this.state.suggestedStudents;
     let preListStudent = [];
     let isSelect = [];
@@ -477,15 +477,15 @@ class Official_List extends Component {
   showTaskState(taskStatus) {
     // console.log(taskStatus);
     if (taskStatus === 'DONE') {
-        return (
-            <i style={{ color: "#4dbd74" }} className="fa fa-check"></i>
-        )
+      return (
+        <i style={{ color: "#4dbd74" }} className="fa fa-check"></i>
+      )
     } else {
-        return (
-            <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
-        )
+      return (
+        <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
+      )
     }
-}
+  }
 
   handleSubmit = async () => {
     this.setState({
@@ -892,7 +892,7 @@ class Official_List extends Component {
                     </FormGroup> */}
                     <FormGroup row>
                       <Col md="4">
-                        <h6>Kỹ năng</h6>
+                        <h6>Kỹ năng chuyên ngành</h6>
                       </Col>
                       <Col xs="12" md="8">
                         {
@@ -900,7 +900,33 @@ class Official_List extends Component {
                             return (
                               <div>
                                 {
-                                  <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                  skill.name && skill.name && skill.softSkill.toString() === 'false' ? (
+                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                  ) : (
+                                      <></>
+                                    )
+                                }
+                              </div>
+                            )
+                          })
+                        }
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Col md="4">
+                        <h6>Kỹ năng mềm</h6>
+                      </Col>
+                      <Col xs="12" md="8">
+                        {
+                          studentDetail.skills && studentDetail.skills.map((skill, index) => {
+                            return (
+                              <div>
+                                {
+                                  skill.softSkill.toString() === 'true' ? (
+                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                  ) : (
+                                      <></>
+                                    )
                                 }
                               </div>
                             )
