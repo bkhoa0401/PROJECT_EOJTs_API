@@ -356,6 +356,18 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/getStudentsByBusinessNotPaging")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getListStudentByBusinessNotPaging() {
+        String emailBusiness = getEmailFromToken();
+        List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
+
+        if (studentList != null) {
+            return new ResponseEntity<>(studentList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     @GetMapping("/getStudentsByBusinessWithNoSupervisor")
     @ResponseBody
     public ResponseEntity<List<Student>> getStudentsByBusinessWithNoSupervisor() {
