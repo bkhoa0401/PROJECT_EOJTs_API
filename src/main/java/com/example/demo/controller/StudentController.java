@@ -97,7 +97,7 @@ public class StudentController {
         List<Ojt_Enrollment> ojtEnrollmentList = new ArrayList<>();
         List<String> nameList = new ArrayList<>();
 
-        StudentIsExistedAndNotYet studentIsExistedAndNotYet = studentService.getStudentsIsExisted(students);
+        StudentIsExistedAndNotYet studentIsExistedAndNotYet = studentService.getStudentsIsExisted(studentList);
 
         List<Student> studentListIsExisted = studentIsExistedAndNotYet.getStudentsIsExisted();
         studentService.handlerStudentIsExisted(studentListIsExisted); // handle xong may dua da ton tai
