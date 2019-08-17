@@ -560,7 +560,13 @@ class Create_Report extends Component {
                     }
 
                     const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
-                    this.props.history.push("/report");
+                    setTimeout(
+                        function () {
+                            this.props.history.push("/report");
+                        }
+                            .bind(this),
+                        2000
+                    );                    
                 } else {
                     Toastify.actionFail("Tạo đánh giá tháng thất bại!");
                     this.setState({
