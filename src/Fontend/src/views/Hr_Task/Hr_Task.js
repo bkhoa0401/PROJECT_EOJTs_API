@@ -19,7 +19,11 @@ import {
     Pagination,
     Table,
     Input,
-    CardFooter
+    CardFooter,
+    Dropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem,
 } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
@@ -59,14 +63,25 @@ class Hr_Task extends Component {
             statusUpdate: '',
             pageNumber: 1,
             currentPage: 0,
-            rowsPerPage: 10
+            rowsPerPage: 10,
+            searchValue: "",
+            dropdownStateOpen: false,
+            dropdownApprovedOpen: false,
+            dropdownState: ["Tổng", "Chưa hoàn thành", "Cần chỉnh sửa", "Hoàn thành"],
+            dropdownApproved: ["Tổng", "Đang chờ duyệt", "Từ chối", "Duyệt"],
+            //Tổng = 0, Chưa hoàn thành(NOTSTART) = 1, Cần chỉnh sửa - Từ chối(PENDING) = 2, HOÀN THÀNH(DONE, APPROVED) = 3, Đang chờ duyệt(NOTSTART, DONE) = 4, Duyệt(APPROVED) = 5
+            // statusFilter: 0,
+            taskStatus: 0,
+
+            isSearching: false,
+            searchingTaskList: null,
         }
     }
 
 
     async componentDidMount() {
         const { currentPage, rowsPerPage } = this.state;
-        const tasks = await ApiServices.Get(`/supervisor/tasks?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=${this.state.taskStatus}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         if (tasks !== null) {
             this.setState({
                 tasks: tasks.listData,
@@ -105,6 +120,98 @@ class Hr_Task extends Component {
         }
     }
 
+    handleSelectTaskStatus = async (taskStatus) => {
+        console.log(this.state.tasks);
+        console.log(taskStatus);
+        //Tổng = 0, Chưa hoàn thành(NOTSTART) = 1, Cần chỉnh sửa - Từ chối(PENDING) = 2, Hoàn thành(DONE, APPROVED) = 3, Đang chờ duyệt(NOTSTART, DONE) = 4, Duyệt(APPROVED) = 5
+        if (taskStatus === "Tổng") {
+            const { rowsPerPage } = this.state;
+            const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=0&currentPage=0&rowsPerPage=${rowsPerPage}`);
+            console.log(tasks);
+            if (tasks !== null) {
+                await this.setState({
+                    tasks: tasks.listData,
+                    pageNumber: tasks.pageNumber,
+                    loading: false,
+                    taskStatus: 0,
+                    currentPage: 0,
+                });
+                console.log(this.state.tasks);
+            }
+        } else if (taskStatus === "Chưa hoàn thành") {
+            const { rowsPerPage } = this.state;
+            const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=1&currentPage=0&rowsPerPage=${rowsPerPage}`);
+            console.log(tasks);
+            if (tasks !== null) {
+                await this.setState({
+                    tasks: tasks.listData,
+                    pageNumber: tasks.pageNumber,
+                    loading: false,
+                    taskStatus: 1,
+                    currentPage: 0,
+                });
+                console.log(this.state.tasks);
+            }
+        } else if (taskStatus === "Cần chỉnh sửa" || taskStatus === "Từ chối") {
+            const { rowsPerPage } = this.state;
+            const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=2&currentPage=0&rowsPerPage=${rowsPerPage}`);
+            console.log(tasks);
+            if (tasks !== null) {
+                await this.setState({
+                    tasks: tasks.listData,
+                    pageNumber: tasks.pageNumber,
+                    loading: false,
+                    taskStatus: 2,
+                    currentPage: 0,
+                });
+                console.log(this.state.tasks);
+            }
+        } else if (taskStatus === "Hoàn thành") {
+            const { rowsPerPage } = this.state;
+            const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=3&currentPage=0&rowsPerPage=${rowsPerPage}`);
+            console.log(tasks);
+            if (tasks !== null) {
+                await this.setState({
+                    tasks: tasks.listData,
+                    pageNumber: tasks.pageNumber,
+                    loading: false,
+                    taskStatus: 3,
+                    currentPage: 0,
+                });
+                console.log(this.state.tasks);
+            }
+        } else if (taskStatus === "Đang chờ duyệt") {
+            const { rowsPerPage } = this.state;
+            const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=4&currentPage=0&rowsPerPage=${rowsPerPage}`);
+            console.log(tasks);
+            if (tasks !== null) {
+                await this.setState({
+                    tasks: tasks.listData,
+                    pageNumber: tasks.pageNumber,
+                    loading: false,
+                    taskStatus: 4,
+                    currentPage: 0,
+                });
+                console.log(this.state.tasks);
+            }
+        } else if (taskStatus === "Duyệt") {
+            console.log(taskStatus === "Duyệt");
+            const { rowsPerPage } = this.state;
+            const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=5&currentPage=0&rowsPerPage=${rowsPerPage}`);
+            console.log(tasks);
+            if (tasks !== null) {
+                await this.setState({
+                    tasks: tasks.listData,
+                    pageNumber: tasks.pageNumber,
+                    loading: false,
+                    taskStatus: 5,
+                    currentPage: 0,
+                });
+                console.log(this.state.tasks);
+            }
+        }
+    }
+
     handleDirect = (uri) => {
         this.props.history.push(uri);
     }
@@ -117,7 +224,7 @@ class Hr_Task extends Component {
 
         if (result.status === 200) {
             const { currentPage, rowsPerPage } = this.state;
-            const tasks = await ApiServices.Get(`/supervisor/tasks?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+            const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=${this.state.taskStatus}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
             if (tasks !== null) {
                 this.setState({
                     tasks: tasks.listData,
@@ -235,6 +342,18 @@ class Hr_Task extends Component {
         });
     }
 
+    toggleDropdownState = () => {
+        this.setState({
+            dropdownStateOpen: !this.state.dropdownStateOpen,
+        });
+    }
+
+    toggleDropdownApproved = () => {
+        this.setState({
+            dropdownApprovedOpen: !this.state.dropdownApprovedOpen,
+        });
+    }
+
     handleConfirmSetState = (id, status) => {
         this.setState({
             statusUpdate: status,
@@ -296,7 +415,7 @@ class Hr_Task extends Component {
                 })
 
                 const { currentPage, rowsPerPage } = this.state;
-                const tasks = await ApiServices.Get(`/supervisor/tasks?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+                const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=${this.state.taskStatus}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
                 if (tasks !== null) {
                     this.setState({
                         tasks: tasks.listData,
@@ -341,7 +460,7 @@ class Hr_Task extends Component {
 
     handlePageNumber = async (currentPage) => {
         const { rowsPerPage } = this.state;
-        const tasks = await ApiServices.Get(`/supervisor/tasks?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=${this.state.taskStatus}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
         if (tasks !== null) {
             this.setState({
@@ -354,7 +473,7 @@ class Hr_Task extends Component {
 
     handlePagePrevious = async (currentPage) => {
         const { rowsPerPage } = this.state;
-        const tasks = await ApiServices.Get(`/supervisor/tasks?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=${this.state.taskStatus}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
         if (tasks !== null) {
             this.setState({
@@ -367,7 +486,7 @@ class Hr_Task extends Component {
 
     handlePageNext = async (currentPage) => {
         const { rowsPerPage } = this.state;
-        const tasks = await ApiServices.Get(`/supervisor/tasks?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=${this.state.taskStatus}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
         if (tasks !== null) {
             this.setState({
@@ -378,29 +497,48 @@ class Hr_Task extends Component {
         }
     }
 
-    handleInput = async (event) => {
+    handleInputPagingAll = async (event) => {
         const { name, value } = event.target;
         await this.setState({
             [name]: value
         })
 
         const { rowsPerPage } = this.state;
-        const tasks = await ApiServices.Get(`/supervisor/tasks?currentPage=0&rowsPerPage=${rowsPerPage}`);
-
+        const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=0&currentPage=0&rowsPerPage=${rowsPerPage}`);
         if (tasks !== null) {
             this.setState({
                 tasks: tasks.listData,
+                pageNumber: tasks.pageNumber,
                 currentPage: 0,
-                pageNumber: tasks.pageNumber
+                taskStatus: 0,
+            });
+        }
+    }
+
+    handleInput = async (event) => {
+        const { name, value } = event.target;
+        if (value === "") {
+            await this.setState({
+                [name]: value.substr(0, 20),
+                isSearching: false,
+            })
+        } else {
+            const searchingTaskList = await ApiServices.Get(`/supervisor/searchingTaskAllFields?valueSearch=${value.substr(0, 20)}`);
+            console.log(searchingTaskList);
+            await this.setState({
+                [name]: value.substr(0, 20),
+                isSearching: true,
+                searchingTaskList: searchingTaskList,
             })
         }
     }
 
     render() {
-        const { tasks, loading } = this.state;
+        const { tasks, loading, searchValue } = this.state;
         const { id, title, description, time_created, time_end, level_task, priority, status, supervisorName,
             studentName, contentComment, contentCommentNew, statusUpdate } = this.state;
         const { pageNumber, currentPage, rowsPerPage } = this.state;
+        const { dropdownState, dropdownApproved, isSearching, searchingTaskList } = this.state;
 
         return (
             loading.toString() === 'true' ? (
@@ -414,81 +552,182 @@ class Hr_Task extends Component {
                                         <i className="fa fa-align-justify"></i> Danh sách nhiệm vụ
                                     </CardHeader>
                                     <CardBody>
-                                        <Button color="primary" onClick={() => this.handleDirect('/hr-task/create')}>Tạo nhiệm vụ mới</Button>
-                                        <br />
-                                        <br />
-                                        <br />
+                                        <FormGroup row>
+                                            <Col md="10">
+                                                <Button color="primary" onClick={() => this.handleDirect('/hr-task/create')}>Tạo nhiệm vụ mới</Button>
+                                            </Col>
+                                            <Col xs="12" md="2">
+                                                {isSearching === false ?
+                                                    <Row>
+                                                        <h6>Số dòng trên trang: </h6>
+                                                        &nbsp;&nbsp;
+                                                        <Input onChange={this.handleInputPagingAll} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
+                                                            <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                            <option value={20}>20</option>
+                                                            <option value={50}>50</option>
+                                                        </Input>
+                                                    </Row> :
+                                                    <></>
+                                                }
+                                            </Col>
+                                        </FormGroup>
                                         <ToastContainer />
+                                        <nav className="navbar navbar-light bg-light justify-content-between">
+                                            <form className="form-inline">
+                                                <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                            </form>
+                                        </nav>
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nhiệm vụ</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nhiệm vụ</th>
                                                     {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ưu tiên</th> */}
                                                     {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hạn cuối</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Mức độ</th> */}
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Người giao</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Sinh viên</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Kiểm duyệt</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Người giao</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Sinh viên</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                        <Dropdown isOpen={this.state.dropdownStateOpen} toggle={() => this.toggleDropdownState()}>
+                                                            <DropdownToggle nav caret style={{ color: "black" }}>
+                                                                Trạng thái
+                                                            </DropdownToggle>
+                                                            <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
+                                                                {dropdownState && dropdownState.map((stateTask, index) => {
+                                                                    return (
+                                                                        <DropdownItem onClick={() => this.handleSelectTaskStatus(stateTask)}>{stateTask}</DropdownItem>
+                                                                    )
+                                                                })
+                                                                }
+                                                            </DropdownMenu>
+                                                        </Dropdown>
+                                                    </th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                        <Dropdown isOpen={this.state.dropdownApprovedOpen} toggle={() => this.toggleDropdownApproved()}>
+                                                            <DropdownToggle nav caret style={{ color: "black" }}>
+                                                                Kiểm duyệt
+                                                            </DropdownToggle>
+                                                            <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
+                                                                {dropdownApproved && dropdownApproved.map((approvedTask, index) => {
+                                                                    return (
+                                                                        <DropdownItem onClick={() => this.handleSelectTaskStatus(approvedTask)}>{approvedTask}</DropdownItem>
+                                                                    )
+                                                                })
+                                                                }
+                                                            </DropdownMenu>
+                                                        </Dropdown>
+                                                    </th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {
-                                                    tasks && tasks.map((task, index) => {
-                                                        return (
-                                                            <tr>
-                                                                <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                                <td style={{ textAlign: "center" }}>{task.task.title}</td>
-                                                                {/* <td style={{ textAlign: "center" }}>{task.priority}</td> */}
-                                                                {/* <td style={{ textAlign: "center" }}>{task.time_end}</td>
+                                                {isSearching === false ?
+                                                    (
+                                                        tasks && tasks.map((task, index) => {
+                                                            return (
+                                                                <tr>
+                                                                    <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                                    <td style={{ textAlign: "center" }}>{task.task.title}</td>
+                                                                    {/* <td style={{ textAlign: "center" }}>{task.priority}</td> */}
+                                                                    {/* <td style={{ textAlign: "center" }}>{task.time_end}</td>
                                                                 <td style={{ textAlign: "center" }}>{task.level_task}</td> */}
-                                                                <td style={{ textAlign: "center" }}>{task.task.supervisor.name}</td>
-                                                                <td style={{ textAlign: "center" }}>{task.nameStudent}</td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {
-                                                                        this.showTaskState(task.task.status)
-                                                                    }
-                                                                </td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {
-                                                                        task.task.status === 'APPROVED' ? (
-                                                                            <i style={{ color: "#4dbd74" }} className="fa fa-check"></i>
-                                                                        ) : (
-                                                                                task.task.status === 'PENDING' ? (
-                                                                                    <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
-                                                                                ) : (
-                                                                                        <i style={{ color: "#003322" }} className="fa fa-circle-o-notch fa-spin"></i>
-                                                                                    )
-                                                                            )
-                                                                    }
-                                                                </td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.toggleModal(task.task.id)}><i className="fa fa-eye"></i></Button>
-                                                                    {
-                                                                        task.status === 'DONE' ? (
-                                                                            <Button disabled style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
-                                                                        ) : (
-                                                                                <Button style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
-                                                                            )
-                                                                    }
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    })
+                                                                    <td style={{ textAlign: "center" }}>{task.task.supervisor.name}</td>
+                                                                    <td style={{ textAlign: "center" }}>{task.nameStudent}</td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {
+                                                                            this.showTaskState(task.task.status)
+                                                                        }
+                                                                    </td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {
+                                                                            task.task.status === 'APPROVED' ? (
+                                                                                <i style={{ color: "#4dbd74" }} className="fa fa-check"></i>
+                                                                            ) : (
+                                                                                    task.task.status === 'PENDING' ? (
+                                                                                        <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
+                                                                                    ) : (
+                                                                                            <i style={{ color: "#003322" }} className="fa fa-circle-o-notch fa-spin"></i>
+                                                                                        )
+                                                                                )
+                                                                        }
+                                                                    </td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.toggleModal(task.task.id)}><i className="fa fa-eye"></i></Button>
+                                                                        {
+                                                                            task.status === 'DONE' ? (
+                                                                                <Button disabled style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
+                                                                            ) : (
+                                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
+                                                                                )
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    ) :
+                                                    (
+                                                        searchingTaskList && searchingTaskList.map((task, index) => {
+                                                            return (
+                                                                <tr>
+                                                                    <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                                    <td style={{ textAlign: "center" }}>{task.task.title}</td>
+                                                                    {/* <td style={{ textAlign: "center" }}>{task.priority}</td> */}
+                                                                    {/* <td style={{ textAlign: "center" }}>{task.time_end}</td>
+                                                                    <td style={{ textAlign: "center" }}>{task.level_task}</td> */}
+                                                                    <td style={{ textAlign: "center" }}>{task.task.supervisor.name}</td>
+                                                                    <td style={{ textAlign: "center" }}>{task.nameStudent}</td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {
+                                                                            this.showTaskState(task.task.status)
+                                                                        }
+                                                                    </td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {
+                                                                            task.task.status === 'APPROVED' ? (
+                                                                                <i style={{ color: "#4dbd74" }} className="fa fa-check"></i>
+                                                                            ) : (
+                                                                                    task.task.status === 'PENDING' ? (
+                                                                                        <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
+                                                                                    ) : (
+                                                                                            <i style={{ color: "#003322" }} className="fa fa-circle-o-notch fa-spin"></i>
+                                                                                        )
+                                                                                )
+                                                                        }
+                                                                    </td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.toggleModal(task.task.id)}><i className="fa fa-eye"></i></Button>
+                                                                        {
+                                                                            task.status === 'DONE' ? (
+                                                                                <Button disabled style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
+                                                                            ) : (
+                                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
+                                                                                )
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    )
+
                                                 }
                                             </tbody>
                                         </Table>
-                                        <Pagination style={{ marginTop: "3%" }}>
-                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                            <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
-                                            <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "7%" }}>
-                                                <option value={10} selected={rowsPerPage === 10}>10</option>
-                                                <option value={20}>20</option>
-                                                <option value={50}>50</option>
-                                            </Input>
-                                        </Pagination>
+                                        {isSearching === false ?
+                                            <Row>
+                                                <Col>
+                                                    <Label>Bạn đang xem kết quả từ 1 - 50 trên tổng số 100 kết quả</Label>
+                                                </Col>
+                                                <Col>
+                                                    <Row className="float-right">
+                                                        <Pagination>
+                                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                                        </Pagination>
+                                                    </Row>
+                                                </Col>
+                                            </Row>
+                                            :
+                                            <></>
+                                        }
                                         <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={'modal-primary ' + this.props.className}>
                                             <ModalHeader toggle={this.toggleModal}>
                                                 {/* <FormGroup row> */}
@@ -647,10 +886,10 @@ class Hr_Task extends Component {
                                             <ModalFooter className="p-3">
                                                 <Row>
                                                     <Col>
-                                                        <Button block color="secondary" onClick={this.toggleComment} style={{width: "90px"}}>Hủy bỏ</Button>
+                                                        <Button block color="secondary" onClick={this.toggleComment} style={{ width: "90px" }}>Hủy bỏ</Button>
                                                     </Col>
                                                     <Col>
-                                                        <Button onClick={() => this.handleUpdateStatus()} type="submit" color="primary" style={{width: "90px"}}>Xác nhận</Button>
+                                                        <Button onClick={() => this.handleUpdateStatus()} type="submit" color="primary" style={{ width: "90px" }}>Xác nhận</Button>
                                                     </Col>
                                                 </Row>
                                             </ModalFooter>

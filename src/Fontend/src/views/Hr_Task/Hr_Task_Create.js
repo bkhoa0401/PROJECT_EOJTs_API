@@ -47,7 +47,7 @@ class Hr_Task_Create extends Component {
             let endDate = new Date();
             var formatEndDate = value.split("-");
             endDate.setFullYear(formatEndDate[0], formatEndDate[1] - 1, formatEndDate[2]);
-            if (!(endDate > date  || date.toString() === endDate.toString())) {
+            if (!(endDate > date || date.toString() === endDate.toString())) {
                 validPassed = "Không thể chọn ngày quá khứ";
             }
             await this.setState({
@@ -117,7 +117,11 @@ class Hr_Task_Create extends Component {
                 if (result.status === 201) {
                     Toastify.actionSuccess("Tạo nhiệm vụ mới thành công!");
                     this.setState({
-                        loading: false
+                        loading: false,
+                        title: '',
+                        description: '',
+                        time_end: '',
+                        level_task: 'EASY',
                     })
                     const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
                 } else {
@@ -126,7 +130,7 @@ class Hr_Task_Create extends Component {
                         loading: false
                     })
                 }
-            } 
+            }
         } else {
             this.validator.showMessages();
             this.forceUpdate();

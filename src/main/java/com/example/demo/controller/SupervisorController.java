@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.config.Status;
 import com.example.demo.dto.PagingDTO;
 import com.example.demo.dto.SupervisorDTO;
 import com.example.demo.dto.TaskDTO;
@@ -91,7 +92,7 @@ public class SupervisorController {
 
     @GetMapping("/tasks")
     @ResponseBody
-    public ResponseEntity<PagingDTO> findTasksBySupervisorEmail(@RequestParam int currentPage
+    public ResponseEntity<PagingDTO> findTasksBySupervisorEmail(@RequestParam int taskStatus, @RequestParam int currentPage
             , @RequestParam int rowsPerPage) {
         String email = getEmailFromToken();
         List<Task> taskList = taskService.findTaskBySupervisorEmail(email);
@@ -99,16 +100,76 @@ public class SupervisorController {
         List<TaskDTO> taskDTOList = new ArrayList<>();
         for (int i = 0; i < taskList.size(); i++) {
             Task task = taskList.get(i);
-            Student student = task.getOjt_enrollment().getStudent();
+            //Tổng = 0, Chưa hoàn thành(NOTSTART) = 1, Cần chỉnh sửa - Từ chối(PENDING) = 2, HOÀN THÀNH(DONE, APPROVED) = 3, Đang chờ duyệt(NOTSTART, DONE) = 4, Duyệt(APPROVED) = 5
+            if (taskStatus == 0) {
+                Student student = task.getOjt_enrollment().getStudent();
 
-            TaskDTO taskDTO = new TaskDTO(task, student.getEmail(), student.getName());
-            taskDTOList.add(taskDTO);
-        }
+                TaskDTO taskDTO = new TaskDTO(task, student.getEmail(), student.getName());
+                taskDTOList.add(taskDTO);
+            } else if (taskStatus == 1) {
+                if (task.getStatus() == Status.NOTSTART) {
+                    Student student = task.getOjt_enrollment().getStudent();
+
+                    TaskDTO taskDTO = new TaskDTO(task, student.getEmail(), student.getName());
+                    taskDTOList.add(taskDTO);
+                }
+            } else if (taskStatus == 2) {
+                if (task.getStatus() == Status.PENDING) {
+                    Student student = task.getOjt_enrollment().getStudent();
+
+                    TaskDTO taskDTO = new TaskDTO(task, student.getEmail(), student.getName());
+                    taskDTOList.add(taskDTO);
+                }
+            } else if (taskStatus == 3) {
+                if (task.getStatus() == Status.DONE || task.getStatus() == Status.APPROVED) {
+                    Student student = task.getOjt_enrollment().getStudent();
+
+                    TaskDTO taskDTO = new TaskDTO(task, student.getEmail(), student.getName());
+                    taskDTOList.add(taskDTO);
+                }
+            } else if (taskStatus == 4) {
+                if (task.getStatus() == Status.NOTSTART || task.getStatus() == Status.DONE) {
+                    Student student = task.getOjt_enrollment().getStudent();
+
+                    TaskDTO taskDTO = new TaskDTO(task, student.getEmail(), student.getName());
+                    taskDTOList.add(taskDTO);
+                }
+            } else if (taskStatus == 5) {
+                if (task.getStatus()  == Status.APPROVED) {
+                    Student student = task.getOjt_enrollment().getStudent();
+
+                    TaskDTO taskDTO = new TaskDTO(task, student.getEmail(), student.getName());
+                    taskDTOList.add(taskDTO);
+                }
+            }
+         }
         if (taskDTOList != null) {
             Utils<TaskDTO> supervisorUtils = new Utils<>();
             PagingDTO pagingDTO = supervisorUtils.paging(taskDTOList, currentPage, rowsPerPage);
 
             return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/searchingTaskAllFields")
+    @ResponseBody
+    public ResponseEntity<List<TaskDTO>> searchingAllFields(@RequestParam String valueSearch) {
+        String email = getEmailFromToken();
+        List<Task> taskList = taskService.findTaskBySupervisorEmail(email);
+
+        List<TaskDTO> taskDTOList = new ArrayList<>();
+        for (int i = 0; i < taskList.size(); i++) {
+            Task task = taskList.get(i);
+            if (task.getTitle().contains(valueSearch) || task.getOjt_enrollment().getStudent().getName().contains(valueSearch)) {
+                Student student = task.getOjt_enrollment().getStudent();
+
+                TaskDTO taskDTO = new TaskDTO(task, student.getEmail(), student.getName());
+                taskDTOList.add(taskDTO);
+            }
+        }
+        if (taskDTOList != null) {
+            return new ResponseEntity<List<TaskDTO>>(taskDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

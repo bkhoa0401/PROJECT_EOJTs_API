@@ -51,7 +51,11 @@ class Official_List extends Component {
       isThisMonth: -1,
       pageNumber: 1,
       currentPage: 0,
-      rowsPerPage: 10
+      rowsPerPage: 10,
+
+      filterStudentTaskList: null,
+      stateTask: ["Tổng", "Hoàn thành", "Chưa hoàn thành"],
+      stateNo: 0,
     }
   }
 
@@ -127,7 +131,39 @@ class Official_List extends Component {
     }
     await this.setState({
       listStudentTask: listStudentTask,
+      filterStudentTaskList: listStudentTask,
       isThisMonth: -1,
+      stateNo: 0,
+    })
+  }
+
+  handleSelectStateTask = async (event) => {
+    let listStudentTask = this.state.listStudentTask;
+    const { name, value } = event.target;
+    let filterStudentTaskList = [];
+    // console.log(value);
+    if (value == 0) {
+      filterStudentTaskList = listStudentTask;
+    } else if (value == 1) {
+      for (let index = 0; index < listStudentTask.length; index++) {
+        if (listStudentTask[index].status === "APPROVED") {
+          console.log(listStudentTask[index].status === "APPROVED");
+          filterStudentTaskList.push(listStudentTask[index]);
+        }
+      }
+    } else if (value == 2) {
+      for (let index = 0; index < listStudentTask.length; index++) {
+        if (listStudentTask[index].status !== "APPROVED") {
+          filterStudentTaskList.push(listStudentTask[index]);
+        }
+      }
+    }
+    // console.log(value);
+    // console.log(filterStudentTaskList);
+    // console.log(listStudentTask);
+    await this.setState({
+      filterStudentTaskList: filterStudentTaskList,
+      stateNo: value,
     })
   }
 
@@ -187,7 +223,7 @@ class Official_List extends Component {
     }
   };
 
-  handleSelectAll = async() => {
+  handleSelectAll = async () => {
     let suggestedStudents = this.state.suggestedStudents;
     let preListStudent = [];
     let isSelect = [];
@@ -446,6 +482,7 @@ class Official_List extends Component {
         modalTask: !this.state.modalTask,
         studentDetail: studentDetail,
         listStudentTask: listStudentTask,
+        filterStudentTaskList: listStudentTask,
         months: months,
         loading: false,
         isThisMonth: isThisMonth + 1,
@@ -476,16 +513,16 @@ class Official_List extends Component {
 
   showTaskState(taskStatus) {
     // console.log(taskStatus);
-    if (taskStatus === 'DONE') {
-        return (
-            <i style={{ color: "#4dbd74" }} className="fa fa-check"></i>
-        )
+    if (taskStatus === 'APPROVED') {
+      return (
+        <i style={{ color: "#4dbd74" }} className="fa fa-check"></i>
+      )
     } else {
-        return (
-            <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
-        )
+      return (
+        <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
+      )
     }
-}
+  }
 
   handleSubmit = async () => {
     this.setState({
@@ -626,6 +663,7 @@ class Official_List extends Component {
   render() {
     const { isThisMonth, months, studentDetail, students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection, loading, suggestedStudents, isSelect, colorBackSelect, colorTextSelect } = this.state;
     const { pageNumber, currentPage, rowsPerPage } = this.state;
+    const { filterStudentTaskList, stateNo, stateTask } = this.state;
     if (supervisors_FirstBlank != null) {
       console.log(supervisors_FirstBlank);
     }
@@ -966,6 +1004,17 @@ class Official_List extends Component {
                       })}
                     </Input>
                   </FormGroup>
+                  <hr />
+                  <FormGroup row style={{ paddingLeft: '70%' }}>
+                    Trạng thái: &nbsp;&nbsp;
+                    <Input onChange={e => { this.handleSelectStateTask(e) }} type="select" name="stateTask" style={{ width: '150px' }} size="sm">
+                      {stateTask && stateTask.map((state, i) => {
+                        return (
+                          <option value={i} selected={i == stateNo}>{state}</option>
+                        )
+                      })}
+                    </Input>
+                  </FormGroup>
                   <div style={{ maxHeight: '492px', overflowY: 'auto' }}>
                     <Table responsive striped>
                       <thead>
@@ -981,7 +1030,7 @@ class Official_List extends Component {
                       </thead>
                       <tbody>
                         {
-                          this.state.listStudentTask && this.state.listStudentTask.map((task, index) => {
+                          filterStudentTaskList && filterStudentTaskList.map((task, index) => {
                             return (
                               <tr>
                                 <td style={{ textAlign: "center" }}>{index + 1}</td>

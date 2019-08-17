@@ -43,6 +43,7 @@ class Create_Report extends Component {
             maxWorkDays: 0,
             validatorMaxWorkDays: '',
             listStudentTask: null,
+            filterStudentTaskList: null,
             numTaskEasy: 0,
             numTaskNormal: 0,
             numTaskDificult: 0,
@@ -54,6 +55,9 @@ class Create_Report extends Component {
             listStudentTask: null,
             months: null,
             isThisMonth: -1,
+
+            stateTask: ["Tổng", "Hoàn thành", "Chưa hoàn thành"],
+            stateNo: 0,
         };
     }
 
@@ -229,6 +233,7 @@ class Create_Report extends Component {
             titleHeader: titleHeader,
             titleReport: titleReport,
             listStudentTask: listStudentTask,
+            filterStudentTaskList: listStudentTask,
             score_work: score_work,
             numTaskEasy: numTaskEasy,
             numTaskNormal: numTaskNormal,
@@ -236,8 +241,9 @@ class Create_Report extends Component {
             numTaskEasyFinish: numTaskEasyFinish,
             numTaskNormalFinish: numTaskNormalFinish,
             numTaskDificultFinish: numTaskDificultFinish,
-            
+
             isThisMonth: needParam[0],
+            stateNo: 0,
         });
         console.log(this.state.isThisMonth);
     }
@@ -263,9 +269,42 @@ class Create_Report extends Component {
             // console.log(dateEnd);
             listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${emailStudent}&dateStart=${dateStart}&dateEnd=${dateEnd}`);
         }
+        // console.log(listStudentTask);
         await this.setState({
             listStudentTask: listStudentTask,
+            filterStudentTaskList: listStudentTask,
             isThisMonth: -1,
+            stateNo: 0,
+        })
+    }
+
+    handleSelectStateTask = async (event) => {
+        let listStudentTask = this.state.listStudentTask;
+        const { name, value } = event.target;
+        let filterStudentTaskList = [];
+        // console.log(value);
+        if (value == 0) {
+            filterStudentTaskList = listStudentTask;
+        } else if (value == 1) {
+            for (let index = 0; index < listStudentTask.length; index++) {
+                if (listStudentTask[index].status === "APPROVED") {
+                    console.log(listStudentTask[index].status === "APPROVED");
+                    filterStudentTaskList.push(listStudentTask[index]);
+                }
+            }
+        } else if (value == 2) {
+            for (let index = 0; index < listStudentTask.length; index++) {
+                if (listStudentTask[index].status !== "APPROVED") {
+                    filterStudentTaskList.push(listStudentTask[index]);
+                }
+            }
+        }
+        // console.log(value);
+        // console.log(filterStudentTaskList);
+        // console.log(listStudentTask);
+        await this.setState({
+            filterStudentTaskList: filterStudentTaskList,
+            stateNo: value,
         })
     }
 
@@ -366,8 +405,10 @@ class Create_Report extends Component {
             this.setState({
                 modalTask: !this.state.modalTask,
                 listStudentTask: listStudentTask,
+                filterStudentTaskList: listStudentTask,
                 months: months,
                 loading: false,
+                stateNo: 0,
             });
         } else {
             this.setState({
@@ -394,13 +435,29 @@ class Create_Report extends Component {
 
     showTaskState(taskStatus) {
         // console.log(taskStatus);
-        if (taskStatus === 'DONE') {
+        if (taskStatus === 'APPROVED') {
             return (
                 <i style={{ color: "#4dbd74" }} className="fa fa-check"></i>
             )
         } else {
             return (
                 <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
+            )
+        }
+    }
+
+
+
+    formatDate(inputDate, flag) {
+        var date = inputDate.split('-');
+        let formattedDate = date[2] + "/" + date[1] + "/" + date[0];
+        if (flag === true) {
+            return (
+                <Badge color="primary">{formattedDate}</Badge>
+            )
+        } else if (flag === false) {
+            return (
+                <Badge color="danger">{formattedDate}</Badge>
             )
         }
     }
@@ -575,7 +632,7 @@ class Create_Report extends Component {
     }
 
     render() {
-        const { isThisMonth, months, numTaskEasy, numTaskNormal, numTaskDificult, numTaskEasyFinish, numTaskNormalFinish, numTaskDificultFinish, listStudentTask, titleReport, titleHeader, maxWorkDays, validatorMaxWorkDays, validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, workDays, remark, project_name, onScore, timeStartShow, timeEndShow } = this.state;
+        const { filterStudentTaskList, stateNo, stateTask, isThisMonth, months, numTaskEasy, numTaskNormal, numTaskDificult, numTaskEasyFinish, numTaskNormalFinish, numTaskDificultFinish, listStudentTask, titleReport, titleHeader, maxWorkDays, validatorMaxWorkDays, validatorNumRange_score_work, validatorNumRange_score_activity, validatorNumRange_score_discipline, loading, reportColor, rate, title, student, businessName, score_work, score_activity, score_discipline, workDays, remark, project_name, onScore, timeStartShow, timeEndShow } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -741,10 +798,21 @@ class Create_Report extends Component {
                                                         </Col>
                                                     </FormGroup>
                                                     <FormGroup row style={{ paddingLeft: '38%' }}>
-                                                        <Input onChange={e => { this.handleSelectMonth(e, student) }} type="select" name="months" style={{ width: '250px' }}>
+                                                        <Input onChange={e => { this.handleSelectMonth(e, listStudentTask) }} type="select" name="months" style={{ width: '250px' }}>
                                                             {months && months.map((month, i) => {
                                                                 return (
                                                                     <option value={i} selected={i == isThisMonth}>{month}</option>
+                                                                )
+                                                            })}
+                                                        </Input>
+                                                    </FormGroup>
+                                                    <hr/>
+                                                    <FormGroup row style={{ paddingLeft: '70%' }}>
+                                                        Trạng thái: &nbsp;&nbsp;
+                                                        <Input onChange={e => { this.handleSelectStateTask(e) }} type="select" name="stateTask" style={{ width: '150px' }} size="sm">
+                                                            {stateTask && stateTask.map((state, i) => {
+                                                                return (
+                                                                    <option value={i} selected={i == stateNo}>{state}</option>
                                                                 )
                                                             })}
                                                         </Input>
@@ -764,7 +832,7 @@ class Create_Report extends Component {
                                                             </thead>
                                                             <tbody>
                                                                 {
-                                                                    this.state.listStudentTask && this.state.listStudentTask.map((task, index) => {
+                                                                    filterStudentTaskList && filterStudentTaskList.map((task, index) => {
                                                                         return (
                                                                             <tr>
                                                                                 <td style={{ textAlign: "center" }}>{index + 1}</td>
@@ -791,7 +859,7 @@ class Create_Report extends Component {
                                                     </div>
                                                 </ModalBody>
                                                 {/* <ModalFooter>
-                                </ModalFooter> */}
+                                                </ModalFooter> */}
                                             </Modal> :
                                             <></>
                                         }
