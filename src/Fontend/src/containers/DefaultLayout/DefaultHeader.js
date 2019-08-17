@@ -129,7 +129,7 @@ class DefaultHeader extends Component {
           <NavItem className="d-md-down-none">
             <NavLink to="#" className="nav-link"><i className="icon-location-pin"></i></NavLink>
           </NavItem> */}
-          <AppHeaderDropdown direction="down">
+          {/* <AppHeaderDropdown direction="down">
             <DropdownToggle nav>
               {logo === null ?
                 <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="usericon" /> :
@@ -137,11 +137,6 @@ class DefaultHeader extends Component {
               }
             </DropdownToggle>
             <DropdownMenu right style={{ right: 'auto' }}>
-              {/* <DropdownItem header tag="div" className="text-center"><strong>Account</strong></DropdownItem> */}
-              {/* <DropdownItem><i className="fa fa-bell-o"></i> Updates<Badge color="info">42</Badge></DropdownItem>
-              <DropdownItem><i className="fa fa-envelope-o"></i> Messages<Badge color="success">42</Badge></DropdownItem>
-              <DropdownItem><i className="fa fa-tasks"></i> Tasks<Badge color="danger">42</Badge></DropdownItem>
-              <DropdownItem><i className="fa fa-comments"></i> Comments<Badge color="warning">42</Badge></DropdownItem> */}
               <DropdownItem>
                 <NavItem className="d-md-down-none">
                   <NavLink to={linkProfile} className="nav-link" style={{ color: "Gray" }}>
@@ -170,13 +165,6 @@ class DefaultHeader extends Component {
                   </NavLink>
                 </NavItem>
               </DropdownItem>
-              {/* <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem> */}
-              {/* <DropdownItem><i className="fa fa-user"></i> Profile</DropdownItem>
-              <DropdownItem><i className="fa fa-wrench"></i> Settings</DropdownItem>
-              <DropdownItem><i className="fa fa-usd"></i> Payments<Badge color="secondary">42</Badge></DropdownItem>
-              <DropdownItem><i className="fa fa-file"></i> Projects<Badge color="primary">42</Badge></DropdownItem>
-              <DropdownItem divider />
-              <DropdownItem><i className="fa fa-shield"></i> Lock Account</DropdownItem> */}
               <DropdownItem onClick={e => this.props.onLogout(e)}>
                 <FormGroup row>
                   <Col md="2" style={{ height: "7px" }}>
@@ -221,7 +209,7 @@ class DefaultHeader extends Component {
                 </div>
               </DropdownMenu>
             </AppHeaderDropdown> : <></>
-          }
+          } */}
         </Nav>
         {/* <AppAsideToggler className="d-md-down-none" /> */}
         {/*<AppAsideToggler className="d-lg-none" mobile />*/}

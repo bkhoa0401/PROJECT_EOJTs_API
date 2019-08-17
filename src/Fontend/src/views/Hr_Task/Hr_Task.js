@@ -137,7 +137,7 @@ class Hr_Task extends Component {
     showTaskState(taskStatus) {
         if (taskStatus === 'NOTSTART') {
             return (
-                <Badge color="danger">CHƯA BẮT ĐẦU</Badge>
+                <Badge color="danger">CHƯA HOÀN THÀNH</Badge>
             )
         } else if (taskStatus === 'PENDING') {
             return (
@@ -184,16 +184,18 @@ class Hr_Task extends Component {
         if (taskStatus === 'APPROVED') {
             return (
                 <>
-                    <Button disabled type="submit" color="primary" onClick={() => this.handleConfirmSetState(id, 4)}><i className="fa fa-check"></i></Button>
                     <Button style={{ marginLeft: "3px" }} type="submit" color="danger" onClick={() => this.handleConfirmSetState(id, 2)}><i className="fa fa-close"></i></Button>
+                    &nbsp;&nbsp;
+                    <Button disabled type="submit" color="primary" onClick={() => this.handleConfirmSetState(id, 4)}><i className="fa fa-check"></i></Button>
                 </>
             )
         } else
             if (taskStatus !== 'APPROVED' && taskStatus != 'PENDING') {
                 return (
                     <>
-                        <Button type="submit" color="primary" onClick={() => this.handleConfirmSetState(id, 4)}><i className="fa fa-check"></i></Button>
                         <Button style={{ marginLeft: "3px" }} type="submit" color="danger" onClick={() => this.handleConfirmSetState(id, 2)}><i className="fa fa-close"></i></Button>
+                        &nbsp;&nbsp;
+                        <Button type="submit" color="primary" onClick={() => this.handleConfirmSetState(id, 4)}><i className="fa fa-check"></i></Button>
                         {/* <Button type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button> */}
                     </>
                 )
@@ -201,8 +203,9 @@ class Hr_Task extends Component {
             else if (taskStatus === 'PENDING') {
                 return (
                     <>
-                        <Button type="submit" color="primary" onClick={() => this.handleConfirmSetState(id, 4)}><i className="fa fa-check"></i></Button>
                         <Button disabled style={{ marginLeft: "3px" }} type="submit" color="danger" onClick={() => this.handleConfirmSetState(id, 2)}><i className="fa fa-close"></i></Button>
+                        &nbsp;&nbsp;
+                        <Button type="submit" color="primary" onClick={() => this.handleConfirmSetState(id, 4)}><i className="fa fa-check"></i></Button>
                     </>
                 )
             }
@@ -310,7 +313,7 @@ class Hr_Task extends Component {
                     if (statusUpdate === 4) {
                         body = 'Trạng thái task ' + '[ ' + this.state.title + '] đã chuyển thành HOÀN THÀNH'
                     } else {
-                        body = 'Trạng thái task ' + '[' + this.state.title + '] đã chuyển thành CHƯA HOÀN THÀNH'
+                        body = 'Trạng thái task ' + '[' + this.state.title + '] đã chuyển thành CẦN CHỈNH SỬA'
                     }
                     const notificationDTO = {
                         data: {
@@ -456,7 +459,7 @@ class Hr_Task extends Component {
                                                                                 task.task.status === 'PENDING' ? (
                                                                                     <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
                                                                                 ) : (
-                                                                                        <i style={{ color: "#003322" }} className="fa fa-spinner"></i>
+                                                                                        <i style={{ color: "#003322" }} className="fa fa-circle-o-notch fa-spin"></i>
                                                                                     )
                                                                             )
                                                                     }
@@ -509,10 +512,44 @@ class Hr_Task extends Component {
                                                     </FormGroup>
                                                     <FormGroup row>
                                                         <Col md="4">
+                                                            <h6>Người giao</h6>
+                                                        </Col>
+                                                        <Col xs="12" md="8">
+                                                            <Label id="supervisorName" name="supervisorName">{supervisorName}</Label>
+                                                        </Col>
+                                                    </FormGroup>
+                                                    <FormGroup row>
+                                                        <Col md="4">
+                                                            <h6>Sinh viên</h6>
+                                                        </Col>
+                                                        <Col xs="12" md="8">
+                                                            <Label id="studentName" name="studentName">{studentName}</Label>
+                                                        </Col>
+                                                    </FormGroup>
+                                                    <FormGroup row>
+                                                        <Col md="4">
+                                                            <h6>Mức độ</h6>
+                                                        </Col>
+                                                        <Col xs="12" md="8">
+                                                            {
+                                                                this.showTaskLevel(level_task)
+                                                            }
+                                                        </Col>
+                                                    </FormGroup>
+                                                    <FormGroup row>
+                                                        <Col md="4">
                                                             <h6>Ngày tạo</h6>
                                                         </Col>
                                                         <Col xs="12" md="8">
                                                             <Label id="time_created" name="time_created">{this.formatDate(time_created, true)}</Label>
+                                                        </Col>
+                                                    </FormGroup>
+                                                    <FormGroup row>
+                                                        <Col md="4">
+                                                            <h6>Ngày hết hạn</h6>
+                                                        </Col>
+                                                        <Col xs="12" md="8">
+                                                            <Label id="time_end" name="time_end">{this.formatDate(time_end, false)}</Label>
                                                         </Col>
                                                     </FormGroup>
                                                     <FormGroup row>
@@ -537,10 +574,18 @@ class Hr_Task extends Component {
                                                                         status === 'PENDING' ? (
                                                                             <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
                                                                         ) : (
-                                                                                <i style={{ color: "#003322" }} className="fa fa-spinner"></i>
+                                                                                <i style={{ color: "#003322" }} className="fa fa-circle-o-notch fa-spin"></i>
                                                                             )
                                                                     )
                                                             }
+                                                        </Col>
+                                                    </FormGroup>
+                                                    <FormGroup row>
+                                                        <Col md="4">
+                                                            <h6>Mô tả</h6>
+                                                        </Col>
+                                                        <Col xs="12" md="8">
+                                                            <label dangerouslySetInnerHTML={{ __html: description }} id="description" name="description" />
                                                         </Col>
                                                     </FormGroup>
                                                     {
@@ -564,48 +609,6 @@ class Hr_Task extends Component {
                                                                 <></>
                                                             )
                                                     }
-                                                    <FormGroup row>
-                                                        <Col md="4">
-                                                            <h6>Người giao</h6>
-                                                        </Col>
-                                                        <Col xs="12" md="8">
-                                                            <Label id="supervisorName" name="supervisorName">{supervisorName}</Label>
-                                                        </Col>
-                                                    </FormGroup>
-                                                    <FormGroup row>
-                                                        <Col md="4">
-                                                            <h6>Sinh viên</h6>
-                                                        </Col>
-                                                        <Col xs="12" md="8">
-                                                            <Label id="studentName" name="studentName">{studentName}</Label>
-                                                        </Col>
-                                                    </FormGroup>
-                                                    <FormGroup row>
-                                                        <Col md="4">
-                                                            <h6>Mô tả</h6>
-                                                        </Col>
-                                                        <Col xs="12" md="8">
-                                                            <label dangerouslySetInnerHTML={{ __html: description }} id="description" name="description" />
-                                                        </Col>
-                                                    </FormGroup>
-                                                    <FormGroup row>
-                                                        <Col md="4">
-                                                            <h6>Ngày hết hạn</h6>
-                                                        </Col>
-                                                        <Col xs="12" md="8">
-                                                            <Label id="time_end" name="time_end">{this.formatDate(time_end, false)}</Label>
-                                                        </Col>
-                                                    </FormGroup>
-                                                    <FormGroup row>
-                                                        <Col md="4">
-                                                            <h6>Mức độ</h6>
-                                                        </Col>
-                                                        <Col xs="12" md="8">
-                                                            {
-                                                                this.showTaskLevel(level_task)
-                                                            }
-                                                        </Col>
-                                                    </FormGroup>
                                                 </Form>
                                             </ModalBody>
                                             <ModalFooter>
@@ -641,16 +644,16 @@ class Hr_Task extends Component {
                                                         )
                                                 }
                                             </ModalBody>
-                                            <CardFooter className="p-3">
-                                                <Row style={{ marginLeft: "21%" }}>
-                                                    <Col xs="4" sm="4">
-                                                        <Button onClick={() => this.handleUpdateStatus()} type="submit" color="primary" block>Xác nhận</Button>
+                                            <ModalFooter className="p-3">
+                                                <Row>
+                                                    <Col>
+                                                        <Button block color="secondary" onClick={this.toggleComment} style={{width: "90px"}}>Hủy bỏ</Button>
                                                     </Col>
-                                                    <Col xs="4" sm="4">
-                                                        <Button block color="secondary" onClick={this.toggleComment}>Hủy bỏ</Button>
+                                                    <Col>
+                                                        <Button onClick={() => this.handleUpdateStatus()} type="submit" color="primary" style={{width: "90px"}}>Xác nhận</Button>
                                                     </Col>
                                                 </Row>
-                                            </CardFooter>
+                                            </ModalFooter>
                                         </Modal>
                                         <Pagination>
                                             {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
