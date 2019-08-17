@@ -52,19 +52,18 @@ class Skill extends Component {
 
     handleUpdateStatus = async (id, status) => {
         const result = await ApiServices.Put(`/skill/status?id=${id}&status=${status}`);
-
         const { currentPage, rowsPerPage } = this.state;
-        const skills = await ApiServices.Get(`/skill?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
-        if (skills !== null) {
-            this.setState({
-                skills: skills.listData,
-                currentPage,
-                pageNumber: skills.pageNumber
-            })
-        }
-
         if (result) {
             Toastify.actionSuccess("Cập nhật trạng thái thành công!");
+            const skills = await ApiServices.Get(`/skill?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+            if (skills !== null) {
+                await this.setState({
+                    skills: skills.listData,
+                    currentPage,
+                    pageNumber: skills.pageNumber
+                })
+                console.log(this.state.skils);
+            }
         } else {
             Toastify.actionFail("Cập nhật trạng thái thất bại!");
         }

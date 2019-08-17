@@ -476,20 +476,16 @@ class Official_List extends Component {
 
   showTaskState(taskStatus) {
     // console.log(taskStatus);
-    if (taskStatus === 'NOTSTART') {
-      return (
-        <Badge color="secondary">Chưa bắt đầu</Badge>
-      )
-    } else if (taskStatus === 'PENDING') {
-      return (
-        <Badge color="warning">Chưa xong</Badge>
-      )
-    } else if (taskStatus === 'DONE') {
-      return (
-        <Badge color="success">Hoàn Thành</Badge>
-      )
+    if (taskStatus === 'DONE') {
+        return (
+            <i style={{ color: "#4dbd74" }} className="fa fa-check"></i>
+        )
+    } else {
+        return (
+            <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
+        )
     }
-  }
+}
 
   handleSubmit = async () => {
     this.setState({
@@ -977,11 +973,10 @@ class Official_List extends Component {
                           <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
                           <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nhiệm vụ</th>
                           <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Người giao</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ưu tiên</th>
                           <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Độ khó</th>
                           <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ngày tạo</th>
                           <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hạn cuối</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hoàn thành</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -992,7 +987,6 @@ class Official_List extends Component {
                                 <td style={{ textAlign: "center" }}>{index + 1}</td>
                                 <td style={{ textAlign: "center" }}>{task.title}</td>
                                 <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
-                                <td style={{ textAlign: "center" }}>{task.priority}</td>
                                 <td style={{ textAlign: "center" }}>
                                   {
                                     this.showTaskLevel(task.level_task)

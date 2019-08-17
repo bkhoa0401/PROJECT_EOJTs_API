@@ -26,9 +26,11 @@ class Job_Post_List extends Component {
         const businesses = await ApiServices.Get(`/admin/jobPostsBusinesses?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         let accordion = [];
         if (businesses !== null) {
-            for (let i = 0; i < businesses.length; i++) {
+            for (let i = 0; i < businesses.listData.length; i++) {
                 accordion.push(true);
             }
+            console.log(businesses);
+            console.log(accordion);
             this.setState({
                 businesses: businesses.listData,
                 accordion: accordion,
