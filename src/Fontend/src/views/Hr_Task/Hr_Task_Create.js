@@ -117,7 +117,11 @@ class Hr_Task_Create extends Component {
                 if (result.status === 201) {
                     Toastify.actionSuccess("Tạo nhiệm vụ mới thành công!");
                     this.setState({
-                        loading: false
+                        loading: false,
+                        title: '',
+                        description: '',
+                        time_end: '',
+                        level_task: 'EASY',
                     })
                     const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
                     setTimeout(
