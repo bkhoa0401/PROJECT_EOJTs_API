@@ -633,7 +633,11 @@ class Hr_Task extends Component {
                                                             return (
                                                                 <tr>
                                                                     <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
-                                                                    <td style={{ textAlign: "center" }}>{task.task.title}</td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {
+                                                                            task.task.title.length > 30 ? (task.task.title.replace(task.task.title.substr(31, task.task.title.length), "...")) : (task.task.title)
+                                                                        }
+                                                                    </td>
                                                                     {/* <td style={{ textAlign: "center" }}>{task.priority}</td> */}
                                                                     {/* <td style={{ textAlign: "center" }}>{task.time_end}</td>
                                                                 <td style={{ textAlign: "center" }}>{task.level_task}</td> */}
