@@ -61,7 +61,7 @@ class Update_Job extends Component {
     async componentDidMount() {
         const { specializedUpdate, arraySkill, arrayQuantity, choseSpecialized } = this.state;
         const specializeds = await ApiServices.Get('/specialized');
-        const skills = await ApiServices.Get('/skill');
+        const skills = await ApiServices.Get('/skill/notPaging');
         if (specializeds !== null) {
             this.setState({
                 specializeds,
@@ -339,6 +339,13 @@ class Update_Job extends Component {
                 this.setState({
                     loading: false
                 })
+                setTimeout(
+                    function () {
+                        this.props.history.push('/job_post_list_hr');
+                    }
+                        .bind(this),
+                    2000
+                );
             } else {
                 Toastify.actionFail("Cập nhật bài đăng thất bại!");
                 this.setState({

@@ -312,6 +312,13 @@ class Add_Job extends Component {
                 this.setState({
                     loading: false
                 })
+                setTimeout(
+                    function () {
+                        this.props.history.push('/job_post_list_hr');
+                    }
+                        .bind(this),
+                    2000
+                );
             } else {
                 Toastify.actionFail("Tạo bài đăng thất bại!");
                 this.setState({

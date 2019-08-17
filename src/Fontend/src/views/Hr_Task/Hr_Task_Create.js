@@ -124,6 +124,13 @@ class Hr_Task_Create extends Component {
                         level_task: 'EASY',
                     })
                     const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
+                    setTimeout(
+                        function () {
+                            this.props.history.push('/hr-task');
+                        }
+                            .bind(this),
+                        2000
+                    );
                 } else {
                     Toastify.actionFail("Tạo nhiệm vụ mới thất bại!");
                     this.setState({

@@ -49,7 +49,7 @@ class Create_InformMessage extends Component {
                 students = await ApiServices.Get(`/admin/students`);
             }
             if (decoded.role === "ROLE_HR") {
-                students = await ApiServices.Get(`/business/getStudentsByBusiness`);
+                students = await ApiServices.Get(`/business/getStudentsByBusinessNotPaging`);
             }
         }
         let informFromEmail = '';

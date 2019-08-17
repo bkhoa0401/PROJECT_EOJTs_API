@@ -109,6 +109,13 @@ class Hr_Task_Update extends Component {
                 this.setState({
                     loading: false
                 })
+                setTimeout(
+                    function () {
+                        this.props.history.push('/hr-task');
+                    }
+                        .bind(this),
+                    2000
+                );
             } else {
                 Toastify.actionFail("Chỉnh sửa nhiệm vụ thất bại!");
                 this.setState({

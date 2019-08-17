@@ -45,6 +45,23 @@ public class SkillController {
         }
     }
 
+    @GetMapping("/notPaging")
+    @ResponseBody
+    public ResponseEntity<List<Skill>> getAllSkillNotPaging() {
+        HttpStatus httpStatus;
+        List<Skill> skillList = new ArrayList<>();
+
+        skillList = skillService.getAllSkill();
+
+        if (skillList != null) {
+            httpStatus = HttpStatus.OK;
+            return new ResponseEntity<>(skillList, httpStatus);
+        } else {
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            return new ResponseEntity<>(httpStatus);
+        }
+    }
+
     @GetMapping("/id")
     @ResponseBody
     public ResponseEntity<Skill> getSkillById(@RequestParam int id) {
