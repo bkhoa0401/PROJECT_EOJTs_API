@@ -68,7 +68,7 @@ class Account_Create extends Component {
                   this.props.history.push('/manage_account');
                 }
                   .bind(this),
-                1000
+                2000
               );
             } else {
                 Toastify.actionFail("Tạo tài khoản mới thất bại!");

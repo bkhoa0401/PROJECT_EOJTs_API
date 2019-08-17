@@ -85,7 +85,7 @@ class Skill_Create extends Component {
               this.props.history.push('/skill');
             }
               .bind(this),
-            1000
+            2000
           );
         } else if(result.status===409){
           confirmAlert({

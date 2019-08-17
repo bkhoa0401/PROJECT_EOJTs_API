@@ -88,7 +88,7 @@ class Specialized_Update extends Component {
               this.props.history.push('/specialized');
             }
               .bind(this),
-            1000
+            2000
           );
         } else {
             Toastify.actionFail("Cập nhật chuyên ngành thất bại!");

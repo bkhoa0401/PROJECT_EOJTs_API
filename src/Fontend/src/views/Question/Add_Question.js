@@ -152,7 +152,7 @@ class Add_Question extends Component {
                   this.props.history.push('/question');
                 }
                   .bind(this),
-                1000
+                2000
               );
             } else {
                 Toastify.actionFail("Tạo câu hỏi thất bại!");
