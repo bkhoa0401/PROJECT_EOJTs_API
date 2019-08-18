@@ -34,6 +34,7 @@ class Report extends Component {
             searchOverviewReportsRate: null,
             searchOnScreenStatus: null,
             searchFinalOnScreenStatus: null,
+            selectedSpecialized: -1,
         };
     }
 
@@ -76,7 +77,7 @@ class Report extends Component {
                 }
             }
         } else if (role === 'ROLE_ADMIN') {
-            listStudentAndReport = await ApiServices.Get(`/admin/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+            listStudentAndReport = await ApiServices.Get(`/admin/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
             // console.log(listStudentAndReport);
             numOfStudent = await ApiServices.Get("/admin/getNumStudent");
             dropdownSpecialized = await ApiServices.Get("/admin/getSpecializedsActive");
@@ -415,10 +416,21 @@ class Report extends Component {
         var overviewReportsRate = [];
         var onScreenStatus = [];
         var finalOnScreenStatus = [];
+        let studentsPaging = [];
 
         const { rowsPerPage } = this.state;
+        console.log(currentPage);
+        console.log(rowsPerPage);
 
-        const studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        if (this.state.role === "ROLE_ADMIN") {
+            studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        }
+        if (this.state.role === "ROLE_HR") {
+            studentsPaging = await ApiServices.Get(`/business/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        }
+        if (this.state.role === "ROLE_SUPERVISOR") {
+            studentsPaging = await ApiServices.Get(`/supervisor/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        }
         console.log(studentsPaging);
         for (let index = 0; index < studentsPaging.listData.length; index++) {
             students.push(studentsPaging.listData[index].student);
@@ -497,10 +509,18 @@ class Report extends Component {
         var overviewReportsRate = [];
         var onScreenStatus = [];
         var finalOnScreenStatus = [];
-
+        let studentsPaging = [];
         const { rowsPerPage } = this.state;
 
-        const studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        if (this.state.role === "ROLE_ADMIN") {
+            studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        }
+        if (this.state.role === "ROLE_HR") {
+            studentsPaging = await ApiServices.Get(`/business/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        }
+        if (this.state.role === "ROLE_SUPERVISOR") {
+            studentsPaging = await ApiServices.Get(`/supervisor/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        }
         console.log(studentsPaging);
         for (let index = 0; index < studentsPaging.listData.length; index++) {
             students.push(studentsPaging.listData[index].student);
@@ -580,9 +600,18 @@ class Report extends Component {
         var onScreenStatus = [];
         var finalOnScreenStatus = [];
 
+        let studentsPaging = [];
         const { rowsPerPage } = this.state;
 
-        const studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        if (this.state.role === "ROLE_ADMIN") {
+            studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        }
+        if (this.state.role === "ROLE_HR") {
+            studentsPaging = await ApiServices.Get(`/business/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        }
+        if (this.state.role === "ROLE_SUPERVISOR") {
+            studentsPaging = await ApiServices.Get(`/supervisor/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        }
         console.log(studentsPaging);
         for (let index = 0; index < studentsPaging.listData.length; index++) {
             students.push(studentsPaging.listData[index].student);
@@ -669,7 +698,16 @@ class Report extends Component {
 
         const { rowsPerPage } = this.state;
 
-        const studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?currentPage=0&rowsPerPage=${rowsPerPage}`);
+        let studentsPaging = [];
+        if (this.state.role === "ROLE_ADMIN") {
+            studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=0&rowsPerPage=${rowsPerPage}`);
+        }
+        if (this.state.role === "ROLE_HR") {
+            studentsPaging = await ApiServices.Get(`/business/studentsEvaluations?currentPage=0&rowsPerPage=${rowsPerPage}`);
+        }
+        if (this.state.role === "ROLE_SUPERVISOR") {
+            studentsPaging = await ApiServices.Get(`/supervisor/studentsEvaluations?currentPage=0&rowsPerPage=${rowsPerPage}`);
+        }
         // console.log(studentsPaging);
         for (let index = 0; index < studentsPaging.listData.length; index++) {
             students.push(studentsPaging.listData[index].student);
@@ -744,6 +782,100 @@ class Report extends Component {
         // console.log(this.state.students);
     }
 
+    handleSelectSpecialized = async (specializedId) => {
+        console.log(specializedId);
+        var students = [];
+        var overviewReports = [];
+        var overviewReportsRate = [];
+        var onScreenStatus = [];
+        var finalOnScreenStatus = [];
+
+        const { rowsPerPage } = this.state;
+
+        let studentsPaging = [];
+        if (this.state.role == "ROLE_ADMIN") {
+            studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?specializedID=${specializedId}&currentPage=0&rowsPerPage=${rowsPerPage}`);
+        }
+        if (this.state.role == "ROLE_HR") {
+            studentsPaging = await ApiServices.Get(`/business/studentsEvaluations?currentPage=0&rowsPerPage=${rowsPerPage}`);
+        }
+        if (this.state.role == "ROLE_SUPERVISOR") {
+            studentsPaging = await ApiServices.Get(`/supervisor/studentsEvaluations?currentPage=0&rowsPerPage=${rowsPerPage}`);
+        }
+        console.log(studentsPaging);
+        for (let index = 0; index < studentsPaging.listData.length; index++) {
+            students.push(studentsPaging.listData[index].student);
+            for (let index1 = 0; index1 < studentsPaging.listData[index].evaluationList.length; index1++) {
+                overviewReports.push(studentsPaging.listData[index].evaluationList[index1]);
+            }
+            // console.log(studentsPaging.listData[index].evaluationList);
+        }
+        if (overviewReports !== null) {
+            for (let index = 0; index < overviewReports.length; index++) {
+                if (overviewReports[index] !== null) {
+                    overviewReportsRate.push(overviewReports[index].score_discipline * 0.4 + overviewReports[index].score_work * 0.5 + overviewReports[index].score_activity * 0.1);
+                    if (overviewReportsRate[index] > 9) {
+                        onScreenStatus.push(0);
+                    } else if (overviewReportsRate[index] > 8) {
+                        onScreenStatus.push(1);
+                    } else if (overviewReportsRate[index] > 7) {
+                        onScreenStatus.push(2);
+                    } else if (overviewReportsRate[index] >= 5) {
+                        onScreenStatus.push(3);
+                    } else {
+                        onScreenStatus.push(4);
+                    }
+                } else {
+                    overviewReportsRate.push(null);
+                    onScreenStatus.push(null);
+                }
+            }
+        }
+        // console.log(overviewReportsRate);
+        // console.log(students);
+        let tmpFinalRate = [];
+        for (let index = 0; index < students.length; index++) {
+            if (overviewReportsRate[index * 4] !== null && overviewReportsRate[index * 4 + 1] !== null && overviewReportsRate[index * 4 + 2] !== null && overviewReportsRate[index * 4 + 3] !== null) {
+                tmpFinalRate.push((overviewReportsRate[index * 4] + overviewReportsRate[index * 4 + 1] + overviewReportsRate[index * 4 + 2] + overviewReportsRate[index * 4 + 3]) / 4);
+            } else {
+                tmpFinalRate.push(null);
+            }
+        }
+        // console.log(tmpFinalRate);
+        for (let index = 0; index < tmpFinalRate.length; index++) {
+            // console.log(tmpFinalRate[index]);
+            if (tmpFinalRate[index] === null) {
+                finalOnScreenStatus.push(null);
+            } else {
+                if (parseFloat(tmpFinalRate[index]) > 9) {
+                    finalOnScreenStatus.push(0);
+                } else if (parseFloat(tmpFinalRate[index]) > 8) {
+                    finalOnScreenStatus.push(1);
+                } else if (parseFloat(tmpFinalRate[index]) > 7) {
+                    finalOnScreenStatus.push(2);
+                } else if (parseFloat(tmpFinalRate[index]) >= 5) {
+                    finalOnScreenStatus.push(3);
+                } else if (parseFloat(tmpFinalRate[index]) < 5) {
+                    finalOnScreenStatus.push(4);
+                }
+            }
+        }
+
+        if (students !== null) {
+            this.setState({
+                students: students,
+                overviewReports: overviewReports,
+                currentPage: 0,
+                pageNumber: studentsPaging.pageNumber,
+
+                overviewReportsRate: overviewReportsRate,
+                onScreenStatus: onScreenStatus,
+                finalOnScreenStatus: finalOnScreenStatus,
+                selectedSpecialized: specializedId,
+            })
+        }
+    }
+
     render() {
         const { loading, reportColor, rate, role, students, overviewReports, onScreenStatus, finalOnScreenStatus, finalReportColor } = this.state;
         const { pageNumber, currentPage, rowsPerPage } = this.state;
@@ -797,10 +929,10 @@ class Report extends Component {
                                                                             Chuyên ngành
                                                                         </DropdownToggle>
                                                                         <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
-                                                                            <DropdownItem>Tổng</DropdownItem>
+                                                                            <DropdownItem onClick={() => this.handleSelectSpecialized(-1)}>Tổng</DropdownItem>
                                                                             {dropdownSpecialized && dropdownSpecialized.map((specialized, index) => {
                                                                                 return (
-                                                                                    <DropdownItem>{specialized.name}</DropdownItem>
+                                                                                    <DropdownItem onClick={() => this.handleSelectSpecialized(specialized.id)}>{specialized.name}</DropdownItem>
                                                                                 )
                                                                             })
                                                                             }
@@ -814,10 +946,10 @@ class Report extends Component {
                                                                                 Chuyên ngành
                                                                             </DropdownToggle>
                                                                             <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
-                                                                                <DropdownItem>Tổng</DropdownItem>
+                                                                                <DropdownItem onClick={() => this.handleSelectSpecialized(-1)}>Tổng</DropdownItem>
                                                                                 {dropdownSpecialized && dropdownSpecialized.map((specialized, index) => {
                                                                                     return (
-                                                                                        <DropdownItem>{specialized.name}</DropdownItem>
+                                                                                        <DropdownItem onClick={() => this.handleSelectSpecialized(specialized.id)}>{specialized.name}</DropdownItem>
                                                                                     )
                                                                                 })
                                                                                 }
@@ -1011,19 +1143,19 @@ class Report extends Component {
                                             </Table>
                                         </div>
                                         <ToastContainer />
-                                        {isSearching === false? 
-                                        <Row>
-                                            <Col>
-                                                <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
-                                            </Col>
-                                            <Col>
-                                                <Row className="float-right">
-                                                    <Pagination>
-                                                        <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                                    </Pagination>
-                                                </Row>
-                                            </Col>
-                                        </Row> : <></>
+                                        {isSearching === false ?
+                                            <Row>
+                                                <Col>
+                                                    <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
+                                                </Col>
+                                                <Col>
+                                                    <Row className="float-right">
+                                                        <Pagination>
+                                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                                        </Pagination>
+                                                    </Row>
+                                                </Col>
+                                            </Row> : <></>
                                         }
                                     </CardBody>
                                     {/* <CardFooter>
