@@ -78,11 +78,15 @@ class DefaultLayout extends Component {
       home = "/supervisor";
     } else if (role === 'ROLE_STARTUP') {
       navItems = navigationStartup;
+      home = "/startup";
     } else if (role === 'ROLE_HEADTRAINING') {
       navItems = navigationTraining;
+      home = "/headtraining";
     } else if (role === 'ROLE_HEADMASTER') {
       navItems = navigationMaster;
+      home = "/headmaster";
     }
+    
     if (AuthServices.isLoggedIn()) {
       return (
         <div className="app">

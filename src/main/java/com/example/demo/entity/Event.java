@@ -68,8 +68,8 @@ public class Event implements Comparable<Event>, Serializable {
     @Column(name = "isRead")
     private boolean isRead;
 
-    @Column(name = "heading_email")
-    private String heading_email;
+//    @Column(name = "heading_email")
+//    private String heading_email;
 
     public String getTitle() {
         return title;
@@ -143,13 +143,13 @@ public class Event implements Comparable<Event>, Serializable {
         return event.getTime_created().compareTo(this.getTime_created());
     }
 
-    public String getHeading_email() {
-        return heading_email;
-    }
-
-    public void setHeading_email(String heading_email) {
-        this.heading_email = heading_email;
-    }
+//    public String getHeading_email() {
+//        return heading_email;
+//    }
+//
+//    public void setHeading_email(String heading_email) {
+//        this.heading_email = heading_email;
+//    }
 
     public List<Student_Event> getStudent_events() {
         return student_events;

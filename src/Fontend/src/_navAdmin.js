@@ -89,5 +89,10 @@ export default {
       url: '/answer-statistics',
       icon: 'icon-book-open',
     },
+    {
+      name: 'Doanh nghiệp đề xuất',
+      url: '/business-proposed',
+      icon: 'icon-note',
+    }
   ]
 };
