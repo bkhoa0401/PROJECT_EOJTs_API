@@ -24,6 +24,9 @@ public class AdminController {
     IStudentService studentService;
 
     @Autowired
+    IEvaluationService evaluationService;
+
+    @Autowired
     IOjt_EnrollmentService ojt_enrollmentService;
 
     @Autowired
@@ -593,6 +596,51 @@ public class AdminController {
         List<Student> studentList = studentService.getAllStudentsBySemesterId();
         if (studentList != null) {
             return new ResponseEntity<Integer>(studentList.size(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/studentsEvaluations")
+    @ResponseBody
+    public ResponseEntity<PagingDTO> getEvaluationsOfStudents(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
+        PagingDTO pagingDTO = studentService.getEvaluationsOfStudents(currentPage, rowsPerPage);
+        if (pagingDTO != null) {
+            return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/searchingEvaluationAllField")
+    @ResponseBody
+    public ResponseEntity<List<Student_EvaluationDTO>> searchingEvaluationAllField(@RequestParam String valueSearch) {
+        List<Student> studentList = studentService.getAllStudentsBySemesterId();
+        List<Student> searchStudentList = new ArrayList<Student>();
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            if (student.getCode().toLowerCase().contains(valueSearch.toLowerCase()) || student.getName().toLowerCase().contains(valueSearch.toLowerCase())) {
+                searchStudentList.add(student);
+            }
+        }
+        List<Student_EvaluationDTO> student_evaluationDTOS = new ArrayList<>();
+
+        for (int i = 0; i < searchStudentList.size(); i++) {
+            List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(searchStudentList.get(i).getEmail());
+            Collections.sort(evaluationList);
+            if (evaluationList.size() < 4) {
+                for (int j = evaluationList.size(); j < 4; j++) {
+                    evaluationList.add(null);
+                }
+            }
+            evaluationList = evaluationService.checkSemesterOfListEvaluation(evaluationList);
+            Student_EvaluationDTO student_evaluationDTO = new Student_EvaluationDTO();
+            student_evaluationDTO.setEvaluationList(evaluationList);
+            student_evaluationDTO.setStudent(searchStudentList.get(i));
+
+            student_evaluationDTOS.add(student_evaluationDTO);
+        }
+        if (student_evaluationDTOS != null) {
+            return new ResponseEntity<List<Student_EvaluationDTO>>(student_evaluationDTOS, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

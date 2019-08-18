@@ -671,6 +671,41 @@ public class BusinessController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/searchingEvaluationAllField")
+    @ResponseBody
+    public ResponseEntity<List<Student_EvaluationDTO>> searchingEvaluationAllField(@RequestParam String valueSearch) {
+        String email = getEmailFromToken();
+        List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(email);
+        List<Student> searchStudentList = new ArrayList<Student>();
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            if (student.getCode().toLowerCase().contains(valueSearch.toLowerCase()) || student.getName().toLowerCase().contains(valueSearch.toLowerCase())) {
+                searchStudentList.add(student);
+            }
+        }
+        List<Student_EvaluationDTO> student_evaluationDTOS = new ArrayList<>();
+
+        for (int i = 0; i < searchStudentList.size(); i++) {
+            List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(searchStudentList.get(i).getEmail());
+            Collections.sort(evaluationList);
+            if (evaluationList.size() < 4) {
+                for (int j = evaluationList.size(); j < 4; j++) {
+                    evaluationList.add(null);
+                }
+            }
+            evaluationList = evaluationService.checkSemesterOfListEvaluation(evaluationList);
+            Student_EvaluationDTO student_evaluationDTO = new Student_EvaluationDTO();
+            student_evaluationDTO.setEvaluationList(evaluationList);
+            student_evaluationDTO.setStudent(searchStudentList.get(i));
+
+            student_evaluationDTOS.add(student_evaluationDTO);
+        }
+        if (student_evaluationDTOS != null) {
+            return new ResponseEntity<List<Student_EvaluationDTO>>(student_evaluationDTOS, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     @PostMapping("/sms")
     @ResponseBody
     public ResponseEntity<String> sendSms(@RequestBody SmsDTO smsDTO) {

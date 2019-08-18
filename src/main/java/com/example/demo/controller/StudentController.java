@@ -1008,19 +1008,6 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-
-    //check semester ok
-    @GetMapping("/studentsEvaluations")
-    @ResponseBody
-    public ResponseEntity<PagingDTO> getEvaluationsOfStudents(@RequestParam int currentPage
-            , @RequestParam int rowsPerPage) {
-        PagingDTO pagingDTO = studentService.getEvaluationsOfStudents(currentPage, rowsPerPage);
-        if (pagingDTO != null) {
-            return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-    }
-
     @PostMapping("/businessPropose")
     public ResponseEntity<Void> createBusinessPropose(@RequestBody Business_Proposed business_proposed) {
         String email = getEmailFromToken();

@@ -28,6 +28,12 @@ class Report extends Component {
             numOfStudent: 0,
             dropdownSpecializedOpen: false,
             dropdownSpecialized: [],
+            isSearching: false,
+            searchingEvaluationList: null,
+            searchOverviewReports: null,
+            searchOverviewReportsRate: null,
+            searchOnScreenStatus: null,
+            searchFinalOnScreenStatus: null,
         };
     }
 
@@ -70,7 +76,7 @@ class Report extends Component {
                 }
             }
         } else if (role === 'ROLE_ADMIN') {
-            listStudentAndReport = await ApiServices.Get(`/student/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+            listStudentAndReport = await ApiServices.Get(`/admin/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
             // console.log(listStudentAndReport);
             numOfStudent = await ApiServices.Get("/admin/getNumStudent");
             dropdownSpecialized = await ApiServices.Get("/admin/getSpecializedsActive");
@@ -159,9 +165,244 @@ class Report extends Component {
 
     handleInput = async (event) => {
         const { name, value } = event.target;
-        await this.setState({
-            [name]: value.substr(0, 20),
-        })
+        if (value === "") {
+            await this.setState({
+                [name]: value.substr(0, 20),
+                isSearching: false,
+            })
+        } else {
+            if (this.state.role === "ROLE_SUPERVISOR") {
+                var searchList = [];
+                var overviewReports = [];
+                var overviewReportsRate = [];
+                var onScreenStatus = [];
+                var finalOnScreenStatus = [];
+                const searchingEvaluationList = await ApiServices.Get(`/supervisor/searchingEvaluationAllField?valueSearch=${value.substr(0, 20)}`);
+                // console.log(searchingEvaluationList);
+                // console.log(searchingEvaluationList.evaluationList);
+                for (let index = 0; index < searchingEvaluationList.length; index++) {
+                    searchList.push(searchingEvaluationList[index].student);
+                    for (let index1 = 0; index1 < searchingEvaluationList[index].evaluationList.length; index1++) {
+                        overviewReports.push(searchingEvaluationList[index].evaluationList[index1]);
+                    }
+                }
+                if (overviewReports !== null) {
+                    for (let index = 0; index < overviewReports.length; index++) {
+                        if (overviewReports[index] !== null) {
+                            overviewReportsRate.push(overviewReports[index].score_discipline * 0.4 + overviewReports[index].score_work * 0.5 + overviewReports[index].score_activity * 0.1);
+                            if (overviewReportsRate[index] > 9) {
+                                onScreenStatus.push(0);
+                            } else if (overviewReportsRate[index] > 8) {
+                                onScreenStatus.push(1);
+                            } else if (overviewReportsRate[index] > 7) {
+                                onScreenStatus.push(2);
+                            } else if (overviewReportsRate[index] >= 5) {
+                                onScreenStatus.push(3);
+                            } else {
+                                onScreenStatus.push(4);
+                            }
+                        } else {
+                            overviewReportsRate.push(null);
+                            onScreenStatus.push(null);
+                        }
+                    }
+                }
+                // console.log(overviewReportsRate);
+                // console.log(searchList);
+                let tmpFinalRate = [];
+                for (let index = 0; index < searchList.length; index++) {
+                    if (overviewReportsRate[index * 4] !== null && overviewReportsRate[index * 4 + 1] !== null && overviewReportsRate[index * 4 + 2] !== null && overviewReportsRate[index * 4 + 3] !== null) {
+                        tmpFinalRate.push((overviewReportsRate[index * 4] + overviewReportsRate[index * 4 + 1] + overviewReportsRate[index * 4 + 2] + overviewReportsRate[index * 4 + 3]) / 4);
+                    } else {
+                        tmpFinalRate.push(null);
+                    }
+                }
+                // console.log(tmpFinalRate);
+                for (let index = 0; index < tmpFinalRate.length; index++) {
+                    // console.log(tmpFinalRate[index]);
+                    if (tmpFinalRate[index] === null) {
+                        finalOnScreenStatus.push(null);
+                    } else {
+                        if (parseFloat(tmpFinalRate[index]) > 9) {
+                            finalOnScreenStatus.push(0);
+                        } else if (parseFloat(tmpFinalRate[index]) > 8) {
+                            finalOnScreenStatus.push(1);
+                        } else if (parseFloat(tmpFinalRate[index]) > 7) {
+                            finalOnScreenStatus.push(2);
+                        } else if (parseFloat(tmpFinalRate[index]) >= 5) {
+                            finalOnScreenStatus.push(3);
+                        } else if (parseFloat(tmpFinalRate[index]) < 5) {
+                            finalOnScreenStatus.push(4);
+                        }
+                    }
+                }
+                console.log(searchList);
+                await this.setState({
+                    [name]: value.substr(0, 20),
+                    isSearching: true,
+                    searchingEvaluationList: searchList,
+                    searchOverviewReports: overviewReports,
+                    searchOverviewReportsRate: overviewReportsRate,
+                    searchOnScreenStatus: onScreenStatus,
+                    searchFinalOnScreenStatus: finalOnScreenStatus,
+                })
+
+            }
+            if (this.state.role === "ROLE_HR") {
+                var searchList = [];
+                var overviewReports = [];
+                var overviewReportsRate = [];
+                var onScreenStatus = [];
+                var finalOnScreenStatus = [];
+                const searchingEvaluationList = await ApiServices.Get(`/business/searchingEvaluationAllField?valueSearch=${value.substr(0, 20)}`);
+                // console.log(searchingEvaluationList);
+                // console.log(searchingEvaluationList.evaluationList);
+                for (let index = 0; index < searchingEvaluationList.length; index++) {
+                    searchList.push(searchingEvaluationList[index].student);
+                    for (let index1 = 0; index1 < searchingEvaluationList[index].evaluationList.length; index1++) {
+                        overviewReports.push(searchingEvaluationList[index].evaluationList[index1]);
+                    }
+                }
+                if (overviewReports !== null) {
+                    for (let index = 0; index < overviewReports.length; index++) {
+                        if (overviewReports[index] !== null) {
+                            overviewReportsRate.push(overviewReports[index].score_discipline * 0.4 + overviewReports[index].score_work * 0.5 + overviewReports[index].score_activity * 0.1);
+                            if (overviewReportsRate[index] > 9) {
+                                onScreenStatus.push(0);
+                            } else if (overviewReportsRate[index] > 8) {
+                                onScreenStatus.push(1);
+                            } else if (overviewReportsRate[index] > 7) {
+                                onScreenStatus.push(2);
+                            } else if (overviewReportsRate[index] >= 5) {
+                                onScreenStatus.push(3);
+                            } else {
+                                onScreenStatus.push(4);
+                            }
+                        } else {
+                            overviewReportsRate.push(null);
+                            onScreenStatus.push(null);
+                        }
+                    }
+                }
+                // console.log(overviewReportsRate);
+                // console.log(searchList);
+                let tmpFinalRate = [];
+                for (let index = 0; index < searchList.length; index++) {
+                    if (overviewReportsRate[index * 4] !== null && overviewReportsRate[index * 4 + 1] !== null && overviewReportsRate[index * 4 + 2] !== null && overviewReportsRate[index * 4 + 3] !== null) {
+                        tmpFinalRate.push((overviewReportsRate[index * 4] + overviewReportsRate[index * 4 + 1] + overviewReportsRate[index * 4 + 2] + overviewReportsRate[index * 4 + 3]) / 4);
+                    } else {
+                        tmpFinalRate.push(null);
+                    }
+                }
+                // console.log(tmpFinalRate);
+                for (let index = 0; index < tmpFinalRate.length; index++) {
+                    // console.log(tmpFinalRate[index]);
+                    if (tmpFinalRate[index] === null) {
+                        finalOnScreenStatus.push(null);
+                    } else {
+                        if (parseFloat(tmpFinalRate[index]) > 9) {
+                            finalOnScreenStatus.push(0);
+                        } else if (parseFloat(tmpFinalRate[index]) > 8) {
+                            finalOnScreenStatus.push(1);
+                        } else if (parseFloat(tmpFinalRate[index]) > 7) {
+                            finalOnScreenStatus.push(2);
+                        } else if (parseFloat(tmpFinalRate[index]) >= 5) {
+                            finalOnScreenStatus.push(3);
+                        } else if (parseFloat(tmpFinalRate[index]) < 5) {
+                            finalOnScreenStatus.push(4);
+                        }
+                    }
+                }
+                console.log(searchList);
+                await this.setState({
+                    [name]: value.substr(0, 20),
+                    isSearching: true,
+                    searchingEvaluationList: searchList,
+                    searchOverviewReports: overviewReports,
+                    searchOverviewReportsRate: overviewReportsRate,
+                    searchOnScreenStatus: onScreenStatus,
+                    searchFinalOnScreenStatus: finalOnScreenStatus,
+                })
+
+            }
+            if (this.state.role === "ROLE_ADMIN") {
+                var searchList = [];
+                var overviewReports = [];
+                var overviewReportsRate = [];
+                var onScreenStatus = [];
+                var finalOnScreenStatus = [];
+                const searchingEvaluationList = await ApiServices.Get(`/admin/searchingEvaluationAllField?valueSearch=${value.substr(0, 20)}`);
+                // console.log(searchingEvaluationList);
+                // console.log(searchingEvaluationList.evaluationList);
+                for (let index = 0; index < searchingEvaluationList.length; index++) {
+                    searchList.push(searchingEvaluationList[index].student);
+                    for (let index1 = 0; index1 < searchingEvaluationList[index].evaluationList.length; index1++) {
+                        overviewReports.push(searchingEvaluationList[index].evaluationList[index1]);
+                    }
+                }
+                if (overviewReports !== null) {
+                    for (let index = 0; index < overviewReports.length; index++) {
+                        if (overviewReports[index] !== null) {
+                            overviewReportsRate.push(overviewReports[index].score_discipline * 0.4 + overviewReports[index].score_work * 0.5 + overviewReports[index].score_activity * 0.1);
+                            if (overviewReportsRate[index] > 9) {
+                                onScreenStatus.push(0);
+                            } else if (overviewReportsRate[index] > 8) {
+                                onScreenStatus.push(1);
+                            } else if (overviewReportsRate[index] > 7) {
+                                onScreenStatus.push(2);
+                            } else if (overviewReportsRate[index] >= 5) {
+                                onScreenStatus.push(3);
+                            } else {
+                                onScreenStatus.push(4);
+                            }
+                        } else {
+                            overviewReportsRate.push(null);
+                            onScreenStatus.push(null);
+                        }
+                    }
+                }
+                // console.log(overviewReportsRate);
+                // console.log(searchList);
+                let tmpFinalRate = [];
+                for (let index = 0; index < searchList.length; index++) {
+                    if (overviewReportsRate[index * 4] !== null && overviewReportsRate[index * 4 + 1] !== null && overviewReportsRate[index * 4 + 2] !== null && overviewReportsRate[index * 4 + 3] !== null) {
+                        tmpFinalRate.push((overviewReportsRate[index * 4] + overviewReportsRate[index * 4 + 1] + overviewReportsRate[index * 4 + 2] + overviewReportsRate[index * 4 + 3]) / 4);
+                    } else {
+                        tmpFinalRate.push(null);
+                    }
+                }
+                // console.log(tmpFinalRate);
+                for (let index = 0; index < tmpFinalRate.length; index++) {
+                    // console.log(tmpFinalRate[index]);
+                    if (tmpFinalRate[index] === null) {
+                        finalOnScreenStatus.push(null);
+                    } else {
+                        if (parseFloat(tmpFinalRate[index]) > 9) {
+                            finalOnScreenStatus.push(0);
+                        } else if (parseFloat(tmpFinalRate[index]) > 8) {
+                            finalOnScreenStatus.push(1);
+                        } else if (parseFloat(tmpFinalRate[index]) > 7) {
+                            finalOnScreenStatus.push(2);
+                        } else if (parseFloat(tmpFinalRate[index]) >= 5) {
+                            finalOnScreenStatus.push(3);
+                        } else if (parseFloat(tmpFinalRate[index]) < 5) {
+                            finalOnScreenStatus.push(4);
+                        }
+                    }
+                }
+                console.log(searchList);
+                await this.setState({
+                    [name]: value.substr(0, 20),
+                    isSearching: true,
+                    searchingEvaluationList: searchList,
+                    searchOverviewReports: overviewReports,
+                    searchOverviewReportsRate: overviewReportsRate,
+                    searchOnScreenStatus: onScreenStatus,
+                    searchFinalOnScreenStatus: finalOnScreenStatus,
+                })
+
+            }
+        }
     }
 
     handleDirect = (uri) => {
@@ -177,7 +418,7 @@ class Report extends Component {
 
         const { rowsPerPage } = this.state;
 
-        const studentsPaging = await ApiServices.Get(`/student/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         console.log(studentsPaging);
         for (let index = 0; index < studentsPaging.listData.length; index++) {
             students.push(studentsPaging.listData[index].student);
@@ -259,7 +500,7 @@ class Report extends Component {
 
         const { rowsPerPage } = this.state;
 
-        const studentsPaging = await ApiServices.Get(`/student/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         console.log(studentsPaging);
         for (let index = 0; index < studentsPaging.listData.length; index++) {
             students.push(studentsPaging.listData[index].student);
@@ -341,7 +582,7 @@ class Report extends Component {
 
         const { rowsPerPage } = this.state;
 
-        const studentsPaging = await ApiServices.Get(`/student/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         console.log(studentsPaging);
         for (let index = 0; index < studentsPaging.listData.length; index++) {
             students.push(studentsPaging.listData[index].student);
@@ -428,7 +669,7 @@ class Report extends Component {
 
         const { rowsPerPage } = this.state;
 
-        const studentsPaging = await ApiServices.Get(`/student/studentsEvaluations?currentPage=0&rowsPerPage=${rowsPerPage}`);
+        const studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?currentPage=0&rowsPerPage=${rowsPerPage}`);
         // console.log(studentsPaging);
         for (let index = 0; index < studentsPaging.listData.length; index++) {
             students.push(studentsPaging.listData[index].student);
@@ -506,7 +747,7 @@ class Report extends Component {
     render() {
         const { loading, reportColor, rate, role, students, overviewReports, onScreenStatus, finalOnScreenStatus, finalReportColor } = this.state;
         const { pageNumber, currentPage, rowsPerPage } = this.state;
-        const { numOfStudent, dropdownSpecialized } = this.state;
+        const { numOfStudent, dropdownSpecialized, searchingEvaluationList, isSearching, searchFinalOnScreenStatus, searchOnScreenStatus, searchOverviewReports } = this.state;
 
         // if (students != null) {
         //     console.log(students);
@@ -523,15 +764,17 @@ class Report extends Component {
                                         <i className="fa fa-align-justify"></i>Đánh giá
                                     </CardHeader>
                                     <CardBody>
-                                        <Row className="float-right">
-                                            <h6>Số dòng trên trang: </h6>
-                                            &nbsp;&nbsp;
-                                            <Input onChange={this.handleInputPaging} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
-                                                <option value={10} selected={rowsPerPage === 10}>10</option>
-                                                <option value={20}>20</option>
-                                                <option value={50}>50</option>
-                                            </Input>
-                                        </Row>
+                                        {isSearching === false ?
+                                            <Row className="float-right">
+                                                <h6>Số dòng trên trang: </h6>
+                                                &nbsp;&nbsp;
+                                                <Input onChange={this.handleInputPaging} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
+                                                    <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                    <option value={20}>20</option>
+                                                    <option value={50}>50</option>
+                                                </Input>
+                                            </Row> : <></>
+                                        }
                                         <br /><br /><br />
                                         <div>
                                             <nav className="navbar navbar-light bg-light justify-content-between">
@@ -592,95 +835,183 @@ class Report extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {students && students.map((student, index) =>
-                                                        <tr>
-                                                            <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
-                                                            <td style={{ textAlign: "center" }}>{student.code}</td>
-                                                            <td style={{ textAlign: "center" }}>{student.name}</td>
-                                                            <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                {onScreenStatus[index * 4] === null ?
-                                                                    (
-                                                                        role && role !== 'ROLE_ADMIN' ?
-                                                                            <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/1~${student.email}`)}>
-                                                                                Tạo
-                                                                            </Button> :
-                                                                            <p>N/A</p>
-                                                                    ) :
-                                                                    (
-                                                                        <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4].id}~${student.email}`)}>
-                                                                            {rate[onScreenStatus[index * 4]]}
-                                                                        </Button>
-                                                                    )
-                                                                }
-                                                            </td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                {onScreenStatus[index * 4 + 1] === null ?
-                                                                    (
-                                                                        role && role !== 'ROLE_ADMIN' ?
-                                                                            (onScreenStatus[index * 4] !== null ?
-                                                                                <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/2~${student.email}`)}>
+                                                    {isSearching === false ?
+                                                        (students && students.map((student, index) =>
+                                                            <tr>
+                                                                <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {onScreenStatus[index * 4] === null ?
+                                                                        (
+                                                                            role && role !== 'ROLE_ADMIN' ?
+                                                                                <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/1~${student.email}`)}>
                                                                                     Tạo
                                                                             </Button> :
                                                                                 <p>N/A</p>
-                                                                            ) :
-                                                                            <p>N/A</p>
-                                                                    ) :
-                                                                    (
-                                                                        <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 1]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4 + 1].id}~${student.email}`)}>
-                                                                            {rate[onScreenStatus[index * 4 + 1]]}
-                                                                        </Button>
-                                                                    )
+                                                                        ) :
+                                                                        (
+                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4].id}~${student.email}`)}>
+                                                                                {rate[onScreenStatus[index * 4]]}
+                                                                            </Button>
+                                                                        )
+                                                                    }
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {onScreenStatus[index * 4 + 1] === null ?
+                                                                        (
+                                                                            role && role !== 'ROLE_ADMIN' ?
+                                                                                (onScreenStatus[index * 4] !== null ?
+                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/2~${student.email}`)}>
+                                                                                        Tạo
+                                                                            </Button> :
+                                                                                    <p>N/A</p>
+                                                                                ) :
+                                                                                <p>N/A</p>
+                                                                        ) :
+                                                                        (
+                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 1]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4 + 1].id}~${student.email}`)}>
+                                                                                {rate[onScreenStatus[index * 4 + 1]]}
+                                                                            </Button>
+                                                                        )
+                                                                    }
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {onScreenStatus[index * 4 + 2] === null ?
+                                                                        (
+                                                                            role && role !== 'ROLE_ADMIN' ?
+                                                                                (onScreenStatus[index * 4 + 1] !== null ?
+                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/3~${student.email}`)}>
+                                                                                        Tạo
+                                                                            </Button> :
+                                                                                    <p>N/A</p>
+                                                                                ) :
+                                                                                <p>N/A</p>
+                                                                        ) :
+                                                                        (
+                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 2]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4 + 2].id}~${student.email}`)}>
+                                                                                {rate[onScreenStatus[index * 4 + 2]]}
+                                                                            </Button>
+                                                                        )
+                                                                    }
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {onScreenStatus[index * 4 + 3] === null ?
+                                                                        (
+                                                                            role && role !== 'ROLE_ADMIN' ?
+                                                                                (onScreenStatus[index * 4 + 2] !== null ?
+                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/4~${student.email}`)}>
+                                                                                        Tạo
+                                                                            </Button> :
+                                                                                    <p>N/A</p>
+                                                                                ) :
+                                                                                <p>N/A</p>
+                                                                        ) :
+                                                                        (
+                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4 + 3].id}~${student.email}`)}>
+                                                                                {rate[onScreenStatus[index * 4 + 3]]}
+                                                                            </Button>
+                                                                        )
+                                                                    }
+                                                                </td>
+                                                                {finalOnScreenStatus[index] === null ?
+                                                                    <td style={{ textAlign: "center" }}>N/A</td> :
+                                                                    <td style={{ textAlign: "center", fontWeight: 'bold', color: finalReportColor[finalOnScreenStatus[index]] }}>{rate[finalOnScreenStatus[index]]}</td>
                                                                 }
-                                                            </td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                {onScreenStatus[index * 4 + 2] === null ?
-                                                                    (
-                                                                        role && role !== 'ROLE_ADMIN' ?
-                                                                            (onScreenStatus[index * 4 + 1] !== null ?
-                                                                                <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/3~${student.email}`)}>
+                                                            </tr>
+                                                        )) :
+                                                        (searchingEvaluationList && searchingEvaluationList.map((student, index) =>
+                                                            <tr>
+                                                                <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {searchOnScreenStatus[index * 4] === null ?
+                                                                        (
+                                                                            role && role !== 'ROLE_ADMIN' ?
+                                                                                <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/1~${student.email}`)}>
                                                                                     Tạo
                                                                             </Button> :
                                                                                 <p>N/A</p>
-                                                                            ) :
-                                                                            <p>N/A</p>
-                                                                    ) :
-                                                                    (
-                                                                        <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 2]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4 + 2].id}~${student.email}`)}>
-                                                                            {rate[onScreenStatus[index * 4 + 2]]}
-                                                                        </Button>
-                                                                    )
-                                                                }
-                                                            </td>
-                                                            <td style={{ textAlign: "center" }}>
-                                                                {onScreenStatus[index * 4 + 3] === null ?
-                                                                    (
-                                                                        role && role !== 'ROLE_ADMIN' ?
-                                                                            (onScreenStatus[index * 4 + 2] !== null ?
-                                                                                <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/4~${student.email}`)}>
-                                                                                    Tạo
+                                                                        ) :
+                                                                        (
+                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${searchOverviewReports[index * 4].id}~${student.email}`)}>
+                                                                                {rate[searchOnScreenStatus[index * 4]]}
+                                                                            </Button>
+                                                                        )
+                                                                    }
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {searchOnScreenStatus[index * 4 + 1] === null ?
+                                                                        (
+                                                                            role && role !== 'ROLE_ADMIN' ?
+                                                                                (searchOnScreenStatus[index * 4] !== null ?
+                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/2~${student.email}`)}>
+                                                                                        Tạo
                                                                             </Button> :
+                                                                                    <p>N/A</p>
+                                                                                ) :
                                                                                 <p>N/A</p>
-                                                                            ) :
-                                                                            <p>N/A</p>
-                                                                    ) :
-                                                                    (
-                                                                        <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4 + 3].id}~${student.email}`)}>
-                                                                            {rate[onScreenStatus[index * 4 + 3]]}
-                                                                        </Button>
-                                                                    )
+                                                                        ) :
+                                                                        (
+                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4 + 1]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${searchOverviewReports[index * 4 + 1].id}~${student.email}`)}>
+                                                                                {rate[searchOnScreenStatus[index * 4 + 1]]}
+                                                                            </Button>
+                                                                        )
+                                                                    }
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {searchOnScreenStatus[index * 4 + 2] === null ?
+                                                                        (
+                                                                            role && role !== 'ROLE_ADMIN' ?
+                                                                                (searchOnScreenStatus[index * 4 + 1] !== null ?
+                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/3~${student.email}`)}>
+                                                                                        Tạo
+                                                                            </Button> :
+                                                                                    <p>N/A</p>
+                                                                                ) :
+                                                                                <p>N/A</p>
+                                                                        ) :
+                                                                        (
+                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4 + 2]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${searchOverviewReports[index * 4 + 2].id}~${student.email}`)}>
+                                                                                {rate[searchOnScreenStatus[index * 4 + 2]]}
+                                                                            </Button>
+                                                                        )
+                                                                    }
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {searchOnScreenStatus[index * 4 + 3] === null ?
+                                                                        (
+                                                                            role && role !== 'ROLE_ADMIN' ?
+                                                                                (searchOnScreenStatus[index * 4 + 2] !== null ?
+                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/4~${student.email}`)}>
+                                                                                        Tạo
+                                                                            </Button> :
+                                                                                    <p>N/A</p>
+                                                                                ) :
+                                                                                <p>N/A</p>
+                                                                        ) :
+                                                                        (
+                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${searchOverviewReports[index * 4 + 3].id}~${student.email}`)}>
+                                                                                {rate[searchOnScreenStatus[index * 4 + 3]]}
+                                                                            </Button>
+                                                                        )
+                                                                    }
+                                                                </td>
+                                                                {searchFinalOnScreenStatus[index] === null ?
+                                                                    <td style={{ textAlign: "center" }}>N/A</td> :
+                                                                    <td style={{ textAlign: "center", fontWeight: 'bold', color: finalReportColor[searchFinalOnScreenStatus[index]] }}>{rate[searchFinalOnScreenStatus[index]]}</td>
                                                                 }
-                                                            </td>
-                                                            {finalOnScreenStatus[index] === null ?
-                                                                <td style={{ textAlign: "center" }}>N/A</td> :
-                                                                <td style={{ textAlign: "center", fontWeight: 'bold', color: finalReportColor[finalOnScreenStatus[index]] }}>{rate[finalOnScreenStatus[index]]}</td>
-                                                            }
-                                                        </tr>
-                                                    )}
+                                                            </tr>
+                                                        ))
+                                                    }
                                                 </tbody>
                                             </Table>
                                         </div>
                                         <ToastContainer />
+                                        {isSearching === false? 
                                         <Row>
                                             <Col>
                                                 <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
@@ -692,7 +1023,8 @@ class Report extends Component {
                                                     </Pagination>
                                                 </Row>
                                             </Col>
-                                        </Row>
+                                        </Row> : <></>
+                                        }
                                     </CardBody>
                                     {/* <CardFooter>
                                     </CardFooter> */}
