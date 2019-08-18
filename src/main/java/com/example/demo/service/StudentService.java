@@ -93,6 +93,12 @@ public class StudentService implements IStudentService {
 
     @Override
     public boolean saveStudent(Student student) {
+        ValueOperations values = template.opsForValue();
+        List<Student> studentList = (List<Student>) values.get("students");
+        if (studentList != null) {
+            studentList.add(student);
+            values.set("students", studentList);
+        }
         IStudentRepository.save(student);
         return true;
     }
@@ -626,22 +632,38 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public StudentIsExistedAndNotYet getStudentsIsExisted(List<Student> students) {
+    public StudentIsExistedAndNotYet getStudentsIsExisted(List<Student_ImportFileDTO> students) {
         List<Student> studentListIsExisted = new ArrayList<>();
         List<Student> studentNotYet = new ArrayList<>();
         for (int i = 0; i < students.size(); i++) {
-            Student student = students.get(i);
+            Student_ImportFileDTO student = students.get(i);
             Student studentIsExisted = getStudentByEmail(student.getEmail()); // da co trong ds cu
             if (studentIsExisted != null) {
                 studentListIsExisted.add(studentIsExisted);
             } else if (studentIsExisted == null) {
-                studentNotYet.add(student);
+                Student studentParameter=new Student();
+                Student studentIsParse=parseStudentImportFileToStudent(student,studentParameter);
+                studentNotYet.add(studentIsParse);
             }
         }
         StudentIsExistedAndNotYet existedAndNotYets = new StudentIsExistedAndNotYet();
         existedAndNotYets.setStudentsIsExisted(studentListIsExisted);
         existedAndNotYets.setStudentsNotYet(studentNotYet);
         return existedAndNotYets;
+    }
+
+    public Student parseStudentImportFileToStudent(Student_ImportFileDTO student_importFileDTO,Student student){
+        student.setCode(student_importFileDTO.getCode());
+        student.setName(student_importFileDTO.getName());
+        student.setDob(student_importFileDTO.getDob());
+        student.setGender(student_importFileDTO.isGender());
+        student.setPhone(student_importFileDTO.getPhone());
+        student.setEmail(student_importFileDTO.getEmail());
+        student.setAddress(student_importFileDTO.getAddress());
+        student.setSpecialized(student_importFileDTO.getSpecialized());
+        student.setGpa(student_importFileDTO.getGpa());
+
+        return student;
     }
 
     @Override

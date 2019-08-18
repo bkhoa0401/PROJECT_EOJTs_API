@@ -11,6 +11,7 @@ import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import Toastify from '../../views/Toastify/Toastify';
 import PaginationComponent from '../Paginations/pagination';
 
+
 class Excels extends Component {
 
     constructor(props) {
@@ -39,25 +40,41 @@ class Excels extends Component {
             specializeds: [],
             specializedItem: {},
             listSkillForSave: [],
+            diffDays: 0
         };
         this.toggleLarge = this.toggleLarge.bind(this);
     }
 
     async componentDidMount() {
-        const dateButtonStudent = localStorage.getItem("dateButtonStudent");
-        const dateButtonBusiness = localStorage.getItem("dateButtonBusiness");
-    
-        if (dateButtonStudent.toString() === "true") {
-            document.getElementById("submitStudents").setAttribute("disabled", "disabled");
-        } else {
-            document.getElementById("submitStudents").removeAttribute("disabled", "disabled");
-        }
-    
-        if (dateButtonBusiness.toString() === "true") {
-            document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
-        } else {
-            document.getElementById("submitStudents").removeAttribute("disabled", "disabled");
-        }
+
+        // const dateButtonStudent = localStorage.getItem("dateButtonStudent");
+        // const dateButtonBusiness = localStorage.getItem("dateButtonBusiness");
+
+        // if (dateButtonStudent.toString() === "true") {
+        //     document.getElementById("submitStudents").setAttribute("disabled", "disabled");
+        // }
+
+        // if (dateButtonBusiness.toString() === "true") {
+        //     document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
+        // }
+
+        // const semesterNext = await ApiServices.Get('/admin/semester');
+        // if (semesterNext != null) {
+        //     var start_choose_option_time = new Date(semesterNext[0].start_choose_option_time);
+        //     var currentDate = new Date();
+        //     // console.log(start_choose_option_time);b
+        //     // console.log(currentDate);
+
+        //     var oneDay = 24 * 60 * 60 * 1000;
+        //     var diffDays = (Math.round(Math.abs((start_choose_option_time.getTime() - currentDate.getTime()) / (oneDay)))) + 1;
+        //     console.log(diffDays);
+        //     if (diffDays <= 7) {
+        //         localStorage.setItem("dateButtonStudent", false);
+        //         localStorage.setItem("dateButtonBusiness", false);
+        //         document.getElementById("submitStudents").removeAttribute("disabled", "disabled");
+        //         document.getElementById("submitBusinesses").removeAttribute("disabled", "disabled");
+        //     }
+        // }
     }
 
     toggleLarge = (business) => {
@@ -276,36 +293,6 @@ class Excels extends Component {
         this.props.history.push(uri);
     }
 
-    // handleConfirm = (listIndexNotFound) => {
-    //     var skill = '';
-
-    //     for (let i = 0; i < listIndexNotFound.length; i++) {
-    //         if (i + 1 !== listIndexNotFound.length) {
-    //             skill = skill + ' ' + listIndexNotFound[i] + ', ';
-    //         } else {
-    //             skill = skill + ' ' + listIndexNotFound[i];
-    //         }
-    //     }
-
-    //     confirmAlert({
-    //         title: 'Lưu ý',
-    //         message: `Những kỹ năng: ${skill} chưa tồn tại trong hệ thống! Vui lòng tạo mới những kỹ năng này và thử lại sau!`,
-    //         buttons: [
-    //             // {
-    //             //     label: 'Xác nhận',
-    //             //     onClick: () => this.importListBusiness(this.state.listBusinessesForSave, listIndexNotFound)
-    //             // },
-    //             {
-    //                 label: 'Quản lí kỹ năng',
-    //                 onClick: () => this.handleDirect('/skill')
-    //             },
-    //             {
-    //                 label: 'Hủy bỏ',
-    //             }
-    //         ]
-    //     });
-    // };
-
     handleSubmit = async (buttonName) => {
         const { rows_Students, rows_Businesses } = this.state;
         const listStudents = [];
@@ -372,10 +359,13 @@ class Excels extends Component {
                         });
                     }
 
-                    // var dateButton = new Date();
-                    // alert(dateButton);
-                    localStorage.setItem('dateButtonStudent', true);
-                    document.getElementById("submitStudents").setAttribute("disabled", "disabled");
+                    // localStorage.setItem('dateButtonStudent', true);
+                    // document.getElementById("submitStudents").setAttribute("disabled", "disabled");
+
+                    // const dateButtonBusiness = localStorage.getItem("dateButtonBusiness");
+                    // if (dateButtonBusiness.toString() === "true") {
+                    //     document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
+                    // }
                 } else {
                     this.setState({
                         loading: false
@@ -495,8 +485,13 @@ class Excels extends Component {
                         })
                         Toastify.actionSuccess("Thêm tệp thành công!");
 
-                        localStorage.setItem('dateButtonBusiness', true);
-                        document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
+                        // localStorage.setItem('dateButtonBusiness', true);
+                        // document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
+
+                        // const dateButtonStudent = localStorage.getItem("dateButtonStudent");
+                        // if (dateButtonStudent.toString() === "true") {
+                        //     document.getElementById("submitStudents").setAttribute("disabled", "disabled");
+                        // }
 
                     } else {
                         this.setState({

@@ -48,6 +48,12 @@ public class BusinessService implements IBusinessService {
 
     @Override
     public void saveBusiness(Business business) {
+        ValueOperations values = template.opsForValue();
+        List<Business> businessList = (List<Business>) values.get("business");
+        if (businessList != null) {
+            businessList.add(business);
+            values.set("business", businessList);
+        }
         IBusinessRepository.save(business);
     }
 

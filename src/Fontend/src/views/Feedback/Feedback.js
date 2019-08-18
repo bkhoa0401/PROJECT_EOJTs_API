@@ -71,13 +71,13 @@ class Feedback extends Component {
                                             <Table responsive striped>
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Email</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
-                                                        {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Mức độ hài lòng</th> */}
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>MSSV</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Họ và tên</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Email</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Chuyên ngành</th>
+                                                        {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Mức độ hài lòng</th> */}
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

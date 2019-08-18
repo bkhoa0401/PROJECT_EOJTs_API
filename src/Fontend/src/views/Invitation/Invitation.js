@@ -182,16 +182,16 @@ class Invitation extends Component {
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
-                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
-                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Kỹ năng</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>GPA</th> */}
-                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nguyện vọng của sinh viên</th> */}
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái lời mời</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>MSSV</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Họ và tên</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Chuyên ngành</th>
+                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
+                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Kỹ năng</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>GPA</th> */}
+                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nguyện vọng của sinh viên</th> */}
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Trạng thái lời mời</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -333,7 +333,7 @@ class Invitation extends Component {
                                         </FormGroup> */}
                                         <FormGroup row>
                                             <Col md="4">
-                                                <h6>Kỹ năng</h6>
+                                                <h6>Kỹ năng chuyên ngành</h6>
                                             </Col>
                                             <Col xs="12" md="8">
                                                 {
@@ -341,7 +341,33 @@ class Invitation extends Component {
                                                         return (
                                                             <div>
                                                                 {
-                                                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                    skill.name && skill.name && skill.softSkill.toString() === 'false' ? (
+                                                                        <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                    ) : (
+                                                                            <></>
+                                                                        )
+                                                                }
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>Kỹ năng mềm</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {
+                                                    studentDetail.skills && studentDetail.skills.map((skill, index) => {
+                                                        return (
+                                                            <div>
+                                                                {
+                                                                    skill.softSkill.toString() === 'true' ? (
+                                                                        <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                    ) : (
+                                                                            <></>
+                                                                        )
                                                                 }
                                                             </div>
                                                         )

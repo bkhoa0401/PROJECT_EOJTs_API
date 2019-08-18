@@ -105,6 +105,13 @@ class User_Business_Create extends Component {
                 this.setState({
                     loading: false
                 })
+                setTimeout(
+                    function () {
+                        this.props.history.push('/admin_account/businessList');
+                    }
+                        .bind(this),
+                    2000
+                );
             } else {
                 Toastify.actionFail("Tạo tài khoản mới thất bại!");
                 this.setState({

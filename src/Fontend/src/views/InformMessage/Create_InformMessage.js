@@ -49,7 +49,7 @@ class Create_InformMessage extends Component {
                 students = await ApiServices.Get(`/admin/students`);
             }
             if (decoded.role === "ROLE_HR") {
-                students = await ApiServices.Get(`/business/getStudentsByBusiness`);
+                students = await ApiServices.Get(`/business/getStudentsByBusinessNotPaging`);
             }
         }
         let informFromEmail = '';
@@ -297,7 +297,13 @@ class Create_InformMessage extends Component {
             // console.log(event);
             if (result.status === 201) {
                 Toastify.actionSuccess("Tạo thông báo thành công!");
-                this.props.history.push("/informmessage");
+                setTimeout(
+                    function () {
+                        this.props.history.push('/informmessage');
+                    }
+                        .bind(this),
+                    2000
+                );
             } else {
                 Toastify.actionFail("Tạo thông báo thất bại!");
                 this.setState({

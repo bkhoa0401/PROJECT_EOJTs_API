@@ -114,10 +114,10 @@ class Question extends Component {
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nội dung</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nội dung</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Trạng thái</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>

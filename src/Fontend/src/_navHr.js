@@ -11,9 +11,9 @@ export default {
       icon: 'icon-speedometer',
     },
     {
-      name: 'Quản lí tài khoản',
+      name: 'Quản lý Supervisor',
       url: '/manage_account',
-      icon: 'icon-list',
+      icon: 'icon-equalizer',
       // children: [
       //   {
       //     name: 'Đổi mật khẩu',

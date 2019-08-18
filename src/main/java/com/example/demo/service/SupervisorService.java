@@ -77,6 +77,7 @@ public class SupervisorService implements ISupervisorService {
             List<Role> roleList = new ArrayList<>();
             Role role = new Role();
             role.setId(4);
+            role.setDescription("ROLE_SUPERVISOR");
             roleList.add(role);
 
             users.setRoles(roleList);

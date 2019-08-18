@@ -51,7 +51,11 @@ class Official_List extends Component {
       isThisMonth: -1,
       pageNumber: 1,
       currentPage: 0,
-      rowsPerPage: 10
+      rowsPerPage: 10,
+
+      filterStudentTaskList: null,
+      stateTask: ["Tổng", "Hoàn thành", "Chưa hoàn thành"],
+      stateNo: 0,
     }
   }
 
@@ -127,7 +131,39 @@ class Official_List extends Component {
     }
     await this.setState({
       listStudentTask: listStudentTask,
+      filterStudentTaskList: listStudentTask,
       isThisMonth: -1,
+      stateNo: 0,
+    })
+  }
+
+  handleSelectStateTask = async (event) => {
+    let listStudentTask = this.state.listStudentTask;
+    const { name, value } = event.target;
+    let filterStudentTaskList = [];
+    // console.log(value);
+    if (value == 0) {
+      filterStudentTaskList = listStudentTask;
+    } else if (value == 1) {
+      for (let index = 0; index < listStudentTask.length; index++) {
+        if (listStudentTask[index].status === "APPROVED") {
+          console.log(listStudentTask[index].status === "APPROVED");
+          filterStudentTaskList.push(listStudentTask[index]);
+        }
+      }
+    } else if (value == 2) {
+      for (let index = 0; index < listStudentTask.length; index++) {
+        if (listStudentTask[index].status !== "APPROVED") {
+          filterStudentTaskList.push(listStudentTask[index]);
+        }
+      }
+    }
+    // console.log(value);
+    // console.log(filterStudentTaskList);
+    // console.log(listStudentTask);
+    await this.setState({
+      filterStudentTaskList: filterStudentTaskList,
+      stateNo: value,
     })
   }
 
@@ -187,7 +223,7 @@ class Official_List extends Component {
     }
   };
 
-  handleSelectAll = async() => {
+  handleSelectAll = async () => {
     let suggestedStudents = this.state.suggestedStudents;
     let preListStudent = [];
     let isSelect = [];
@@ -446,6 +482,7 @@ class Official_List extends Component {
         modalTask: !this.state.modalTask,
         studentDetail: studentDetail,
         listStudentTask: listStudentTask,
+        filterStudentTaskList: listStudentTask,
         months: months,
         loading: false,
         isThisMonth: isThisMonth + 1,
@@ -476,17 +513,13 @@ class Official_List extends Component {
 
   showTaskState(taskStatus) {
     // console.log(taskStatus);
-    if (taskStatus === 'NOTSTART') {
+    if (taskStatus === 'APPROVED') {
       return (
-        <Badge color="secondary">Chưa bắt đầu</Badge>
+        <i style={{ color: "#4dbd74" }} className="fa fa-check"></i>
       )
-    } else if (taskStatus === 'PENDING') {
+    } else {
       return (
-        <Badge color="warning">Chưa xong</Badge>
-      )
-    } else if (taskStatus === 'DONE') {
-      return (
-        <Badge color="success">Hoàn Thành</Badge>
+        <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
       )
     }
   }
@@ -630,6 +663,7 @@ class Official_List extends Component {
   render() {
     const { isThisMonth, months, studentDetail, students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection, loading, suggestedStudents, isSelect, colorBackSelect, colorTextSelect } = this.state;
     const { pageNumber, currentPage, rowsPerPage } = this.state;
+    const { filterStudentTaskList, stateNo, stateTask } = this.state;
     if (supervisors_FirstBlank != null) {
       console.log(supervisors_FirstBlank);
     }
@@ -680,17 +714,17 @@ class Official_List extends Component {
                     <Table responsive striped>
                       <thead>
                         <tr>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Email</th>
-                          {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
-                          {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>GPA</th>
-                      <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>CV</th>
-                      <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Bảng điểm</th> */}
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Người hướng dẫn</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>MSSV</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Họ và tên</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Chuyên ngành</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Email</th>
+                          {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
+                          {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>GPA</th>
+                      <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>CV</th>
+                      <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Bảng điểm</th> */}
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Người hướng dẫn</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -896,7 +930,7 @@ class Official_List extends Component {
                     </FormGroup> */}
                     <FormGroup row>
                       <Col md="4">
-                        <h6>Kỹ năng</h6>
+                        <h6>Kỹ năng chuyên ngành</h6>
                       </Col>
                       <Col xs="12" md="8">
                         {
@@ -904,7 +938,33 @@ class Official_List extends Component {
                             return (
                               <div>
                                 {
-                                  <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                  skill.name && skill.name && skill.softSkill.toString() === 'false' ? (
+                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                  ) : (
+                                      <></>
+                                    )
+                                }
+                              </div>
+                            )
+                          })
+                        }
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Col md="4">
+                        <h6>Kỹ năng mềm</h6>
+                      </Col>
+                      <Col xs="12" md="8">
+                        {
+                          studentDetail.skills && studentDetail.skills.map((skill, index) => {
+                            return (
+                              <div>
+                                {
+                                  skill.softSkill.toString() === 'true' ? (
+                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                  ) : (
+                                      <></>
+                                    )
                                 }
                               </div>
                             )
@@ -970,29 +1030,38 @@ class Official_List extends Component {
                       })}
                     </Input>
                   </FormGroup>
+                  <hr />
+                  <FormGroup row style={{ paddingLeft: '70%' }}>
+                    Trạng thái: &nbsp;&nbsp;
+                    <Input onChange={e => { this.handleSelectStateTask(e) }} type="select" name="stateTask" style={{ width: '150px' }} size="sm">
+                      {stateTask && stateTask.map((state, i) => {
+                        return (
+                          <option value={i} selected={i == stateNo}>{state}</option>
+                        )
+                      })}
+                    </Input>
+                  </FormGroup>
                   <div style={{ maxHeight: '492px', overflowY: 'auto' }}>
                     <Table responsive striped>
                       <thead>
                         <tr>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nhiệm vụ</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Người giao</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ưu tiên</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Độ khó</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ngày tạo</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hạn cuối</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nhiệm vụ</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Người giao</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Độ khó</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Ngày tạo</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Hạn cuối</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Hoàn thành</th>
                         </tr>
                       </thead>
                       <tbody>
                         {
-                          this.state.listStudentTask && this.state.listStudentTask.map((task, index) => {
+                          filterStudentTaskList && filterStudentTaskList.map((task, index) => {
                             return (
                               <tr>
                                 <td style={{ textAlign: "center" }}>{index + 1}</td>
                                 <td style={{ textAlign: "center" }}>{task.title}</td>
                                 <td style={{ textAlign: "center" }}>{task.supervisor.name}</td>
-                                <td style={{ textAlign: "center" }}>{task.priority}</td>
                                 <td style={{ textAlign: "center" }}>
                                   {
                                     this.showTaskLevel(task.level_task)

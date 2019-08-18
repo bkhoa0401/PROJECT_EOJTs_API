@@ -28,7 +28,7 @@ class Login extends Component {
       this.handleLogin();
     }
   }
-  
+
   handleLogin = async () => {
     const { email, password } = this.state;
     const result = await AuthService.login(email, password);
@@ -39,16 +39,18 @@ class Login extends Component {
       const role = decoded.role;
 
       if (role === 'ROLE_ADMIN') {
-        // const firebaseToken = await askForPermissioToReceiveNotifications();
-        // console.log(firebaseToken);
+        const dateButtonStudent = localStorage.getItem("dateButtonStudent");
+        const dateButtonBusiness = localStorage.getItem("dateButtonBusiness");
+        if (dateButtonStudent == null) {
+          localStorage.setItem('dateButtonStudent', false);
+        }
+        if (dateButtonBusiness == null) {
+          localStorage.setItem('dateButtonBusiness', false);
+        }
         this.props.history.push('/admin');
       } else if (role === 'ROLE_HR') {
-        // const firebaseToken = await askForPermissioToReceiveNotifications();
-        // console.log(firebaseToken);
         this.props.history.push('/hr');
       } else if (role === 'ROLE_SUPERVISOR') {
-        // const firebaseToken = await askForPermissioToReceiveNotifications();
-        // console.log(firebaseToken);
         this.props.history.push('/supervisor');
       } else if (role === 'ROLE_STARTUP') {
         this.props.history.push('/startup');

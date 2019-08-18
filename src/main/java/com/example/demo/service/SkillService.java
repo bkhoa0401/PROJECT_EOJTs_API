@@ -1,10 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.PagingDTO;
-import com.example.demo.entity.Business;
-import com.example.demo.entity.Job_Post;
-import com.example.demo.entity.Job_Post_Skill;
-import com.example.demo.entity.Skill;
+import com.example.demo.entity.*;
 import com.example.demo.repository.ISkillRepository;
 import com.example.demo.utils.Utils;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -32,6 +29,9 @@ public class SkillService implements ISkillService {
 
     @Autowired
     private RedisTemplate<Object, Object> template;
+
+    @Autowired
+    ISpecializedService iSpecializedService;
 
     @Override
     public int fullTextSearch(String skillName) {
@@ -99,9 +99,19 @@ public class SkillService implements ISkillService {
     }
 
     @Override
-    public boolean createSkill(Skill skill) {
+    public boolean  createSkill(Skill skill) {
+        ValueOperations values = template.opsForValue();
+        List<Skill> skillList = (List<Skill>) values.get("skills");
         try {
+            Specialized specialized = iSpecializedService.getSpecializedById(skill.getSpecialized().getId());
+            skill.setSpecialized(specialized);
+            skill.setSoftSkill(false);
             ISkillRepository.save(skill);
+            if (skillList != null) {
+                Skill isAddDB=getSkillByName(skill.getName());
+                skillList.add(isAddDB);
+                values.set("skills", skillList);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -111,7 +121,20 @@ public class SkillService implements ISkillService {
 
     @Override
     public boolean updateSkill(Skill skill) {
+        ValueOperations values = template.opsForValue();
+        List<Skill> skillList = (List<Skill>) values.get("skills");
+
         Skill skillFound = ISkillRepository.findSkillById(skill.getId());
+        if (skillList != null) {
+            int position = findPositionSkillInList(skillList, skillFound);
+            skillList.remove(position);
+            skill.setSoftSkill(false);
+            Specialized specialized = iSpecializedService.getSpecializedById(skill.getSpecialized().getId());
+            skill.setSpecialized(specialized);
+            skillList.add(position, skill);
+            values.set("skills", skillList);
+        }
+
         if (skillFound != null) {
             ISkillRepository.save(skill);
             return true;
@@ -121,13 +144,35 @@ public class SkillService implements ISkillService {
 
     @Override
     public boolean updateStatusSkill(int skillId, boolean status) {
+        ValueOperations values = template.opsForValue();
+        List<Skill> skillList = (List<Skill>) values.get("skills");
+
         Skill skillFound = ISkillRepository.findSkillById(skillId);
+
+        if (skillList != null) {
+            int position = findPositionSkillInList(skillList, skillFound);
+            skillList.remove(position);
+            skillFound.setStatus(status);
+            skillList.add(position, skillFound);
+            values.set("skills", skillList);
+        }
+
         if (skillFound != null) {
             skillFound.setStatus(status);
             ISkillRepository.save(skillFound);
             return true;
         }
         return false;
+    }
+
+    public int findPositionSkillInList(List<Skill> skills, Skill skill) {
+        for (int i = 0; i < skills.size(); i++) {
+            Skill skillInList = skills.get(i);
+            if (skillInList.getId() == skill.getId()) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override

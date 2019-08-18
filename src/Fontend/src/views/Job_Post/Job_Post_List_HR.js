@@ -74,13 +74,13 @@ class Job_Post_List_HR extends Component {
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Mô tả công việc</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Quy trình tuyển</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Thời gian đăng</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Phúc lợi</th>
-                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Thông tin liên hệ</th> */}
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Mô tả công việc</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Quy trình tuyển</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Thời gian đăng</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Phúc lợi</th>
+                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Thông tin liên hệ</th> */}
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>

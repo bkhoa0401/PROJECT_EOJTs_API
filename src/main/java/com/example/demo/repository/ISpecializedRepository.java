@@ -19,4 +19,6 @@ public interface ISpecializedRepository extends JpaRepository<Specialized, Integ
 
     List<Specialized> findTop2ByStatusIsTrue();
 
+    Specialized findByName(String name);
+
 }

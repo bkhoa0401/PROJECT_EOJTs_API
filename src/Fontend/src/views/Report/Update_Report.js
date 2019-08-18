@@ -267,7 +267,14 @@ class Update_Report extends Component {
                 console.log(evaluation);
                 if (result.status === 200) {
                     Toastify.actionSuccess("Cập nhật đánh giá tháng thành công!");
-                    this.props.history.push(`/Report/Report_Detail/${needId[0]}~${needId[1]}`);
+                    setTimeout(
+                        function () {
+                            this.props.history.push(`/Report/Report_Detail/${needId[0]}~${needId[1]}`);
+                        }
+                            .bind(this),
+                        2000
+                    );
+
                 } else {
                     Toastify.actionFail("Cập nhật đánh giá tháng thất bại!");
                     this.setState({

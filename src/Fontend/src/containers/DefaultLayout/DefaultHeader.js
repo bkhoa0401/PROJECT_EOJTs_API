@@ -21,12 +21,10 @@ class DefaultHeader extends Component {
     this.state = {
       username: '',
       logo: null,
-      role: '',
       linkProfile: '',
-      informs: null,
-      haveInform: false,
     }
   }
+
 
   async componentDidMount() {
     const token = localStorage.getItem('id_token');
@@ -38,13 +36,7 @@ class DefaultHeader extends Component {
       let username = '';
       let logo = null;
       let linkProfile = '';
-      let informs = null;
-      let haveInform = false;
       if (role === "ROLE_ADMIN" || role === "ROLE_STARTUP" || role === "ROLE_HEADTRAINING" || role === "ROLE_HEADMASTER") {
-        if (role === "ROLE_ADMIN") {
-          haveInform = true;
-          informs = await ApiServices.Get(`/admin/eventsReceivedNotRead`);
-        }
         actor = await ApiServices.Get(`/admin/getCurrentUser`);
         if (actor !== null) {
           username = actor.name;
@@ -52,8 +44,6 @@ class DefaultHeader extends Component {
           linkProfile = `/account_detail`;
         }
       } else if (role === "ROLE_HR") {
-        haveInform = true;
-        informs = await ApiServices.Get(`/business/eventsReceivedNotRead`);
         actor = await ApiServices.Get(`/business/getBusiness`);
         if (actor !== null) {
           username = actor.business_eng_name;
@@ -70,31 +60,17 @@ class DefaultHeader extends Component {
         }
       }
       this.setState({
-        email: email,
-        role: role,
         username: username,
         logo: logo,
         linkProfile: linkProfile,
-        haveInform: haveInform,
-        informs: informs,
       });
-    }
-  }
-
-  handleShowString(stringFormat) {
-    if (stringFormat.length > 18) {
-      var finalString = stringFormat.substr(0, 18);
-      finalString += "...";
-      return finalString;
-    } else {
-      return stringFormat;
     }
   }
 
   render() {
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
-    const { username, logo, linkProfile, haveInform, informs } = this.state;
+    const { username, logo, linkProfile } = this.state;
 
     return (
       <React.Fragment>
@@ -120,6 +96,19 @@ class DefaultHeader extends Component {
           <NavItem>
             <h6 className="nav-link" style={{ color: "Gray", fontWeight: 'bold' }}>Xin chào, {username}!&nbsp;&nbsp;</h6>
           </NavItem>
+          <NavItem>
+            <NavLink to={linkProfile} className="nav-link">
+              {logo === null ?
+                <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="usericon" /> :
+                <img src={logo} className="img-avatar" alt={logo} />
+              }
+            </NavLink>
+          </NavItem>
+          <NavItem style={{ width: "30px" }}>
+            <NavLink onClick={e => this.props.onLogout(e)} className="nav-link">
+              <i className="fa cui-account-logout fa-lg"></i>
+            </NavLink>
+          </NavItem>
           {/* <NavItem className="d-md-down-none">
             <NavLink to="#" className="nav-link"><i className="icon-bell"></i><Badge pill color="danger">5</Badge></NavLink>
           </NavItem>
@@ -129,7 +118,7 @@ class DefaultHeader extends Component {
           <NavItem className="d-md-down-none">
             <NavLink to="#" className="nav-link"><i className="icon-location-pin"></i></NavLink>
           </NavItem> */}
-          <AppHeaderDropdown direction="down">
+          {/* <AppHeaderDropdown direction="down">
             <DropdownToggle nav>
               {logo === null ?
                 <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="usericon" /> :
@@ -137,11 +126,6 @@ class DefaultHeader extends Component {
               }
             </DropdownToggle>
             <DropdownMenu right style={{ right: 'auto' }}>
-              {/* <DropdownItem header tag="div" className="text-center"><strong>Account</strong></DropdownItem> */}
-              {/* <DropdownItem><i className="fa fa-bell-o"></i> Updates<Badge color="info">42</Badge></DropdownItem>
-              <DropdownItem><i className="fa fa-envelope-o"></i> Messages<Badge color="success">42</Badge></DropdownItem>
-              <DropdownItem><i className="fa fa-tasks"></i> Tasks<Badge color="danger">42</Badge></DropdownItem>
-              <DropdownItem><i className="fa fa-comments"></i> Comments<Badge color="warning">42</Badge></DropdownItem> */}
               <DropdownItem>
                 <NavItem className="d-md-down-none">
                   <NavLink to={linkProfile} className="nav-link" style={{ color: "Gray" }}>
@@ -170,13 +154,6 @@ class DefaultHeader extends Component {
                   </NavLink>
                 </NavItem>
               </DropdownItem>
-              {/* <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem> */}
-              {/* <DropdownItem><i className="fa fa-user"></i> Profile</DropdownItem>
-              <DropdownItem><i className="fa fa-wrench"></i> Settings</DropdownItem>
-              <DropdownItem><i className="fa fa-usd"></i> Payments<Badge color="secondary">42</Badge></DropdownItem>
-              <DropdownItem><i className="fa fa-file"></i> Projects<Badge color="primary">42</Badge></DropdownItem>
-              <DropdownItem divider />
-              <DropdownItem><i className="fa fa-shield"></i> Lock Account</DropdownItem> */}
               <DropdownItem onClick={e => this.props.onLogout(e)}>
                 <FormGroup row>
                   <Col md="2" style={{ height: "7px" }}>
@@ -221,9 +198,9 @@ class DefaultHeader extends Component {
                 </div>
               </DropdownMenu>
             </AppHeaderDropdown> : <></>
-          }
+          } */}
         </Nav>
-        {/* <AppAsideToggler className="d-md-down-none" /> */}
+        <AppAsideToggler className="d-md-down-none"/>
         {/*<AppAsideToggler className="d-lg-none" mobile />*/}
       </React.Fragment>
     );

@@ -76,9 +76,10 @@ public class SpecializedController {
         String result = "Failed";
         HttpStatus httpStatus;
 
-        int specializedId = specializedService.fullTextSearch(specialized.getName());
+        // int specializedId = specializedService.fullTextSearch(specialized.getName());
+        boolean specializedIsExisted = specializedService.checkSpecializedIsExisted(specialized.getName());
 
-        if (specializedId == 0) {
+        if (specializedIsExisted == false) {
             if (specializedService.createSpecialized(specialized)) {
                 result = "Success";
                 httpStatus = HttpStatus.OK;

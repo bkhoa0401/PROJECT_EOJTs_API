@@ -78,6 +78,8 @@ public class StudentController {
     @Autowired
     IHistoryActionService iHistoryActionService;
 
+    @Autowired
+    ISpecializedService iSpecializedService;
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -95,7 +97,7 @@ public class StudentController {
         List<Ojt_Enrollment> ojtEnrollmentList = new ArrayList<>();
         List<String> nameList = new ArrayList<>();
 
-        StudentIsExistedAndNotYet studentIsExistedAndNotYet = studentService.getStudentsIsExisted(students);
+        StudentIsExistedAndNotYet studentIsExistedAndNotYet = studentService.getStudentsIsExisted(studentList);
 
         List<Student> studentListIsExisted = studentIsExistedAndNotYet.getStudentsIsExisted();
         studentService.handlerStudentIsExisted(studentListIsExisted); // handle xong may dua da ton tai
@@ -187,11 +189,10 @@ public class StudentController {
 
         Semester semester = semesterService.getSemesterByName(student.getSemesterName());
 
-
-//        Student studentGetByEmail=studentService.getStudentByEmail(student.getEmail());
         Student student1 = new Student();
         student1.setEmail(student.getEmail());
-        student1.setSpecialized(student.getSpecialized());
+        Specialized specialized=iSpecializedService.getSpecializedById(student.getSpecialized().getId());
+        student1.setSpecialized(specialized);
         student1.setStatus(StudentStatus.NOTSTART);
         student1.setAddress(student.getAddress());
         student1.setDob(student.getDob());
@@ -205,7 +206,6 @@ public class StudentController {
         ojt_enrollment.setSemester(semester);
         try {
             studentService.saveStudent(student1);
-           // usersService.saveUser(users);
             ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);
 
             if (usersService.saveUser(users)) {

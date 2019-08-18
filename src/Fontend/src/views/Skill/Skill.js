@@ -52,19 +52,18 @@ class Skill extends Component {
 
     handleUpdateStatus = async (id, status) => {
         const result = await ApiServices.Put(`/skill/status?id=${id}&status=${status}`);
-
         const { currentPage, rowsPerPage } = this.state;
-        const skills = await ApiServices.Get(`/skill?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
-        if (skills !== null) {
-            this.setState({
-                skills: skills.listData,
-                currentPage,
-                pageNumber: skills.pageNumber
-            })
-        }
-
         if (result) {
             Toastify.actionSuccess("Cập nhật trạng thái thành công!");
+            const skills = await ApiServices.Get(`/skill?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+            if (skills !== null) {
+                await this.setState({
+                    skills: skills.listData,
+                    currentPage,
+                    pageNumber: skills.pageNumber
+                })
+                console.log(this.state.skils);
+            }
         } else {
             Toastify.actionFail("Cập nhật trạng thái thất bại!");
         }
@@ -74,6 +73,7 @@ class Skill extends Component {
         const { currentPage, rowsPerPage } = this.state;
         const skills = await ApiServices.Get(`/skill?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
+        console.log(skills);
         if (skills !== null) {
             this.setState({
                 skills: skills.listData,
@@ -167,11 +167,11 @@ class Skill extends Component {
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Tên kỹ năng</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ngành</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Tên kỹ năng</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Ngành</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Trạng thái</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>

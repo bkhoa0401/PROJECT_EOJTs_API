@@ -26,9 +26,11 @@ class Job_Post_List extends Component {
         const businesses = await ApiServices.Get(`/admin/jobPostsBusinesses?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         let accordion = [];
         if (businesses !== null) {
-            for (let i = 0; i < businesses.length; i++) {
+            for (let i = 0; i < businesses.listData.length; i++) {
                 accordion.push(true);
             }
+            console.log(businesses);
+            console.log(accordion);
             this.setState({
                 businesses: businesses.listData,
                 accordion: accordion,
@@ -240,7 +242,7 @@ class Job_Post_List extends Component {
                                                 // <Table responsive bordered>
                                                 //     <thead style={{ color: "white", backgroundColor: "DeepSkyBlue" }}>
                                                 //         <tr>
-                                                //             <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>{business.business.business_name}</th>
+                                                //             <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>{business.business.business_name}</th>
                                                 //         </tr>
                                                 //     </thead>
                                                 //     <tbody>

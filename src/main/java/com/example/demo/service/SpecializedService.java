@@ -69,6 +69,9 @@ public class SpecializedService implements ISpecializedService {
 
         try {
             Specialized specialized = (Specialized) jpaQuery.getSingleResult();
+            if (specialized == null) {
+                return 0;
+            }
             specializedId = specialized.getId();
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,13 +108,16 @@ public class SpecializedService implements ISpecializedService {
 
     @Override
     public boolean createSpecialized(Specialized specialized) {
-        try {
-            ISpecializedRepository.save(specialized);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        ValueOperations values = template.opsForValue();
+        List<Specialized> specializeds = (List<Specialized>) values.get("specialized");
+        ISpecializedRepository.save(specialized);
+        if (specializeds != null) {
+            Specialized specializedIsSave=ISpecializedRepository.findByName(specialized.getName());
+            specializeds.add(specializedIsSave);
+            values.set("specialized", specializeds);
         }
+
+        return true;
     }
 
     public List<Specialized> updateSpecialized(Specialized specialized) {
@@ -133,21 +139,7 @@ public class SpecializedService implements ISpecializedService {
 
 
     @Override
-//    @CachePut(key = "'all'")
-//    @CacheEvict(allEntries = true)
     public List<Specialized> updateStatusSpecialized(int specializedId, boolean status) {
-//        Specialized specializedFound = ISpecializedRepository.findSpecializedById(specializedId);
-//        if (specializedFound != null) {
-//            specializedFound.setStatus(status);
-//            ISpecializedRepository.save(specializedFound);
-//
-//            if (this.specializedListAll.size() == 0) {
-//                this.specializedListAll = ISpecializedRepository.findAll();
-//            }
-//            this.specializedListAll.set(specializedId - 1, specializedFound); // save redis
-//            return specializedListAll;
-//        }
-//        return null;
         Specialized specializedFound = ISpecializedRepository.findSpecializedById(specializedId);
         ValueOperations values = template.opsForValue();
         List<Specialized> specializeds = (List<Specialized>) values.get("specialized");
@@ -167,7 +159,6 @@ public class SpecializedService implements ISpecializedService {
     }
 
     @Override
-//    @Cacheable(value = "specializedID", key = "#id")
     public Specialized getSpecializedById(int id) {
         Specialized specialized = ISpecializedRepository.findSpecializedById(id);
         if (specialized != null) {
@@ -175,6 +166,15 @@ public class SpecializedService implements ISpecializedService {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public boolean checkSpecializedIsExisted(String name) {
+        Specialized specialized = ISpecializedRepository.findByName(name);
+        if (specialized != null) {
+            return true;
+        }
+        return false;
     }
 }
 
