@@ -601,7 +601,7 @@ class Report extends Component {
                                                             <td style={{ textAlign: "center" }}>
                                                                 {onScreenStatus[index * 4] === null ?
                                                                     (
-                                                                        role && role === 'ROLE_SUPERVISOR' ?
+                                                                        role && role !== 'ROLE_ADMIN' ?
                                                                             <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/1~${student.email}`)}>
                                                                                 Tạo
                                                                             </Button> :
@@ -617,7 +617,7 @@ class Report extends Component {
                                                             <td style={{ textAlign: "center" }}>
                                                                 {onScreenStatus[index * 4 + 1] === null ?
                                                                     (
-                                                                        role && role === 'ROLE_SUPERVISOR' ?
+                                                                        role && role !== 'ROLE_ADMIN' ?
                                                                             (onScreenStatus[index * 4] !== null ?
                                                                                 <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/2~${student.email}`)}>
                                                                                     Tạo
@@ -636,7 +636,7 @@ class Report extends Component {
                                                             <td style={{ textAlign: "center" }}>
                                                                 {onScreenStatus[index * 4 + 2] === null ?
                                                                     (
-                                                                        role && role === 'ROLE_SUPERVISOR' ?
+                                                                        role && role !== 'ROLE_ADMIN' ?
                                                                             (onScreenStatus[index * 4 + 1] !== null ?
                                                                                 <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/3~${student.email}`)}>
                                                                                     Tạo
@@ -655,7 +655,7 @@ class Report extends Component {
                                                             <td style={{ textAlign: "center" }}>
                                                                 {onScreenStatus[index * 4 + 3] === null ?
                                                                     (
-                                                                        role && role === 'ROLE_SUPERVISOR' ?
+                                                                        role && role !== 'ROLE_ADMIN' ?
                                                                             (onScreenStatus[index * 4 + 2] !== null ?
                                                                                 <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/4~${student.email}`)}>
                                                                                     Tạo

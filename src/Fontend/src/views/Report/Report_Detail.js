@@ -171,7 +171,7 @@ class Report_Detail extends Component {
                                     <CardHeader style={{ fontWeight: "bold" }}>
                                         <i className="fa fa-align-justify"></i>{report === null ? "" : titleHeader}
                                         {report === null ? (<></>) :
-                                            (role && role === 'ROLE_SUPERVISOR' ?
+                                            (role && role !== 'ROLE_ADMIN' ?
                                                 <>
                                                     &nbsp;&nbsp;
                                             <Button color="primary" onClick={() => this.handleDirect(`/Report/Update_Report/${report.id}~${student.email}`)}>
