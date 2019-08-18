@@ -108,7 +108,8 @@ class Company extends Component {
                                                 <Col xs="12" md="10">
                                                     {business === null ?
                                                         <></> :
-                                                        <Label>{business.email}</Label>
+                                                        <Label>{business.email} &nbsp;&nbsp; <Button color="primary" onClick={() => this.handleDirect("/account/changepassword")} outline>Đổi mật khẩu</Button>
+                                                        </Label>
                                                     }
                                                 </Col>
                                             </FormGroup>
