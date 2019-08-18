@@ -45,54 +45,70 @@ public class HeadingController {
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @PutMapping("/startup")
-    public ResponseEntity<Void> updateStatusAcceptByStartUpRoom(@RequestParam int id,
+    @PutMapping("/admin")
+    public ResponseEntity<Void> updateStatusAcceptByAdmin(@RequestParam int id,
                                                                 @RequestParam String comment, @RequestParam boolean status) throws Exception {
         String email = getEmailFromToken();
         Users users = iUsersService.findUserByEmail(email);
         List<Role> roles = users.getRoles();
 
         for (int i = 0; i < roles.size(); i++) {
-            if (roles.get(i).getDescription().equals("ROLE_STARTUP")) {
-                iBusiness_proposedService.updateStatusByStartUpRoom(id, comment, status, email);
+            if (roles.get(i).getDescription().equals("ROLE_ADMIN")) {
+                iBusiness_proposedService.updateStatusByAdmin(id, comment, status, email);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-    @PutMapping("/headTraining")
-    public ResponseEntity<Void> updateStatusAcceptByHeadTraining(@RequestParam int id,
-                                                                 @RequestParam String comment, @RequestParam boolean status) throws Exception {
-        String email = getEmailFromToken();
-        Users users = iUsersService.findUserByEmail(email);
-        List<Role> roles = users.getRoles();
-
-        for (int i = 0; i < roles.size(); i++) {
-            if (roles.get(i).getDescription().equals("ROLE_HEADTRAINING")) {
-                iBusiness_proposedService.updateStatusByHeadOfTraining(id, comment, status, email);
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-
-    }
-
-    @PutMapping("/headMaster")
-    public ResponseEntity<Void> updateStatusAcceptByHeadMaster(@RequestParam int id, @RequestParam String comment, @RequestParam boolean status) throws Exception {
-        String email = getEmailFromToken();
-        Users users = iUsersService.findUserByEmail(email);
-        List<Role> roles = users.getRoles();
-
-        for (int i = 0; i < roles.size(); i++) {
-            if (roles.get(i).getDescription().equals("ROLE_HEADMASTER")) {
-                iBusiness_proposedService.updateStatusByHeadMaster(id, comment, status, email);
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-
-    }
+//    @PutMapping("/startup")
+//    public ResponseEntity<Void> updateStatusAcceptByStartUpRoom(@RequestParam int id,
+//                                                                @RequestParam String comment, @RequestParam boolean status) throws Exception {
+//        String email = getEmailFromToken();
+//        Users users = iUsersService.findUserByEmail(email);
+//        List<Role> roles = users.getRoles();
+//
+//        for (int i = 0; i < roles.size(); i++) {
+//            if (roles.get(i).getDescription().equals("ROLE_STARTUP")) {
+//                iBusiness_proposedService.updateStatusByStartUpRoom(id, comment, status, email);
+//                return new ResponseEntity<>(HttpStatus.OK);
+//            }
+//        }
+//        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+//    }
+//
+//    @PutMapping("/headTraining")
+//    public ResponseEntity<Void> updateStatusAcceptByHeadTraining(@RequestParam int id,
+//                                                                 @RequestParam String comment, @RequestParam boolean status) throws Exception {
+//        String email = getEmailFromToken();
+//        Users users = iUsersService.findUserByEmail(email);
+//        List<Role> roles = users.getRoles();
+//
+//        for (int i = 0; i < roles.size(); i++) {
+//            if (roles.get(i).getDescription().equals("ROLE_HEADTRAINING")) {
+//                iBusiness_proposedService.updateStatusByHeadOfTraining(id, comment, status, email);
+//                return new ResponseEntity<>(HttpStatus.OK);
+//            }
+//        }
+//        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+//
+//    }
+//
+//    @PutMapping("/headMaster")
+//    public ResponseEntity<Void> updateStatusAcceptByHeadMaster(@RequestParam int id, @RequestParam String comment, @RequestParam boolean status) throws Exception {
+//        String email = getEmailFromToken();
+//        Users users = iUsersService.findUserByEmail(email);
+//        List<Role> roles = users.getRoles();
+//
+//        for (int i = 0; i < roles.size(); i++) {
+//            if (roles.get(i).getDescription().equals("ROLE_HEADMASTER")) {
+//                iBusiness_proposedService.updateStatusByHeadMaster(id, comment, status, email);
+//                return new ResponseEntity<>(HttpStatus.OK);
+//            }
+//        }
+//        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+//
+//    }
 
     @PutMapping
     public ResponseEntity<Void> updateBusiness(@RequestBody Business_Proposed business_proposed) {

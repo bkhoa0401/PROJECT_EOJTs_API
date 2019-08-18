@@ -122,19 +122,22 @@ public class SemesterService implements ISemesterService {
         List<Semester> semesters = getAllSemester();
         Semester semesterCurrent;
 
-        int count=0;
-
         List<Semester> semesterListResult = new ArrayList<>();
         for (int i = 0; i < semesters.size(); i++) {
             String minDate = semesters.get(i).getStart_choose_option_time().toString();
             String maxDate = semesters.get(i).getEnd_date().toString();
             boolean getCurrentSemester = Utils.aDateBetweenTwoDate(minDate, maxDate);
-            if (getCurrentSemester == true || count<=3) {
-                count++;
+
+            if (getCurrentSemester == true) {
                 semesterCurrent = semesters.get(i);
                 semesterListResult.add(semesterCurrent);
             }
         }
-        return semesterListResult.get(semesterListResult.size()-1);
+
+        if (semesterListResult.size() == 1) {
+            return null;
+        }
+
+        return semesterListResult.get(semesterListResult.size() - 1);
     }
 }
