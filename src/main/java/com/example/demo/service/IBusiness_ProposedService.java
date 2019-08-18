@@ -10,11 +10,13 @@ public interface IBusiness_ProposedService {
 
     Business_Proposed findById(int id);
 
-    void updateStatusByStartUpRoom(int id, String comment, boolean status, String email) throws Exception;
+    void updateStatusByAdmin(int id, String comment, boolean status, String email) throws Exception;
 
-    void updateStatusByHeadOfTraining(int id, String comment, boolean status, String email) throws Exception;
-
-    void updateStatusByHeadMaster(int id, String comment, boolean status, String email) throws Exception;
+//    void updateStatusByStartUpRoom(int id, String comment, boolean status, String email) throws Exception;
+//
+//    void updateStatusByHeadOfTraining(int id, String comment, boolean status, String email) throws Exception;
+//
+//    void updateStatusByHeadMaster(int id, String comment, boolean status, String email) throws Exception;
 
     void createInformMessageAndSendMail(boolean status, Business_Proposed business_proposed, String descriptionEvent, String emailHeading, String emailNextHeading, String emailContent) throws Exception;
 

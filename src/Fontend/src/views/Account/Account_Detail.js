@@ -121,7 +121,8 @@ class Account_Detail extends Component {
                                                 <Col xs="12" md="10">
                                                     {actor === null ?
                                                         <></> :
-                                                        <Label>{actor.email}</Label>
+                                                        <Label>{actor.email} &nbsp;&nbsp; <Button color="primary" onClick={() => this.handleDirect("/account/changepassword")} outline>Đổi mật khẩu</Button>
+                                                        </Label>
                                                     }
                                                 </Col>
                                             </FormGroup>

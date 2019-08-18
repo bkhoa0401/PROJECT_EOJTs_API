@@ -966,8 +966,8 @@ class student_list extends Component {
                                     <Table responsive striped>
                                         <thead>
                                             <tr>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>
                                                     &emsp;&nbsp;&nbsp;MSSV
                                                     &nbsp;
                                                     {codeSortOrder === 0 ?
@@ -978,7 +978,7 @@ class student_list extends Component {
                                                         )
                                                     }
                                                 </th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>
                                                     &emsp;&nbsp;&nbsp;Họ và tên
                                                     &nbsp;
                                                     {nameSortOrder === 0 ?
@@ -989,7 +989,7 @@ class student_list extends Component {
                                                         )
                                                     }
                                                 </th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Email</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Email</th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
                                                     Chuyên ngành
                                                     {/* <Dropdown isOpen={this.state.dropdownOpen} toggle={() => this.toggleDropdown()}>
@@ -1002,9 +1002,9 @@ class student_list extends Component {
                                                     </Dropdown> */}
                                                 </th>
                                                 <th style={{ textAlign: "left" }}></th>
-                                                {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Bảng điểm</th> */}
-                                                {/* <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>GPA</th> */}
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
+                                                {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Bảng điểm</th> */}
+                                                {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>GPA</th> */}
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1417,13 +1417,13 @@ class student_list extends Component {
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nhiệm vụ</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Người giao</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Độ khó</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ngày tạo</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hạn cuối</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Hoàn thành</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nhiệm vụ</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Người giao</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Độ khó</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Ngày tạo</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Hạn cuối</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Hoàn thành</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -1499,14 +1499,14 @@ class student_list extends Component {
                                     <Table responsive striped>
                                         <thead>
                                             <tr>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>MSSV</th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Họ và tên</th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Chuyên ngành</th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nguyện vọng 1</th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Nguyện vọng 2</th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Trạng thái</th>
-                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>MSSV</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Họ và tên</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Chuyên ngành</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nguyện vọng 1</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nguyện vọng 2</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Trạng thái</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
                                             </tr>
                                         </thead>
                                         <tbody>

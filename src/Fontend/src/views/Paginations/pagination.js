@@ -13,9 +13,9 @@ class PaginationComponent extends Component {
             <Pagination>
                 {
                     currentPage <= 0 ?
-                    <PaginationItem disabled><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
+                    <PaginationItem disabled><PaginationLink previous tag="button"><i className="fa fa-angle-double-left"></i></PaginationLink></PaginationItem>
                     :
-                    <PaginationItem onClick={() => handlePagePrevious(currentPage - 1)}><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
+                    <PaginationItem onClick={() => handlePagePrevious(currentPage - 1)}><PaginationLink previous tag="button"><i className="fa fa-angle-double-left"></i></PaginationLink></PaginationItem>
                 }
                 
                 {
@@ -26,9 +26,9 @@ class PaginationComponent extends Component {
 
                 {
                     currentPage >= pageNumber - 1 ?
-                    <PaginationItem disabled><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
+                    <PaginationItem disabled><PaginationLink next tag="button"><i className="fa fa-angle-double-right"></i></PaginationLink></PaginationItem>
                     :
-                    <PaginationItem onClick={() => handlePageNext(currentPage + 1)}><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
+                    <PaginationItem onClick={() => handlePageNext(currentPage + 1)}><PaginationLink next tag="button"><i className="fa fa-angle-double-right"></i></PaginationLink></PaginationItem>
                 }
             </Pagination>
         );

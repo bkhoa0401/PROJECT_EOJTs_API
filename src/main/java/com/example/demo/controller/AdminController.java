@@ -15,16 +15,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
     @Autowired
     IStudentService studentService;
+
+    @Autowired
+    IEvaluationService evaluationService;
 
     @Autowired
     IOjt_EnrollmentService ojt_enrollmentService;
@@ -52,6 +52,9 @@ public class AdminController {
 
     @Autowired
     IAnswerService iAnswerService;
+
+    @Autowired
+    ISpecializedService specializedService;
 
     @GetMapping
     @ResponseBody
@@ -558,6 +561,86 @@ public class AdminController {
         Semester semester = semesterService.getSemesterNext();
         if (semester != null) {
             return new ResponseEntity<Semester>(semester, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/getSpecializedsActive")
+    @ResponseBody
+    public ResponseEntity<List<Specialized>> getSpecializedsActive() {
+        String emailBusiness = getEmailFromToken();
+        List<Specialized> specializeds = specializedService.getAllSpecialized();
+        List<Specialized> selectedSpecializeds = new ArrayList<Specialized>();
+        if (specializeds != null) {
+            for (int i = 0; i < specializeds.size(); i++) {
+                if (specializeds.get(i).getStatus() == true) {
+                    selectedSpecializeds.add(specializeds.get(i));
+                }
+            }
+            Collections.sort(selectedSpecializeds, new Comparator<Specialized>() {
+                @Override
+                public int compare(Specialized o1, Specialized o2) {
+                    String name1 = o1.getName();
+                    String name2 = o2.getName();
+                    return name1.compareTo(name2);
+                }
+            });
+            return new ResponseEntity<List<Specialized>>(selectedSpecializeds, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/getNumStudent")
+    @ResponseBody
+    public ResponseEntity<Integer> getNumStudent() {
+        List<Student> studentList = studentService.getAllStudentsBySemesterId();
+        if (studentList != null) {
+            return new ResponseEntity<Integer>(studentList.size(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/studentsEvaluations")
+    @ResponseBody
+    public ResponseEntity<PagingDTO> getEvaluationsOfStudents(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
+        PagingDTO pagingDTO = studentService.getEvaluationsOfStudents(currentPage, rowsPerPage);
+        if (pagingDTO != null) {
+            return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/searchingEvaluationAllField")
+    @ResponseBody
+    public ResponseEntity<List<Student_EvaluationDTO>> searchingEvaluationAllField(@RequestParam String valueSearch) {
+        List<Student> studentList = studentService.getAllStudentsBySemesterId();
+        List<Student> searchStudentList = new ArrayList<Student>();
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            if (student.getCode().toLowerCase().contains(valueSearch.toLowerCase()) || student.getName().toLowerCase().contains(valueSearch.toLowerCase())) {
+                searchStudentList.add(student);
+            }
+        }
+        List<Student_EvaluationDTO> student_evaluationDTOS = new ArrayList<>();
+
+        for (int i = 0; i < searchStudentList.size(); i++) {
+            List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(searchStudentList.get(i).getEmail());
+            Collections.sort(evaluationList);
+            if (evaluationList.size() < 4) {
+                for (int j = evaluationList.size(); j < 4; j++) {
+                    evaluationList.add(null);
+                }
+            }
+            evaluationList = evaluationService.checkSemesterOfListEvaluation(evaluationList);
+            Student_EvaluationDTO student_evaluationDTO = new Student_EvaluationDTO();
+            student_evaluationDTO.setEvaluationList(evaluationList);
+            student_evaluationDTO.setStudent(searchStudentList.get(i));
+
+            student_evaluationDTOS.add(student_evaluationDTO);
+        }
+        if (student_evaluationDTOS != null) {
+            return new ResponseEntity<List<Student_EvaluationDTO>>(student_evaluationDTOS, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

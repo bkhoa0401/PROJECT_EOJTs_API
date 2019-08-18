@@ -242,7 +242,7 @@ class Job_Post_List extends Component {
                                                 // <Table responsive bordered>
                                                 //     <thead style={{ color: "white", backgroundColor: "DeepSkyBlue" }}>
                                                 //         <tr>
-                                                //             <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>{business.business.business_name}</th>
+                                                //             <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>{business.business.business_name}</th>
                                                 //         </tr>
                                                 //     </thead>
                                                 //     <tbody>

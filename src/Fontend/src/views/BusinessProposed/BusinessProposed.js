@@ -30,31 +30,11 @@ class BusinessProposed extends Component {
             role: role
         });
 
-        if (role === 'ROLE_STARTUP') {
+        if (role === 'ROLE_ADMIN') {
             const businesses = await ApiServices.Get('/heading');
             if (businesses !== null) {
                 this.setState({
                     businesses,
-                    loading: false,
-                });
-            } else {
-                this.setState({
-                    loading: false
-                });
-            }
-        } else if (role === 'ROLE_HEADTRAINING') {
-            const businesses = await ApiServices.Get('/heading');
-            var listBusinesses = [];
-
-            businesses && businesses.map((business, index) => {
-                if (business.isAcceptedByStartupRoom === 'ACCEPTED') {
-                    listBusinesses.push(business);
-                }
-            })
-
-            if (listBusinesses !== null) {
-                this.setState({
-                    businesses: listBusinesses,
                     loading: false
                 });
             } else {
@@ -62,27 +42,48 @@ class BusinessProposed extends Component {
                     loading: false
                 });
             }
-        } else if (role === 'ROLE_HEADMASTER') {
-            const businesses = await ApiServices.Get('/heading');
-            var listBusinesses = [];
+        } 
+        // else if (role === 'ROLE_HEADTRAINING') {
+        //     const businesses = await ApiServices.Get('/heading');
+        //     var listBusinesses = [];
 
-            businesses && businesses.map((business, index) => {
-                if (business.isAcceptedByStartupRoom === 'ACCEPTED' && business.isAcceptedByHeadOfTraining === 'ACCEPTED') {
-                    listBusinesses.push(business);
-                }
-            })
+        //     businesses && businesses.map((business, index) => {
+        //         if (business.isAcceptedByStartupRoom === 'ACCEPTED') {
+        //             listBusinesses.push(business);
+        //         }
+        //     })
 
-            if (listBusinesses !== null) {
-                this.setState({
-                    businesses: listBusinesses,
-                    loading: false
-                });
-            } else {
-                this.setState({
-                    loading: false
-                });
-            }
-        }
+        //     if (listBusinesses !== null) {
+        //         this.setState({
+        //             businesses: listBusinesses,
+        //             loading: false
+        //         });
+        //     } else {
+        //         this.setState({
+        //             loading: false
+        //         });
+        //     }
+        // } else if (role === 'ROLE_HEADMASTER') {
+        //     const businesses = await ApiServices.Get('/heading');
+        //     var listBusinesses = [];
+
+        //     businesses && businesses.map((business, index) => {
+        //         if (business.isAcceptedByStartupRoom === 'ACCEPTED' && business.isAcceptedByHeadOfTraining === 'ACCEPTED') {
+        //             listBusinesses.push(business);
+        //         }
+        //     })
+
+        //     if (listBusinesses !== null) {
+        //         this.setState({
+        //             businesses: listBusinesses,
+        //             loading: false
+        //         });
+        //     } else {
+        //         this.setState({
+        //             loading: false
+        //         });
+        //     }
+        // }
     }
 
     handleDirect = (uri) => {
@@ -145,31 +146,38 @@ class BusinessProposed extends Component {
                                             <Table responsive striped>
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>STT</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Tên doanh nghiệp</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Đề xuất bởi</th>
-                                                        {
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Tên doanh nghiệp</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Đề xuất bởi</th>
+                                                        {/* {
                                                             (role === 'ROLE_STARTUP' || role === 'ROLE_HEADTRAINING' || role === 'ROLE_HEADMASTER') ? (
-                                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ý kiến phòng khởi nghiệp</th>
+                                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Ý kiến phòng khởi nghiệp</th>
                                                             ) : (
                                                                     <th></th>
                                                                 )
                                                         }
                                                         {
                                                             (role === 'ROLE_HEADTRAINING' || role === 'ROLE_HEADMASTER') ? (
-                                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ý kiến phòng đào tạo</th>
+                                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Ý kiến phòng đào tạo</th>
                                                             ) : (
                                                                     <th></th>
                                                                 )
                                                         }
                                                         {
                                                             (role === 'ROLE_HEADMASTER') ? (
-                                                                <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>Ý kiến ban giám hiệu</th>
+                                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Ý kiến ban giám hiệu</th>
+                                                            ) : (
+                                                                    <th></th>
+                                                                )
+                                                        } */}
+                                                        {
+                                                            (role === 'ROLE_ADMIN') ? (
+                                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Ý kiến của nhà trường</th>
                                                             ) : (
                                                                     <th></th>
                                                                 )
                                                         }
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}></th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -180,6 +188,17 @@ class BusinessProposed extends Component {
                                                                 <td style={{ textAlign: "center" }}>{business.business_name}</td>
                                                                 <td style={{ textAlign: "center" }}>{business.student_proposed.name}</td>
                                                                 {
+                                                                    (role === 'ROLE_ADMIN') ? (
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            {
+                                                                                this.showStatus(business.isAcceptedByAdmin)
+                                                                            }
+                                                                        </td>
+                                                                    ) : (
+                                                                            <></>
+                                                                        )
+                                                                }
+                                                                {/* {
                                                                     (role === 'ROLE_STARTUP' || role === 'ROLE_HEADTRAINING' || role === 'ROLE_HEADMASTER') ? (
                                                                         <td style={{ textAlign: "center" }}>
                                                                             {
@@ -211,7 +230,7 @@ class BusinessProposed extends Component {
                                                                     ) : (
                                                                             <td></td>
                                                                         )
-                                                                }
+                                                                } */}
                                                                 <td style={{ textAlign: "center" }}>
                                                                     <Button style={{ width: "100px" }}
                                                                         color="primary"
