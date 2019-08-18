@@ -94,9 +94,10 @@ class DefaultAside extends Component {
       <React.Fragment>
         <ListGroup className="list-group-accent" tag={'div'}>
           <ListGroupItem className="list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">Thông báo đến</ListGroupItem>
+          <ListGroupItem action tag="a" href={`/#/InformMessage`} className="list-group-item-accent-secondary text-center font-weight-bold list-group-item-divider" style={{fontSize:'12px'}}>Đến trang thông báo</ListGroupItem>
           {informs && informs.map((inform, index) => {
             return(
-            <ListGroupItem action tag="a" href={`/#/InformMessage/InformMessage_Detail/${inform.event.id}`} className="list-group-item-accent-warning list-group-item-divider">
+            <ListGroupItem action tag="a" href={`/#/InformMessage/InformMessage_Detail/${inform.event.id}`} className="list-group-item-accent-danger list-group-item-divider">
               {inform.studentList && inform.studentList.map((student, index) => {
                 return (
                   student.avatarLink === null ?
