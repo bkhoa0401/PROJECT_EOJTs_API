@@ -65,13 +65,17 @@ class DefaultLayout extends Component {
   render() {
     const { role } = this.state;
     var navItems = [];
+    let home = '';
 
     if (role === 'ROLE_ADMIN') {
       navItems = navigationAdmin;
+      home = "/admin";
     } else if (role === 'ROLE_HR') {
       navItems = navigationHr;
+      home = "/hr";
     } else if (role === 'ROLE_SUPERVISOR') {
       navItems = navigationSupervisor;
+      home = "/supervisor";
     } else if (role === 'ROLE_STARTUP') {
       navItems = navigationStartup;
     } else if (role === 'ROLE_HEADTRAINING') {
@@ -114,7 +118,8 @@ class DefaultLayout extends Component {
                           )} />
                       ) : (null);
                     })}
-                    <Redirect from="/" to="/dashboard" />
+                    <Redirect from="/" to={home} />
+                    
                   </Switch>
                 </Suspense>
               </Container>
