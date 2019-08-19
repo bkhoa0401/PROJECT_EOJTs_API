@@ -19,6 +19,7 @@ class Update_Job extends Component {
             startupArrayQuantity: [],
             arraySkill: [],
             arrayQuantity: [],
+            arrayIdJobPostSkill: [],
             isModify: false,
             isError: false,
             updatedId: '',
@@ -52,14 +53,15 @@ class Update_Job extends Component {
             isChecked: false,
             // isSelected: false,
 
-            specializedUpdate: []
+            specializedUpdate: [],
+            timePost: ''
         };
         this.addRow = this.addRow.bind(this);
     }
 
 
     async componentDidMount() {
-        const { specializedUpdate, arraySkill, arrayQuantity, choseSpecialized } = this.state;
+        const { specializedUpdate, arraySkill, arrayQuantity, choseSpecialized, arrayIdJobPostSkill } = this.state;
         const specializeds = await ApiServices.Get('/specialized');
         const skills = await ApiServices.Get('/skill/notPaging');
         if (specializeds !== null) {
@@ -79,8 +81,9 @@ class Update_Job extends Component {
             if (!specializedUpdate.includes(data.job_post.job_post_skills[i].skill.specialized.id)) {
                 specializedUpdate.push(data.job_post.job_post_skills[i].skill.specialized.id);
             }
-            arraySkill.push(data.job_post.job_post_skills[i].skill.id);
+            arraySkill.push(data.job_post.job_post_skills[i].skill);
             arrayQuantity.push(data.job_post.job_post_skills[i].number);
+            arrayIdJobPostSkill.push(data.job_post.job_post_skills[i].id);
         }
         // console.log('arraySkill', arraySkill);
         // console.log('arrayQuantity', arrayQuantity);
@@ -116,7 +119,8 @@ class Update_Job extends Component {
             arraySkill: arraySkill,
             arrayQuantity: arrayQuantity,
             skillsForSave: arraySkill,
-            numbersForSave: arrayQuantity
+            numbersForSave: arrayQuantity,
+            timePost: data.job_post.timePost
         })
 
     }
@@ -302,13 +306,15 @@ class Update_Job extends Component {
     handleSubmit = async () => {
 
         const { skillsForSave, numbersForSave, description, views,
-            contact, interview_process, interest } = this.state;
+            contact, interview_process, interest, updatedId, arrayIdJobPostSkill, timePost } = this.state;
 
         let job_post_skills = [];
 
+        console.log(skillsForSave);
 
-        for (let i = 0; i < skillsForSave.length; i++) {
+        for (let i = 0; i < arrayIdJobPostSkill.length; i++) {
             let job_post_skills_item = {
+                id: arrayIdJobPostSkill[i],
                 skill: {
                     id: skillsForSave[i].id
                 },
@@ -318,12 +324,14 @@ class Update_Job extends Component {
         }
 
         const job_post = {
+            id: updatedId,  
             description,
             views,
             contact,
             interview_process,
             interest,
-            job_post_skills
+            job_post_skills,
+            timePost: timePost
         }
 
         console.log(job_post);
@@ -333,8 +341,8 @@ class Update_Job extends Component {
                 loading: true
             })
 
-            const result = await ApiServices.Post('/business/createJobPost', job_post);
-            if (result.status === 201) {
+            const result = await ApiServices.Put('/business/updateJobPost', job_post);
+            if (result.status === 200) {
                 Toastify.actionSuccess("Cập nhật bài đăng thành công!");
                 this.setState({
                     loading: false
@@ -481,7 +489,7 @@ class Update_Job extends Component {
 
                                                                                     if (a !== -1) {
                                                                                         return (
-                                                                                            <option selected={choseSpecialized[a] === arraySkill[index]} id={'op' + i} value={i}>{skill.name}</option>
+                                                                                            <option selected={choseSpecialized[a] === arraySkill[index].id} id={'op' + i} value={i}>{skill.name}</option>
                                                                                         )
                                                                                     } else {
                                                                                         return (
