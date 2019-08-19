@@ -100,15 +100,15 @@ class BusinessProposed extends Component {
     showStatus(status) {
         if (status === 'ACCEPTED') {
             return (
-                <Badge color="success">Được chấp nhận</Badge>
+                <Badge color="success">ĐƯỢC CHẤP NHẬN</Badge>
             )
         } else if (status === 'REJECTED') {
             return (
-                <Badge color="danger">Bị từ chối</Badge>
+                <Badge color="danger">BỊ TỪ CHỐI</Badge>
             )
         } else {
             return (
-                <Badge color="warning">Đang chờ phê duyệt</Badge>
+                <Badge color="warning">ĐANG CHỜ PHÊ DUYỆT</Badge>
             )
         }
     }

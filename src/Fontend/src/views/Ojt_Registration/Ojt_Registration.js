@@ -385,8 +385,8 @@ class Ojt_Registration extends Component {
                                                                 <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {listInvitation && listInvitation[index] === true ?
-                                                                        <Badge color="success" style={{ fontSize: '12px' }}>Có</Badge> :
-                                                                        <Badge color="danger" style={{ fontSize: '12px' }}>Không</Badge>
+                                                                        <Badge color="success" style={{ fontSize: '12px' }}>CÓ</Badge> :
+                                                                        <Badge color="danger" style={{ fontSize: '12px' }}>KHÔNG</Badge>
                                                                     }
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
