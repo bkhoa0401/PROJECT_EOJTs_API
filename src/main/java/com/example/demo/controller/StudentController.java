@@ -494,6 +494,43 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/searchInviAllFields")
+    @ResponseBody
+    public ResponseEntity<List<Student_InvitationDTO>> searchInviAllFields(@RequestParam String valueSearch) {
+        String email = getEmailFromToken();
+        List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);
+        List<Student> studentListIsInvitedInFunc = new ArrayList<>();
+        List<Student_InvitationDTO> studentList = new ArrayList<>();
+
+        Semester semester = semesterService.getSemesterCurrent();
+
+        for (int i = 0; i < invitationList.size(); i++) {
+            if (invitationList.get(i).getSemester().getId() != semester.getId()) {
+                invitationList.remove(invitationList.get(i));
+            }
+        }
+
+        for (int i = 0; i < invitationList.size(); i++) {
+            if (invitationList.get(i).getStudent().getCode().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                    invitationList.get(i).getStudent().getName().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                    invitationList.get(i).getStudent().getSpecialized().getName().toLowerCase().contains(valueSearch.toLowerCase())) {
+                Student_InvitationDTO student_invitationDTO = new Student_InvitationDTO();
+                Student student = studentService.getStudentIsInvited(invitationList.get(i).getStudent().getEmail());
+                List<Invitation> invitations = invitationService.getListInvitationByStudentEmail(student.getEmail());
+                student_invitationDTO.setInvitations(invitations);
+                student_invitationDTO.setStudent(student);
+                studentList.add(student_invitationDTO);
+                studentListIsInvitedInFunc.add(student);
+            }
+        }
+        if (studentList != null) {
+            studentListIsInvited = studentListIsInvitedInFunc;
+
+            return new ResponseEntity<List<Student_InvitationDTO>>(studentList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     public ResponseEntity<List<Student_InvitationDTO>> getListStudentOfBusiness() {
         String email = getEmailFromToken();
         List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);

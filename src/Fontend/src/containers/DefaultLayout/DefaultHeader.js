@@ -106,7 +106,7 @@ class DefaultHeader extends Component {
           </NavItem>
           <NavItem style={{ width: "30px" }}>
             <NavLink onClick={e => this.props.onLogout(e)} className="nav-link">
-              <i className="fa cui-account-logout fa-lg"></i>
+              <i className="fa fa-sign-out fa-lg"></i>
             </NavLink>
           </NavItem>
           {/* <NavItem className="d-md-down-none">

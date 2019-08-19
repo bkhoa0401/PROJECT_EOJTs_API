@@ -44,7 +44,7 @@ class Ojt_Registration extends Component {
         const business = await ApiServices.Get('/business/getBusiness');
         const invitations = await ApiServices.Get('/student/getListStudentIsInvited');
         const numOfStudent = await ApiServices.Get("/business/getNumStudent");
-        const dropdownSpecialized = await ApiServices.Get("/business/getSpecializedsOfStudentsInBusiness");
+        const dropdownSpecialized = await ApiServices.Get("/business/getSpecializedsOfBusiness");
         let listInvitation = [];
         if (students !== null) {
             for (let index = 0; index < students.listData.length; index++) {
