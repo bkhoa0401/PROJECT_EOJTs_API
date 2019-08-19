@@ -73,7 +73,7 @@ public interface IStudentService {
 
     PagingDTO getStudentsWithNoCompany(int currentPage, int rowsPerPage);
 
-    PagingDTO getEvaluationsOfStudents(int currentPage, int rowsPerPage);
+    PagingDTO getEvaluationsOfStudents(int specializedID, int currentPage, int rowsPerPage);
 
     StudentIsExistedAndNotYet getStudentsIsExisted(List<Student_ImportFileDTO> students);
 

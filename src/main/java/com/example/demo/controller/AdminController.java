@@ -568,16 +568,25 @@ public class AdminController {
     @GetMapping("/getSpecializedsActive")
     @ResponseBody
     public ResponseEntity<List<Specialized>> getSpecializedsActive() {
-        String emailBusiness = getEmailFromToken();
-        List<Specialized> specializeds = specializedService.getAllSpecialized();
-        List<Specialized> selectedSpecializeds = new ArrayList<Specialized>();
-        if (specializeds != null) {
-            for (int i = 0; i < specializeds.size(); i++) {
-                if (specializeds.get(i).getStatus() == true) {
-                    selectedSpecializeds.add(specializeds.get(i));
+        List<Student> studentList = studentService.getAllStudentsBySemesterId();
+        List<Specialized> specializeds = new ArrayList<Specialized>();
+        if (studentList != null) {
+            for (int i = 0; i < studentList.size(); i++) {
+                if (specializeds.size() >= 1) {
+                    boolean flagExist = false;
+                    for (int j = 0; j < specializeds.size(); j++) {
+                        if (specializeds.get(j).getId() == studentList.get(i).getSpecialized().getId()) {
+                            flagExist = true;
+                        }
+                    }
+                    if (flagExist == false) {
+                        specializeds.add(studentList.get(i).getSpecialized());
+                    }
+                } else {
+                    specializeds.add(studentList.get(i).getSpecialized());
                 }
             }
-            Collections.sort(selectedSpecializeds, new Comparator<Specialized>() {
+            Collections.sort(specializeds, new Comparator<Specialized>() {
                 @Override
                 public int compare(Specialized o1, Specialized o2) {
                     String name1 = o1.getName();
@@ -585,7 +594,7 @@ public class AdminController {
                     return name1.compareTo(name2);
                 }
             });
-            return new ResponseEntity<List<Specialized>>(selectedSpecializeds, HttpStatus.OK);
+            return new ResponseEntity<List<Specialized>>(specializeds, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -602,9 +611,9 @@ public class AdminController {
 
     @GetMapping("/studentsEvaluations")
     @ResponseBody
-    public ResponseEntity<PagingDTO> getEvaluationsOfStudents(@RequestParam int currentPage
+    public ResponseEntity<PagingDTO> getEvaluationsOfStudents(@RequestParam int specializedID, @RequestParam int currentPage
             , @RequestParam int rowsPerPage) {
-        PagingDTO pagingDTO = studentService.getEvaluationsOfStudents(currentPage, rowsPerPage);
+        PagingDTO pagingDTO = studentService.getEvaluationsOfStudents(specializedID, currentPage, rowsPerPage);
         if (pagingDTO != null) {
             return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
         }

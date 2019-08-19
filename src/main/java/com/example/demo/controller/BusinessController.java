@@ -661,10 +661,10 @@ public class BusinessController {
 
     @GetMapping("/studentsEvaluations")
     @ResponseBody
-    public ResponseEntity<PagingDTO> getEvaluationsOfStudents(@RequestParam int currentPage
+    public ResponseEntity<PagingDTO> getEvaluationsOfStudents(@RequestParam int specializedID, @RequestParam int currentPage
             , @RequestParam int rowsPerPage) {
         String email = getEmailFromToken();
-        PagingDTO pagingDTO = businessService.getEvaluationListOfBusiness(email, currentPage, rowsPerPage);
+        PagingDTO pagingDTO = businessService.getEvaluationListOfBusiness(specializedID, email, currentPage, rowsPerPage);
         if (pagingDTO != null) {
             return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
         }
