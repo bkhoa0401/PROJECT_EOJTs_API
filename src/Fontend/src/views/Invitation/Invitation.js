@@ -249,9 +249,9 @@ class Invitation extends Component {
                                                                     {
                                                                         invitationDetail && (
                                                                             invitationDetail.state.toString() === 'true' ? (
-                                                                                <Badge color="success" style={{ fontSize: '12px' }}>Đã chấp nhận</Badge>
+                                                                                <Badge color="success" style={{ fontSize: '12px' }}>ĐÃ CHẤP NHẬN</Badge>
                                                                             ) : (
-                                                                                    <Badge color="danger" style={{ fontSize: '12px' }}>Đang chờ</Badge>
+                                                                                    <Badge color="danger" style={{ fontSize: '12px' }}>ĐANG CHỜ</Badge>
                                                                                 )
                                                                         )
                                                                     }

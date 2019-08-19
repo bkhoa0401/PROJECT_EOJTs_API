@@ -60,7 +60,7 @@ class Add_Job extends Component {
         const specializeds = await ApiServices.Get('/specialized');
         // let firstSpecialized = specializeds[0].id;
         // const skills = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${firstSpecialized}`);
-        const skills = await ApiServices.Get(`/skill`);
+        const skills = await ApiServices.Get(`/skill/notPaging`);
         if (specializeds !== null) {
             this.setState({
                 specializeds,

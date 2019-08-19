@@ -83,11 +83,11 @@ class Login extends Component {
           <Row className="justify-content-center">
             <Col md="8">
               <CardGroup>
-                <Card className="p-4">
+                <Card className="p-4 text-white bg-primary">
                   <CardBody>
                     <Form>
                       <h1>Đăng nhập</h1>
-                      <p className="text-muted">Tài khoản của bạn</p>
+                      <p className="text-muted" style={{fontWeight:"bold"}}>Tài khoản của bạn</p>
                       <InputGroup className="mb-3">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
@@ -106,20 +106,20 @@ class Login extends Component {
                       </InputGroup>
                       <Row>
                         <Col xs="6">
-                          <Button onClick={this.handleLogin} color="primary" className="px-4">Đăng nhập</Button>
+                          <Button onClick={this.handleLogin} style={{ color: "#20A8D8", background: "white", fontWeight: "bold" }} className="px-4" >Đăng nhập</Button>
                         </Col>
                         <Col xs="6" className="text-right">
-                          <Button color="link" className="px-0" onClick={this.handForgotPassword}>Quên mật khẩu?</Button>
+                          <Button color="link" className="px-0 text-white" onClick={this.handForgotPassword}>Quên mật khẩu?</Button>
                         </Col>
                       </Row>
                     </Form>
                     <ToastContainer />
                   </CardBody>
                 </Card>
-                <Card className="text-white bg-primary py-5 d-md-down-none" style={{ width: '44%' }}>
+                <Card className="text-primary py-5 d-md-down-none" style={{ width: '44%' }}>
                   <CardBody className="text-center">
                     <div>
-                      <h2>Hệ thống quản lí OJT</h2>
+                      <h2 style={{ fontWeight: "bold", color: "#F27024" }}>Hệ thống quản lí OJT</h2>
                       <img style={{ width: '300px', height: '75px' }} src="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410" />
                     </div>
                   </CardBody>

@@ -35,5 +35,5 @@ public interface IBusinessService {
 
     PagingDTO pagingBusiness(int currentPage, int rowsPerPage);
 
-    PagingDTO getEvaluationListOfBusiness(String email, int currentPage, int rowsPerPage);
+    PagingDTO getEvaluationListOfBusiness(int specializedID, String email, int currentPage, int rowsPerPage);
 }
