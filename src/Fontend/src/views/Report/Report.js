@@ -64,7 +64,7 @@ class Report extends Component {
                 }
             }
         } else if (role === 'ROLE_HR') {
-            listStudentAndReport = await ApiServices.Get(`/business/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+            listStudentAndReport = await ApiServices.Get(`/business/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
             // console.log(listStudentAndReport);
             numOfStudent = await ApiServices.Get("/business/getNumStudent");
             // console.log(numOfStudent);
@@ -426,7 +426,7 @@ class Report extends Component {
             studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         }
         if (this.state.role === "ROLE_HR") {
-            studentsPaging = await ApiServices.Get(`/business/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+            studentsPaging = await ApiServices.Get(`/business/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         }
         if (this.state.role === "ROLE_SUPERVISOR") {
             studentsPaging = await ApiServices.Get(`/supervisor/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
@@ -516,7 +516,7 @@ class Report extends Component {
             studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         }
         if (this.state.role === "ROLE_HR") {
-            studentsPaging = await ApiServices.Get(`/business/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+            studentsPaging = await ApiServices.Get(`/business/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         }
         if (this.state.role === "ROLE_SUPERVISOR") {
             studentsPaging = await ApiServices.Get(`/supervisor/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
@@ -607,7 +607,7 @@ class Report extends Component {
             studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         }
         if (this.state.role === "ROLE_HR") {
-            studentsPaging = await ApiServices.Get(`/business/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+            studentsPaging = await ApiServices.Get(`/business/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         }
         if (this.state.role === "ROLE_SUPERVISOR") {
             studentsPaging = await ApiServices.Get(`/supervisor/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
@@ -703,7 +703,7 @@ class Report extends Component {
             studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=0&rowsPerPage=${rowsPerPage}`);
         }
         if (this.state.role === "ROLE_HR") {
-            studentsPaging = await ApiServices.Get(`/business/studentsEvaluations?currentPage=0&rowsPerPage=${rowsPerPage}`);
+            studentsPaging = await ApiServices.Get(`/business/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=0&rowsPerPage=${rowsPerPage}`);
         }
         if (this.state.role === "ROLE_SUPERVISOR") {
             studentsPaging = await ApiServices.Get(`/supervisor/studentsEvaluations?currentPage=0&rowsPerPage=${rowsPerPage}`);
@@ -797,10 +797,7 @@ class Report extends Component {
             studentsPaging = await ApiServices.Get(`/admin/studentsEvaluations?specializedID=${specializedId}&currentPage=0&rowsPerPage=${rowsPerPage}`);
         }
         if (this.state.role == "ROLE_HR") {
-            studentsPaging = await ApiServices.Get(`/business/studentsEvaluations?currentPage=0&rowsPerPage=${rowsPerPage}`);
-        }
-        if (this.state.role == "ROLE_SUPERVISOR") {
-            studentsPaging = await ApiServices.Get(`/supervisor/studentsEvaluations?currentPage=0&rowsPerPage=${rowsPerPage}`);
+            studentsPaging = await ApiServices.Get(`/business/studentsEvaluations?specializedID=${specializedId}&currentPage=0&rowsPerPage=${rowsPerPage}`);
         }
         console.log(studentsPaging);
         for (let index = 0; index < studentsPaging.listData.length; index++) {
