@@ -343,14 +343,23 @@ public class BusinessController {
     //get ds chinh thuc cua cong ty
     @GetMapping("/getStudentsByBusiness")
     @ResponseBody
-    public ResponseEntity<PagingDTO> getListStudentByBusiness(@RequestParam int currentPage
+    public ResponseEntity<PagingDTO> getListStudentByBusiness(@RequestParam int specializedID, @RequestParam int currentPage
             , @RequestParam int rowsPerPage) {
         String emailBusiness = getEmailFromToken();
         List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
-
-        if (studentList != null) {
+        List<Student> filteredStudentList = new ArrayList<Student>();
+        if (specializedID == -1) {
+            filteredStudentList = studentList;
+        } else {
+            for (int i = 0; i < studentList.size(); i++) {
+                if (studentList.get(i).getSpecialized().getId() == specializedID) {
+                    filteredStudentList.add(studentList.get(i));
+                }
+            }
+        }
+        if (filteredStudentList != null) {
             Utils<Student> studentUtils = new Utils<>();
-            PagingDTO pagingDTO = studentUtils.paging(studentList, currentPage, rowsPerPage);
+            PagingDTO pagingDTO = studentUtils.paging(filteredStudentList, currentPage, rowsPerPage);
             return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);

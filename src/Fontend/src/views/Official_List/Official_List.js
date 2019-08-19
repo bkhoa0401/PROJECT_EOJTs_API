@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { ToastContainer } from 'react-toastify';
-import { Pagination, Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
+import { Pagination, Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table, Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import Toastify from '../../views/Toastify/Toastify';
@@ -56,6 +56,12 @@ class Official_List extends Component {
       filterStudentTaskList: null,
       stateTask: ["Tổng", "Hoàn thành", "Chưa hoàn thành"],
       stateNo: 0,
+      numOfStudent: 0,
+      dropdownSpecializedOpen: false,
+      dropdownSpecialized: [],
+      selectedSpecialized: -1,
+      searchingList: [],
+      isSearching: false,
     }
   }
 
@@ -63,8 +69,10 @@ class Official_List extends Component {
   async componentDidMount() {
     // await ApiServices.Put('/admin');
     const { currentPage, rowsPerPage } = this.state;
-    const students = await ApiServices.Get(`/business/getStudentsByBusiness?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+    const students = await ApiServices.Get(`/business/getStudentsByBusiness?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
     const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness?currentPage=0&rowsPerPage=100');
+    const numOfStudent = await ApiServices.Get("/business/getNumStudent");
+    const dropdownSpecialized = await ApiServices.Get("/business/getSpecializedsOfStudentsInBusiness");
     console.log(supervisors.listData);
     let supervisors_FirstBlank = null;
     if (supervisors !== null) {
@@ -91,7 +99,9 @@ class Official_List extends Component {
         pageNumber: students.pageNumber,
         supervisors: supervisors.listData,
         supervisors_FirstBlank,
-        loading: false
+        loading: false,
+        numOfStudent: numOfStudent,
+        dropdownSpecialized: dropdownSpecialized,
       });
     }
     // console.log(this.state.supervisors);
@@ -104,9 +114,22 @@ class Official_List extends Component {
 
   handleInputSearch = async (event) => {
     const { name, value } = event.target;
-    await this.setState({
-      [name]: value.substr(0, 20),
-    })
+    if (value === "") {
+      await this.setState({
+        [name]: value.substr(0, 20),
+        isSearching: false,
+      })
+    } else {
+      const students = await ApiServices.Get(`/student/getListStudentByBusinessByCodeNameEmail?valueSearch=${value.substr(0, 20)}`);
+      console.log(students);
+      if (students !== null) {
+        this.setState({
+          [name]: value.substr(0, 20),
+          searchingList: students,
+          isSearching: true,
+        })
+      }
+    }
   }
 
   handleSelectMonth = async (event, studentDetail) => {
@@ -536,7 +559,7 @@ class Official_List extends Component {
       Toastify.actionSuccess("Thao tác thành công!");
 
       const { currentPage, rowsPerPage } = this.state;
-      const students = await ApiServices.Get(`/business/getStudentsByBusiness?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+      const students = await ApiServices.Get(`/business/getStudentsByBusiness?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
       const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness?currentPage=0&rowsPerPage=100');
       let supervisors_FirstBlank = null;
       if (supervisors !== null) {
@@ -605,7 +628,7 @@ class Official_List extends Component {
 
   handlePageNumber = async (currentPage) => {
     const { rowsPerPage } = this.state;
-    const students = await ApiServices.Get(`/business/getStudentsByBusiness?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+    const students = await ApiServices.Get(`/business/getStudentsByBusiness?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
     if (students !== null) {
       this.setState({
@@ -618,7 +641,7 @@ class Official_List extends Component {
 
   handlePagePrevious = async (currentPage) => {
     const { rowsPerPage } = this.state;
-    const students = await ApiServices.Get(`/business/getStudentsByBusiness?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+    const students = await ApiServices.Get(`/business/getStudentsByBusiness?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
     if (students !== null) {
       this.setState({
@@ -631,7 +654,7 @@ class Official_List extends Component {
 
   handlePageNext = async (currentPage) => {
     const { rowsPerPage } = this.state;
-    const students = await ApiServices.Get(`/business/getStudentsByBusiness?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+    const students = await ApiServices.Get(`/business/getStudentsByBusiness?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
     if (students !== null) {
       this.setState({
@@ -642,14 +665,14 @@ class Official_List extends Component {
     }
   }
 
-  handleInput = async (event) => {
+  handleInputPaging = async (event) => {
     const { name, value } = event.target;
     await this.setState({
       [name]: value
     })
 
     const { rowsPerPage } = this.state;
-    const students = await ApiServices.Get(`/business/getStudentsByBusiness?currentPage=0&rowsPerPage=${rowsPerPage}`);
+    const students = await ApiServices.Get(`/business/getStudentsByBusiness?specializedID=${this.state.selectedSpecialized}&currentPage=0&rowsPerPage=${rowsPerPage}`);
 
     if (students !== null) {
       this.setState({
@@ -660,24 +683,35 @@ class Official_List extends Component {
     }
   }
 
+  toggleDropdownSpecialized = () => {
+    this.setState({
+      dropdownSpecializedOpen: !this.state.dropdownSpecializedOpen,
+    });
+  }
+
+  handleSelectSpecialized = async (specializedId) => {
+    // console.log(specializedId);
+    const { currentPage, rowsPerPage } = this.state;
+    const students = await ApiServices.Get(`/business/getStudentsByBusiness?specializedID=${specializedId}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+    if (students !== null) {
+      this.setState({
+        students: students.listData,
+        pageNumber: students.pageNumber,
+        currentPage: 0,
+        selectedSpecialized: specializedId,
+      })
+    }
+  }
+
   render() {
     const { isThisMonth, months, studentDetail, students, supervisors, supervisors_FirstBlank, searchValue, columnToSort, sortDirection, loading, suggestedStudents, isSelect, colorBackSelect, colorTextSelect } = this.state;
     const { pageNumber, currentPage, rowsPerPage } = this.state;
     const { filterStudentTaskList, stateNo, stateTask } = this.state;
+    const { numOfStudent, dropdownSpecialized, isSearching, searchingList } = this.state;
     if (supervisors_FirstBlank != null) {
       console.log(supervisors_FirstBlank);
     }
-    let filteredListStudents = orderBy(students, columnToSort, sortDirection);
-    if (students !== null) {
-      filteredListStudents = students.filter(
-        (student) => {
-          if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
-            return student;
-          }
-        }
-      );
-    }
-
+    console.log(students);
     return (
       loading.toString() === 'true' ? (
         SpinnerLoading.showHashLoader(loading)
@@ -690,7 +724,19 @@ class Official_List extends Component {
                     <i className="fa fa-align-justify"></i> <b>Danh sách sinh viên thực tập tại doanh nghiệp</b>
                   </CardHeader>
                   <CardBody>
-                    {filteredListStudents === null ?
+                    {isSearching === false ?
+                      <Row className="float-right">
+                        <h6>Số dòng trên trang: </h6>
+                        &nbsp;&nbsp;
+                        <Input onChange={this.handleInputPaging} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
+                          <option value={10} selected={rowsPerPage === 10}>10</option>
+                          <option value={20}>20</option>
+                          <option value={50}>50</option>
+                        </Input>
+                      </Row> : <></>
+                    }
+                    <br /><br />
+                    {students === null ?
                       <></> :
                       <FormGroup row style={{ paddingLeft: '90%' }}>
                         <Button color="primary" outline onClick={() => this.toggleModal()}>Phân nhóm</Button>
@@ -717,8 +763,23 @@ class Official_List extends Component {
                           <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
                           <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>MSSV</th>
                           <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Họ và tên</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Chuyên ngành</th>
                           <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Email</th>
+                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                            <Dropdown isOpen={this.state.dropdownSpecializedOpen} toggle={() => this.toggleDropdownSpecialized()}>
+                              <DropdownToggle nav caret style={{ color: "black" }}>
+                                Chuyên ngành
+                              </DropdownToggle>
+                              <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
+                                <DropdownItem onClick={() => this.handleSelectSpecialized(-1)}>Tổng</DropdownItem>
+                                {dropdownSpecialized && dropdownSpecialized.map((specialized, index) => {
+                                  return (
+                                    <DropdownItem onClick={() => this.handleSelectSpecialized(specialized.id)}>{specialized.name}</DropdownItem>
+                                  )
+                                })
+                                }
+                              </DropdownMenu>
+                            </Dropdown>
+                          </th>
                           {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
                           {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>GPA</th>
                       <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>CV</th>
@@ -728,17 +789,18 @@ class Official_List extends Component {
                         </tr>
                       </thead>
                       <tbody>
-                        {
-                          filteredListStudents && filteredListStudents.map((student, index) => {
-                            const linkDownCV = `http://localhost:8000/api/file/downloadFile/${student.resumeLink}`;
-                            return (
-                              <tr key={index}>
-                                <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                <td style={{ textAlign: "center" }}>{student.code}</td>
-                                <td style={{ textAlign: "center" }}>{student.name}</td>
-                                <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                                <td style={{ textAlign: "center" }}>{student.email}</td>
-                                {/* <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                        {isSearching === false ?
+                          (
+                            students && students.map((student, index) => {
+                              const linkDownCV = `http://localhost:8000/api/file/downloadFile/${student.resumeLink}`;
+                              return (
+                                <tr key={index}>
+                                  <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
+                                  <td style={{ textAlign: "center" }}>{student.code}</td>
+                                  <td style={{ textAlign: "center" }}>{student.name}</td>
+                                  <td style={{ textAlign: "center" }}>{student.email}</td>
+                                  <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                  {/* <td style={{ textAlign: "center" }}>{student.gpa}</td>
                             <td style={{ textAlign: "center" }}>
                               {
                                 student.resumeLink && student.resumeLink ? (
@@ -755,52 +817,118 @@ class Official_List extends Component {
                                   (<label>N/A</label>)
                               }
                             </td> */}
-                                <td style={{ textAlign: "center" }}>
-                                  {
-                                    student.supervisor === null ? (
+                                  <td style={{ textAlign: "center" }}>
+                                    {
+                                      student.supervisor === null ? (
 
-                                      <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="withBlank">
-                                        {supervisors_FirstBlank && supervisors_FirstBlank.map((supervisor, i) => {
-                                          return (
-                                            <option value={i}>{supervisor.name}</option>
-                                          )
-                                        })}
-                                      </Input>
-                                    ) : (
-                                        <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="supervisor">
-                                          {supervisors && supervisors.map((supervisor, i) => {
+                                        <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="withBlank">
+                                          {supervisors_FirstBlank && supervisors_FirstBlank.map((supervisor, i) => {
                                             return (
-                                              <option value={i} selected={student.supervisor.email === supervisor.email}>{supervisor.name}</option>
+                                              <option value={i}>{supervisor.name}</option>
                                             )
                                           })}
                                         </Input>
-                                      )
-                                  }
+                                      ) : (
+                                          <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="supervisor">
+                                            {supervisors && supervisors.map((supervisor, i) => {
+                                              return (
+                                                <option value={i} selected={student.supervisor.email === supervisor.email}>{supervisor.name}</option>
+                                              )
+                                            })}
+                                          </Input>
+                                        )
+                                    }
 
-                                </td>
-                                <td style={{ textAlign: "center" }}>
-                                  {/* <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}><i className="fa fa-eye"></i></Button> */}
-                                  <Button color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa fa-eye"></i></Button>
-                                  &nbsp;&nbsp;
+                                  </td>
+                                  <td style={{ textAlign: "center" }}>
+                                    {/* <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}><i className="fa fa-eye"></i></Button> */}
+                                    <Button color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa fa-eye"></i></Button>
+                                    &nbsp;&nbsp;
                                   {/* <Button style={{ width: '100px' }} color="success" onClick={() => this.handleDirect(`/details_task/${student.email}`)}><i className="fa cui-task"></i></Button> */}
-                                  <Button color="success" onClick={() => this.toggleModalTask(student)}><i className="fa cui-task"></i></Button>
-                                </td>
-                              </tr>
-                            )
-                          })
+                                    <Button color="success" onClick={() => this.toggleModalTask(student)}><i className="fa cui-task"></i></Button>
+                                  </td>
+                                </tr>
+                              )
+                            })
+                          ) : (
+                            searchingList && searchingList.map((student, index) => {
+                              const linkDownCV = `http://localhost:8000/api/file/downloadFile/${student.resumeLink}`;
+                              return (
+                                <tr key={index}>
+                                  <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
+                                  <td style={{ textAlign: "center" }}>{student.code}</td>
+                                  <td style={{ textAlign: "center" }}>{student.name}</td>
+                                  <td style={{ textAlign: "center" }}>{student.email}</td>
+                                  <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                  {/* <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                              <td style={{ textAlign: "center" }}>
+                                {
+                                  student.resumeLink && student.resumeLink ? (
+                                    <a href={linkDownCV} download>Tải</a>
+                                  ) :
+                                    (<label>N/A</label>)
+                                }
+                              </td>
+                              <td style={{ textAlign: "center" }}>
+                                {
+                                  student.transcriptLink && student.transcriptLink ? (
+                                    <a href={student.transcriptLink} download>Tải</a>
+                                  ) :
+                                    (<label>N/A</label>)
+                                }
+                              </td> */}
+                                  <td style={{ textAlign: "center" }}>
+                                    {
+                                      student.supervisor === null ? (
+
+                                        <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="withBlank">
+                                          {supervisors_FirstBlank && supervisors_FirstBlank.map((supervisor, i) => {
+                                            return (
+                                              <option value={i}>{supervisor.name}</option>
+                                            )
+                                          })}
+                                        </Input>
+                                      ) : (
+                                          <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="supervisor">
+                                            {supervisors && supervisors.map((supervisor, i) => {
+                                              return (
+                                                <option value={i} selected={student.supervisor.email === supervisor.email}>{supervisor.name}</option>
+                                              )
+                                            })}
+                                          </Input>
+                                        )
+                                    }
+
+                                  </td>
+                                  <td style={{ textAlign: "center" }}>
+                                    {/* <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}><i className="fa fa-eye"></i></Button> */}
+                                    <Button color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa fa-eye"></i></Button>
+                                    &nbsp;&nbsp;
+                                    {/* <Button style={{ width: '100px' }} color="success" onClick={() => this.handleDirect(`/details_task/${student.email}`)}><i className="fa cui-task"></i></Button> */}
+                                    <Button color="success" onClick={() => this.toggleModalTask(student)}><i className="fa cui-task"></i></Button>
+                                  </td>
+                                </tr>
+                              )
+                            })
+                          )
                         }
                       </tbody>
                     </Table>
-                    <Pagination style={{ marginTop: "3%" }}>
-                      <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                      <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
-                      <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "7%" }}>
-                        <option value={10} selected={rowsPerPage === 10}>10</option>
-                        <option value={20}>20</option>
-                        <option value={50}>50</option>
-                      </Input>
-                    </Pagination>
                     <ToastContainer />
+                    {isSearching === false ?
+                      <Row>
+                        <Col>
+                          <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
+                        </Col>
+                        <Col>
+                          <Row className="float-right">
+                            <Pagination>
+                              <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                            </Pagination>
+                          </Row>
+                        </Col>
+                      </Row> : <></>
+                    }
                   </CardBody>
                   <CardFooter className="p-4">
                     <Row style={{ paddingLeft: '45%' }}>

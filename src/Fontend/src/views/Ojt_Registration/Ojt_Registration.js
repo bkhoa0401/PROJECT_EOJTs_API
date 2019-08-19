@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { ToastContainer } from 'react-toastify';
-import { Badge, Button, Card, CardBody, CardHeader, Col, FormGroup, Input, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Row, Table } from 'reactstrap';
+import { Dropdown, DropdownMenu, DropdownItem, DropdownToggle, Label, Badge, Button, Card, CardBody, CardHeader, Col, FormGroup, Input, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Row, Table } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import Toastify from '../Toastify/Toastify';
@@ -26,16 +26,25 @@ class Ojt_Registration extends Component {
             // resumeLink: '',
             pageNumber: 1,
             currentPage: 0,
-            rowsPerPage: 10
+            rowsPerPage: 10,
+
+            numOfStudent: 0,
+            dropdownSpecializedOpen: false,
+            dropdownSpecialized: [],
+            selectedSpecialized: -1,
+            searchingList: [],
+            isSearching: false,
         }
     }
 
 
     async componentDidMount() {
         const { currentPage, rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         const business = await ApiServices.Get('/business/getBusiness');
         const invitations = await ApiServices.Get('/student/getListStudentIsInvited');
+        const numOfStudent = await ApiServices.Get("/business/getNumStudent");
+        const dropdownSpecialized = await ApiServices.Get("/business/getSpecializedsOfStudentsInBusiness");
         let listInvitation = [];
         if (students !== null) {
             for (let index = 0; index < students.listData.length; index++) {
@@ -55,6 +64,8 @@ class Ojt_Registration extends Component {
                 business_eng_name: business.business_eng_name,
                 loading: false,
                 listInvitation: listInvitation,
+                numOfStudent: numOfStudent,
+                dropdownSpecialized: dropdownSpecialized,
             });
         }
     }
@@ -65,9 +76,22 @@ class Ojt_Registration extends Component {
 
     handleInput = async (event) => {
         const { name, value } = event.target;
-        await this.setState({
-            [name]: value.substr(0, 20),
-        })
+        if (value === "") {
+            await this.setState({
+                [name]: value.substr(0, 20),
+                isSearching: false,
+            })
+        } else {
+            const students = await ApiServices.Get(`/student/getListStudentAndOptionAndStatusOptionByCodeName?valueSearch=${value.substr(0, 20)}`);
+            // console.log(students);
+            if (students !== null) {
+                this.setState({
+                    [name]: value.substr(0, 20),
+                    searchingList: students,
+                    isSearching: true,
+                })
+            }
+        }
     }
 
     handleConfirm = (student, numberOfOption, statusOfOption) => {
@@ -143,7 +167,7 @@ class Ojt_Registration extends Component {
         }
 
         const { currentPage, rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         const business = await ApiServices.Get('/business/getBusiness');
         const invitations = await ApiServices.Get('/student/getListStudentIsInvited');
         let listInvitation = [];
@@ -198,7 +222,7 @@ class Ojt_Registration extends Component {
 
     handlePageNumber = async (currentPage) => {
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
         if (students !== null) {
             this.setState({
@@ -211,7 +235,7 @@ class Ojt_Registration extends Component {
 
     handlePagePrevious = async (currentPage) => {
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
         if (students !== null) {
             this.setState({
@@ -224,7 +248,7 @@ class Ojt_Registration extends Component {
 
     handlePageNext = async (currentPage) => {
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
 
         if (students !== null) {
             this.setState({
@@ -235,14 +259,14 @@ class Ojt_Registration extends Component {
         }
     }
 
-    handleInput = async (event) => {
+    handleInputPaging = async (event) => {
         const { name, value } = event.target;
         await this.setState({
             [name]: value
         })
 
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?currentPage=0&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?specializedID=${this.state.selectedSpecialized}&currentPage=0&rowsPerPage=${rowsPerPage}`);
 
         if (students !== null) {
             this.setState({
@@ -253,21 +277,31 @@ class Ojt_Registration extends Component {
         }
     }
 
+    toggleDropdownSpecialized = () => {
+        this.setState({
+            dropdownSpecializedOpen: !this.state.dropdownSpecializedOpen,
+        });
+    }
+
+    handleSelectSpecialized = async (specializedId) => {
+        console.log(specializedId);
+        const { currentPage, rowsPerPage } = this.state;
+        const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?specializedID=${specializedId}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        if (students !== null) {
+            this.setState({
+                students: students.listData,
+                pageNumber: students.pageNumber,
+                currentPage: 0,
+                selectedSpecialized: specializedId,
+            })
+        }
+    }
+
     render() {
         const { students, business_eng_name, searchValue, loading, studentDetail, invitationDetail, listInvitation } = this.state;
         const { pageNumber, currentPage, rowsPerPage } = this.state;
+        const { numOfStudent, dropdownSpecialized, isSearching, searchingList } = this.state;
         // const linkDownCV = ``;
-        let filteredListStudents;
-
-        if (students !== null) {
-            filteredListStudents = students.filter(
-                (student) => {
-                    if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
-                        return student;
-                    }
-                }
-            );
-        }
 
         return (
             loading.toString() === 'true' ? (
@@ -281,6 +315,18 @@ class Ojt_Registration extends Component {
                                         <i className="fa fa-align-justify"></i> Danh sách sinh viên đăng kí thực tập tại công ty
                                     </CardHeader>
                                     <CardBody>
+                                        {isSearching === false ?
+                                            <Row className="float-right">
+                                                <h6>Số dòng trên trang: </h6>
+                                                &nbsp;&nbsp;
+                                                <Input onChange={this.handleInputPaging} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
+                                                    <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                    <option value={20}>20</option>
+                                                    <option value={50}>50</option>
+                                                </Input>
+                                            </Row> : <></>
+                                        }
+                                        <br /><br /><br />
                                         <nav className="navbar navbar-light bg-light justify-content-between">
                                             <form className="form-inline">
                                                 <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
@@ -293,15 +339,30 @@ class Ojt_Registration extends Component {
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>MSSV</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Họ và tên</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Chuyên ngành</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                        <Dropdown isOpen={this.state.dropdownSpecializedOpen} toggle={() => this.toggleDropdownSpecialized()}>
+                                                            <DropdownToggle nav caret style={{ color: "black" }}>
+                                                                Chuyên ngành
+                                                            </DropdownToggle>
+                                                            <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
+                                                                <DropdownItem onClick={() => this.handleSelectSpecialized(-1)}>Tổng</DropdownItem>
+                                                                {dropdownSpecialized && dropdownSpecialized.map((specialized, index) => {
+                                                                    return (
+                                                                        <DropdownItem onClick={() => this.handleSelectSpecialized(specialized.id)}>{specialized.name}</DropdownItem>
+                                                                    )
+                                                                })
+                                                                }
+                                                            </DropdownMenu>
+                                                        </Dropdown>
+                                                    </th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Gửi lời mời</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nguyện vọng</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {
-                                                    filteredListStudents && filteredListStudents.map((student, index) => {
+                                                {isSearching === false ?
+                                                    (students && students.map((student, index) => {
 
                                                         let email = student.email;
                                                         let numberOfOption = 'N/A';
@@ -312,7 +373,7 @@ class Ojt_Registration extends Component {
                                                             numberOfOption = "2";
                                                         } else {
                                                             numberOfOption = "1, 2";
-                                                            filteredListStudents.splice(index, 1);
+                                                            students.splice(index, 1);
                                                         }
 
 
@@ -339,20 +400,64 @@ class Ojt_Registration extends Component {
                                                                 </td>
                                                             </tr>
                                                         )
-                                                    })
+                                                    })) :
+                                                    (searchingList && searchingList.map((student, index) => {
+
+                                                        let email = student.email;
+                                                        let numberOfOption = 'N/A';
+
+                                                        if (student.option1 === business_eng_name && student.option2 !== business_eng_name) {
+                                                            numberOfOption = "1";
+                                                        } else if (student.option2 === business_eng_name && student.option1 !== business_eng_name) {
+                                                            numberOfOption = "2";
+                                                        } else {
+                                                            numberOfOption = "1, 2";
+                                                            searchingList.splice(index, 1);
+                                                        }
+
+
+                                                        return (
+                                                            <tr key={index}>
+                                                                <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                                <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {listInvitation && listInvitation[index] === true ?
+                                                                        <Badge color="success" style={{ fontSize: '12px' }}>Có</Badge> :
+                                                                        <Badge color="danger" style={{ fontSize: '12px' }}>Không</Badge>
+                                                                    }
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    <strong>{numberOfOption}</strong>
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }}>
+                                                                    {/* <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}><i className="fa fa-eye"></i></Button> */}
+                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa fa-eye"></i></Button>
+                                                                    <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(student, numberOfOption, false)}><i className="fa cui-ban"></i></Button>
+                                                                    <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(student, numberOfOption, true)}><i className="fa cui-circle-check"></i></Button>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    }))
                                                 }
                                             </tbody>
                                         </Table>
                                         <ToastContainer />
-                                        <Pagination style={{ marginTop: "3%" }}>
-                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                            <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
-                                            <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "7%" }}>
-                                                <option value={10} selected={rowsPerPage === 10}>10</option>
-                                                <option value={20}>20</option>
-                                                <option value={50}>50</option>
-                                            </Input>
-                                        </Pagination>
+                                        {isSearching === false ?
+                                            <Row>
+                                                <Col>
+                                                    <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
+                                                </Col>
+                                                <Col>
+                                                    <Row className="float-right">
+                                                        <Pagination style={{ marginTop: "3%" }}>
+                                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                                        </Pagination>
+                                                    </Row>
+                                                </Col>
+                                            </Row> : <></>
+                                        }
                                     </CardBody>
                                     {/* <CardFooter className="p-4">
                                 <Row>

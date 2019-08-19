@@ -546,9 +546,66 @@ public class StudentController {
 
     //check semester ok
     //danh sach nhung dua set cong ty vao nguyen vong va trang thai cua nv đó
+    @GetMapping("/getListStudentAndOptionAndStatusOptionByCodeName")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getListStudentByOptionNameBusinessAndStatusOption(@RequestParam String valueSearch) {
+        //email of business
+        String email = getEmailFromToken();
+
+        Business business = businessService.getBusinessByEmail(email);
+
+        //list student set cty vao nguyen vong
+        List<Student> studentList = studentService.findStudentByBusinessNameOption(business.getBusiness_eng_name(), business.getBusiness_eng_name());
+        List<Student> filteredStudentList = new ArrayList<Student>();
+        if (studentList != null) {
+            filteredStudentList = searchStudentByCodeName(studentList, valueSearch);
+        }
+        List<Student> listResult = new ArrayList<>();
+
+        String businessName = business.getBusiness_eng_name();
+
+        if (filteredStudentList != null) {
+            for (int i = 0; i < filteredStudentList.size(); i++) {
+                if (filteredStudentList.get(i).getOption1() == null && filteredStudentList.get(i).getOption2() == null) {
+                    continue;
+                }
+                if (filteredStudentList.get(i).getOption2() == null) {
+                    if (filteredStudentList.get(i).getOption1().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed1() == false) {
+                            listResult.add(filteredStudentList.get(i));
+                        }
+                    }
+                }
+                if (filteredStudentList.get(i).getOption1() == null) {
+                    if (filteredStudentList.get(i).getOption2().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed2() == false) {
+                            listResult.add(filteredStudentList.get(i));
+                        }
+                    }
+                }
+                if (filteredStudentList.get(i).getOption1() != null && filteredStudentList.get(i).getOption2() != null) {
+                    if (filteredStudentList.get(i).getOption1().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed1() == false) {
+                            listResult.add(filteredStudentList.get(i));
+                        }
+                    }
+                    if (filteredStudentList.get(i).getOption2().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed2() == false) {
+                            listResult.add(filteredStudentList.get(i));
+                        }
+                    }
+                }
+            }
+        }
+        if (listResult != null) {
+            return new ResponseEntity<List<Student>>(listResult, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     @GetMapping("/getListStudentByOptionAndStatusOption")
     @ResponseBody
-    public ResponseEntity<PagingDTO> getListStudentByOptionNameBusinessAndStatusOption(@RequestParam int currentPage
+    public ResponseEntity<PagingDTO> getListStudentByOptionNameBusinessAndStatusOption(@RequestParam int specializedID, @RequestParam int currentPage
             , @RequestParam int rowsPerPage) {
         //email of business
         String email = getEmailFromToken();
@@ -557,39 +614,49 @@ public class StudentController {
 
         //list student set cty vao nguyen vong
         List<Student> studentList = studentService.findStudentByBusinessNameOption(business.getBusiness_eng_name(), business.getBusiness_eng_name());
+        List<Student> filteredStudentList = new ArrayList<Student>();
+        if (specializedID == -1) {
+            filteredStudentList = studentList;
+        } else {
+            for (int i = 0; i < studentList.size(); i++) {
+                if (studentList.get(i).getSpecialized().getId() == specializedID) {
+                    filteredStudentList.add(studentList.get(i));
+                }
+            }
+        }
 
         List<Student> listResult = new ArrayList<>();
 
         String businessName = business.getBusiness_eng_name();
 
-        if (studentList != null) {
-            for (int i = 0; i < studentList.size(); i++) {
-                if (studentList.get(i).getOption1() == null && studentList.get(i).getOption2() == null) {
+        if (filteredStudentList != null) {
+            for (int i = 0; i < filteredStudentList.size(); i++) {
+                if (filteredStudentList.get(i).getOption1() == null && filteredStudentList.get(i).getOption2() == null) {
                     continue;
                 }
-                if (studentList.get(i).getOption2() == null) {
-                    if (studentList.get(i).getOption1().equals(businessName)) {
-                        if (studentList.get(i).isInterviewed1() == false) {
-                            listResult.add(studentList.get(i));
+                if (filteredStudentList.get(i).getOption2() == null) {
+                    if (filteredStudentList.get(i).getOption1().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed1() == false) {
+                            listResult.add(filteredStudentList.get(i));
                         }
                     }
                 }
-                if (studentList.get(i).getOption1() == null) {
-                    if (studentList.get(i).getOption2().equals(businessName)) {
-                        if (studentList.get(i).isInterviewed2() == false) {
-                            listResult.add(studentList.get(i));
+                if (filteredStudentList.get(i).getOption1() == null) {
+                    if (filteredStudentList.get(i).getOption2().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed2() == false) {
+                            listResult.add(filteredStudentList.get(i));
                         }
                     }
                 }
-                if (studentList.get(i).getOption1() != null && studentList.get(i).getOption2() != null) {
-                    if (studentList.get(i).getOption1().equals(businessName)) {
-                        if (studentList.get(i).isInterviewed1() == false) {
-                            listResult.add(studentList.get(i));
+                if (filteredStudentList.get(i).getOption1() != null && filteredStudentList.get(i).getOption2() != null) {
+                    if (filteredStudentList.get(i).getOption1().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed1() == false) {
+                            listResult.add(filteredStudentList.get(i));
                         }
                     }
-                    if (studentList.get(i).getOption2().equals(businessName)) {
-                        if (studentList.get(i).isInterviewed2() == false) {
-                            listResult.add(studentList.get(i));
+                    if (filteredStudentList.get(i).getOption2().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed2() == false) {
+                            listResult.add(filteredStudentList.get(i));
                         }
                     }
                 }
@@ -1171,6 +1238,40 @@ public class StudentController {
     public ResponseEntity<PagingDTO> getAllStudentPaging(@RequestParam int currentPage, @RequestParam int rowsPerPage) {
         PagingDTO pagingStudent = studentService.pagingStudent(currentPage, rowsPerPage);
         return new ResponseEntity<>(pagingStudent, HttpStatus.OK);
+    }
+
+    @GetMapping("/getListStudentByBusinessByCodeNameEmail")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getListStudentByBusinessByCodeNameEmail(@RequestParam String valueSearch) {
+        String emailBusiness = getEmailFromToken();
+        List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
+        if (studentList != null) {
+            List<Student> searchStudentList = searchStudentByCodeNameEmail(studentList, valueSearch);
+            return new ResponseEntity<List<Student>>(searchStudentList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    private List<Student> searchStudentByCodeNameEmail(List<Student> studentList, String valueSearch) {
+        List<Student> searchStudentList = new ArrayList<Student>();
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            if (student.getCode().toLowerCase().contains(valueSearch.toLowerCase()) || student.getName().toLowerCase().contains(valueSearch.toLowerCase()) || student.getEmail().toLowerCase().contains(valueSearch.toLowerCase())) {
+                searchStudentList.add(student);
+            }
+        }
+        return searchStudentList;
+    }
+
+    private List<Student> searchStudentByCodeName(List<Student> studentList, String valueSearch) {
+        List<Student> searchStudentList = new ArrayList<Student>();
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            if (student.getCode().toLowerCase().contains(valueSearch.toLowerCase()) || student.getName().toLowerCase().contains(valueSearch.toLowerCase())) {
+                searchStudentList.add(student);
+            }
+        }
+        return searchStudentList;
     }
 
     //get email from token

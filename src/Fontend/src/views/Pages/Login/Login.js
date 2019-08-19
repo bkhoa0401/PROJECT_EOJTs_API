@@ -119,7 +119,7 @@ class Login extends Component {
                 <Card className="text-primary py-5 d-md-down-none" style={{ width: '44%' }}>
                   <CardBody className="text-center">
                     <div>
-                      <h2 style={{ fontWeight: "bold", color: "#F27024" }}>Hệ thống quản lí OJT</h2>
+                      <h2 style={{ fontWeight: "bold", color: "#F27024" }}>Hệ thống quản lí EOJTs</h2>
                       <img style={{ width: '300px', height: '75px' }} src="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410" />
                     </div>
                   </CardBody>
