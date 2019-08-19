@@ -63,114 +63,146 @@ public class Business_ProposedService implements IBusiness_ProposedService {
         return iBusiness_proposedRepository.findById(id);
     }
 
-
     @Override
-    public void updateStatusByStartUpRoom(int id, String comment, boolean status, String email) throws Exception {
-        Business_Proposed business_proposed = findById(id);
-
-        if (business_proposed != null) {
-            business_proposed.setCommentStartupRoom(comment);
-
-            if (status) {
-                business_proposed.setIsAcceptedByStartupRoom(BusinessProposedStatus.ACCEPTED);
-            } else {
-                business_proposed.setIsAcceptedByStartupRoom(BusinessProposedStatus.REJECTED);
-            }
-            iBusiness_proposedRepository.save(business_proposed);
-        }
-
-        String descriptionEvent = "Xin chào " + business_proposed.getStudent_proposed().getName() + "! Lời đề nghị thực tập tại doanh nghiệp " +
-                business_proposed.getBusiness_name() + " của bạn đã bị từ chối bởi Phòng Khởi Nghiệp vì lý do: "
-                + comment;
-        String emailNextHeading = "headtraining@gmail.com";
-        String contentEmail = "PHÒNG KHỞI NGHIỆP ĐÃ XEM XÉT VÀ CHẤP NHẬN YÊU CẤU THỰC TẬP TẠI DOANH NGHIỆP " + business_proposed.getBusiness_name()
-                + " CỦA SINH VIÊN " + business_proposed.getStudent_proposed().getName() + "!\n" + "KÍNH MONG PHÒNG ĐÀO TẠO XEM XÉT TRƯỜNG HỢP!";
-
-        createInformMessageAndSendMail(status, business_proposed, descriptionEvent, email, emailNextHeading, contentEmail);
-    }
-
-    @Override
-    public void updateStatusByHeadOfTraining(int id, String comment, boolean status, String email) throws Exception {
-        Business_Proposed business_proposed = findById(id);
-
-        if (business_proposed != null) {
-            business_proposed.setCommentHeadOfTraining(comment);
-            if (status) {
-                business_proposed.setIsAcceptedByHeadOfTraining(BusinessProposedStatus.ACCEPTED);
-            } else {
-                business_proposed.setIsAcceptedByHeadOfTraining(BusinessProposedStatus.REJECTED);
-            }
-            iBusiness_proposedRepository.save(business_proposed);
-        }
-
-        String descriptionEvent = "Xin chào " + business_proposed.getStudent_proposed().getName() + "! Lời đề nghị thực tập tại doanh nghiệp " +
-                business_proposed.getBusiness_name() + " của bạn đã bị từ chối bởi phòng Đào tạo vì lý do: "
-                + comment;
-        String emailNextHeading = "headmaster@gmail.com";
-        String contentEmail = "PHÒNG ĐÀO TẠO ĐÃ XEM XÉT VÀ CHẤP NHẬN YÊU CẤU THỰC TẬP TẠI DOANH NGHIỆP " + business_proposed.getBusiness_name()
-                + " CỦA SINH VIÊN " + business_proposed.getStudent_proposed().getName() + "!\n" + "KÍNH MONG BAN GIÁM HIỆU XEM XÉT TRƯỜNG HỢP!";
-
-        createInformMessageAndSendMail(status, business_proposed, descriptionEvent, email, emailNextHeading, contentEmail);
-    }
-
-    @Override
-    public void updateStatusByHeadMaster(int id, String comment, boolean status, String email) throws Exception {
+    public void updateStatusByAdmin(int id, String comment, boolean status, String email) throws Exception {
         Business_Proposed business_proposed = findById(id);
         String descriptionEvent = "", emailNextHeading = "", contentEmail = "";
+
         if (business_proposed != null) {
-            business_proposed.setCommentHeadOfMaster(comment);
+            business_proposed.setCommentAdmin(comment);
+
             if (status) {
-                business_proposed.setIsAcceptedByHeadMaster(BusinessProposedStatus.ACCEPTED);
-
+                business_proposed.setIsAcceptedByAdmin(BusinessProposedStatus.ACCEPTED);
                 descriptionEvent = "Xin chào " + business_proposed.getStudent_proposed().getName() + "! Lời đề nghị thực tập tại doanh nghiệp " +
-                        business_proposed.getBusiness_name() + " của bạn đã được phê duyệt bởi Ban giám hiệu";
+                        business_proposed.getBusiness_name() + " của bạn đã được chấp nhận"
+                        + comment;
+                emailNextHeading = "admin@gmail.com";
+                contentEmail = "";
             } else {
-                business_proposed.setIsAcceptedByHeadMaster(BusinessProposedStatus.REJECTED);
-
+                business_proposed.setIsAcceptedByAdmin(BusinessProposedStatus.REJECTED);
                 descriptionEvent = "Xin chào " + business_proposed.getStudent_proposed().getName() + "! Lời đề nghị thực tập tại doanh nghiệp " +
-                        business_proposed.getBusiness_name() + " của bạn đã bị từ chối bởi Ban giám hiệu vì lí do: " + comment;
-                contentEmail = "PHÒNG ĐÀO TẠO ĐÃ XEM XÉT VÀ CHẤP NHẬN YÊU CẤU THỰC TẬP TẠI DOANH NGHIỆP " + business_proposed.getBusiness_name()
-                        + " CỦA SINH VIÊN " + business_proposed.getStudent_proposed().getName() + "!\n" + "KÍNH MONG BAN GIÁM HIỆU XEM XÉT TRƯỜNG HỢP!";
+                        business_proposed.getBusiness_name() + " của bạn đã bị từ chối vì lý do: "
+                        + comment;
+                emailNextHeading = "admin@gmail.com";
+                contentEmail = "";
             }
             iBusiness_proposedRepository.save(business_proposed);
         }
 
         createInformMessageAndSendMail(status, business_proposed, descriptionEvent, email, emailNextHeading, contentEmail);
     }
+
+
+//    @Override
+//    public void updateStatusByStartUpRoom(int id, String comment, boolean status, String email) throws Exception {
+//        Business_Proposed business_proposed = findById(id);
+//
+//        if (business_proposed != null) {
+//            business_proposed.setCommentStartupRoom(comment);
+//
+//            if (status) {
+//                business_proposed.setIsAcceptedByStartupRoom(BusinessProposedStatus.ACCEPTED);
+//            } else {
+//                business_proposed.setIsAcceptedByStartupRoom(BusinessProposedStatus.REJECTED);
+//            }
+//            iBusiness_proposedRepository.save(business_proposed);
+//        }
+//
+//        String descriptionEvent = "Xin chào " + business_proposed.getStudent_proposed().getName() + "! Lời đề nghị thực tập tại doanh nghiệp " +
+//                business_proposed.getBusiness_name() + " của bạn đã bị từ chối bởi Phòng Khởi Nghiệp vì lý do: "
+//                + comment;
+//        String emailNextHeading = "headtraining@gmail.com";
+//        String contentEmail = "PHÒNG KHỞI NGHIỆP ĐÃ XEM XÉT VÀ CHẤP NHẬN YÊU CẤU THỰC TẬP TẠI DOANH NGHIỆP " + business_proposed.getBusiness_name()
+//                + " CỦA SINH VIÊN " + business_proposed.getStudent_proposed().getName() + "!\n" + "KÍNH MONG PHÒNG ĐÀO TẠO XEM XÉT TRƯỜNG HỢP!";
+//
+//        createInformMessageAndSendMail(status, business_proposed, descriptionEvent, email, emailNextHeading, contentEmail);
+//    }
+//
+//    @Override
+//    public void updateStatusByHeadOfTraining(int id, String comment, boolean status, String email) throws Exception {
+//        Business_Proposed business_proposed = findById(id);
+//
+//        if (business_proposed != null) {
+//            business_proposed.setCommentHeadOfTraining(comment);
+//            if (status) {
+//                business_proposed.setIsAcceptedByHeadOfTraining(BusinessProposedStatus.ACCEPTED);
+//            } else {
+//                business_proposed.setIsAcceptedByHeadOfTraining(BusinessProposedStatus.REJECTED);
+//            }
+//            iBusiness_proposedRepository.save(business_proposed);
+//        }
+//
+//        String descriptionEvent = "Xin chào " + business_proposed.getStudent_proposed().getName() + "! Lời đề nghị thực tập tại doanh nghiệp " +
+//                business_proposed.getBusiness_name() + " của bạn đã bị từ chối bởi phòng Đào tạo vì lý do: "
+//                + comment;
+//        String emailNextHeading = "headmaster@gmail.com";
+//        String contentEmail = "PHÒNG ĐÀO TẠO ĐÃ XEM XÉT VÀ CHẤP NHẬN YÊU CẤU THỰC TẬP TẠI DOANH NGHIỆP " + business_proposed.getBusiness_name()
+//                + " CỦA SINH VIÊN " + business_proposed.getStudent_proposed().getName() + "!\n" + "KÍNH MONG BAN GIÁM HIỆU XEM XÉT TRƯỜNG HỢP!";
+//
+//        createInformMessageAndSendMail(status, business_proposed, descriptionEvent, email, emailNextHeading, contentEmail);
+//    }
+//
+//    @Override
+//    public void updateStatusByHeadMaster(int id, String comment, boolean status, String email) throws Exception {
+//        Business_Proposed business_proposed = findById(id);
+//        String descriptionEvent = "", emailNextHeading = "", contentEmail = "";
+//        if (business_proposed != null) {
+//            business_proposed.setCommentHeadOfMaster(comment);
+//            if (status) {
+//                business_proposed.setIsAcceptedByHeadMaster(BusinessProposedStatus.ACCEPTED);
+//
+//                descriptionEvent = "Xin chào " + business_proposed.getStudent_proposed().getName() + "! Lời đề nghị thực tập tại doanh nghiệp " +
+//                        business_proposed.getBusiness_name() + " của bạn đã được phê duyệt bởi Ban giám hiệu";
+//            } else {
+//                business_proposed.setIsAcceptedByHeadMaster(BusinessProposedStatus.REJECTED);
+//
+//                descriptionEvent = "Xin chào " + business_proposed.getStudent_proposed().getName() + "! Lời đề nghị thực tập tại doanh nghiệp " +
+//                        business_proposed.getBusiness_name() + " của bạn đã bị từ chối bởi Ban giám hiệu vì lí do: " + comment;
+//                contentEmail = "PHÒNG ĐÀO TẠO ĐÃ XEM XÉT VÀ CHẤP NHẬN YÊU CẤU THỰC TẬP TẠI DOANH NGHIỆP " + business_proposed.getBusiness_name()
+//                        + " CỦA SINH VIÊN " + business_proposed.getStudent_proposed().getName() + "!\n" + "KÍNH MONG BAN GIÁM HIỆU XEM XÉT TRƯỜNG HỢP!";
+//            }
+//            iBusiness_proposedRepository.save(business_proposed);
+//        }
+//
+//        createInformMessageAndSendMail(status, business_proposed, descriptionEvent, email, emailNextHeading, contentEmail);
+//    }
 
     @Override
     public void createInformMessageAndSendMail(boolean status, Business_Proposed business_proposed, String descriptionEvent, String emailHeading, String emailNextHeading, String emailContent) throws Exception {
-        if (!status || (status && emailHeading.equals("headmaster@gmail.com"))) {
-            // create inform message
-            Event event = new Event();
-            Date date = new Date(Calendar.getInstance().getTime().getTime());
-            List<Student> studentList = new ArrayList<>();
-            studentList.add(business_proposed.getStudent_proposed());
+//        if (!status || (status && emailHeading.equals("headmaster@gmail.com"))) {
+        // create inform message
+        Event event = new Event();
+        Date date = new Date(Calendar.getInstance().getTime().getTime());
+        List<Student> studentList = new ArrayList<>();
+        studentList.add(business_proposed.getStudent_proposed());
 
-            event.setTitle("Kết quả đề xuất thực tập tại doanh nghiệp mới");
-            event.setDescription(descriptionEvent);
-            event.setTime_created(date);
-            //event.setStudents(studentList);
-            event.setRead(false);
-            event.setHeading_email(emailHeading);
+        event.setTitle("Kết quả đề xuất thực tập tại doanh nghiệp mới");
+        event.setDescription(descriptionEvent);
+        event.setTime_created(date);
+        //event.setStudents(studentList);
+        event.setRead(false);
+        Admin admin = new Admin();
+        admin.setEmail(emailHeading);
+        event.setAdmin(admin);
 
-            boolean create = iEventService.createEvent(event);
+        boolean create = iEventService.createEvent(event);
 
-            for (int i = 0; i < studentList.size(); i++) {
-                Student student=studentList.get(i);
-                Student_Event student_event = new Student_Event();
-                student_event.setStudent(student);
-                student_event.setEvent(event);
-                student_event.setStudent(false);
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            Student_Event student_event = new Student_Event();
+            student_event.setStudent(student);
+            student_event.setEvent(event);
+            student_event.setStudent(false);
 
-                iStudent_eventService.saveStudentEvent(student_event);
-            }
-
-        } else if (status && !emailHeading.equals("headmaster@gmail.com")) {
-            // gửi mail cho người kế tiếp
-            iUsersService.sendEmailHeading(emailNextHeading, emailContent);
+            iStudent_eventService.saveStudentEvent(student_event);
         }
-        if (status && emailHeading.equals("headmaster@gmail.com")) {
+
+//        }
+//        else if (status && !emailHeading.equals("headmaster@gmail.com")) {
+//            // gửi mail cho người kế tiếp
+//            iUsersService.sendEmailHeading(emailNextHeading, emailContent);
+//        }
+        if (status) {
             // Xử lí logic khúc này: add vô bảng business + set ojt_enrollment
 
             List<Role> roleList = new ArrayList<>();
@@ -207,18 +239,18 @@ public class Business_ProposedService implements IBusiness_ProposedService {
 
 
             //update status student when raise business success
-            Student student=business_proposed.getStudent_proposed();
+            Student student = business_proposed.getStudent_proposed();
             student.setStatus(StudentStatus.STARTED);
             iStudentService.saveStudent(student);
 
             iBusinessService.saveBusiness(business);
             iUsersService.saveUser(users);
 
-            Ojt_Enrollment updateBusinessForStudent=
-                    iOjt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(student.getEmail(),semester.getId());
+            Ojt_Enrollment updateBusinessForStudent =
+                    iOjt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(student.getEmail(), semester.getId());
             updateBusinessForStudent.setBusiness(business);
-            Date date = new Date(Calendar.getInstance().getTime().getTime());
-            updateBusinessForStudent.setTimeEnroll(date);
+            Date timeEnroll = new Date(Calendar.getInstance().getTime().getTime());
+            updateBusinessForStudent.setTimeEnroll(timeEnroll);
             iOjt_enrollmentService.saveOjtEnrollment(updateBusinessForStudent);
 
             if (iUsersService.saveUser(users)) {
@@ -252,12 +284,9 @@ public class Business_ProposedService implements IBusiness_ProposedService {
         }
         for (int i = 0; i < business_proposeds.size(); i++) {
             Business_Proposed bus = business_proposeds.get(i);
-            if(bus.getIsAcceptedByStartupRoom() == BusinessProposedStatus.REJECTED
-                    || bus.getIsAcceptedByHeadOfTraining()== BusinessProposedStatus.REJECTED
-                    || bus.getIsAcceptedByHeadMaster()== BusinessProposedStatus.REJECTED) {
-
+            if (bus.getIsAcceptedByAdmin() == BusinessProposedStatus.REJECTED) {
                 return true;
-            } 
+            }
         }
         return false;
     }
