@@ -173,9 +173,9 @@ class InformMessage_Detail extends Component {
                                             {
                                                 isStudentSent === true ? (
                                                     <Col md="2">
-                                                        <Button style={{ marginLeft: "350px" }} block color="primary" onClick={() => this.toggleModalReply()}>
-                                                            Trả lời
-                                                </Button>
+                                                        <Button style={{ marginLeft: "480px" }} color="primary" onClick={() => this.toggleModalReply()}>
+                                                            <i className="fa fa-mail-reply"></i>
+                                                        </Button>
                                                     </Col>
                                                 ) : (
                                                         <></>

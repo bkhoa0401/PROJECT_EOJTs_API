@@ -153,13 +153,13 @@ class BusinessProposed_Detail extends Component {
         if (status === 'ACCEPTED' && role === 'ROLE_ADMIN') {
             return (
                 <div style={{ marginLeft: "60%" }}>
-                    <Badge color="success">ĐƯỢC CHẤP NHẬN</Badge>
+                    <Badge color="success" style={{ marginLeft: "8%" }}>CHẤP NHẬN</Badge>
                 </div>
             )
         } else if (status === 'REJECTED' && role === 'ROLE_ADMIN') {
             return (
                 <div style={{ marginLeft: "60%" }}>
-                    <Badge color="danger" style={{ marginLeft: "8%" }}>BỊ TỪ CHỐI</Badge>
+                    <Badge color="danger" style={{ marginLeft: "8%" }}>TỪ CHỐI</Badge>
                 </div>
             )
         } else if (status === 'PENDING' && role === 'ROLE_ADMIN') {
@@ -520,39 +520,52 @@ class BusinessProposed_Detail extends Component {
                                                 <hr />
                                                 <br />
                                             </FormGroup>
-                                            {/* <FormGroup row>
-                                                <Col md="6">
-                                                    <h5 style={{ fontWeight: "bold", marginLeft: "30%" }}>Ý kiến của phòng khởi nghiệp</h5>
-                                                </Col>
-                                                <Col xs="12" md="4">
-                                                    <h5 style={{ fontWeight: "bold", marginLeft: "30%" }}>Ý kiến của phòng đào tạo</h5>
-                                                </Col>
-                                            </FormGroup> */}
-                                            <FormGroup row>
-                                                <Col md="9">
-                                                    {
-                                                        this.showStatus(business.isAcceptedByAdmin, "ROLE_ADMIN")
-                                                    }
-                                                </Col>
-                                                {/* <Col xs="12" md="4">
-                                                    {
-                                                        this.showStatus(business.isAcceptedByHeadOfTraining, "Training")
-                                                    }
-                                                </Col> */}
-                                            </FormGroup>
-                                            <FormGroup row>
-                                                <Col md="9">
-                                                    <div style={{ marginLeft: "31%", textAlign: "center" }}>
-                                                        {
-                                                            business.isAcceptedByAdmin !== 'PENDING' ? (
-                                                                <label style={{ width: "560px" }}>{business.commentAdmin}</label>
-                                                            ) : (
-                                                                    <label style={{ width: "300px" }}></label>
-                                                                )
-                                                        }
+                                            {
+                                                business.isAcceptedByAdmin === 'PENDING' ? (
+                                                    <div>
+                                                        <FormGroup row>
+                                                            <Col md="6">
+                                                                <h5 style={{ fontWeight: "bold", marginLeft: "30%" }}>Ý kiến của phòng khởi nghiệp</h5>
+                                                            </Col>
+                                                            <Col xs="12" md="4">
+                                                                <h5 style={{ fontWeight: "bold", marginLeft: "30%" }}>Ý kiến của phòng đào tạo</h5>
+                                                            </Col>
+                                                        </FormGroup>
+                                                        <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br />
+                                                        <FormGroup row>
+                                                            <Col md="9">
+                                                                <h5 style={{ fontWeight: "bold", marginLeft: "50%" }}>Phê duyệt của ban giám hiệu</h5>
+                                                            </Col>
+                                                        </FormGroup>
+                                                        <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br />
                                                     </div>
-                                                </Col>
-                                            </FormGroup>
+                                                ) : (
+                                                        <div>
+                                                            <FormGroup row>
+                                                                <Col md="9">
+                                                                    {
+                                                                        this.showStatus(business.isAcceptedByAdmin, "ROLE_ADMIN")
+                                                                    }
+                                                                </Col>
+                                                            </FormGroup>
+                                                            <FormGroup row>
+                                                                <Col md="9">
+                                                                    <div style={{ marginLeft: "31%", textAlign: "center" }}>
+                                                                        {
+                                                                            business.isAcceptedByAdmin !== 'PENDING' ? (
+                                                                                <label style={{ width: "540px" }}>{business.commentAdmin}</label>
+                                                                            ) : (
+                                                                                    <label style={{ width: "300px" }}></label>
+                                                                                )
+                                                                        }
+                                                                    </div>
+                                                                </Col>
+                                                            </FormGroup>
+                                                        </div>
+                                                    )
+                                            }
+
+
                                             {/* <FormGroup row>
                                                 <Col md="6">
                                                     <div style={{ marginLeft: "8%", textAlign: "center" }}>
@@ -577,13 +590,8 @@ class BusinessProposed_Detail extends Component {
                                                     </div>
                                                 </Col>
                                             </FormGroup> */}
-                                            <br /><br />
+
                                             {/* <FormGroup row>
-                                                <Col md="9">
-                                                    <h5 style={{ fontWeight: "bold", marginLeft: "50%" }}>Phê duyệt của ban giám hiệu</h5>
-                                                </Col>
-                                            </FormGroup>
-                                            <FormGroup row>
                                                 <Col md="9">
                                                     {
                                                         this.showStatus(business.isAcceptedByHeadMaster, "Master")
