@@ -64,10 +64,11 @@ public class WebController {
                         Student student = studentService.getStudentByEmail(users.getEmail());
                         StudentDTO studentDTO = new StudentDTO();
                         studentDTO.convertFromStudentEntity(student);
-                        Semester semester = semesterService.getSemesterCurrent();
+
 
                         Ojt_Enrollment ojt_enrollment =
-                                ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(studentDTO.getEmail(), semester.getId());
+                                ojt_enrollmentService.findLastEnrollmentByStudentEmail(studentDTO.getEmail());
+                        Semester semester = ojt_enrollment.getSemester();
                         //Ojt_Enrollment ojt_enrollment=ojt_enrollmentService.findOjt_EnrollmentByStudentEmailAndBusinessIsNull(studentDTO.getEmail());
                        // Semester semester = ojt_enrollment.getSemester();
                         studentDTO.setSemester(semester);

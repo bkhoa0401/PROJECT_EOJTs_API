@@ -42,4 +42,6 @@ public interface IOjt_EnrollmentService {
     int countOjt_EnrollmentsByBusinessEmailAndSemesterIdAndStudentEmailNotNull(String email,int id);
 
     Ojt_Enrollment findOjt_EnrollmentByStudentEmailAndBusinessIsNull(String email);
+
+    Ojt_Enrollment findLastEnrollmentByStudentEmail(String email);
 }

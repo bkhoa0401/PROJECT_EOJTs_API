@@ -39,6 +39,9 @@ public interface IOjt_EnrollmentRepository extends JpaRepository<Ojt_Enrollment,
 
     Ojt_Enrollment findOjt_EnrollmentByStudentEmailAndBusinessIsNull(String email);
 
+    @Query(value = "select top 1* from Ojt_Enrollment o where o.student_email=?1 ORDER BY id DESC", nativeQuery = true)
+    Ojt_Enrollment findLastEnrollmentByStudentEmail(String student_email);
+
 //    @Query(value = "select o from Ojt_Enrollment o where  o.business is not null and o.semester.id=?1 and o.student.email=?2")
 //    Ojt_Enrollment getOjt_EnrollmentBySemesterIdAndStudentEmailAndBusinessNotNull(int id, String email);
 }

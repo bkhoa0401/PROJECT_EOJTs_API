@@ -266,6 +266,11 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
         return ojtEnrollmentRepository.findOjt_EnrollmentByStudentEmailAndBusinessIsNull(email);
     }
 
+    @Override
+    public Ojt_Enrollment findLastEnrollmentByStudentEmail(String email) {
+        return ojtEnrollmentRepository.findLastEnrollmentByStudentEmail(email);
+    }
+
     private String getEmailFromToken() {
         String email = "";
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
