@@ -42,7 +42,7 @@ class Ojt_Registration extends Component {
         const { currentPage, rowsPerPage } = this.state;
         const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         const business = await ApiServices.Get('/business/getBusiness');
-        const invitations = await ApiServices.Get('/student/getListStudentIsInvited');
+        const invitations = await ApiServices.Get('/student/getListStudentIsInvitedNotPaging');
         const numOfStudent = await ApiServices.Get("/business/getNumStudent");
         const dropdownSpecialized = await ApiServices.Get("/business/getSpecializedsOfBusiness");
         let listInvitation = [];

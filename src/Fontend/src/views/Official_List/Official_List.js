@@ -62,6 +62,7 @@ class Official_List extends Component {
       selectedSpecialized: -1,
       searchingList: [],
       isSearching: false,
+      supervisors_FirstBlank_Obj: null,
     }
   }
 
@@ -87,11 +88,13 @@ class Official_List extends Component {
     }
 
     console.log(supervisors_FirstBlank);
-    if (supervisors_FirstBlank.length >= 1) {
-      // console.log(supervisors_FirstBlank.length);
-      supervisors_FirstBlank.unshift(supervisors_FirstBlank_Obj);
-    } else {
-      supervisors_FirstBlank.push(supervisors_FirstBlank_Obj);
+    if (supervisors_FirstBlank != null) {
+      if (supervisors_FirstBlank.length >= 1) {
+        // console.log(supervisors_FirstBlank.length);
+        supervisors_FirstBlank.unshift(supervisors_FirstBlank_Obj);
+      } else {
+        supervisors_FirstBlank.push(supervisors_FirstBlank_Obj);
+      }
     }
     if (students !== null && supervisors !== null && supervisors_FirstBlank !== null) {
       this.setState({
@@ -102,6 +105,8 @@ class Official_List extends Component {
         loading: false,
         numOfStudent: numOfStudent,
         dropdownSpecialized: dropdownSpecialized,
+        preSupervisor: supervisors_FirstBlank_Obj,
+        supervisors_FirstBlank_Obj: supervisors_FirstBlank_Obj,
       });
     }
     // console.log(this.state.supervisors);
@@ -326,6 +331,8 @@ class Official_List extends Component {
         suggestedStudents: suggestedStudents,
         isSelect: isSelect,
         loading: false,
+        preListStudent: [],
+        preSupervisor: this.state.supervisors_FirstBlank_Obj,
       });
     } else {
       this.setState({
@@ -337,11 +344,12 @@ class Official_List extends Component {
   toggleModalWithConfirm = async () => {
     let { listDataEdited, preListStudent } = this.state;
     console.log(listDataEdited);
-    // console.log(this.state.preSupervisor);
+    console.log("preSupervisor: " + this.state.preSupervisor.name);
     if (preListStudent.length === 0 || this.state.preSupervisor.email === "") {
       this.setState({
         modal: !this.state.modal,
       })
+      Toastify.actionWarning("Không có sự thay đổi!");
     } else {
       for (let index = 0; index < preListStudent.length; index++) {
         listDataEdited.push(preListStudent[index]);

@@ -483,7 +483,7 @@ public class StudentService implements IStudentService {
         Admin admin = iAdminService.findAdminByEmail("admin@gmail.com");
         Event event = new Event();
         event.setTitle("Có feedback mới từ sinh viên");
-        event.setDescription("Nội dung feedback: " + content);
+        event.setDescription(content);
         event.setAdmin(admin);
         event.setTime_created(date);
         event.setRead(false);
