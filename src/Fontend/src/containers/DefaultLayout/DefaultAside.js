@@ -94,27 +94,49 @@ class DefaultAside extends Component {
       <React.Fragment>
         <ListGroup className="list-group-accent" tag={'div'}>
           <ListGroupItem className="list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">Thông báo đến</ListGroupItem>
-          <ListGroupItem action tag="a" href={`/#/InformMessage`} className="list-group-item-accent-secondary text-center font-weight-bold list-group-item-divider" style={{fontSize:'12px', color:'DeepSkyBlue', textDecoration:'underline'}}>Đến trang thông báo</ListGroupItem>
+          {this.state.role === "ROLE_ADMIN" ?
+            <ListGroupItem action tag="a" href={`/#/admin/InformMessage`} className="list-group-item-accent-secondary text-center font-weight-bold list-group-item-divider" style={{ fontSize: '12px', color: 'DeepSkyBlue', textDecoration: 'underline' }}>Đến trang thông báo</ListGroupItem> :
+            <ListGroupItem action tag="a" href={`/#/hr/InformMessage`} className="list-group-item-accent-secondary text-center font-weight-bold list-group-item-divider" style={{ fontSize: '12px', color: 'DeepSkyBlue', textDecoration: 'underline' }}>Đến trang thông báo</ListGroupItem>
+          }
           {informs && informs.map((inform, index) => {
-            return(
-            <ListGroupItem action tag="a" href={`/#/InformMessage/InformMessage_Detail/${inform.event.id}`} className="list-group-item-accent-danger list-group-item-divider">
-              {inform.studentList && inform.studentList.map((student, index) => {
-                return (
-                  student.avatarLink === null ?
-                    <>
-                      <div className="avatar float-right">
-                        <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="usericon" style={{ width: '30px', height: '30px' }} />
-                      </div>
-                      <div><strong>{student.name}</strong><br/> {this.handleShowString(inform.event.description)} </div></> :
-                    <>
-                      <div className="avatar float-right">
-                        <img src={student.avatarLink} className="img-avatar" alt={student.avatarLink} style={{ width: '30px', height: '30px' }} />
-                      </div>
-                      <div><strong>{student.name}</strong><br/> {this.handleShowString(inform.event.description)} </div>
-                    </>
-                )
-              })}
-            </ListGroupItem>
+            return (
+              this.state.role === "ROLE_ADMIN" ?
+                <ListGroupItem action tag="a" href={`/#/admin/InformMessage/InformMessage_Detail/${inform.event.id}`} className="list-group-item-accent-danger list-group-item-divider">
+                  {inform.studentList && inform.studentList.map((student, index) => {
+                    return (
+                      student.avatarLink === null ?
+                        <>
+                          <div className="avatar float-right">
+                            <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="usericon" style={{ width: '30px', height: '30px' }} />
+                          </div>
+                          <div><strong>{student.name}</strong><br /> {this.handleShowString(inform.event.description)} </div></> :
+                        <>
+                          <div className="avatar float-right">
+                            <img src={student.avatarLink} className="img-avatar" alt={student.avatarLink} style={{ width: '30px', height: '30px' }} />
+                          </div>
+                          <div><strong>{student.name}</strong><br /> {this.handleShowString(inform.event.description)} </div>
+                        </>
+                    )
+                  })}
+                </ListGroupItem> :
+                <ListGroupItem action tag="a" href={`/#/hr/InformMessage/InformMessage_Detail/${inform.event.id}`} className="list-group-item-accent-danger list-group-item-divider">
+                  {inform.studentList && inform.studentList.map((student, index) => {
+                    return (
+                      student.avatarLink === null ?
+                        <>
+                          <div className="avatar float-right">
+                            <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="usericon" style={{ width: '30px', height: '30px' }} />
+                          </div>
+                          <div><strong>{student.name}</strong><br /> {this.handleShowString(inform.event.description)} </div></> :
+                        <>
+                          <div className="avatar float-right">
+                            <img src={student.avatarLink} className="img-avatar" alt={student.avatarLink} style={{ width: '30px', height: '30px' }} />
+                          </div>
+                          <div><strong>{student.name}</strong><br /> {this.handleShowString(inform.event.description)} </div>
+                        </>
+                    )
+                  })}
+                </ListGroupItem>
             )
           })}
         </ListGroup>

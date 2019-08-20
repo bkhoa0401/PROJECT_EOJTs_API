@@ -44,4 +44,6 @@ public interface IUsersService {
     void sendEmailToStudentIsExisted(String name, String mail) throws Exception;
 
     List<Users> getUsersNotYet(List<Users> users);
+
+    void sendEmailToBusinessIsExisted(String name, String mail) throws Exception;
 }

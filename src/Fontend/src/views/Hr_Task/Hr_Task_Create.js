@@ -7,6 +7,7 @@ import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import SimpleReactValidator from '../../validator/simple-react-validator';
 import Toastify from '../../views/Toastify/Toastify';
+import decode from 'jwt-decode';
 
 class Hr_Task_Create extends Component {
 
@@ -24,16 +25,25 @@ class Hr_Task_Create extends Component {
             students: [],
             studentItem: {},
             validPassed: '',
+            
+            role:'',
         }
     }
 
     async componentDidMount() {
         const students = await ApiServices.Get('/supervisor/students');
+        const token = localStorage.getItem('id_token');
+        let role = '';
+        if (token !== null) {
+            const decoded = decode(token);
+            role = decoded.role;
+        }
         if (students !== null) {
             this.setState({
                 students,
                 studentItem: students[0],
-                loading: false
+                loading: false,
+                role: role,
             });
         }
     }
@@ -93,7 +103,7 @@ class Hr_Task_Create extends Component {
             data: {
                 title: 'Bạn có nhiệm vụ mới',
                 body: `Xin chào ${studentItem.name}! Bạn được giao nhiệm mới "${title}" từ supervisor ${studentItem.supervisor.name}`,
-                click_action: "http://localhost:3000/#/invitation/new",
+                click_action: "http://localhost:3000/#/hr/invitation/new",
                 icon: "http://url-to-an-icon/icon.png"
             },
             to: `${studentItem.token}`
@@ -126,7 +136,11 @@ class Hr_Task_Create extends Component {
                     const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
                     setTimeout(
                         function () {
-                            this.props.history.push('/hr-task');
+                            if (this.state.role === "ROLE_SUPERVISOR") {
+                                this.props.history.push('/supervisor/hr-task');
+                            } else {
+                                this.props.history.push('/hr/hr-task');
+                            }
                         }
                             .bind(this),
                         2000
@@ -146,7 +160,7 @@ class Hr_Task_Create extends Component {
 
 
     render() {
-        const { validPassed, title, description, time_end, level_task, priority, students, studentItem, loading } = this.state;
+        const { validPassed, title, description, time_end, level_task, priority, students, studentItem, loading, role } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -249,7 +263,10 @@ class Hr_Task_Create extends Component {
                                     <CardFooter className="p-4">
                                         <Row>
                                             <Col xs="4" sm="4">
-                                                <Button color="secondary" block onClick={() => this.handleDirect('/hr-task')}>Trở về</Button>
+                                                {role === "ROLE_SUPERVISOR" ?
+                                                    <Button color="secondary" block onClick={() => this.handleDirect('/supervisor/hr-task')}>Trở về</Button> :
+                                                    <Button color="secondary" block onClick={() => this.handleDirect('/hr/hr-task')}>Trở về</Button>
+                                                }
                                             </Col>
                                             <Col xs="4" sm="4">
                                                 <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>

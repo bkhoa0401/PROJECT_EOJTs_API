@@ -7,6 +7,8 @@ import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import Toastify from '../../views/Toastify/Toastify';
 
+import decode from 'jwt-decode';
+
 class Hr_Task_Detail extends Component {
 
     constructor(props) {
@@ -22,7 +24,9 @@ class Hr_Task_Detail extends Component {
             priority: '',
             status: '',
             supervisorName: '',
-            studentName: ''
+            studentName: '',
+
+            role: '',
         }
     }
 
@@ -30,7 +34,12 @@ class Hr_Task_Detail extends Component {
     async componentDidMount() {
         const id = window.location.href.split("/").pop();
         const task = await ApiServices.Get(`/supervisor/task?id=${id}`);
-
+        const token = localStorage.getItem('id_token');
+        let role = '';
+        if (token !== null) {
+            const decoded = decode(token);
+            role = decoded.role;
+        }
         if (task !== null) {
             this.setState({
                 loading: false,
@@ -43,7 +52,8 @@ class Hr_Task_Detail extends Component {
                 priority: task.task.priority,
                 status: task.task.status,
                 supervisorName: task.task.supervisor.name,
-                studentName: task.nameStudent
+                studentName: task.nameStudent,
+                role: role,
             });
         }
     }
@@ -134,14 +144,20 @@ class Hr_Task_Detail extends Component {
         if (taskStatus === 'NOTSTART') {
             return (
                 <div>
-                    <Button style={{ marginLeft: "950px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button>
+                    {this.state.role === "ROLE_SUPERVISOR" ?
+                        <Button style={{ marginLeft: "950px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/supervisor/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button> :
+                        <Button style={{ marginLeft: "950px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button>
+                    }
                 </div>
             )
         } else if (taskStatus === 'PENDING') {
             return (
                 <div>
                     <Button style={{ marginLeft: "720px" }} type="submit" color="success" onClick={() => this.handleConfirmSetState(id, 3)}>Đánh dấu nhiệm vụ hoàn thành</Button>
-                    <Button style={{ marginLeft: "5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button>
+                    {this.state.role === "ROLE_SUPERVISOR" ?
+                        <Button style={{ marginLeft: "5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/supervisor/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button> :
+                        <Button style={{ marginLeft: "5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/hr/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button>
+                    }
                 </div>
             )
         } else if (taskStatus === 'DONE') {
@@ -173,7 +189,7 @@ class Hr_Task_Detail extends Component {
 
     render() {
         const { id, title, description, time_created, time_end, level_task, priority, status, supervisorName,
-            studentName, loading } = this.state;
+            studentName, loading, role } = this.state;
 
         return (
             loading.toString() === 'true' ? (
@@ -275,7 +291,10 @@ class Hr_Task_Detail extends Component {
                                     <CardFooter className="p-4">
                                         <Row>
                                             <Col xs="4" sm="4">
-                                                <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr-task")} type="submit" color="secondary" block>Trở về</Button>
+                                                {role === "ROLE_SUPERVISOR" ?
+                                                    <Button id="submitBusinesses" onClick={() => this.handleDirect("/supervisor/hr-task")} type="submit" color="secondary" block>Trở về</Button> :
+                                                    <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr/hr-task")} type="submit" color="secondary" block>Trở về</Button>
+                                                }
                                             </Col>
                                         </Row>
                                     </CardFooter>

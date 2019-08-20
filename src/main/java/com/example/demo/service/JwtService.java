@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 
+import com.example.demo.entity.Role;
 import org.springframework.stereotype.Service;
 
 import com.nimbusds.jose.JWSAlgorithm;
@@ -14,6 +16,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import java.text.ParseException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +35,13 @@ public class JwtService implements IJwtService {
             JWSSigner signer = new MACSigner(generateShareSecret());
             JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
             builder.claim(EMAIL, email);
+
+//            List<String> roleDescription = new ArrayList<>();
+//            for (int i = 0; i < role.size(); i++) {
+//                roleDescription.add(role.get(i).getDescription());
+//            }
             builder.claim(ROLE, role);
+            //builder.claim(ROLE, roleDescription);
             builder.expirationTime(generateExpirationDate());
             JWTClaimsSet claimsSet = builder.build();
             SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claimsSet);
@@ -44,6 +53,7 @@ public class JwtService implements IJwtService {
         }
         return token;
     }
+
 
     @Override
     public JWTClaimsSet getClaimsFromToken(String token) {

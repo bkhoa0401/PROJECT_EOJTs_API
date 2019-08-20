@@ -60,12 +60,20 @@ public class SupervisorService implements ISupervisorService {
     @Override
     public boolean createSupervisor(Supervisor supervisor, String emailBusiness) {
         Supervisor supervisorFound = ISupervisorRepository.findByEmail(supervisor.getEmail());
+
         if (supervisorFound == null) {
             Semester semesterCurrent = semesterService.getSemesterCurrent();
+            Ojt_Enrollment ojt_enrollment = null;
+            if (emailBusiness == null) {
+                ojt_enrollment = null;
 
-            Ojt_Enrollment ojt_enrollment =
-                    ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(emailBusiness, semesterCurrent.getId());
-            supervisor.setBusiness(ojt_enrollment.getBusiness());
+            } else {
+                ojt_enrollment =
+                        ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(emailBusiness, semesterCurrent.getId());
+            }
+            if(ojt_enrollment!=null){
+                supervisor.setBusiness(ojt_enrollment.getBusiness());
+            }
             supervisor.setActive(true);
             ISupervisorRepository.save(supervisor);
 
@@ -139,7 +147,4 @@ public class SupervisorService implements ISupervisorService {
         }
         return null;
     }
-
-
-
 }

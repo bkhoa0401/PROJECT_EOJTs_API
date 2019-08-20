@@ -349,7 +349,7 @@ class Update_Job extends Component {
                 })
                 setTimeout(
                     function () {
-                        this.props.history.push('/job_post_list_hr');
+                        this.props.history.push('/hr/job_post_list_hr');
                     }
                         .bind(this),
                     2000

@@ -54,6 +54,7 @@ public class WebController {
             if (usersService.findUserByEmailAndPassWord(users.getEmail(), users.getPassword()) != null) {
                 usersFound = usersService.findUserByEmailAndPassWord(users.getEmail(), users.getPassword());
                 result = jwtService.generateTokenLogin(usersFound.getEmail(), usersFound.getRoles().get(0).getDescription());
+               // result = jwtService.generateTokenLogin(usersFound.getEmail(), usersFound.getRoles());
 
                 login.setUser(usersFound);
                 login.setToken(result);
