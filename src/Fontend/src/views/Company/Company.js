@@ -1,5 +1,5 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-// import { initializeApp } from '../Invitation/push-notification';
+// import { initializeApp } from '../hr/invitation/push-notification';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import firebase from 'firebase/app';
 import 'firebase/storage';

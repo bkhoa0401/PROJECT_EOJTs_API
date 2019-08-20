@@ -168,7 +168,7 @@ class business_list extends Component {
                                                                     {/* <Button
                                                                         style={{ fontWeight: "bold", borderWidth: 0 }}
                                                                         color="primary"
-                                                                        onClick={() => this.handleDirect(`/list_management/business_list/Business_Detail/${business.email}`)}
+                                                                        onClick={() => this.handleDirect(`/admin/list_management/business_list/Business_Detail/${business.email}`)}
                                                                     >
                                                                         Chi tiết
                                                                     </Button> */}
@@ -195,7 +195,7 @@ class business_list extends Component {
                                     {/* <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/invitation")} type="submit" color="primary" block>Trở về</Button>
+                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr/invitation")} type="submit" color="primary" block>Trở về</Button>
                                     </Col>
                                 </Row>
                             </CardFooter> */}

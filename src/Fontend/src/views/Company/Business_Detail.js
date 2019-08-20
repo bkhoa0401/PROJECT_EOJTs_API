@@ -196,7 +196,7 @@ class Company extends Component {
                                         <CardFooter className="p-4">
                                             <FormGroup row>
                                                 <Col xs="4" md="4">
-                                                    <Button block color="secondary" onClick={() => this.handleDirect('/list_management/business_list')}>
+                                                    <Button block color="secondary" onClick={() => this.handleDirect('/admin/list_management/business_list')}>
                                                         Trở về
                                                 </Button>
                                                 </Col>

@@ -233,7 +233,7 @@ class Job_Post extends Component {
                   <CardFooter className="p-4">
                     <Row>
                       <Col xs="3" sm="3">
-                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/job_post_list_hr")} type="submit" color="success" block>Trở về</Button>
+                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr/job_post_list_hr")} type="submit" color="success" block>Trở về</Button>
                       </Col>
                     </Row>
                   </CardFooter>

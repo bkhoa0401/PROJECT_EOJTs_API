@@ -107,7 +107,7 @@ class Question extends Component {
                                         <i className="fa fa-align-justify"></i> Danh sách câu hỏi khảo sát
                                     </CardHeader>
                                     <CardBody>
-                                        <Button color="primary" onClick={() => this.handleDirect('/question/new')}>Tạo câu hỏi mới</Button>
+                                        <Button color="primary" onClick={() => this.handleDirect('/admin/question/new')}>Tạo câu hỏi mới</Button>
                                         <br />
                                         <br />
                                         <br />
@@ -142,7 +142,7 @@ class Question extends Component {
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     <Button type="submit" style={{ marginRight: "1.5px" }} onClick={() => this.toggleModalDetail(question)} color="primary"><i className="fa fa-eye"></i></Button>
-                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect(`/question/update/${question.id}`)}><i className="fa cui-note"></i></Button>
+                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleDirect(`/admin/question/update/${question.id}`)}><i className="fa cui-note"></i></Button>
                                                                     {question.active.toString() === 'true' ? (
                                                                         <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(question, false)} type="submit"><i className="fa cui-ban"></i></Button>
                                                                     ) : (

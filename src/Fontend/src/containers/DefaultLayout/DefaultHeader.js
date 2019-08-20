@@ -6,6 +6,7 @@ import { NavLink } from 'react-router-dom';
 import { Col, DropdownItem, Badge, DropdownMenu, DropdownToggle, FormGroup, Label, Nav, NavItem } from 'reactstrap';
 import sygnet from '../../assets/img/brand/sygnet.svg';
 import ApiServices from '../../service/api-service';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 
 const propTypes = {
@@ -106,7 +107,7 @@ class DefaultHeader extends Component {
           </NavItem>
           <NavItem style={{ width: "30px" }}>
             <NavLink onClick={e => this.props.onLogout(e)} className="nav-link">
-              <i className="fa fa-sign-out fa-lg"></i>
+              <ExitToAppIcon fontSize="medium" />
             </NavLink>
           </NavItem>
           {/* <NavItem className="d-md-down-none">

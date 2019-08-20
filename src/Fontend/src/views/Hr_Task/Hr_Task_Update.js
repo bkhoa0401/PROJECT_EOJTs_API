@@ -7,6 +7,7 @@ import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import SimpleReactValidator from '../../validator/simple-react-validator';
 import Toastify from '../../views/Toastify/Toastify';
+import decode from 'jwt-decode';
 
 class Hr_Task_Update extends Component {
 
@@ -24,6 +25,7 @@ class Hr_Task_Update extends Component {
             status: '',
             students: [],
             studentItem: '',
+            role: '',
         }
     }
 
@@ -31,6 +33,12 @@ class Hr_Task_Update extends Component {
         const id = window.location.href.split("/").pop();
         const task = await ApiServices.Get(`/supervisor/task?id=${id}`);
         const students = await ApiServices.Get('/supervisor/students');
+        const token = localStorage.getItem('id_token');
+        let role = '';
+        if (token !== null) {
+            const decoded = decode(token);
+            role = decoded.role;
+        }
 
         if (students !== null) {
             this.setState({
@@ -48,7 +56,9 @@ class Hr_Task_Update extends Component {
                 level_task: task.task.level_task,
                 // priority: task.task.priority,
                 status: task.task.status,
-                studentItem: task.emailStudent
+                studentItem: task.emailStudent,
+                
+                role: role,
             });
         }
 
@@ -111,7 +121,7 @@ class Hr_Task_Update extends Component {
                 })
                 setTimeout(
                     function () {
-                        this.props.history.push('/hr-task');
+                        this.props.history.push('/supervisor/hr-task');
                     }
                         .bind(this),
                     2000
@@ -230,7 +240,7 @@ class Hr_Task_Update extends Component {
                                     <CardFooter className="p-4">
                                         <Row>
                                             <Col xs="4" sm="4">
-                                                <Button color="secondary" block onClick={() => this.handleDirect("/hr-task")}>Trở về</Button>
+                                                <Button color="secondary" block onClick={() => this.handleDirect("/supervisor/hr-task")}>Trở về</Button>
                                             </Col>
                                             <Col xs="4" sm="4">
                                                 <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>

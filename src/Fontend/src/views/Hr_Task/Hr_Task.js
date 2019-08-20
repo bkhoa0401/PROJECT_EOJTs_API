@@ -35,6 +35,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import SimpleReactValidator from '../../validator/simple-react-validator';
 import PaginationComponent from '../Paginations/pagination';
+import decode from 'jwt-decode';
 
 class Hr_Task extends Component {
 
@@ -76,12 +77,19 @@ class Hr_Task extends Component {
             isSearching: false,
             searchingTaskList: null,
             numOfTask: 0,
+            role: '',
         }
     }
 
 
     async componentDidMount() {
         const { currentPage, rowsPerPage } = this.state;
+        const token = localStorage.getItem('id_token');
+        let role = '';
+        if (token !== null) {
+            const decoded = decode(token);
+            role = decoded.role;
+        }
         const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=${this.state.taskStatus}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         const numOfTask = await ApiServices.Get("/supervisor/getNumTask");
         if (numOfTask === null) {
@@ -93,6 +101,7 @@ class Hr_Task extends Component {
                 pageNumber: tasks.pageNumber,
                 loading: false,
                 numOfTask: numOfTask,
+                role: role,
             });
         }
     }
@@ -309,7 +318,7 @@ class Hr_Task extends Component {
                         <Button style={{ marginLeft: "3px" }} type="submit" color="danger" onClick={() => this.handleConfirmSetState(id, 2)}><i className="fa fa-close"></i></Button>
                         &nbsp;&nbsp;
                         <Button type="submit" color="primary" onClick={() => this.handleConfirmSetState(id, 4)}><i className="fa fa-check"></i></Button>
-                        {/* <Button type="submit" color="primary" onClick={() => this.handleDirect(`/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button> */}
+                        {/* <Button type="submit" color="primary" onClick={() => this.handleDirect(`/supervisor/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button> */}
                     </>
                 )
             }
@@ -444,7 +453,7 @@ class Hr_Task extends Component {
                         data: {
                             title: 'Trạng thái task bị thay đổi',
                             body: body,
-                            click_action: "http://localhost:3000/#/invitation/new",
+                            click_action: "http://localhost:3000/#/hr/invitation/new",
                             icon: "http://url-to-an-icon/icon.png"
                         },
                         to: `${student.token}`
@@ -544,7 +553,7 @@ class Hr_Task extends Component {
         const { id, title, description, time_created, time_end, level_task, priority, status, supervisorName,
             studentName, contentComment, contentCommentNew, statusUpdate } = this.state;
         const { pageNumber, currentPage, rowsPerPage } = this.state;
-        const { dropdownState, dropdownApproved, isSearching, searchingTaskList, numOfTask } = this.state;
+        const { dropdownState, dropdownApproved, isSearching, searchingTaskList, numOfTask, role } = this.state;
 
         return (
             loading.toString() === 'true' ? (
@@ -560,7 +569,11 @@ class Hr_Task extends Component {
                                     <CardBody>
                                         <FormGroup row>
                                             <Col md="10">
-                                                <Button color="primary" onClick={() => this.handleDirect('/hr-task/create')}>Tạo nhiệm vụ mới</Button>
+                                                {
+                                                    role === "ROLE_SUPERVISOR" ?
+                                                        <Button color="primary" onClick={() => this.handleDirect('/supervisor/hr-task/create')}>Tạo nhiệm vụ mới</Button> :
+                                                        <Button color="primary" onClick={() => this.handleDirect('/hr/hr-task/create')}>Tạo nhiệm vụ mới</Button>
+                                                }
                                             </Col>
                                             <Col xs="12" md="2">
                                                 {isSearching === false ?
@@ -743,7 +756,9 @@ class Hr_Task extends Component {
                                                 {/* <FormGroup row> */}
                                                 Chi tiết nhiệm vụ &nbsp;&nbsp;
                                                     {status !== "APPROVED" ?
-                                                    <Button type="submit" style={{ color: "#20A8D8", backgroundColor: "white" }} onClick={() => this.handleDirect(`/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button> :
+                                                    (role === "ROLE_SUPERVISOR" ?
+                                                        <Button type="submit" style={{ color: "#20A8D8", backgroundColor: "white" }} onClick={() => this.handleDirect(`/supervisor/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button> :
+                                                        <Button type="submit" style={{ color: "#20A8D8", backgroundColor: "white" }} onClick={() => this.handleDirect(`/hr/hr-task/update/${id}`)}><i className="fa cui-note"></i></Button>) :
                                                     <></>
                                                 }
                                                 {/* </FormGroup> */}
@@ -911,7 +926,7 @@ class Hr_Task extends Component {
                                     {/* <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr-student-list")} type="submit" color="primary" block>Trở về</Button>
+                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/supervisor/hr-student-list")} type="submit" color="primary" block>Trở về</Button>
                                     </Col>
                                 </Row>
                             </CardFooter> */}

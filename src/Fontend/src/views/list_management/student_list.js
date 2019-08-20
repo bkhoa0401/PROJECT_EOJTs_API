@@ -694,7 +694,7 @@ class student_list extends Component {
             data: {
                 title: `Kết quả đăng kí thực tập tại doanh nghiệp ${businessName}`,
                 body: message,
-                click_action: "http://localhost:3000/#/invitation/new",
+                click_action: "http://localhost:3000/#/hr/invitation/new",
                 icon: "http://url-to-an-icon/icon.png"
             },
             to: `${studentSelect.token}`
@@ -1029,7 +1029,7 @@ class student_list extends Component {
                                                             {/* <Button style={{ width: "80px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.student.email}`)}><i className="fa fa-eye"></i></Button> */}
                                                             <Button color="primary" onClick={() => this.toggleModalDetail(student.student.email)}><i className="fa fa-eye"></i></Button>
                                                             &nbsp;&nbsp;
-                                                            {/* <Button style={{ width: "90px" }} color="success" onClick={() => this.handleDirect(`/hr-student-list/details/${student.student.email}`)}><i className="fa cui-task"></i></Button> */}
+                                                            {/* <Button style={{ width: "90px" }} color="success" onClick={() => this.handleDirect(`/supervisor/hr-student-list/details/${student.student.email}`)}><i className="fa cui-task"></i></Button> */}
                                                             {/* {student.businessEnroll !== null ?
                                                                 <Button color="success" onClick={() => this.toggleModalTask(student.student)}><i className="fa cui-task"></i></Button> :
                                                                 <>&emsp;&emsp;&emsp;</>
@@ -1641,7 +1641,7 @@ class student_list extends Component {
                             {/* <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/invitation")} type="submit" color="primary" block>Trở về</Button>
+                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr/invitation")} type="submit" color="primary" block>Trở về</Button>
                                     </Col>
                                 </Row>
                             </CardFooter> */}
