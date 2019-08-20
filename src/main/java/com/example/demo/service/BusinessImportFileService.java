@@ -13,7 +13,7 @@ import java.util.Calendar;
 import java.util.List;
 
 @Service
-public class BusinessImportFileService implements IBusinessImportFileService{
+public class BusinessImportFileService implements IBusinessImportFileService {
 
     @Autowired
     IJob_PostService job_postService;
@@ -27,9 +27,17 @@ public class BusinessImportFileService implements IBusinessImportFileService{
     @Autowired
     ISemesterService semesterService;
 
+    @Autowired
+    IBusinessService iBusinessService;
+
+    @Autowired
+    ISupervisorService iSupervisorService;
+
     @Transactional
     @Override
     public void insertBusiness(BusinessDTO businessDTO) throws Exception {
+
+        Business businessIsExisted = iBusinessService.getBusinessByEmail(businessDTO.getEmail());
         Business business = new Business(businessDTO.getEmail(), businessDTO.getBusiness_name()
                 , businessDTO.getBusiness_eng_name(), businessDTO.getBusiness_phone()
                 , businessDTO.getBusiness_address(), businessDTO.getBusiness_overview(), businessDTO.getBusiness_website(), businessDTO.getLogo());
@@ -37,7 +45,11 @@ public class BusinessImportFileService implements IBusinessImportFileService{
 
         Semester semester = semesterService.getSemesterByName(businessDTO.getNameSemester());
         Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
-        ojt_enrollment.setBusiness(business);
+        if (businessIsExisted == null) {
+            ojt_enrollment.setBusiness(business);
+        } else {
+            ojt_enrollment.setBusiness(businessIsExisted);
+        }
         ojt_enrollment.setSemester(semester);
 
         Date datePost = new Date(Calendar.getInstance().getTime().getTime());
@@ -61,20 +73,34 @@ public class BusinessImportFileService implements IBusinessImportFileService{
         }
 
 //        insert account to table user
-        String name = businessDTO.getBusiness_name();
-        String email = businessDTO.getEmail();
-        String password = usersService.getAlphaNumericString();
-        usersService.sendEmail(name, email, password);
-        Users users = new Users(email, password);
-        users.setActive(true);
+        if (businessIsExisted == null) {
+            String name = businessDTO.getBusiness_name();
+            String email = businessDTO.getEmail();
+            String password = usersService.getAlphaNumericString();
+            usersService.sendEmail(name, email, password);
+            Users users = new Users(email, password);
+            users.setActive(true);
 
-        List<Role> roleList = new ArrayList<>();
-        Role roleOfBusiness = new Role();
-        roleOfBusiness.setId(3);
-        roleList.add(roleOfBusiness);
+            List<Role> roleList = new ArrayList<>();
+            Role roleOfBusiness = new Role();
+            roleOfBusiness.setId(3);
+            roleList.add(roleOfBusiness);
 
-        users.setRoles(roleList);
+            users.setRoles(roleList);
 
-        usersService.saveUser(users);
+            usersService.saveUser(users);
+
+            Supervisor supervisor = new Supervisor();
+            supervisor.setEmail(businessDTO.getEmail());
+            supervisor.setAddress(businessDTO.getBusiness_address());
+            supervisor.setName(businessDTO.getBusiness_eng_name());
+            supervisor.setPhone(businessDTO.getBusiness_phone());
+            iSupervisorService.createSupervisor(supervisor, null);
+        } else {
+            String name = businessIsExisted.getBusiness_name();
+            String email = businessIsExisted.getEmail();
+            usersService.sendEmailToBusinessIsExisted(name, email);
+        }
+
     }
 }
