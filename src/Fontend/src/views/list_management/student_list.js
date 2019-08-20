@@ -101,7 +101,7 @@ class student_list extends Component {
         const students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=${this.state.codeSortOrder}&nameSortOrder=${this.state.nameSortOrder}&specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         const dropdownSpecialized = await ApiServices.Get("/admin/getSpecializedsActive");
         const numOfStudentAll = await ApiServices.Get(`/student/searchListStudent?valueSearch=${""}`);
-        const numOfStudentSuggest = await ApiServices.Get(`/student/searchStudentWithHope?valueSearch=${""}&type=0`);
+        const numOfStudentSuggest = await ApiServices.Get(`/student/searchStudentWithHope?valueSearch=${""}&type=1`);
         if (students !== null) {
             this.setState({
                 students: students.listData,
