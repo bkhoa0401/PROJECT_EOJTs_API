@@ -174,9 +174,14 @@ class Report_Detail extends Component {
                                             (role && role !== 'ROLE_ADMIN' ?
                                                 <>
                                                     &nbsp;&nbsp;
-                                            <Button color="primary" onClick={() => this.handleDirect(`/Report/Update_Report/${report.id}~${student.email}`)}>
-                                                <i className="fa cui-note"></i>
-                                            </Button>
+                                                    {role === "ROLE_SUPERVISOR" ?
+                                                        <Button color="primary" onClick={() => this.handleDirect(`/supervisor/Report/Update_Report/${report.id}~${student.email}`)}>
+                                                            <i className="fa cui-note"></i>
+                                                        </Button> :
+                                                        <Button color="primary" onClick={() => this.handleDirect(`/hr/Report/Update_Report/${report.id}~${student.email}`)}>
+                                                            <i className="fa cui-note"></i>
+                                                        </Button>
+                                                    }
                                                 </> :
                                                 <></>
                                             )
@@ -345,9 +350,13 @@ class Report_Detail extends Component {
                                     <CardFooter>
                                         <Row>
                                             <Col xs="4" sm="4">
-                                                <Button block color="secondary" onClick={() => this.handleDirect('/report')}>
-                                                    Trở về
-                                                </Button>
+                                                {role === "ROLE_SUPERVISOR" ?
+                                                    <Button block color="secondary" onClick={() => this.handleDirect('/supervisor/report')}>Trở về</Button> :
+                                                    (role === "ROLE_HR" ?
+                                                        <Button block color="secondary" onClick={() => this.handleDirect('/hr/report')}>Trở về</Button> :
+                                                        <Button block color="secondary" onClick={() => this.handleDirect('/admin/report')}>Trở về</Button>
+                                                    )
+                                                }
                                             </Col>
                                         </Row>
                                     </CardFooter>

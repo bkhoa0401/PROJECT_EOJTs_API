@@ -215,7 +215,7 @@ class Specialized extends Component {
                                         <i className="fa fa-align-justify"></i> Danh sách chuyên ngành
                                     </CardHeader>
                                     <CardBody>
-                                        <Button color="primary" onClick={() => this.handleDirect('/specialized/create')}>Tạo chuyên ngành mới</Button>
+                                        <Button color="primary" onClick={() => this.handleDirect('/admin/specialized/create')}>Tạo chuyên ngành mới</Button>
                                         <br />
                                         <br />
                                         <br />
@@ -248,7 +248,7 @@ class Specialized extends Component {
                                                                     ) : (
                                                                             <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(specialized, true)} type="submit"><i className="fa cui-circle-check"></i></Button>
                                                                         )}
-                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/specialized/update/${specialized.id}`)}><i className="fa cui-note"></i></Button>
+                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/admin/specialized/update/${specialized.id}`)}><i className="fa cui-note"></i></Button>
                                                                 </td>
                                                             </tr>
                                                         )

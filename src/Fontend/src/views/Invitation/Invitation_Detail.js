@@ -137,7 +137,7 @@ class Invitation_Detail extends Component {
                             <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/invitation")} type="submit" color="secondary" block>Trở về</Button>
+                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr/invitation")} type="submit" color="secondary" block>Trở về</Button>
                                     </Col>
                                 </Row>
                             </CardFooter>

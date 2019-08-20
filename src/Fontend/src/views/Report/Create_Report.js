@@ -58,6 +58,7 @@ class Create_Report extends Component {
 
             stateTask: ["Tổng", "Hoàn thành", "Chưa hoàn thành"],
             stateNo: 0,
+            role:'',
         };
     }
 
@@ -98,7 +99,12 @@ class Create_Report extends Component {
         const student = await ApiServices.Get(`/student/student/${needParam[1]}`);
         const numOfEvaluations = await ApiServices.Get(`/supervisor/getNumOfEvaluationsOfStudent?stuEmail=${needParam[1]}`);
         if (needParam[0] > (numOfEvaluations + 1)) {
-            this.props.history.push("/report");
+            if (role === 'ROLE_SUPERVISOR') {
+                this.props.history.push("/supervisor/report");
+            }
+            if (role === 'ROLE_HR') {
+                this.props.history.push("/hr/report");
+            }
         }
         const ojtEnrollment = await ApiServices.Get(`/enrollment/getSelectedStuEnrollment?email=${needParam[1]}`);
         var dateEnroll = ojtEnrollment.timeEnroll;
@@ -244,6 +250,7 @@ class Create_Report extends Component {
 
             isThisMonth: needParam[0],
             stateNo: 0,
+            role: role,
         });
         console.log(this.state.isThisMonth);
     }
@@ -610,7 +617,7 @@ class Create_Report extends Component {
                         data: {
                             title: this.state.titleHeader,
                             body: 'Bạn đã có ' + this.state.titleHeader,
-                            click_action: "http://localhost:3000/#/invitation/new",
+                            click_action: "http://localhost:3000/#/hr/invitation/new",
                             icon: "http://url-to-an-icon/icon.png"
                         },
                         to: `${this.state.student.token}`
@@ -619,11 +626,16 @@ class Create_Report extends Component {
                     const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
                     setTimeout(
                         function () {
-                            this.props.history.push("/report");
+                            if (this.state.role === "ROLE_SUPERVISOR") {
+                                this.props.history.push("/supervisor/report");
+                            }
+                            if (this.state.role === "ROLE_HR") {
+                                this.props.history.push("/hr/report");
+                            }
                         }
                             .bind(this),
                         2000
-                    );                    
+                    );
                 } else {
                     Toastify.actionFail("Tạo đánh giá tháng thất bại!");
                     this.setState({
@@ -812,7 +824,7 @@ class Create_Report extends Component {
                                                             })}
                                                         </Input>
                                                     </FormGroup>
-                                                    <hr/>
+                                                    <hr />
                                                     <FormGroup row style={{ paddingLeft: '70%' }}>
                                                         Trạng thái: &nbsp;&nbsp;
                                                         <Input onChange={e => { this.handleSelectStateTask(e) }} type="select" name="stateTask" style={{ width: '150px' }} size="sm">
@@ -877,9 +889,10 @@ class Create_Report extends Component {
                                     <CardFooter>
                                         <Row style={{ marginLeft: "21%" }}>
                                             <Col xs="4" sm="4">
-                                                <Button block color="danger" onClick={() => this.handleDirect('/report')}>
-                                                    Huỷ bỏ
-                                                </Button>
+                                                {this.state.role === "ROLE_SUPERVISOR" ?
+                                                    <Button block color="danger" onClick={() => this.handleDirect('/supervisor/report')}>Huỷ bỏ</Button> :
+                                                    <Button block color="danger" onClick={() => this.handleDirect('/hr/report')}>Huỷ bỏ</Button>
+                                                }
                                             </Col>
                                             <Col xs="4" sm="4">
                                                 <Button block color="primary" onClick={() => this.handleSubmit()}>

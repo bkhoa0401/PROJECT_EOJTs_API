@@ -7,7 +7,7 @@ export default {
     },
     {
       name: 'Doanh nghiệp đề xuất',
-      url: '/business-proposed',
+      url: '/admin/business-proposed',
       icon: 'icon-note',
     },
   ]

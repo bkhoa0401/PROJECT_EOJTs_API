@@ -180,7 +180,7 @@ class Invitation extends Component {
                                     <CardBody>
                                         <FormGroup row>
                                             <Col md="10">
-                                                <Button color="primary" onClick={() => this.handleDirect('/invitation/new')}>Gửi lời mời cho sinh viên</Button>
+                                                <Button color="primary" onClick={() => this.handleDirect('/hr/invitation/new')}>Gửi lời mời cho sinh viên</Button>
                                             </Col>
                                             <Col xs="12" md="2">
                                                 {isSearching === false ?

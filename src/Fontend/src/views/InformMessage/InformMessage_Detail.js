@@ -27,12 +27,14 @@ class InformMessage_Detail extends Component {
             titleReply: '',
             descriptionReply: '',
             emailStudentSent: '',
+            role: '',
         };
     }
 
     async componentDidMount() {
         const informMessageID = window.location.href.split("/").pop();
         const token = localStorage.getItem('id_token');
+        const decoded = decode(token);
         const data = await ApiServices.Get(`/event/getEvent?id=${informMessageID}`);
         if (data != null) {
             const read = await ApiServices.Put(`/event/setStateEvent?eventId=${data.event.id}`)
@@ -73,7 +75,8 @@ class InformMessage_Detail extends Component {
                 informFromEmail: informFromEmail,
                 isStudentSent: isStudentSent,
                 titleReply: data.event.title,
-                listStudentEmail
+                listStudentEmail,
+                role: decoded.role,
             });
         }
     }
@@ -226,9 +229,14 @@ class InformMessage_Detail extends Component {
                                     <CardFooter className="p-3">
                                         <Row>
                                             <Col xs="4" sm="4">
-                                                <Button block color="secondary" onClick={() => this.handleDirect('/informmessage')}>
-                                                    Trở về
-                                                </Button>
+                                                {this.state.role === "ROLE_ADMIN" ?
+                                                    <Button block color="secondary" onClick={() => this.handleDirect('/admin/informmessage')}>
+                                                        Trở về
+                                                    </Button> :
+                                                    <Button block color="secondary" onClick={() => this.handleDirect('/hr/informmessage')}>
+                                                        Trở về
+                                                    </Button>
+                                                }
                                             </Col>
                                         </Row>
                                     </CardFooter>

@@ -5,6 +5,7 @@ import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import SimpleReactValidator from '../../validator/simple-react-validator';
 import Toastify from '../Toastify/Toastify';
+import decode from 'jwt-decode';
 
 class Update_Report extends Component {
 
@@ -40,16 +41,17 @@ class Update_Report extends Component {
             validatorNumRange_score_discipline: '',
             maxWorkDays: 0,
             validatorMaxWorkDays: '',
+            role: '',
         };
     }
 
     async componentDidMount() {
         const token = localStorage.getItem('id_token');
-        // let role = '';
-        // if (token !== null) {
-        //     const decoded = decode(token);
-        //     role = decoded.role;
-        // }
+        let role = '';
+        if (token !== null) {
+            const decoded = decode(token);
+            role = decoded.role;
+        }
         // if (role === 'ROLE_SUPERVISOR') {
         //     actor = await ApiServices.Get(`/supervisor`);
         //     businessName = actor.business.business_name;
@@ -131,6 +133,7 @@ class Update_Report extends Component {
             onScreenStartDate: onScreenStartDate,
             onScreenEndDate: onScreenEndDate,
             workDays: workDays,
+            role: role,
         });
     }
 
@@ -269,7 +272,12 @@ class Update_Report extends Component {
                     Toastify.actionSuccess("Cập nhật đánh giá tháng thành công!");
                     setTimeout(
                         function () {
-                            this.props.history.push(`/Report/Report_Detail/${needId[0]}~${needId[1]}`);
+                            if (this.state.role === "ROLE_SUPERVISOR") {
+                                this.props.history.push(`/supervisor/Report/Report_Detail/${needId[0]}~${needId[1]}`);
+                            }
+                            if (this.state.role === "ROLE_HR") {
+                                this.props.history.push(`/hr/Report/Report_Detail/${needId[0]}~${needId[1]}`);
+                            }
                         }
                             .bind(this),
                         2000
@@ -434,9 +442,14 @@ class Update_Report extends Component {
                                         <Row style={{ marginLeft: "21%" }}>
                                             <Col xs="4" sm="4">
                                                 {needId === null ? (<></>) :
-                                                    (<Button block color="danger" onClick={() => this.handleDirect(`/Report/Report_Detail/${needId[0]}~${needId[1]}`)}>
-                                                        Huỷ bỏ
-                                                    </Button>)
+                                                    (this.state.role === "ROLE_SUPERVISOR" ?
+                                                        <Button block color="danger" onClick={() => this.handleDirect(`/supervisor/Report/Report_Detail/${needId[0]}~${needId[1]}`)}>
+                                                            Huỷ bỏ
+                                                        </Button> :
+                                                        <Button block color="danger" onClick={() => this.handleDirect(`/hr/Report/Report_Detail/${needId[0]}~${needId[1]}`)}>
+                                                            Huỷ bỏ
+                                                        </Button>
+                                                    )
                                                 }
                                             </Col>
                                             <Col xs="4" sm="4">
