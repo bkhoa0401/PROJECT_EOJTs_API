@@ -8,6 +8,7 @@ import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import SimpleReactValidator from '../../validator/simple-react-validator';
 import Toastify from '../../views/Toastify/Toastify';
+import * as jsPDF from 'jspdf';
 
 class BusinessProposed_Detail extends Component {
 
@@ -343,6 +344,38 @@ class BusinessProposed_Detail extends Component {
         });
     }
 
+    downloadPDF = () => {
+        var pdf = new jsPDF('p', 'pt', 'letter');
+        var source = document.getElementById('divPDF');
+        var specialElementHandlers = {
+            '#bypassme': function (element, renderer) {
+                return true
+            }
+        };
+
+        var margins = {
+            top: 50,
+            left: 60,
+            width: 800
+        };
+
+        pdf.addFont('ArialMS', 'Arial', 'normal');
+        pdf.setFont('Arial');
+
+        pdf.fromHTML(
+            source // HTML string or DOM elem ref.
+            , margins.left // x coord
+            , margins.top // y coord
+            , {
+                'width': margins.width // max width of content on PDF
+                , 'elementHandlers': specialElementHandlers
+            },
+            function (dispose) {
+                pdf.save('BusinessProposed.pdf');
+            }
+        )
+    }
+
     render() {
         const { business, loading, role } = this.state;
         let linkDownContact = '';
@@ -354,13 +387,14 @@ class BusinessProposed_Detail extends Component {
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
             ) : (
-                    <div className="animated fadeIn">
+                    <div className="animated fadeIn" id="divPDF">
                         <ToastContainer />
                         <Row>
                             <Col xs="12" sm="12">
                                 <Card>
                                     <CardHeader>
                                         <h4>Thông tin công ty đề xuất</h4>
+                                        <Button color="primary" type="submit" onClick={() => this.downloadPDF()}>Download PDF</Button>
                                     </CardHeader>
                                     <CardBody>
                                         <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
