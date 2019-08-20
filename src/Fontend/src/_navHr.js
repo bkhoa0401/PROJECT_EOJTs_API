@@ -38,11 +38,6 @@ export default {
       icon: 'icon-user-following',
     },
     {
-      name: 'Danh sách nhiệm vụ',
-      url: '/hr/hr-task',
-      icon: 'icon-notebook',
-    },    
-    {
       name: 'Thông tin tuyển dụng',
       url: '/hr/job_post_list_hr',
       icon: 'icon-directions',
@@ -52,6 +47,11 @@ export default {
       url: '/hr/informmessage',
       icon: 'icon-envelope-letter',
     },
+    {
+      name: 'Danh sách nhiệm vụ',
+      url: '/hr/hr-task',
+      icon: 'icon-notebook',
+    },    
     {
       name: 'Đánh giá',
       url: '/hr/report',

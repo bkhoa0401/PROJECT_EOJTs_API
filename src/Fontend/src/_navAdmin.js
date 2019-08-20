@@ -11,11 +11,6 @@ export default {
       icon: 'icon-calendar',
     },
     {
-      name: 'Nhập tập tin',
-      url: '/admin/importfiles',
-      icon: 'icon-folder',
-    },
-    {
       name: 'Chuyên ngành',
       url: '/admin/specialized',
       icon: 'icon-compass',
@@ -24,6 +19,16 @@ export default {
       name: 'Kỹ năng',
       url: '/admin/skill',
       icon: 'icon-puzzle',
+    },
+    {
+      name: 'Nhập tập tin',
+      url: '/admin/importfiles',
+      icon: 'icon-folder',
+    },
+    {
+      name: 'Doanh nghiệp đề xuất',
+      url: '/admin/business-proposed',
+      icon: 'icon-note',
     },
     {
       name: 'Quản lý tài khoản',
@@ -89,10 +94,5 @@ export default {
       url: '/admin/answer-statistics',
       icon: 'icon-book-open',
     },
-    {
-      name: 'Doanh nghiệp đề xuất',
-      url: '/admin/business-proposed',
-      icon: 'icon-note',
-    }
   ]
 };
