@@ -188,7 +188,7 @@ class ManageAccount extends Component {
                                                     <Row className="float-right">
                                                         <h6>Số dòng trên trang: </h6>
                                                         &nbsp;&nbsp;
-                                                <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
+                                                        <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
                                                             <option value={10} selected={rowsPerPage === 10}>10</option>
                                                             <option value={20}>20</option>
                                                             <option value={50}>50</option>
@@ -220,7 +220,7 @@ class ManageAccount extends Component {
                                                         supervisors && supervisors.map((supervisor, i) => {
                                                             return (
                                                                 <tr key={i}>
-                                                                    <td style={{ textAlign: "center" }}>{i + 1}</td>
+                                                                    <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage  + i + 1}</td>
                                                                     <td style={{ textAlign: "center" }}>{supervisor.email}</td>
                                                                     <td style={{ textAlign: "center" }}>{supervisor.name}</td>
                                                                     <td style={{ textAlign: "center" }}>{supervisor.phone}</td>

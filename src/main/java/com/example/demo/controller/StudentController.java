@@ -721,6 +721,9 @@ public class StudentController {
 
         List<Student> listAllStudent = studentService.getAllStudentsBySemesterId();
 
+        String emailBusiness = getEmailFromToken();
+        List<Student> officialStudentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
+
         for (int i = 0; i < listStudentIsInvited.size(); i++) {
             String emailStudentIsInvited = listStudentIsInvited.get(i).getEmail();
             for (int j = 0; j < listAllStudent.size(); j++) {
@@ -732,10 +735,66 @@ public class StudentController {
             }
         }
 
-        Utils<Student> studentUtils = new Utils<>();
-        PagingDTO pagingDTO = studentUtils.paging(listAllStudent, currentPage, rowsPerPage);
+        for (int i = 0; i < officialStudentList.size(); i++) {
+            String emailStudentIsIn = officialStudentList.get(i).getEmail();
+            for (int j = 0; j < listAllStudent.size(); j++) {
+                String emailStudent = listAllStudent.get(j).getEmail();
+                if (emailStudent.equals(emailStudentIsIn)) {
+                    listAllStudent.remove(listAllStudent.get(j));
+                    break;
+                }
+            }
+        }
 
-        return new ResponseEntity<>(pagingDTO, HttpStatus.OK);
+        if (listAllStudent != null ) {
+            Utils<Student> studentUtils = new Utils<>();
+            PagingDTO pagingDTO = studentUtils.paging(listAllStudent, currentPage, rowsPerPage);
+
+            return new ResponseEntity<>(pagingDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/searchStudentNotYetInvitedAllFields")
+    @ResponseBody
+    public ResponseEntity<List<Student>> searchStudentNotYetInvitedAllFields(@RequestParam String valueSearch) {
+        getListStudentOfBusiness();
+
+        List<Student> listStudentIsInvited = studentListIsInvited;
+
+        List<Student> listAllStudent = studentService.getAllStudentsBySemesterId();
+
+        String emailBusiness = getEmailFromToken();
+        List<Student> officialStudentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
+
+        for (int i = 0; i < listStudentIsInvited.size(); i++) {
+            String emailStudentIsInvited = listStudentIsInvited.get(i).getEmail();
+            for (int j = 0; j < listAllStudent.size(); j++) {
+                String emailStudent = listAllStudent.get(j).getEmail();
+                if (emailStudent.equals(emailStudentIsInvited)) {
+                    listAllStudent.remove(listAllStudent.get(j));
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < officialStudentList.size(); i++) {
+            String emailStudentIsIn = officialStudentList.get(i).getEmail();
+            for (int j = 0; j < listAllStudent.size(); j++) {
+                String emailStudent = listAllStudent.get(j).getEmail();
+                if (emailStudent.equals(emailStudentIsIn)) {
+                    listAllStudent.remove(listAllStudent.get(j));
+                    break;
+                }
+            }
+        }
+
+        if (listAllStudent != null ) {
+            List<Student> searchStudentList = searchStudentByCodeNameSpecialized(listAllStudent, valueSearch);
+
+            return new ResponseEntity<>(searchStudentList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
     @PutMapping("/updateToken")
@@ -890,10 +949,59 @@ public class StudentController {
                 }
             }
         }
+
+        List<Student> officialStudentList = ojt_enrollmentService.getListStudentByBusiness(email);
+        for (int i = 0; i < officialStudentList.size(); i++) {
+            String emailStudentIsIn = officialStudentList.get(i).getEmail();
+            for (int j = 0; j < studentList.size(); j++) {
+                String emailStudent = studentList.get(j).getEmail();
+                if (emailStudent.equals(emailStudentIsIn)) {
+                    studentList.remove(studentList.get(j));
+                    break;
+                }
+            }
+        }
         if (studentList != null) {
             Utils<Student> studentUtils = new Utils<>();
             PagingDTO pagingDTO = studentUtils.paging(studentList, currentPage, rowsPerPage);
             return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/searchStudentSuggestAllFields")
+    @ResponseBody
+    public ResponseEntity<List<Student>> searchStudentSuggestAllFields(@RequestParam String valueSearch) {
+        getListStudentOfBusiness(); // lay ra nhung dua da moi
+
+        String email = getEmailFromToken();
+        List<Student> studentList = businessService.getSuggestListStudent(email);
+
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            for (int j = 0; j < studentListIsInvited.size(); j++) {
+                Student studentIsInvited = studentListIsInvited.get(j);
+                if (student.getEmail().equals(studentIsInvited.getEmail())) {
+                    studentList.remove(student); // xoa dua da duoc moi ra khoi list suggest
+                }
+            }
+        }
+
+        List<Student> officialStudentList = ojt_enrollmentService.getListStudentByBusiness(email);
+        for (int i = 0; i < officialStudentList.size(); i++) {
+            String emailStudentIsIn = officialStudentList.get(i).getEmail();
+            for (int j = 0; j < studentList.size(); j++) {
+                String emailStudent = studentList.get(j).getEmail();
+                if (emailStudent.equals(emailStudentIsIn)) {
+                    studentList.remove(studentList.get(j));
+                    break;
+                }
+            }
+        }
+        if (studentList != null ) {
+            List<Student> searchStudentList = searchStudentByCodeNameSpecialized(studentList, valueSearch);
+
+            return new ResponseEntity<>(searchStudentList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -1305,6 +1413,17 @@ public class StudentController {
         for (int i = 0; i < studentList.size(); i++) {
             Student student = studentList.get(i);
             if (student.getCode().toLowerCase().contains(valueSearch.toLowerCase()) || student.getName().toLowerCase().contains(valueSearch.toLowerCase())) {
+                searchStudentList.add(student);
+            }
+        }
+        return searchStudentList;
+    }
+
+    private List<Student> searchStudentByCodeNameSpecialized(List<Student> studentList, String valueSearch) {
+        List<Student> searchStudentList = new ArrayList<Student>();
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            if (student.getCode().toLowerCase().contains(valueSearch.toLowerCase()) || student.getName().toLowerCase().contains(valueSearch.toLowerCase()) || student.getSpecialized().getName().toLowerCase().contains(valueSearch.toLowerCase())) {
                 searchStudentList.add(student);
             }
         }

@@ -379,7 +379,7 @@ class Ojt_Registration extends Component {
 
                                                         return (
                                                             <tr key={index}>
-                                                                <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                                <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
                                                                 <td style={{ textAlign: "center" }}>{student.code}</td>
                                                                 <td style={{ textAlign: "center" }}>{student.name}</td>
                                                                 <td style={{ textAlign: "center" }}>{student.specialized.name}</td>

@@ -246,7 +246,7 @@ class Invitation extends Component {
 
                                                             return (
                                                                 <tr key={index}>
-                                                                    <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                                    <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
                                                                     <td style={{ textAlign: "center" }}>{student.student.code}</td>
                                                                     <td style={{ textAlign: "center" }}>{student.student.name}</td>
                                                                     <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
