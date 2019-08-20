@@ -174,6 +174,20 @@ public class BusinessController {
         return new ResponseEntity<>(pagingBusiness, HttpStatus.OK);
     }
 
+    @GetMapping("/searchListBusiness")
+    @ResponseBody
+    public ResponseEntity<List<Business>> getAllBusinessPaging(@RequestParam String valueSearch) {
+        List<Business> businessList = businessService.getAllBusinessBySemester();
+        List<Business> searchList = new ArrayList<>();
+        for (int i = 0; i < businessList.size(); i++) {
+            if (businessList.get(i).getBusiness_name().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                    businessList.get(i).getBusiness_eng_name().toLowerCase().contains(valueSearch.toLowerCase())){
+                searchList.add(businessList.get(i));
+            }
+        }
+        return new ResponseEntity<>(searchList, HttpStatus.OK);
+    }
+
 
     @GetMapping("singlekey/{key}")
     public List<Business> getSingleValue(@PathVariable("key") String key) {

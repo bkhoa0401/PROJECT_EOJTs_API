@@ -183,17 +183,6 @@ class Invitation extends Component {
                                                 <Button color="primary" onClick={() => this.handleDirect('/hr/invitation/new')}>Gửi lời mời cho sinh viên</Button>
                                             </Col>
                                             <Col xs="12" md="2">
-                                                {isSearching === false ?
-                                                    <Row className="float-right">
-                                                        <h6>Số dòng trên trang: </h6>
-                                                        &nbsp;&nbsp;
-                                                <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
-                                                            <option value={10} selected={rowsPerPage === 10}>10</option>
-                                                            <option value={20}>20</option>
-                                                            <option value={50}>50</option>
-                                                        </Input>
-                                                    </Row> : <></>
-                                                }
                                             </Col>
                                         </FormGroup>
                                         <nav className="navbar navbar-light bg-light justify-content-between">
@@ -360,13 +349,24 @@ class Invitation extends Component {
                                         {isSearching === false ?
                                             <Row>
                                                 <Col>
-                                                    <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
+                                                    <Row >
+                                                        <Pagination>
+                                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                                        </Pagination>
+                                                        &emsp;
+                                                        <h6 style={{ marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                                        &nbsp;&nbsp;
+                                                        <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "70px" }}>
+                                                            <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                            <option value={20}>20</option>
+                                                            <option value={50}>50</option>
+                                                        </Input>
+                                                    </Row>
+
                                                 </Col>
                                                 <Col>
                                                     <Row className="float-right">
-                                                        <Pagination style={{ marginTop: "3%" }}>
-                                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                                        </Pagination>
+                                                        <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
                                                     </Row>
                                                 </Col>
                                             </Row> : <></>
