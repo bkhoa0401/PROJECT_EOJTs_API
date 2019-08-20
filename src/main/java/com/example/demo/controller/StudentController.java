@@ -100,7 +100,7 @@ public class StudentController {
         StudentIsExistedAndNotYet studentIsExistedAndNotYet = studentService.getStudentsIsExisted(studentList);
 
         List<Student> studentListIsExisted = studentIsExistedAndNotYet.getStudentsIsExisted();
-        studentService.handlerStudentIsExisted(studentListIsExisted); // handle xong may dua da ton tai
+        studentService.handlerStudentIsExisted(studentListIsExisted,semesterName); // handle xong may dua da ton tai
 
         List<Student> studentListNotYet = studentIsExistedAndNotYet.getStudentsNotYet();
 

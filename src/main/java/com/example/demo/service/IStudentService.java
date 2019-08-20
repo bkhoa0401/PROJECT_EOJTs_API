@@ -77,5 +77,5 @@ public interface IStudentService {
 
     StudentIsExistedAndNotYet getStudentsIsExisted(List<Student_ImportFileDTO> students);
 
-    void handlerStudentIsExisted(List<Student> students);
+    void handlerStudentIsExisted(List<Student> students,String semesterName);
 }

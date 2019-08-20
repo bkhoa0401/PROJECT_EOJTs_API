@@ -67,6 +67,9 @@ public class BusinessController {
     @Autowired
     ISemesterService semesterService;
 
+    @Autowired
+    RedisTemplate template;
+
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     @PostMapping("")
@@ -305,7 +308,26 @@ public class BusinessController {
         invitation.setStudent(student);
         invitation.setBusiness(business);
         invitationService.createInvitation(invitation);
+
+        ValueOperations values = template.opsForValue();
+        List<Student> studentList = (List<Student>) values.get("students");
+
+        if (studentList != null) {
+            int position = checkPositionStudent(studentList, student);
+            studentList.remove(position);
+            values.set("students",studentList);
+        }
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    public int checkPositionStudent(List<Student> students, Student student) {
+        for (int i = 0; i < students.size(); i++) {
+            Student studentInList = students.get(i);
+            if (studentInList.getEmail().equals(student.getEmail())) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     // update status of option student when interview
