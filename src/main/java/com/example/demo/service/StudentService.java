@@ -603,6 +603,32 @@ public class StudentService implements IStudentService {
     }
 
     @Override
+    public List<Student_OjtenrollmentDTO> getStudentsWithHope() {
+        Semester semester = semesterService.getSemesterCurrent();
+        List<Student> studentList = getAllStudentsBySemesterId();
+
+        List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOList = new ArrayList<>();
+
+        for (int i = 0; i < studentList.size(); i++) {
+            Student_OjtenrollmentDTO student_ojtenrollmentDTO = new Student_OjtenrollmentDTO();
+            student_ojtenrollmentDTO.setStudent(studentList.get(i));
+            Ojt_Enrollment ojt_enrollment =
+                    ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(studentList.get(i).getEmail(), semester.getId());
+            if (ojt_enrollment.getBusiness() != null) {
+                student_ojtenrollmentDTO.setBusinessEnroll(ojt_enrollment.getBusiness().getBusiness_eng_name());
+            } else {
+                if (studentList.get(i).isInterviewed1() == true && studentList.get(i).isInterviewed2() == true) {
+                    if (studentList.get(i).isAcceptedOption1() == false && studentList.get(i).isAcceptedOption2() == false) {
+                        student_ojtenrollmentDTO.setBusinessEnroll("Rớt");
+                    }
+                }
+            }
+            student_ojtenrollmentDTOList.add(student_ojtenrollmentDTO);
+        }
+        return student_ojtenrollmentDTOList;
+    }
+
+    @Override
     public PagingDTO getEvaluationsOfStudents(int specializedID, int currentPage, int rowsPerPage) {
         List<Student> studentList = getAllStudentsBySemesterId();
         List<Student> filteredStudentList = new ArrayList<Student>();

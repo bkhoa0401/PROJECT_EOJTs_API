@@ -247,7 +247,8 @@ public class AdminController {
         List<Business> businessList = businessService.getAllBusinessBySemester();
         List<Business> searchList = new ArrayList<>();
         for (int i = 0; i < businessList.size(); i++) {
-            if (businessList.get(i).getBusiness_name().toLowerCase().contains(valueSearch.toLowerCase())) {
+            if (businessList.get(i).getBusiness_name().toLowerCase().contains(valueSearch.toLowerCase())||
+                    businessList.get(i).getBusiness_eng_name().toLowerCase().contains(valueSearch.toLowerCase())) {
                 searchList.add(businessList.get(i));
             }
         }

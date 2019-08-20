@@ -79,13 +79,29 @@ class student_list extends Component {
             filterStudentTaskList: null,
             stateTask: ["Tổng", "Hoàn thành", "Chưa hoàn thành"],
             stateNo: 0,
+
+            dropdownSpecializedOpen: false,
+            dropdownSpecialized: [],
+            isSearching: false,
+
+            selectedSpecialized: -1,
+            searchingListAll: [],
+            searchingListCbAll: [],
+            searchingListSuggest: [],
+            isSearchingAll: false,
+            numOfStudentAll: 0,
+            isSearchingSuggest: false,
+            numOfStudentSuggest: 0,
         };
         // this.toggleModal = this.toggleModal.bind(this);
     }
 
     async componentDidMount() {
         const { currentPage, rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=${this.state.codeSortOrder}&nameSortOrder=${this.state.nameSortOrder}&specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const dropdownSpecialized = await ApiServices.Get("/admin/getSpecializedsActive");
+        const numOfStudentAll = await ApiServices.Get(`/student/searchListStudent?valueSearch=${""}`);
+        const numOfStudentSuggest = await ApiServices.Get(`/student/searchStudentWithHope?valueSearch=${""}&type=0`);
         if (students !== null) {
             this.setState({
                 students: students.listData,
@@ -93,6 +109,9 @@ class student_list extends Component {
                 loading: false,
                 nameSortOrder: 0,
                 codeSortOrder: 0,
+                dropdownSpecialized: dropdownSpecialized,
+                numOfStudentAll: numOfStudentAll.length,
+                numOfStudentSuggest: numOfStudentSuggest.length,
             });
         }
         // const students = await ApiServices.Get('/student/getAllStudent');
@@ -106,6 +125,31 @@ class student_list extends Component {
         // }
     }
 
+    toggleDropdownSpecialized = () => {
+        this.setState({
+            dropdownSpecializedOpen: !this.state.dropdownSpecializedOpen,
+        });
+    }
+
+    handleSelectSpecialized = async (specializedId) => {
+        console.log(specializedId);
+
+        const { rowsPerPage } = this.state;
+
+        const studentsPaging = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=${this.state.codeSortOrder}&nameSortOrder=${this.state.nameSortOrder}&specializedID=${specializedId}&currentPage=0&rowsPerPage=${rowsPerPage}`);
+        console.log(studentsPaging);
+
+        if (studentsPaging !== null) {
+            this.setState({
+                students: studentsPaging.listData,
+                pageNumber: studentsPaging.pageNumber,
+                nameSortOrder: 0,
+                codeSortOrder: 0,
+                selectedSpecialized: specializedId,
+            })
+        }
+    }
+
     toggle = async (tabPane, tab) => {
         const newArray = this.state.activeTab.slice();
         newArray[tabPane] = tab;
@@ -113,7 +157,7 @@ class student_list extends Component {
         let typeSelected;
         if (tab == 1) {
             const { currentPage, rowsPerPage } = this.state;
-            students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+            students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=${this.state.codeSortOrder}&nameSortOrder=${this.state.nameSortOrder}&specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
             if (students !== null) {
                 this.setState({
                     students: students.listData,
@@ -134,6 +178,7 @@ class student_list extends Component {
                     loading: false,
                     nameSortOrder: 0,
                     codeSortOrder: 0,
+                    selectedSpecialized: -1,
                 });
             }
             // students = await ApiServices.Get(`/student/getStudentsWithNoCompany?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
@@ -278,38 +323,46 @@ class student_list extends Component {
         })
     }
 
-    sortCodeInOrder = (orderBy) => {
+    sortCodeInOrder = async (orderBy) => {
         if (orderBy === 1) {
+            const students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=1&nameSortOrder=${this.state.nameSortOrder}&specializedID=${this.state.selectedSpecialized}&currentPage=0&rowsPerPage=${this.state.rowsPerPage}`);
             this.setState({
-                students: this.state.students.sort((a, b) => (a.student.code > b.student.code) ? 1 : -1),
+                students: students.listData,
                 codeSortOrder: 1,
                 nameSortOrder: 0,
+                currentPage: 0,
             });
         }
         if (orderBy === 2) {
+            const students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=2&nameSortOrder=${this.state.nameSortOrder}&specializedID=${this.state.selectedSpecialized}&currentPage=0&rowsPerPage=${this.state.rowsPerPage}`);
             this.setState({
-                students: this.state.students.sort((a, b) => (b.student.code > a.student.code) ? 1 : -1),
+                students: students.listData,
                 codeSortOrder: 2,
                 nameSortOrder: 0,
+                currentPage: 0,
             });
         }
     }
 
-    sortNameInOrder = (orderBy) => {
+    sortNameInOrder = async (orderBy) => {
         if (orderBy === 1) {
-            // console.log(1);
+            const students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=${this.state.codeSortOrder}&nameSortOrder=1&specializedID=${this.state.selectedSpecialized}&currentPage=0&rowsPerPage=${this.state.rowsPerPage}`);
+            console.log(students);
             this.setState({
-                students: this.state.students.sort((a, b) => (a.student.name > b.student.name) ? 1 : -1),
+                students: students.listData,
                 nameSortOrder: 1,
                 codeSortOrder: 0,
+                currentPage: 0,
             });
             // console.log(this.state.students.sort((a, b) => (a.student.name > b.student.name) ? 1 : -1));
         }
         if (orderBy === 2) {
+            const students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=${this.state.codeSortOrder}&nameSortOrder=2&specializedID=${this.state.selectedSpecialized}&currentPage=0&rowsPerPage=${this.state.rowsPerPage}`);
             this.setState({
-                students: this.state.students.sort((a, b) => (b.student.name > a.student.name) ? 1 : -1),
+                students: students.listData,
                 nameSortOrder: 2,
                 codeSortOrder: 0,
+                currentPage: 0,
             });
         }
     }
@@ -610,9 +663,49 @@ class student_list extends Component {
 
     handleInput = async (event) => {
         const { name, value } = event.target;
-        await this.setState({
-            [name]: value.substr(0, 20),
-        })
+        console.log(value);
+        if (value === "") {
+            // console.log(1);
+            await this.setState({
+                [name]: value.substr(0, 20),
+                isSearchingAll: false,
+            })
+        } else {
+            const students = await ApiServices.Get(`/student/searchListStudent?valueSearch=${value.substr(0, 20)}`);
+            console.log(students);
+            if (students !== null) {
+                this.setState({
+                    [name]: value.substr(0, 20),
+                    searchingListAll: students,
+                    isSearchingAll: true,
+                })
+            }
+        }
+    }
+
+    handleInputTab2 = async (event) => {
+        const { name, value } = event.target;
+        console.log(value);
+        if (value === "") {
+            // console.log(1);
+            await this.setState({
+                [name]: value.substr(0, 20),
+                isSearchingSuggest: false,
+                isSearchingAll: false,
+            })
+        } else {
+            // this.state.typeSelected
+            const students = await ApiServices.Get(`/student/searchStudentWithHope?valueSearch=${value.substr(0, 20)}&type=${this.state.typeSelected}`);
+            console.log(students);
+            if (students !== null) {
+                this.setState({
+                    [name]: value.substr(0, 20),
+                    searchingListSuggest: students,
+                    isSearchingSuggest: true,
+                    isSearchingAll: false,
+                })
+            }
+        }
     }
 
     handleInputSelect = async (event) => {
@@ -625,7 +718,7 @@ class student_list extends Component {
             typeSelected = 0;
             // students = await ApiServices.Get('/student/getAllStudent');
             const { rowsPerPageCbAll, currentPageCbAll } = this.state;
-            const students = await ApiServices.Get(`/student/getAllStudent?currentPage=0&rowsPerPage=${rowsPerPageCbAll}`);
+            const students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=${this.state.codeSortOrder}&nameSortOrder=${this.state.nameSortOrder}&specializedID=${this.state.selectedSpecialized}&currentPage=0&rowsPerPage=${rowsPerPageCbAll}`);
             if (students !== null) {
                 this.setState({
                     students: students.listData,
@@ -739,7 +832,7 @@ class student_list extends Component {
 
     handlePageNumberCbAll = async (currentPageCbAll) => {
         const { rowsPerPageCbAll } = this.state;
-        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPageCbAll}&rowsPerPage=${rowsPerPageCbAll}`);
+        const students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=${this.state.codeSortOrder}&nameSortOrder=${this.state.nameSortOrder}&specializedID=${this.state.selectedSpecialized}&currentPage=${currentPageCbAll}&rowsPerPage=${rowsPerPageCbAll}`);
         if (students !== null) {
             this.setState({
                 students: students.listData,
@@ -754,7 +847,7 @@ class student_list extends Component {
 
     handlePagePreviousCbAll = async (currentPageCbAll) => {
         const { rowsPerPageCbAll } = this.state;
-        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPageCbAll}&rowsPerPage=${rowsPerPageCbAll}`);
+        const students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=${this.state.codeSortOrder}&nameSortOrder=${this.state.nameSortOrder}&specializedID=${this.state.selectedSpecialized}&currentPage=${currentPageCbAll}&rowsPerPage=${rowsPerPageCbAll}`);
         if (students !== null) {
             this.setState({
                 students: students.listData,
@@ -769,7 +862,7 @@ class student_list extends Component {
 
     handlePageNextCbAll = async (currentPageCbAll) => {
         const { rowsPerPageCbAll } = this.state;
-        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPageCbAll}&rowsPerPage=${rowsPerPageCbAll}`);
+        const students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=${this.state.codeSortOrder}&nameSortOrder=${this.state.nameSortOrder}&specializedID=${this.state.selectedSpecialized}&currentPage=${currentPageCbAll}&rowsPerPage=${rowsPerPageCbAll}`);
         if (students !== null) {
             this.setState({
                 students: students.listData,
@@ -789,7 +882,7 @@ class student_list extends Component {
         })
 
         const { rowsPerPageCbAll } = this.state;
-        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=0&rowsPerPage=${rowsPerPageCbAll}`);
+        const students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=${this.state.codeSortOrder}&nameSortOrder=${this.state.nameSortOrder}&specializedID=${this.state.selectedSpecialized}&currentPage=0&rowsPerPage=${rowsPerPageCbAll}`);
         if (students !== null) {
             this.setState({
                 students: students.listData,
@@ -804,7 +897,7 @@ class student_list extends Component {
 
     handlePageNumber = async (currentPage) => {
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=${this.state.codeSortOrder}&nameSortOrder=${this.state.nameSortOrder}&specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         if (students !== null) {
             this.setState({
                 students: students.listData,
@@ -819,7 +912,7 @@ class student_list extends Component {
 
     handlePagePrevious = async (currentPage) => {
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=${this.state.codeSortOrder}&nameSortOrder=${this.state.nameSortOrder}&specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         if (students !== null) {
             this.setState({
                 students: students.listData,
@@ -834,7 +927,7 @@ class student_list extends Component {
 
     handlePageNext = async (currentPage) => {
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=${this.state.codeSortOrder}&nameSortOrder=${this.state.nameSortOrder}&specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         if (students !== null) {
             this.setState({
                 students: students.listData,
@@ -854,7 +947,7 @@ class student_list extends Component {
         })
 
         const { rowsPerPage } = this.state;
-        const students = await ApiServices.Get(`/student/getAllStudent?currentPage=0&rowsPerPage=${rowsPerPage}`);
+        const students = await ApiServices.Get(`/student/getAllStudent?codeSortOrder=${this.state.codeSortOrder}&nameSortOrder=${this.state.nameSortOrder}&specializedID=${this.state.selectedSpecialized}&currentPage=0&rowsPerPage=${rowsPerPage}`);
         if (students !== null) {
             this.setState({
                 students: students.listData,
@@ -935,21 +1028,11 @@ class student_list extends Component {
     tabPane() {
         const { studentFeedBack, listFeedBack, codeSortOrder, nameSortOrder, student, businessSurvey, months, isThisMonth, isViewSurvey, survey, students, searchValue, loading, suggestedBusiness, otherBusiness, studentSelect, studentDetail, typesOfStudent } = this.state;
         const { pageNumber, currentPage, rowsPerPage, pageNumberSuggest, currentPageSuggest, rowsPerPageSuggest, pageNumberCbAll, currentPageCbAll, rowsPerPageCbAll } = this.state;
-        const { filterStudentTaskList, stateNo, stateTask } = this.state;
+        const { filterStudentTaskList, stateNo, stateTask, dropdownSpecialized } = this.state;
         const { name, code, email, phone, address, specialized, objective, gpa, skills, resumeLink, transcriptLink, role, isUploadTranscriptLink } = this.state;
+        const { numOfStudentAll, isSearchingAll, searchingListAll } = this.state;
+        const { numOfStudentSuggest, isSearchingSuggest, searchingListSuggest } = this.state;
         const linkDownCV = `http://localhost:8000/api/file/downloadFile/${resumeLink}`;
-        let filteredListStudents;
-
-        if (students !== null) {
-            console.log(students);
-            filteredListStudents = students.filter(
-                (student) => {
-                    if (student.student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
-                        return student;
-                    }
-                }
-            );
-        }
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -991,15 +1074,20 @@ class student_list extends Component {
                                                 </th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Email</th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                                                    Chuyên ngành
-                                                    {/* <Dropdown isOpen={this.state.dropdownOpen} toggle={() => this.toggleDropdown()}>
+                                                    <Dropdown isOpen={this.state.dropdownSpecializedOpen} toggle={() => this.toggleDropdownSpecialized()}>
                                                         <DropdownToggle nav caret style={{ color: "black" }}>
                                                             Chuyên ngành
                                                         </DropdownToggle>
                                                         <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
-                                                            <DropdownItem>IS</DropdownItem>
+                                                            <DropdownItem onClick={() => this.handleSelectSpecialized(-1)}>Tổng</DropdownItem>
+                                                            {dropdownSpecialized && dropdownSpecialized.map((specialized, index) => {
+                                                                return (
+                                                                    <DropdownItem onClick={() => this.handleSelectSpecialized(specialized.id)}>{specialized.name}</DropdownItem>
+                                                                )
+                                                            })
+                                                            }
                                                         </DropdownMenu>
-                                                    </Dropdown> */}
+                                                    </Dropdown>
                                                 </th>
                                                 <th style={{ textAlign: "left" }}></th>
                                                 {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Bảng điểm</th> */}
@@ -1008,15 +1096,16 @@ class student_list extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {filteredListStudents && filteredListStudents.map((student, index) => {
-                                                return (
-                                                    <tr>
-                                                        <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.student.code}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.student.name}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.student.email}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
-                                                        {/* <td style={{ textAlign: "center" }}>
+                                            {isSearchingAll === false ?
+                                                (students && students.map((student, index) => {
+                                                    return (
+                                                        <tr>
+                                                            <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.code}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.name}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.email}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
+                                                            {/* <td style={{ textAlign: "center" }}>
                                                             {
                                                                 student.transcriptLink && student.transcriptLink ? (
                                                                     <a href={student.student.transcriptLink} download>tải</a>
@@ -1024,36 +1113,85 @@ class student_list extends Component {
                                                                     (<label>N/A</label>)
                                                             }
                                                         </td> */}
-                                                        {/* <td style={{ textAlign: "center" }}>{student.gpa}</td> */}
-                                                        <td style={{ textAlign: "center" }}>
-                                                            {/* <Button style={{ width: "80px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.student.email}`)}><i className="fa fa-eye"></i></Button> */}
-                                                            <Button color="primary" onClick={() => this.toggleModalDetail(student.student.email)}><i className="fa fa-eye"></i></Button>
-                                                            &nbsp;&nbsp;
+                                                            {/* <td style={{ textAlign: "center" }}>{student.gpa}</td> */}
+                                                            <td style={{ textAlign: "center" }}>
+                                                                {/* <Button style={{ width: "80px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.student.email}`)}><i className="fa fa-eye"></i></Button> */}
+                                                                <Button color="primary" onClick={() => this.toggleModalDetail(student.student.email)}><i className="fa fa-eye"></i></Button>
+                                                                &nbsp;&nbsp;
                                                             {/* <Button style={{ width: "90px" }} color="success" onClick={() => this.handleDirect(`/supervisor/hr-student-list/details/${student.student.email}`)}><i className="fa cui-task"></i></Button> */}
-                                                            {/* {student.businessEnroll !== null ?
+                                                                {/* {student.businessEnroll !== null ?
                                                                 <Button color="success" onClick={() => this.toggleModalTask(student.student)}><i className="fa cui-task"></i></Button> :
                                                                 <>&emsp;&emsp;&emsp;</>
                                                             } */}
-                                                            <Button color="success" onClick={() => this.toggleModalTask(student.student)}><i className="fa cui-task"></i></Button>
-                                                            {/* <Button style={{ width: "70px" }} color="danger">Xoá</Button> */}
-                                                            &nbsp;&nbsp;
+                                                                <Button color="success" onClick={() => this.toggleModalTask(student.student)}><i className="fa cui-task"></i></Button>
+                                                                {/* <Button style={{ width: "70px" }} color="danger">Xoá</Button> */}
+                                                                &nbsp;&nbsp;
                                                             <Button color="warning" onClick={() => this.toggleModalFeedBack(student.student)}><i className="fa fa-mail-reply"></i></Button>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })) :
+                                                (searchingListAll && searchingListAll.map((student, index) => {
+                                                    return (
+                                                        <tr>
+                                                            <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.email}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                            {/* <td style={{ textAlign: "center" }}>
+                                                            {
+                                                                student.transcriptLink && student.transcriptLink ? (
+                                                                    <a href={student.student.transcriptLink} download>tải</a>
+                                                                ) :
+                                                                    (<label>N/A</label>)
+                                                            }
+                                                        </td> */}
+                                                            {/* <td style={{ textAlign: "center" }}>{student.gpa}</td> */}
+                                                            <td style={{ textAlign: "center" }}>
+                                                                {/* <Button style={{ width: "80px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.student.email}`)}><i className="fa fa-eye"></i></Button> */}
+                                                                <Button color="primary" onClick={() => this.toggleModalDetail(student.email)}><i className="fa fa-eye"></i></Button>
+                                                                &nbsp;&nbsp;
+                                                            {/* <Button style={{ width: "90px" }} color="success" onClick={() => this.handleDirect(`/supervisor/hr-student-list/details/${student.student.email}`)}><i className="fa cui-task"></i></Button> */}
+                                                                {/* {student.businessEnroll !== null ?
+                                                                <Button color="success" onClick={() => this.toggleModalTask(student.student)}><i className="fa cui-task"></i></Button> :
+                                                                <>&emsp;&emsp;&emsp;</>
+                                                            } */}
+                                                                <Button color="success" onClick={() => this.toggleModalTask(student)}><i className="fa cui-task"></i></Button>
+                                                                {/* <Button style={{ width: "70px" }} color="danger">Xoá</Button> */}
+                                                                &nbsp;&nbsp;
+                                                            <Button color="warning" onClick={() => this.toggleModalFeedBack(student)}><i className="fa fa-mail-reply"></i></Button>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                }))
                                             }
                                         </tbody>
                                     </Table>
-                                    <Pagination style={{ marginTop: "3%" }}>
-                                        <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                        <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
-                                        <Input onChange={this.handleInputPagingAll} type="select" name="rowsPerPage" style={{ width: "7%" }}>
-                                            <option value={10} selected={rowsPerPageSuggest === 10}>10</option>
-                                            <option value={20}>20</option>
-                                            <option value={50}>50</option>
-                                        </Input>
-                                    </Pagination>
+                                    {isSearchingAll === false ?
+                                        <Row>
+                                            <Col>
+                                                <Row>
+                                                    <Pagination>
+                                                        <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                                    </Pagination>
+                                                    &emsp;
+                                                        <h6 style={{ marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                                    &nbsp;&nbsp;
+                                                        <Input onChange={this.handleInputPagingAll} type="select" name="rowsPerPage" style={{ width: "70px" }}>
+                                                        <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                        <option value={20}>20</option>
+                                                        <option value={50}>50</option>
+                                                    </Input>
+                                                </Row>
+                                            </Col>
+                                            <Col>
+                                                <Row className="float-right">
+                                                    <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudentAll} kết quả</Label>
+                                                </Row>
+                                            </Col>
+                                        </Row> : <></>
+                                    }
                                 </div>
                             }
                         </TabPane>
@@ -1164,8 +1302,8 @@ class student_list extends Component {
                                                                         skill.softSkill.toString() === 'true' ? (
                                                                             <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
                                                                         ) : (
-                                                                            <></>
-                                                                        )
+                                                                                <></>
+                                                                            )
                                                                     }
                                                                 </div>
                                                             )
@@ -1484,7 +1622,7 @@ class student_list extends Component {
                                 <div>
                                     <nav className="navbar navbar-light bg-light justify-content-between">
                                         <form className="form-inline">
-                                            <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                            <input onChange={this.handleInputTab2} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
                                         </form>
                                         <div style={{ marginRight: "4px" }}>
                                             <Input style={{ width: '100px' }} onChange={e => { this.handleInputSelect(e) }} type="select" name="typeStudent">
@@ -1510,53 +1648,105 @@ class student_list extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {filteredListStudents && filteredListStudents.map((student, index) => {
-                                                return (
-                                                    <tr>
-                                                        <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.student.code}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.student.name}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.student.option1 === null ? 'N/A' : student.student.option1}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.student.option2 === null ? 'N/A' : student.student.option2}</td>
-                                                        <td style={{ textAlign: "center" }}>{student.businessEnroll === null ? 'N/A' : student.businessEnroll}</td>
-                                                        <td style={{ textAlign: "center" }}>
-                                                            {
-                                                                student.businessEnroll === null ?
-                                                                    <Button onClick={() => this.toggleModal(student.student)} color="primary">Đăng ký</Button> :
-                                                                    (student.businessEnroll === "Rớt" ?
+                                            {isSearchingSuggest === false ?
+                                                (students && students.map((student, index) => {
+                                                    return (
+                                                        <tr>
+                                                            <td style={{ textAlign: "center" }}>{currentPageCbAll * rowsPerPageCbAll + index + 1}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.code}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.name}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.option1 === null ? 'N/A' : student.student.option1}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.option2 === null ? 'N/A' : student.student.option2}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.businessEnroll === null ? 'N/A' : student.businessEnroll}</td>
+                                                            <td style={{ textAlign: "center" }}>
+                                                                {
+                                                                    student.businessEnroll === null ?
                                                                         <Button onClick={() => this.toggleModal(student.student)} color="primary">Đăng ký</Button> :
-                                                                        <></>
-                                                                    )
-                                                            }
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })
+                                                                        (student.businessEnroll === "Rớt" ?
+                                                                            <Button onClick={() => this.toggleModal(student.student)} color="primary">Đăng ký</Button> :
+                                                                            <></>
+                                                                        )
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })) :
+                                                (searchingListSuggest && searchingListSuggest.map((student, index) => {
+                                                    return (
+                                                        <tr>
+                                                            <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.code}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.name}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.option1 === null ? 'N/A' : student.student.option1}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.option2 === null ? 'N/A' : student.student.option2}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.businessEnroll === null ? 'N/A' : student.businessEnroll}</td>
+                                                            <td style={{ textAlign: "center" }}>
+                                                                {
+                                                                    student.businessEnroll === null ?
+                                                                        <Button onClick={() => this.toggleModal(student.student)} color="primary">Đăng ký</Button> :
+                                                                        (student.businessEnroll === "Rớt" ?
+                                                                            <Button onClick={() => this.toggleModal(student.student)} color="primary">Đăng ký</Button> :
+                                                                            <></>
+                                                                        )
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                }))
                                             }
                                         </tbody>
                                     </Table>
                                     {
                                         (this.state.typeSelected) === 0 ? (
-                                            <Pagination style={{ marginTop: "3%" }}>
-                                                <PaginationComponent pageNumber={pageNumberCbAll} handlePageNumber={this.handlePageNumberCbAll} handlePageNext={this.handlePageNextCbAll} handlePagePrevious={this.handlePagePreviousCbAll} currentPage={currentPageCbAll} />
-                                                <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
-                                                <Input onChange={this.handleInputPagingCbAll} type="select" name="rowsPerPageCbAll" style={{ width: "7%" }}>
-                                                    <option value={10} selected={rowsPerPageCbAll === 10}>10</option>
-                                                    <option value={20}>20</option>
-                                                    <option value={50}>50</option>
-                                                </Input>
-                                            </Pagination>
+                                            isSearchingSuggest === false ?
+                                                <Row>
+                                                    <Col>
+                                                        <Row>
+                                                            <Pagination>
+                                                                <PaginationComponent pageNumber={pageNumberCbAll} handlePageNumber={this.handlePageNumberCbAll} handlePageNext={this.handlePageNextCbAll} handlePagePrevious={this.handlePagePreviousCbAll} currentPage={currentPageCbAll} />
+                                                            </Pagination>
+                                                            &emsp;
+                                                            <h6 style={{ marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                                            &nbsp;&nbsp;
+                                                            <Input onChange={this.handleInputPagingCbAll} type="select" name="rowsPerPageCbAll" style={{ width: "70px" }}>
+                                                                <option value={10} selected={rowsPerPageCbAll === 10}>10</option>
+                                                                <option value={20}>20</option>
+                                                                <option value={50}>50</option>
+                                                            </Input>
+                                                        </Row>
+                                                    </Col>
+                                                    <Col>
+                                                        <Row className="float-right">
+                                                            <Label>Bạn đang xem kết quả từ {currentPageCbAll * rowsPerPageCbAll + 1} - {currentPageCbAll * rowsPerPageCbAll + students.length} trên tổng số {numOfStudentAll} kết quả</Label>
+                                                        </Row>
+                                                    </Col>
+                                                </Row> : <></>
                                         ) : (
-                                                <Pagination style={{ marginTop: "3%" }}>
-                                                    <PaginationComponent pageNumber={pageNumberSuggest} handlePageNumber={this.handlePageNumberSuggest} handlePageNext={this.handlePageNextSuggest} handlePagePrevious={this.handlePagePreviousSuggest} currentPage={currentPageSuggest} />
-                                                    <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
-                                                    <Input onChange={this.handleInputPagingSuggest} type="select" name="rowsPerPageSuggest" style={{ width: "7%" }}>
-                                                        <option value={10} selected={rowsPerPage === 10}>10</option>
-                                                        <option value={20}>20</option>
-                                                        <option value={50}>50</option>
-                                                    </Input>
-                                                </Pagination>
+                                                isSearchingSuggest === false ?
+                                                    <Row>
+                                                        <Col>
+                                                            <Row>
+                                                                <Pagination>
+                                                                    <PaginationComponent pageNumber={pageNumberSuggest} handlePageNumber={this.handlePageNumberSuggest} handlePageNext={this.handlePageNextSuggest} handlePagePrevious={this.handlePagePreviousSuggest} currentPage={currentPageSuggest} />
+                                                                </Pagination>
+                                                                &emsp;
+                                                                <h6 style={{ marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                                                &nbsp;&nbsp;
+                                                                <Input onChange={this.handleInputPagingSuggest} type="select" name="rowsPerPageSuggest" style={{ width: "70px" }}>
+                                                                    <option value={10} selected={rowsPerPageSuggest === 10}>10</option>
+                                                                    <option value={20}>20</option>
+                                                                    <option value={50}>50</option>
+                                                                </Input>
+                                                            </Row>
+                                                        </Col>
+                                                        <Col>
+                                                            <Row className="float-right">
+                                                                <Label>Bạn đang xem kết quả từ {currentPageSuggest * rowsPerPageSuggest + 1} - {currentPageSuggest * rowsPerPageSuggest + students.length} trên tổng số {numOfStudentSuggest} kết quả</Label>
+                                                            </Row>
+                                                        </Col>
+                                                    </Row> : <></>
                                             )
                                     }
 
