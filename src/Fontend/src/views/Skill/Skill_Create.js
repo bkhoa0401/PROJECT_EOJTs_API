@@ -82,7 +82,7 @@ class Skill_Create extends Component {
             })
           setTimeout(
             function () {
-              this.props.history.push('/skill');
+              this.props.history.push('/admin/skill');
             }
               .bind(this),
             2000
@@ -181,7 +181,7 @@ class Skill_Create extends Component {
                                     <CardFooter className="p-4">
                                         <Row>
                                             <Col xs="4" sm="4">
-                                                <Button color="secondary" block onClick={() => this.handleDirect('/skill')}>Trở về</Button>
+                                                <Button color="secondary" block onClick={() => this.handleDirect('/admin/skill')}>Trở về</Button>
                                             </Col>
                                             <Col xs="4" sm="4">
                                                 <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>

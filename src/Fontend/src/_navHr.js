@@ -11,8 +11,8 @@ export default {
       icon: 'icon-speedometer',
     },
     {
-      name: 'Quản lý Supervisor',
-      url: '/manage_account',
+      name: 'Tài khoản phụ',
+      url: '/hr/manage_account',
       icon: 'icon-equalizer',
       // children: [
       //   {
@@ -24,37 +24,37 @@ export default {
     },
     {
       name: 'Quản lí lời mời',
-      url: '/invitation',
+      url: '/hr/invitation',
       icon: 'icon-cursor',
     },
     {
       name: 'DSSV đăng kí thực tập',
-      url: '/ojt_registration',
+      url: '/hr/ojt_registration',
       icon: 'icon-user-follow',
     },
     {
       name: 'DSSV chính thức',
-      url: '/official_list',
+      url: '/hr/official_list',
       icon: 'icon-user-following',
     },
     {
-      name: 'Danh sách nhiệm vụ',
-      url: '/hr-task',
-      icon: 'icon-notebook',
-    },    
-    {
       name: 'Thông tin tuyển dụng',
-      url: '/job_post_list_hr',
+      url: '/hr/job_post_list_hr',
       icon: 'icon-directions',
     },
     {
       name: 'Thông báo',
-      url: '/informmessage',
+      url: '/hr/informmessage',
       icon: 'icon-envelope-letter',
     },
     {
+      name: 'Danh sách nhiệm vụ',
+      url: '/hr/hr-task',
+      icon: 'icon-notebook',
+    },    
+    {
       name: 'Đánh giá',
-      url: '/report',
+      url: '/hr/report',
       icon: 'icon-docs',
     },
     // {

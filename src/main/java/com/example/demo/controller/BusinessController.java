@@ -94,15 +94,21 @@ public class BusinessController {
     public ResponseEntity<Void> createNewBusiness(@RequestBody BusinessDTO businessDTO) throws Exception {
 
         List<Role> roleList = new ArrayList<>();
-        Role role = new Role();
         Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
         List<Ojt_Enrollment> ojtEnrollmentList = new ArrayList<>();
         Users users = new Users();
         String password = usersService.getAlphaNumericString();
 
+        Role role = new Role();
         role.setId(3);
         role.setDescription("ROLE_HR");
         roleList.add(role);
+
+        Role role_supervisor = new Role();
+        role_supervisor.setId(4);
+        role_supervisor.setDescription("ROLE_SUPERVISOR");
+        roleList.add(role_supervisor);
+
         users.setRoles(roleList);
         users.setEmail(businessDTO.getEmail());
         users.setPassword(password);
@@ -343,14 +349,23 @@ public class BusinessController {
     //get ds chinh thuc cua cong ty
     @GetMapping("/getStudentsByBusiness")
     @ResponseBody
-    public ResponseEntity<PagingDTO> getListStudentByBusiness(@RequestParam int currentPage
+    public ResponseEntity<PagingDTO> getListStudentByBusiness(@RequestParam int specializedID, @RequestParam int currentPage
             , @RequestParam int rowsPerPage) {
         String emailBusiness = getEmailFromToken();
         List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
-
-        if (studentList != null) {
+        List<Student> filteredStudentList = new ArrayList<Student>();
+        if (specializedID == -1) {
+            filteredStudentList = studentList;
+        } else {
+            for (int i = 0; i < studentList.size(); i++) {
+                if (studentList.get(i).getSpecialized().getId() == specializedID) {
+                    filteredStudentList.add(studentList.get(i));
+                }
+            }
+        }
+        if (filteredStudentList != null) {
             Utils<Student> studentUtils = new Utils<>();
-            PagingDTO pagingDTO = studentUtils.paging(studentList, currentPage, rowsPerPage);
+            PagingDTO pagingDTO = studentUtils.paging(filteredStudentList, currentPage, rowsPerPage);
             return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -398,6 +413,16 @@ public class BusinessController {
                     return name1.compareTo(name2);
                 }
             });
+            return new ResponseEntity<List<Specialized>>(specializeds, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/getSpecializedsOfBusiness")
+    @ResponseBody
+    public ResponseEntity<List<Specialized>> getSpecializedsOfBusiness() {
+        List<Specialized> specializeds = getSpecializedsOfBusinessJobsPost();
+        if (specializeds != null) {
             return new ResponseEntity<List<Specialized>>(specializeds, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -500,6 +525,29 @@ public class BusinessController {
 
         if (supervisors != null) {
             return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/searchSupervisorABusinessAllFields")
+    @ResponseBody
+    public ResponseEntity<List<Supervisor>> getSupervisorOfABusiness(@RequestParam String valueSearch) {
+        String email = getEmailFromToken();
+
+        List<Supervisor> supervisors = supervisorService.getAllSupervisorOfABusiness(email);
+        List<Supervisor> searchSupervisorList = new ArrayList<Supervisor>();
+        for (int i = 0; i < supervisors.size(); i++) {
+            Supervisor supervisor = supervisors.get(i);
+            if (supervisor.getEmail().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                    supervisor.getName().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                    supervisor.getPhone().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                    supervisor.getAddress().toLowerCase().contains(valueSearch.toLowerCase())) {
+                searchSupervisorList.add(supervisor);
+            }
+        }
+
+        if (supervisors != null) {
+            return new ResponseEntity<List<Supervisor>>(searchSupervisorList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -718,6 +766,37 @@ public class BusinessController {
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private List<Specialized> getSpecializedsOfBusinessJobsPost() {
+        String businessEmail = getEmailFromToken();
+
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
+        Ojt_Enrollment ojt_enrollment =
+                ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(businessEmail, semesterCurrent.getId());
+        List<Job_Post> job_postList = job_postService.getAllJobPostOfBusiness(ojt_enrollment);
+        List<Specialized> specializeds = new ArrayList<Specialized>();
+        if (job_postList != null) {
+            for (int i = 0; i < job_postList.size(); i++) {
+                for (int j = 0; j < job_postList.get(i).getJob_post_skills().size(); j++) {
+                    if (specializeds.size() >= 1) {
+                        boolean flagExist = false;
+                        for (int k = 0; k < specializeds.size(); k++) {
+                            if (specializeds.get(k).getId() == job_postList.get(i).getJob_post_skills().get(j).getSkill().getSpecialized().getId()) {
+                                flagExist = true;
+                            }
+                        }
+                        if (flagExist == false) {
+                            specializeds.add(job_postList.get(i).getJob_post_skills().get(j).getSkill().getSpecialized());
+                        }
+                    } else {
+                        specializeds.add(job_postList.get(i).getJob_post_skills().get(j).getSkill().getSpecialized());
+                    }
+                }
+
+            }
+        }
+        return specializeds;
     }
 
     //get email from token

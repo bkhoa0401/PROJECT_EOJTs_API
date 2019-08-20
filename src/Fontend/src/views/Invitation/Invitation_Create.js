@@ -35,7 +35,15 @@ class Invitation_Create extends Component {
             rowsPerPage: 10,
             pageNumberSuggest: 1,
             currentPageSuggest: 0,
-            rowsPerPageSuggest: 10
+            rowsPerPageSuggest: 10,
+
+
+            numOfStudentSum: 0,
+            numOfStudentSuggest: 0,
+            searchingListSum: [],
+            searchingListSuggest: [],
+            isSearchingSum: false,
+            isSearchingSuggest: false,
         }
         // this.toggleLarge = this.toggleLarge.bind(this);
     }
@@ -45,7 +53,8 @@ class Invitation_Create extends Component {
 
         const students = await ApiServices.Get(`/student/getListStudentNotYetInvited?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         const suggestedStudents = await ApiServices.Get(`/student/studentsSuggest?currentPage=${currentPageSuggest}&rowsPerPage=${rowsPerPageSuggest}`);
-
+        const numOfStudentSum = await ApiServices.Get(`/student/searchStudentNotYetInvitedAllFields?valueSearch=${""}`);
+        const numOfStudentSuggest = await ApiServices.Get(`/student/searchStudentSuggestAllFields?valueSearch=${""}`);
         const business = await ApiServices.Get('/business/getBusiness');
         if (students !== null && suggestedStudents !== null) {
             this.setState({
@@ -55,6 +64,8 @@ class Invitation_Create extends Component {
                 pageNumberSuggest: suggestedStudents.pageNumber,
                 business_name: business.business_name,
                 loading: false,
+                numOfStudentSum: numOfStudentSum.length,
+                numOfStudentSuggest: numOfStudentSuggest.length,
             });
         }
     }
@@ -63,11 +74,44 @@ class Invitation_Create extends Component {
         this.props.history.push(uri);
     }
 
-    handleInput = async (event) => {
+    handleInputSearchSum = async (event) => {
         const { name, value } = event.target;
-        await this.setState({
-            [name]: value.substr(0, 20),
-        })
+        if (value === "") {
+            await this.setState({
+                [name]: value.substr(0, 20),
+                isSearchingSum: false,
+            })
+        } else {
+            const students = await ApiServices.Get(`/student/searchStudentNotYetInvitedAllFields?valueSearch=${value.substr(0, 20)}`);
+            // console.log(students);
+            if (students !== null) {
+                this.setState({
+                    [name]: value.substr(0, 20),
+                    searchingListSum: students,
+                    isSearchingSum: true,
+                })
+            }
+        }
+    }
+
+    handleInputSearchSuggest = async (event) => {
+        const { name, value } = event.target;
+        if (value === "") {
+            await this.setState({
+                [name]: value.substr(0, 20),
+                isSearchingSuggest: false,
+            })
+        } else {
+            const students = await ApiServices.Get(`/student/searchStudentSuggestAllFields?valueSearch=${value.substr(0, 20)}`);
+            // console.log(students);
+            if (students !== null) {
+                this.setState({
+                    [name]: value.substr(0, 20),
+                    searchingListSum: students,
+                    isSearchingSuggest: true,
+                })
+            }
+        }
     }
 
     handleInputInvite = async (event) => {
@@ -318,28 +362,7 @@ class Invitation_Create extends Component {
     tabPane() {
         const { students, suggestedStudents, business_name, searchValue, searchSuggestedValue, loading } = this.state;
         const { pageNumber, currentPage, rowsPerPage, pageNumberSuggest, currentPageSuggest, rowsPerPageSuggest } = this.state;
-        let filteredListStudents, filteredSuggestedListStudents;
-
-        if (students !== null) {
-            filteredListStudents = students.filter(
-                (student) => {
-                    if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
-                        return student;
-                    }
-                }
-            );
-        }
-
-
-        if (suggestedStudents !== null) {
-            filteredSuggestedListStudents = suggestedStudents.filter(
-                (suggestedStudent) => {
-                    if (suggestedStudent.name.toLowerCase().indexOf(searchSuggestedValue.toLowerCase()) !== -1) {
-                        return suggestedStudent;
-                    }
-                }
-            );
-        }
+        const { numOfStudentSum, numOfStudentSuggest, isSearchingSum, isSearchingSuggest, searchingListSum, searchingListSuggest } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -351,9 +374,21 @@ class Invitation_Create extends Component {
                         <TabPane tabId="1">
                             {
                                 <div>
+                                    {isSearchingSum === false ?
+                                        <Row className="float-right">
+                                            <h6>Số dòng trên trang: </h6>
+                                            &nbsp;&nbsp;
+                                        <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
+                                                <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                <option value={20}>20</option>
+                                                <option value={50}>50</option>
+                                            </Input>
+                                        </Row> : <></>
+                                    }
+                                    <br /><br /><br />
                                     <nav className="navbar navbar-light bg-light justify-content-between">
                                         <form className="form-inline">
-                                            <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                            <input onChange={this.handleInputSearchSum} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
                                         </form>
 
                                     </nav>
@@ -371,8 +406,46 @@ class Invitation_Create extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {
-                                                filteredListStudents && filteredListStudents.map((student, index) => {
+                                            {isSearchingSum === false ?
+                                                (students && students.map((student, index) => {
+                                                    const skills = student.skills;
+
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                            {/* <td style={{ textAlign: "center" }}>
+                                                                {
+                                                                    skills && skills.map((skill, index) => {
+                                                                        return (
+                                                                            <div>
+                                                                                {
+                                                                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                                }
+                                                                            </div>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </td> */}
+                                                            {/* <td style={{ textAlign: "center" }}>{student.gpa}</td> */}
+                                                            {/* <td style={{ textAlign: "center" }}>
+                                                                {
+                                                                    student.transcriptLink && student.transcriptLink ? (
+                                                                        <a href={student.transcriptLink} download>tải</a>
+                                                                    ) :
+                                                                        (<label>N/A</label>)
+                                                                }
+                                                            </td> */}
+                                                            <td style={{ textAlign: "center" }}>
+                                                                <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(student)}><i className="fa fa-eye"></i></Button>
+                                                                &nbsp;&nbsp;
+                                                                <Button onClick={() => this.toggleModal(student)} type="submit" color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })) : (searchingListSum && searchingListSum.map((student, index) => {
                                                     const skills = student.skills;
 
                                                     return (
@@ -410,28 +483,45 @@ class Invitation_Create extends Component {
                                                             </td>
                                                         </tr>
                                                     )
-                                                })
+                                                }))
                                             }
                                         </tbody>
                                     </Table>
-                                    <Pagination style={{ marginTop: "3%" }}>
-                                        <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                        <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
-                                        <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "7%" }}>
-                                            <option value={10} selected={rowsPerPage === 10}>10</option>
-                                            <option value={20}>20</option>
-                                            <option value={50}>50</option>
-                                        </Input>
-                                    </Pagination>
+                                    {isSearchingSum === false ?
+                                        <Row>
+                                            <Col>
+                                                <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudentSum} kết quả</Label>
+                                            </Col>
+                                            <Col>
+                                                <Row className="float-right">
+                                                    <Pagination style={{ marginTop: "3%" }}>
+                                                        <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                                    </Pagination>
+                                                </Row>
+                                            </Col>
+                                        </Row> : <></>
+                                    }
                                 </div>
                             }
                         </TabPane>
                         <TabPane tabId="2">
                             {
                                 <div>
+                                    {isSearchingSuggest === false ?
+                                        <Row className="float-right">
+                                            <h6>Số dòng trên trang: </h6>
+                                            &nbsp;&nbsp;
+                                        <Input onChange={this.handleInputSuggest} type="select" name="rowsPerPageSuggest" style={{ width: "70px" }} size="sm">
+                                                <option value={10} selected={rowsPerPageSuggest === 10}>10</option>
+                                                <option value={20}>20</option>
+                                                <option value={50}>50</option>
+                                            </Input>
+                                        </Row> : <></>
+                                    }
+                                    <br /><br /><br />
                                     <nav className="navbar navbar-light bg-light justify-content-between">
                                         <form className="form-inline">
-                                            <input onChange={this.handleInput} name="searchSuggestedValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                            <input onChange={this.handleInputSearchSuggest} name="searchSuggestedValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
                                         </form>
 
                                     </nav>
@@ -449,8 +539,46 @@ class Invitation_Create extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {
-                                                filteredSuggestedListStudents && filteredSuggestedListStudents.map((suggestedStudent, index) => {
+                                            {isSearchingSuggest === false ?
+                                                (suggestedStudents && suggestedStudents.map((suggestedStudent, index) => {
+                                                    const skills = suggestedStudent.skills;
+
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
+                                                            <td style={{ textAlign: "center" }}>{suggestedStudent.code}</td>
+                                                            <td style={{ textAlign: "center" }}>{suggestedStudent.name}</td>
+                                                            <td style={{ textAlign: "center" }}>{suggestedStudent.specialized.name}</td>
+                                                            {/* <td style={{ textAlign: "center" }}>
+                                                                {
+                                                                    skills && skills.map((skill, index) => {
+                                                                        return (
+                                                                            <div>
+                                                                                {
+                                                                                    <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                                }
+                                                                            </div>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </td>
+                                                            <td style={{ textAlign: "center" }}>{suggestedStudent.gpa}</td>
+                                                            <td style={{ textAlign: "center" }}>
+                                                                {
+                                                                    suggestedStudent.transcriptLink && suggestedStudent.transcriptLink ? (
+                                                                        <a href={suggestedStudent.transcriptLink} download>Tải</a>
+                                                                    ) :
+                                                                        (<label>N/A</label>)
+                                                                }
+                                                            </td> */}
+                                                            <td style={{ textAlign: "center" }}>
+                                                                <Button color="primary" style={{ marginRight: "1.5px" }} onClick={() => this.toggleLarge(suggestedStudent)}><i className="fa fa-eye"></i></Button>
+                                                                &nbsp;&nbsp;
+                                                                <Button onClick={() => this.toggleModal(suggestedStudent)} type="submit" style={{ marginRight: "1.5px" }} color="success" id={"btnSendInvitation" + index}>Gửi lời mời</Button>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })) : (searchingListSuggest && searchingListSuggest.map((suggestedStudent, index) => {
                                                     const skills = suggestedStudent.skills;
 
                                                     return (
@@ -488,19 +616,24 @@ class Invitation_Create extends Component {
                                                             </td>
                                                         </tr>
                                                     )
-                                                })
+                                                }))
                                             }
                                         </tbody>
                                     </Table>
-                                    <Pagination style={{ marginTop: "3%" }}>
-                                        <PaginationComponent pageNumber={pageNumberSuggest} handlePageNumber={this.handlePageNumberSuggest} handlePageNext={this.handlePageNextSuggest} handlePagePrevious={this.handlePagePreviousSuggest} currentPage={currentPageSuggest} />
-                                        <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
-                                        <Input onChange={this.handleInputSuggest} type="select" name="rowsPerPageSuggest" style={{ width: "7%" }}>
-                                            <option value={10} selected={rowsPerPageSuggest === 10}>10</option>
-                                            <option value={20}>20</option>
-                                            <option value={50}>50</option>
-                                        </Input>
-                                    </Pagination>
+                                    {isSearchingSuggest === false ?
+                                        <Row>
+                                            <Col>
+                                                <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + suggestedStudents.length} trên tổng số {numOfStudentSuggest} kết quả</Label>
+                                            </Col>
+                                            <Col>
+                                                <Row className="float-right">
+                                                    <Pagination style={{ marginTop: "3%" }}>
+                                                        <PaginationComponent pageNumber={pageNumberSuggest} handlePageNumber={this.handlePageNumberSuggest} handlePageNext={this.handlePageNextSuggest} handlePagePrevious={this.handlePagePreviousSuggest} currentPage={currentPageSuggest} />
+                                                    </Pagination>
+                                                </Row>
+                                            </Col>
+                                        </Row> : <></>
+                                    }
                                 </div>
                             }
                         </TabPane>
@@ -576,7 +709,7 @@ class Invitation_Create extends Component {
             data: {
                 title: `Lời mời thực tập từ công ty ${business_name}`,
                 body: invitationContent,
-                click_action: "http://localhost:3000/#/invitation/new",
+                click_action: "http://localhost:3000/#/hr/invitation/new",
                 icon: "http://url-to-an-icon/icon.png"
             },
             to: `${deviceToken}`
@@ -723,7 +856,7 @@ class Invitation_Create extends Component {
                             <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/invitation")} type="submit" color="secondary" block>Trở về</Button>
+                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr/invitation")} type="submit" color="secondary" block>Trở về</Button>
                                     </Col>
                                 </Row>
                             </CardFooter>

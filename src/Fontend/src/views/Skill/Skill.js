@@ -160,7 +160,7 @@ class Skill extends Component {
                                         <i className="fa fa-align-justify"></i> Danh sách kỹ năng
                             </CardHeader>
                                     <CardBody>
-                                        <Button color="primary" onClick={() => this.handleDirect('/skill/create')}>Tạo kỹ năng mới</Button>
+                                        <Button color="primary" onClick={() => this.handleDirect('/admin/skill/create')}>Tạo kỹ năng mới</Button>
                                         <br />
                                         <br />
                                         <br />
@@ -195,7 +195,7 @@ class Skill extends Component {
                                                                     ) : (
                                                                             <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(skill, true)} type="submit"><i className="fa cui-circle-check"></i></Button>
                                                                         )}
-                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/skill/update/${skill.id}`)}><i className="fa cui-note"></i></Button>
+                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/admin/skill/update/${skill.id}`)}><i className="fa cui-note"></i></Button>
                                                                 </td>
                                                             </tr>
                                                         )

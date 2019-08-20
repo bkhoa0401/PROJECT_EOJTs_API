@@ -80,7 +80,7 @@ class Specialized_Create extends Component {
             })
           setTimeout(
             function () {
-              this.props.history.push('/specialized');
+              this.props.history.push('/admin/specialized');
             }
               .bind(this),
             2000
@@ -141,7 +141,7 @@ class Specialized_Create extends Component {
                                     <CardFooter className="p-4">
                                         <Row>
                                             <Col xs="4" sm="4">
-                                                <Button color="secondary" block onClick={() => this.handleDirect('/specialized')}>Trở về</Button>
+                                                <Button color="secondary" block onClick={() => this.handleDirect('/admin/specialized')}>Trở về</Button>
                                             </Col>
                                             <Col xs="4" sm="4">
                                                 <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>

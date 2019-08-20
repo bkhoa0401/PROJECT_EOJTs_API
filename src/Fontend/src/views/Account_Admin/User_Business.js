@@ -152,7 +152,7 @@ class User_Business extends Component {
                                         <i className="fa fa-align-justify"></i> Danh sách tài khoản doanh nghiệp
                             </CardHeader>
                                     <CardBody>
-                                        <Button color="primary" onClick={() => this.handleDirect('/admin_account/businessList/create')}>Tạo tài khoản mới</Button>
+                                        <Button color="primary" onClick={() => this.handleDirect('/admin/admin_account/businessList/create')}>Tạo tài khoản mới</Button>
                                         <br />
                                         <br />
                                         <br />

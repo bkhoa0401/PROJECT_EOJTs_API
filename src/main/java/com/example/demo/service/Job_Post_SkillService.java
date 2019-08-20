@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Business;
 import com.example.demo.entity.Job_Post_Skill;
 import com.example.demo.repository.IJob_Post_SkillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class Job_Post_SkillService implements IJob_Post_SkillService {
     @Autowired
     IJob_Post_SkillRepository IJob_post_skillRepository;
+
 
     @Override
     public void saveJobPostSkill(Job_Post_Skill job_post_skill) {

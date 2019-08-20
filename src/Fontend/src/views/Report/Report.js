@@ -65,7 +65,7 @@ class Report extends Component {
             }
         } else if (role === 'ROLE_HR') {
             listStudentAndReport = await ApiServices.Get(`/business/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
-            // console.log(listStudentAndReport);
+            console.log(listStudentAndReport);
             numOfStudent = await ApiServices.Get("/business/getNumStudent");
             // console.log(numOfStudent);
             dropdownSpecialized = await ApiServices.Get("/business/getSpecializedsOfStudentsInBusiness");
@@ -975,15 +975,30 @@ class Report extends Component {
                                                                     {onScreenStatus[index * 4] === null ?
                                                                         (
                                                                             role && role !== 'ROLE_ADMIN' ?
-                                                                                <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/1~${student.email}`)}>
-                                                                                    Tạo
-                                                                            </Button> :
+                                                                                (role === "ROLE_SUPERVISOR" ?
+                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/1~${student.email}`)}>
+                                                                                        Tạo
+                                                                                    </Button> :
+                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/1~${student.email}`)}>
+                                                                                        Tạo
+                                                                                    </Button>
+                                                                                )
+                                                                                :
                                                                                 <p>N/A</p>
                                                                         ) :
                                                                         (
-                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4].id}~${student.email}`)}>
-                                                                                {rate[onScreenStatus[index * 4]]}
-                                                                            </Button>
+                                                                            role && role === "ROLE_ADMIN" ?
+                                                                                <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4]]} onClick={() => this.handleDirect(`/admin/Report/Report_Detail/${overviewReports[index * 4].id}~${student.email}`)}>
+                                                                                    {rate[onScreenStatus[index * 4]]}
+                                                                                </Button> :
+                                                                                (role === "ROLE_SUPERVISOR" ?
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4]]} onClick={() => this.handleDirect(`/supervisor/Report/Report_Detail/${overviewReports[index * 4].id}~${student.email}`)}>
+                                                                                        {rate[onScreenStatus[index * 4]]}
+                                                                                    </Button> :
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4]]} onClick={() => this.handleDirect(`/hr/Report/Report_Detail/${overviewReports[index * 4].id}~${student.email}`)}>
+                                                                                        {rate[onScreenStatus[index * 4]]}
+                                                                                    </Button>
+                                                                                )
                                                                         )
                                                                     }
                                                                 </td>
@@ -992,17 +1007,32 @@ class Report extends Component {
                                                                         (
                                                                             role && role !== 'ROLE_ADMIN' ?
                                                                                 (onScreenStatus[index * 4] !== null ?
-                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/2~${student.email}`)}>
-                                                                                        Tạo
-                                                                            </Button> :
+                                                                                    (role === "ROLE_SUPERVISOR" ?
+                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/2~${student.email}`)}>
+                                                                                            Tạo
+                                                                                        </Button> :
+                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/2~${student.email}`)}>
+                                                                                            Tạo
+                                                                                        </Button>
+                                                                                    )
+                                                                                    :
                                                                                     <p>N/A</p>
                                                                                 ) :
                                                                                 <p>N/A</p>
                                                                         ) :
                                                                         (
-                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 1]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4 + 1].id}~${student.email}`)}>
-                                                                                {rate[onScreenStatus[index * 4 + 1]]}
-                                                                            </Button>
+                                                                            role && role === "ROLE_ADMIN" ?
+                                                                                <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 1]]} onClick={() => this.handleDirect(`/admin/Report/Report_Detail/${overviewReports[index * 4 + 1].id}~${student.email}`)}>
+                                                                                    {rate[onScreenStatus[index * 4 + 1]]}
+                                                                                </Button> :
+                                                                                (role === "ROLE_SUPERVISOR" ?
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 1]]} onClick={() => this.handleDirect(`/supervisor/Report/Report_Detail/${overviewReports[index * 4 + 1].id}~${student.email}`)}>
+                                                                                        {rate[onScreenStatus[index * 4 + 1]]}
+                                                                                    </Button> :
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 1]]} onClick={() => this.handleDirect(`/hr/Report/Report_Detail/${overviewReports[index * 4 + 1].id}~${student.email}`)}>
+                                                                                        {rate[onScreenStatus[index * 4 + 1]]}
+                                                                                    </Button>
+                                                                                )
                                                                         )
                                                                     }
                                                                 </td>
@@ -1011,17 +1041,32 @@ class Report extends Component {
                                                                         (
                                                                             role && role !== 'ROLE_ADMIN' ?
                                                                                 (onScreenStatus[index * 4 + 1] !== null ?
-                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/3~${student.email}`)}>
-                                                                                        Tạo
-                                                                            </Button> :
+                                                                                    (role === "ROLE_SUPERVISOR" ?
+                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/3~${student.email}`)}>
+                                                                                            Tạo
+                                                                                        </Button> :
+                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/3~${student.email}`)}>
+                                                                                            Tạo
+                                                                                        </Button>
+                                                                                    )
+                                                                                    :
                                                                                     <p>N/A</p>
                                                                                 ) :
                                                                                 <p>N/A</p>
                                                                         ) :
                                                                         (
-                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 2]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4 + 2].id}~${student.email}`)}>
-                                                                                {rate[onScreenStatus[index * 4 + 2]]}
-                                                                            </Button>
+                                                                            role && role === "ROLE_ADMIN" ?
+                                                                                <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 2]]} onClick={() => this.handleDirect(`/admin/Report/Report_Detail/${overviewReports[index * 4 + 2].id}~${student.email}`)}>
+                                                                                    {rate[onScreenStatus[index * 4 + 2]]}
+                                                                                </Button> :
+                                                                                (role === "ROLE_SUPERVISOR" ?
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 2]]} onClick={() => this.handleDirect(`/supervisor/Report/Report_Detail/${overviewReports[index * 4 + 2].id}~${student.email}`)}>
+                                                                                        {rate[onScreenStatus[index * 4 + 2]]}
+                                                                                    </Button> :
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 2]]} onClick={() => this.handleDirect(`/hr/Report/Report_Detail/${overviewReports[index * 4 + 2].id}~${student.email}`)}>
+                                                                                        {rate[onScreenStatus[index * 4 + 2]]}
+                                                                                    </Button>
+                                                                                )
                                                                         )
                                                                     }
                                                                 </td>
@@ -1030,17 +1075,32 @@ class Report extends Component {
                                                                         (
                                                                             role && role !== 'ROLE_ADMIN' ?
                                                                                 (onScreenStatus[index * 4 + 2] !== null ?
-                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/4~${student.email}`)}>
-                                                                                        Tạo
-                                                                            </Button> :
+                                                                                    (role === "ROLE_SUPERVISOR" ?
+                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/4~${student.email}`)}>
+                                                                                            Tạo
+                                                                                        </Button> :
+                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/4~${student.email}`)}>
+                                                                                            Tạo
+                                                                                        </Button>
+                                                                                    )
+                                                                                    :
                                                                                     <p>N/A</p>
                                                                                 ) :
                                                                                 <p>N/A</p>
                                                                         ) :
                                                                         (
-                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${overviewReports[index * 4 + 3].id}~${student.email}`)}>
-                                                                                {rate[onScreenStatus[index * 4 + 3]]}
-                                                                            </Button>
+                                                                            role && role === "ROLE_ADMIN" ?
+                                                                                <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/admin/Report/Report_Detail/${overviewReports[index * 4 + 3].id}~${student.email}`)}>
+                                                                                    {rate[onScreenStatus[index * 4 + 3]]}
+                                                                                </Button> :
+                                                                                (role === "ROLE_SUPERVISOR" ?
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/supervisor/Report/Report_Detail/${overviewReports[index * 4 + 3].id}~${student.email}`)}>
+                                                                                        {rate[onScreenStatus[index * 4 + 3]]}
+                                                                                    </Button> :
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/hr/Report/Report_Detail/${overviewReports[index * 4 + 3].id}~${student.email}`)}>
+                                                                                        {rate[onScreenStatus[index * 4 + 3]]}
+                                                                                    </Button>
+                                                                                )
                                                                         )
                                                                     }
                                                                 </td>
@@ -1060,15 +1120,30 @@ class Report extends Component {
                                                                     {searchOnScreenStatus[index * 4] === null ?
                                                                         (
                                                                             role && role !== 'ROLE_ADMIN' ?
-                                                                                <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/1~${student.email}`)}>
-                                                                                    Tạo
-                                                                            </Button> :
+                                                                                (role === "ROLE_SUPERVISOR" ?
+                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/1~${student.email}`)}>
+                                                                                        Tạo
+                                                                                    </Button> :
+                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/1~${student.email}`)}>
+                                                                                        Tạo
+                                                                                    </Button>
+                                                                                )
+                                                                                :
                                                                                 <p>N/A</p>
                                                                         ) :
                                                                         (
-                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${searchOverviewReports[index * 4].id}~${student.email}`)}>
-                                                                                {rate[searchOnScreenStatus[index * 4]]}
-                                                                            </Button>
+                                                                            role && role === "ROLE_ADMIN" ?
+                                                                                <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4]]} onClick={() => this.handleDirect(`/admin/Report/Report_Detail/${searchOverviewReports[index * 4].id}~${student.email}`)}>
+                                                                                    {rate[searchOnScreenStatus[index * 4]]}
+                                                                                </Button> :
+                                                                                (role === "ROLE_SUPERVISOR" ?
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4]]} onClick={() => this.handleDirect(`/supervisor/Report/Report_Detail/${searchOverviewReports[index * 4].id}~${student.email}`)}>
+                                                                                        {rate[searchOnScreenStatus[index * 4]]}
+                                                                                    </Button> :
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4]]} onClick={() => this.handleDirect(`/hr/Report/Report_Detail/${searchOverviewReports[index * 4].id}~${student.email}`)}>
+                                                                                        {rate[searchOnScreenStatus[index * 4]]}
+                                                                                    </Button>
+                                                                                )
                                                                         )
                                                                     }
                                                                 </td>
@@ -1077,17 +1152,32 @@ class Report extends Component {
                                                                         (
                                                                             role && role !== 'ROLE_ADMIN' ?
                                                                                 (searchOnScreenStatus[index * 4] !== null ?
-                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/2~${student.email}`)}>
-                                                                                        Tạo
-                                                                            </Button> :
+                                                                                    (role === "ROLE_SUPERVISOR" ?
+                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/2~${student.email}`)}>
+                                                                                            Tạo
+                                                                                        </Button> :
+                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/2~${student.email}`)}>
+                                                                                            Tạo
+                                                                                        </Button>
+                                                                                    )
+                                                                                    :
                                                                                     <p>N/A</p>
                                                                                 ) :
                                                                                 <p>N/A</p>
                                                                         ) :
                                                                         (
-                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4 + 1]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${searchOverviewReports[index * 4 + 1].id}~${student.email}`)}>
-                                                                                {rate[searchOnScreenStatus[index * 4 + 1]]}
-                                                                            </Button>
+                                                                            role && role === "ROLE_ADMIN" ?
+                                                                                <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4 + 1]]} onClick={() => this.handleDirect(`/admin/Report/Report_Detail/${searchOverviewReports[index * 4 + 1].id}~${student.email}`)}>
+                                                                                    {rate[searchOnScreenStatus[index * 4 + 1]]}
+                                                                                </Button> :
+                                                                                (role === "ROLE_SUPERVISOR" ?
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4 + 1]]} onClick={() => this.handleDirect(`/supervisor/Report/Report_Detail/${searchOverviewReports[index * 4 + 1].id}~${student.email}`)}>
+                                                                                        {rate[searchOnScreenStatus[index * 4 + 1]]}
+                                                                                    </Button> :
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4 + 1]]} onClick={() => this.handleDirect(`/hr/Report/Report_Detail/${searchOverviewReports[index * 4 + 1].id}~${student.email}`)}>
+                                                                                        {rate[searchOnScreenStatus[index * 4 + 1]]}
+                                                                                    </Button>
+                                                                                )
                                                                         )
                                                                     }
                                                                 </td>
@@ -1096,17 +1186,32 @@ class Report extends Component {
                                                                         (
                                                                             role && role !== 'ROLE_ADMIN' ?
                                                                                 (searchOnScreenStatus[index * 4 + 1] !== null ?
-                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/3~${student.email}`)}>
-                                                                                        Tạo
-                                                                            </Button> :
+                                                                                    (role === "ROLE_SUPERVISOR" ?
+                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/3~${student.email}`)}>
+                                                                                            Tạo
+                                                                                        </Button> :
+                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/3~${student.email}`)}>
+                                                                                            Tạo
+                                                                                        </Button>
+                                                                                    )
+                                                                                    :
                                                                                     <p>N/A</p>
                                                                                 ) :
                                                                                 <p>N/A</p>
                                                                         ) :
                                                                         (
-                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4 + 2]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${searchOverviewReports[index * 4 + 2].id}~${student.email}`)}>
-                                                                                {rate[searchOnScreenStatus[index * 4 + 2]]}
-                                                                            </Button>
+                                                                            role && role === "ROLE_ADMIN" ?
+                                                                                <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4 + 2]]} onClick={() => this.handleDirect(`/admin/Report/Report_Detail/${searchOverviewReports[index * 4 + 2].id}~${student.email}`)}>
+                                                                                    {rate[searchOnScreenStatus[index * 4 + 2]]}
+                                                                                </Button> :
+                                                                                (role === "ROLE_SUPERVISOR" ?
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4 + 2]]} onClick={() => this.handleDirect(`/supervisor/Report/Report_Detail/${searchOverviewReports[index * 4 + 2].id}~${student.email}`)}>
+                                                                                        {rate[searchOnScreenStatus[index * 4 + 2]]}
+                                                                                    </Button> :
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4 + 2]]} onClick={() => this.handleDirect(`/hr/Report/Report_Detail/${searchOverviewReports[index * 4 + 2].id}~${student.email}`)}>
+                                                                                        {rate[searchOnScreenStatus[index * 4 + 2]]}
+                                                                                    </Button>
+                                                                                )
                                                                         )
                                                                     }
                                                                 </td>
@@ -1115,17 +1220,32 @@ class Report extends Component {
                                                                         (
                                                                             role && role !== 'ROLE_ADMIN' ?
                                                                                 (searchOnScreenStatus[index * 4 + 2] !== null ?
-                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/Report/Create_Report/4~${student.email}`)}>
-                                                                                        Tạo
-                                                                            </Button> :
+                                                                                    (role === "ROLE_SUPERVISOR" ?
+                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/4~${student.email}`)}>
+                                                                                            Tạo
+                                                                                        </Button> :
+                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/4~${student.email}`)}>
+                                                                                            Tạo
+                                                                                        </Button>
+                                                                                    )
+                                                                                    :
                                                                                     <p>N/A</p>
                                                                                 ) :
                                                                                 <p>N/A</p>
                                                                         ) :
                                                                         (
-                                                                            <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/Report/Report_Detail/${searchOverviewReports[index * 4 + 3].id}~${student.email}`)}>
-                                                                                {rate[searchOnScreenStatus[index * 4 + 3]]}
-                                                                            </Button>
+                                                                            role && role === "ROLE_ADMIN" ?
+                                                                                <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/admin/Report/Report_Detail/${searchOverviewReports[index * 4 + 3].id}~${student.email}`)}>
+                                                                                    {rate[searchOnScreenStatus[index * 4 + 3]]}
+                                                                                </Button> :
+                                                                                (role === "ROLE_SUPERVISOR" ?
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/supervisor/Report/Report_Detail/${searchOverviewReports[index * 4 + 3].id}~${student.email}`)}>
+                                                                                        {rate[searchOnScreenStatus[index * 4 + 3]]}
+                                                                                    </Button> :
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/hr/Report/Report_Detail/${searchOverviewReports[index * 4 + 3].id}~${student.email}`)}>
+                                                                                        {rate[searchOnScreenStatus[index * 4 + 3]]}
+                                                                                    </Button>
+                                                                                )
                                                                         )
                                                                     }
                                                                 </td>

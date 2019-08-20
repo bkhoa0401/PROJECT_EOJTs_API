@@ -7,17 +7,17 @@ export default {
     },
     {
       name: 'Danh sách sinh viên',
-      url: '/hr-student-list',
+      url: '/supervisor/hr-student-list',
       icon: 'icon-graduation',
     },
     {
       name: 'Danh sách nhiệm vụ',
-      url: '/hr-task',
+      url: '/supervisor/hr-task',
       icon: 'icon-notebook',
     },
     {
       name: 'Đánh giá',
-      url: '/report',
+      url: '/supervisor/report',
       icon: 'icon-docs',
     },
   ]

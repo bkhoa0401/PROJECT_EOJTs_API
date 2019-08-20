@@ -69,6 +69,19 @@ public class UsersService implements IUsersService {
     }
 
     @Override
+    public void sendEmailToBusinessIsExisted(String name, String mail) throws Exception {
+        MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setTo(mail);
+        helper.setText("Xin chào " + name + " , đã tới kì OJT mới. Vui lòng sử dụng tài khoản kì vừa rồi để tiếp tục sử dụng hệ thống" +
+                ". Chúc công ty "+ name + " có kì OJT mới thật tốt và nhiều thành công! \nThanks and Regards");
+        helper.setSubject("[Thông báo]");
+
+        sender.send(message);
+    }
+
+    @Override
     public void sendResetEmail(String token, String email) throws Exception {
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);

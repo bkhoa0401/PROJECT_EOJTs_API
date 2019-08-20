@@ -234,7 +234,7 @@ class BusinessProposed extends Component {
                                                                 <td style={{ textAlign: "center" }}>
                                                                     <Button style={{ width: "100px" }}
                                                                         color="primary"
-                                                                        onClick={() => this.handleDirect(`/business-proposed/${business.id}`)}>
+                                                                        onClick={() => this.handleDirect(`/admin/business-proposed/${business.id}`)}>
                                                                         Chi tiết
                                                                     </Button>
                                                                 </td>
@@ -252,7 +252,7 @@ class BusinessProposed extends Component {
                                     {/* <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/invitation")} type="submit" color="primary" block>Trở về</Button>
+                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr/invitation")} type="submit" color="primary" block>Trở về</Button>
                                     </Col>
                                 </Row>
                             </CardFooter> */}

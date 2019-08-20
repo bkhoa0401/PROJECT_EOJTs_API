@@ -169,7 +169,7 @@ class Update_Question extends Component {
                 Toastify.actionSuccess("Chỉnh sửa câu hỏi thành công!");
               setTimeout(
                 function () {
-                  this.props.history.push('/question');
+                  this.props.history.push('/admin/question');
                 }
                   .bind(this),
                 2000
@@ -286,7 +286,7 @@ class Update_Question extends Component {
                                     <CardFooter className="p-4">
                                         <Row>
                                             <Col xs="3" sm="3">
-                                                <Button color="secondary" block onClick={() => this.handleDirect('/question')}>Trở về</Button>
+                                                <Button color="secondary" block onClick={() => this.handleDirect('/admin/question')}>Trở về</Button>
                                             </Col>
                                             <Col xs="3" sm="3">
                                                 <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>

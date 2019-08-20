@@ -107,7 +107,7 @@ class User_Business_Create extends Component {
                 })
                 setTimeout(
                     function () {
-                        this.props.history.push('/admin_account/businessList');
+                        this.props.history.push('/admin/admin_account/businessList');
                     }
                         .bind(this),
                     2000
@@ -248,7 +248,7 @@ class User_Business_Create extends Component {
                                     <CardFooter className="p-4">
                                         <Row>
                                             <Col xs="4" sm="4">
-                                                <Button color="secondary" block onClick={() => this.handleDirect('/admin_account/businessList')}>Trở về</Button>
+                                                <Button color="secondary" block onClick={() => this.handleDirect('/admin/admin_account/businessList')}>Trở về</Button>
                                             </Col>
                                             <Col xs="4" sm="4">
                                                 <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>

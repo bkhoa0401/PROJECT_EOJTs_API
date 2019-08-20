@@ -1,7 +1,7 @@
 import orderBy from "lodash/orderBy";
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { Badge, Button, Card, CardBody, CardHeader, Col, FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Row, Table, Input } from 'reactstrap';
+import { Label, Badge, Button, Card, CardBody, CardHeader, Col, FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Row, Table, Input } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import PaginationComponent from '../Paginations/pagination';
@@ -26,7 +26,12 @@ class Invitation extends Component {
             invitationDetail: null,
             pageNumber: 1,
             currentPage: 0,
-            rowsPerPage: 10
+            rowsPerPage: 10,
+
+
+            numOfStudent: 0,
+            searchingList: [],
+            isSearching: false,
         }
     }
 
@@ -35,12 +40,14 @@ class Invitation extends Component {
         const { currentPage, rowsPerPage } = this.state;
         const students = await ApiServices.Get(`/student/getListStudentIsInvited?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         const business = await ApiServices.Get('/business/getBusiness');
+        const numOfStudent = await ApiServices.Get(`/student/searchInviAllFields?valueSearch=${""}`);
         if (students !== null) {
             this.setState({
                 students: students.listData,
                 pageNumber: students.pageNumber,
                 loading: false,
                 business_eng_name: business.business_eng_name,
+                numOfStudent: numOfStudent.length,
             });
         }
     }
@@ -49,11 +56,24 @@ class Invitation extends Component {
         this.props.history.push(uri);
     }
 
-    handleInput = async (event) => {
+    handleInputSearch = async (event) => {
         const { name, value } = event.target;
-        await this.setState({
-            [name]: value.substr(0, 20),
-        })
+        if (value === "") {
+            await this.setState({
+                [name]: value.substr(0, 20),
+                isSearching: false,
+            })
+        } else {
+            const supervisors = await ApiServices.Get(`/student/searchInviAllFields?valueSearch=${value.substr(0, 20)}`);
+            // console.log(students);
+            if (supervisors !== null) {
+                this.setState({
+                    [name]: value.substr(0, 20),
+                    searchingList: supervisors,
+                    isSearching: true,
+                })
+            }
+        }
     }
 
     toggleModalDetail = async (studentDetail) => {
@@ -143,18 +163,7 @@ class Invitation extends Component {
     render() {
         const { students, business_eng_name, searchValue, columnToSort, sortDirection, loading, studentDetail, invitationDetail } = this.state;
         const { pageNumber, currentPage, rowsPerPage } = this.state;
-
-        let filteredListStudents = orderBy(students, columnToSort, sortDirection);
-
-        if (students !== null) {
-            filteredListStudents = students.filter(
-                (studentList) => {
-                    if (studentList.student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
-                        return studentList.student;
-                    }
-                }
-            );
-        }
+        const { numOfStudent, isSearching, searchingList } = this.state;
 
 
         return (
@@ -169,13 +178,27 @@ class Invitation extends Component {
                                         <i className="fa fa-align-justify"></i> Danh sách các lời mời đã gửi hiện tại
                                     </CardHeader>
                                     <CardBody>
-                                        <Button color="primary" onClick={() => this.handleDirect('/invitation/new')}>Gửi lời mời cho sinh viên</Button>
-                                        <br />
-                                        <br />
-                                        <br />
+                                        <FormGroup row>
+                                            <Col md="10">
+                                                <Button color="primary" onClick={() => this.handleDirect('/hr/invitation/new')}>Gửi lời mời cho sinh viên</Button>
+                                            </Col>
+                                            <Col xs="12" md="2">
+                                                {isSearching === false ?
+                                                    <Row className="float-right">
+                                                        <h6>Số dòng trên trang: </h6>
+                                                        &nbsp;&nbsp;
+                                                <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
+                                                            <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                            <option value={20}>20</option>
+                                                            <option value={50}>50</option>
+                                                        </Input>
+                                                    </Row> : <></>
+                                                }
+                                            </Col>
+                                        </FormGroup>
                                         <nav className="navbar navbar-light bg-light justify-content-between">
                                             <form className="form-inline">
-                                                <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
+                                                <input onChange={this.handleInputSearch} name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
                                             </form>
 
                                         </nav>
@@ -195,38 +218,39 @@ class Invitation extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {
-                                                    filteredListStudents && filteredListStudents.map((student, index) => {
+                                                {isSearching === false ?
+                                                    (
+                                                        students && students.map((student, index) => {
 
-                                                        const invitations = student.invitations;
-                                                        var invitationDetail = null;
+                                                            const invitations = student.invitations;
+                                                            var invitationDetail = null;
 
-                                                        invitations && invitations.map((invitation, index) => {
-                                                            const business_eng_name_invitation = invitation.business.business_eng_name;
-                                                            if (business_eng_name === business_eng_name_invitation) {
-                                                                invitationDetail = invitation;
+                                                            invitations && invitations.map((invitation, index) => {
+                                                                const business_eng_name_invitation = invitation.business.business_eng_name;
+                                                                if (business_eng_name === business_eng_name_invitation) {
+                                                                    invitationDetail = invitation;
+                                                                }
+                                                            })
+
+                                                            const skills = student.student.skills;
+
+                                                            let tmp = 'N/A';
+                                                            if (invitationDetail !== null && invitationDetail.state !== 'false') {
+                                                                if (student.student.option1 === business_eng_name) {
+                                                                    tmp = 1;
+                                                                }
+                                                                if (student.student.option2 === business_eng_name) {
+                                                                    tmp = 2;
+                                                                }
                                                             }
-                                                        })
 
-                                                        const skills = student.student.skills;
-
-                                                        let tmp = 'N/A';
-                                                        if (invitationDetail !== null && invitationDetail.state !== 'false') {
-                                                            if (student.student.option1 === business_eng_name) {
-                                                                tmp = 1;
-                                                            }
-                                                            if (student.student.option2 === business_eng_name) {
-                                                                tmp = 2;
-                                                            }
-                                                        }
-
-                                                        return (
-                                                            <tr key={index}>
-                                                                <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                                <td style={{ textAlign: "center" }}>{student.student.code}</td>
-                                                                <td style={{ textAlign: "center" }}>{student.student.name}</td>
-                                                                <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
-                                                                {/* <td style={{ textAlign: "center" }}>
+                                                            return (
+                                                                <tr key={index}>
+                                                                    <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
+                                                                    <td style={{ textAlign: "center" }}>{student.student.code}</td>
+                                                                    <td style={{ textAlign: "center" }}>{student.student.name}</td>
+                                                                    <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
+                                                                    {/* <td style={{ textAlign: "center" }}>
                                                                     {
                                                                         skills && skills.map((skill, index) => {
                                                                             return (
@@ -240,41 +264,113 @@ class Invitation extends Component {
                                                                     }
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>{student.student.gpa}</td> */}
-                                                                {/* <td style={{ textAlign: "center" }}>
+                                                                    {/* <td style={{ textAlign: "center" }}>
                                                                     <strong>
                                                                         {tmp}
                                                                     </strong>
                                                                 </td> */}
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {
-                                                                        invitationDetail && (
-                                                                            invitationDetail.state.toString() === 'true' ? (
-                                                                                <Badge color="success" style={{ fontSize: '12px' }}>ĐÃ CHẤP NHẬN</Badge>
-                                                                            ) : (
-                                                                                    <Badge color="danger" style={{ fontSize: '12px' }}>ĐANG CHỜ</Badge>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {
+                                                                            invitationDetail && (
+                                                                                invitationDetail.state.toString() === 'true' ? (
+                                                                                    <Badge color="success" style={{ fontSize: '12px' }}>ĐÃ CHẤP NHẬN</Badge>
+                                                                                ) : (
+                                                                                        <Badge color="danger" style={{ fontSize: '12px' }}>ĐANG CHỜ</Badge>
+                                                                                    )
+                                                                            )
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        <Button color="primary" onClick={() => this.toggleModalDetail(student.student)}><i className="fa fa-eye"></i></Button>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })) :
+                                                    (
+                                                        searchingList && searchingList.map((student, index) => {
+
+                                                            const invitations = student.invitations;
+                                                            var invitationDetail = null;
+
+                                                            invitations && invitations.map((invitation, index) => {
+                                                                const business_eng_name_invitation = invitation.business.business_eng_name;
+                                                                if (business_eng_name === business_eng_name_invitation) {
+                                                                    invitationDetail = invitation;
+                                                                }
+                                                            })
+
+                                                            const skills = student.student.skills;
+
+                                                            let tmp = 'N/A';
+                                                            if (invitationDetail !== null && invitationDetail.state !== 'false') {
+                                                                if (student.student.option1 === business_eng_name) {
+                                                                    tmp = 1;
+                                                                }
+                                                                if (student.student.option2 === business_eng_name) {
+                                                                    tmp = 2;
+                                                                }
+                                                            }
+
+                                                            return (
+                                                                <tr key={index}>
+                                                                    <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                                    <td style={{ textAlign: "center" }}>{student.student.code}</td>
+                                                                    <td style={{ textAlign: "center" }}>{student.student.name}</td>
+                                                                    <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
+                                                                    {/* <td style={{ textAlign: "center" }}>
+                                                                        {
+                                                                            skills && skills.map((skill, index) => {
+                                                                                return (
+                                                                                    <div>
+                                                                                        {
+                                                                                            <label style={{ marginRight: "15px" }}>+ {skill.name}</label>
+                                                                                        }
+                                                                                    </div>
                                                                                 )
-                                                                        )
-                                                                    }
-                                                                </td>
-                                                                <td>
-                                                                    <Button color="primary" onClick={() => this.toggleModalDetail(student.student)}><i className="fa fa-eye"></i></Button>
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    })
+                                                                            })
+                                                                        }
+                                                                    </td>
+                                                                    <td style={{ textAlign: "center" }}>{student.student.gpa}</td> */}
+                                                                    {/* <td style={{ textAlign: "center" }}>
+                                                                        <strong>
+                                                                            {tmp}
+                                                                        </strong>
+                                                                    </td> */}
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {
+                                                                            invitationDetail && (
+                                                                                invitationDetail.state.toString() === 'true' ? (
+                                                                                    <Badge color="success" style={{ fontSize: '12px' }}>ĐÃ CHẤP NHẬN</Badge>
+                                                                                ) : (
+                                                                                        <Badge color="danger" style={{ fontSize: '12px' }}>ĐANG CHỜ</Badge>
+                                                                                    )
+                                                                            )
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        <Button color="primary" onClick={() => this.toggleModalDetail(student.student)}><i className="fa fa-eye"></i></Button>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        }))
                                                 }
                                             </tbody>
                                         </Table>
                                         <ToastContainer />
-                                        <Pagination style={{ marginTop: "3%" }}>
-                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                            <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
-                                            <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "7%" }}>
-                                                <option value={10} selected={rowsPerPage === 10}>10</option>
-                                                <option value={20}>20</option>
-                                                <option value={50}>50</option>
-                                            </Input>
-                                        </Pagination>
+                                        {isSearching === false ?
+                                            <Row>
+                                                <Col>
+                                                    <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
+                                                </Col>
+                                                <Col>
+                                                    <Row className="float-right">
+                                                        <Pagination style={{ marginTop: "3%" }}>
+                                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                                        </Pagination>
+                                                    </Row>
+                                                </Col>
+                                            </Row> : <></>
+                                        }
                                     </CardBody>
                                 </Card>
                             </Col>

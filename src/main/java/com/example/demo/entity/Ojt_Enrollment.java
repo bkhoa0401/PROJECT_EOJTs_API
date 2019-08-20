@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
+import com.example.demo.config.PositionIntern;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
@@ -56,6 +58,11 @@ public class Ojt_Enrollment implements Serializable{
 
     @Column(name = "timeEnroll")
     private Date timeEnroll;
+
+    @Enumerated(EnumType.STRING)
+    @Check(constraints = "status IN ('DEVELOPER' ,'TESTER')")
+    @Column(name = "positionIntern")
+    private PositionIntern positionIntern = PositionIntern.DEVELOPER;
 
     public Ojt_Enrollment() {
     }
@@ -123,6 +130,15 @@ public class Ojt_Enrollment implements Serializable{
 //    public void setSupervisors(List<Supervisor> supervisors) {
 //        this.supervisors = supervisors;
 //    }
+
+
+    public PositionIntern getPositionIntern() {
+        return positionIntern;
+    }
+
+    public void setPositionIntern(PositionIntern positionIntern) {
+        this.positionIntern = positionIntern;
+    }
 
     public Date getTimeEnroll() {
         return timeEnroll;

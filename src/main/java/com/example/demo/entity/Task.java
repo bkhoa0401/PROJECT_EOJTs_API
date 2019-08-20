@@ -57,7 +57,7 @@ public class Task implements Serializable {
     @JoinColumn(name = "ojt_enrollment_id")
     private Ojt_Enrollment ojt_enrollment;
 
-    @Column(name = "comment")
+    @Column(name = "comment", columnDefinition = "NVARCHAR(MAX)")
     private String comment;
 
     public String getTitle() {
