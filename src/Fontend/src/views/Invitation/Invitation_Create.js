@@ -374,18 +374,6 @@ class Invitation_Create extends Component {
                         <TabPane tabId="1">
                             {
                                 <div>
-                                    {isSearchingSum === false ?
-                                        <Row className="float-right">
-                                            <h6>Số dòng trên trang: </h6>
-                                            &nbsp;&nbsp;
-                                        <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
-                                                <option value={10} selected={rowsPerPage === 10}>10</option>
-                                                <option value={20}>20</option>
-                                                <option value={50}>50</option>
-                                            </Input>
-                                        </Row> : <></>
-                                    }
-                                    <br /><br /><br />
                                     <nav className="navbar navbar-light bg-light justify-content-between">
                                         <form className="form-inline">
                                             <input onChange={this.handleInputSearchSum} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
@@ -490,13 +478,24 @@ class Invitation_Create extends Component {
                                     {isSearchingSum === false ?
                                         <Row>
                                             <Col>
-                                                <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudentSum} kết quả</Label>
+                                                <Row>
+                                                    <Pagination>
+                                                        <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                                    </Pagination>
+                                                    &emsp;
+                                                    <h6 style={{ marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                                    &nbsp;&nbsp;
+                                                    <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "70px" }} >
+                                                        <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                        <option value={20}>20</option>
+                                                        <option value={50}>50</option>
+                                                    </Input>
+                                                </Row>
                                             </Col>
                                             <Col>
                                                 <Row className="float-right">
-                                                    <Pagination style={{ marginTop: "3%" }}>
-                                                        <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                                    </Pagination>
+                                                    <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudentSum} kết quả</Label>
+
                                                 </Row>
                                             </Col>
                                         </Row> : <></>
@@ -507,17 +506,6 @@ class Invitation_Create extends Component {
                         <TabPane tabId="2">
                             {
                                 <div>
-                                    {isSearchingSuggest === false ?
-                                        <Row className="float-right">
-                                            <h6>Số dòng trên trang: </h6>
-                                            &nbsp;&nbsp;
-                                        <Input onChange={this.handleInputSuggest} type="select" name="rowsPerPageSuggest" style={{ width: "70px" }} size="sm">
-                                                <option value={10} selected={rowsPerPageSuggest === 10}>10</option>
-                                                <option value={20}>20</option>
-                                                <option value={50}>50</option>
-                                            </Input>
-                                        </Row> : <></>
-                                    }
                                     <br /><br /><br />
                                     <nav className="navbar navbar-light bg-light justify-content-between">
                                         <form className="form-inline">
@@ -623,13 +611,23 @@ class Invitation_Create extends Component {
                                     {isSearchingSuggest === false ?
                                         <Row>
                                             <Col>
-                                                <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + suggestedStudents.length} trên tổng số {numOfStudentSuggest} kết quả</Label>
+                                                <Row>
+                                                    <Pagination>
+                                                        <PaginationComponent pageNumber={pageNumberSuggest} handlePageNumber={this.handlePageNumberSuggest} handlePageNext={this.handlePageNextSuggest} handlePagePrevious={this.handlePagePreviousSuggest} currentPage={currentPageSuggest} />
+                                                    </Pagination>
+                                                    &emsp;
+                                                    <h6 style={{ marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                                    &nbsp;&nbsp;
+                                                    <Input onChange={this.handleInputSuggest} type="select" name="rowsPerPageSuggest" style={{ width: "70px" }} >
+                                                        <option value={10} selected={rowsPerPageSuggest === 10}>10</option>
+                                                        <option value={20}>20</option>
+                                                        <option value={50}>50</option>
+                                                    </Input>
+                                                </Row>
                                             </Col>
                                             <Col>
                                                 <Row className="float-right">
-                                                    <Pagination style={{ marginTop: "3%" }}>
-                                                        <PaginationComponent pageNumber={pageNumberSuggest} handlePageNumber={this.handlePageNumberSuggest} handlePageNext={this.handlePageNextSuggest} handlePagePrevious={this.handlePagePreviousSuggest} currentPage={currentPageSuggest} />
-                                                    </Pagination>
+                                                    <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + suggestedStudents.length} trên tổng số {numOfStudentSuggest} kết quả</Label>
                                                 </Row>
                                             </Col>
                                         </Row> : <></>
