@@ -65,7 +65,7 @@ class Report extends Component {
             }
         } else if (role === 'ROLE_HR') {
             listStudentAndReport = await ApiServices.Get(`/business/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
-            // console.log(listStudentAndReport);
+            console.log(listStudentAndReport);
             numOfStudent = await ApiServices.Get("/business/getNumStudent");
             // console.log(numOfStudent);
             dropdownSpecialized = await ApiServices.Get("/business/getSpecializedsOfStudentsInBusiness");
