@@ -494,6 +494,43 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/searchInviAllFields")
+    @ResponseBody
+    public ResponseEntity<List<Student_InvitationDTO>> searchInviAllFields(@RequestParam String valueSearch) {
+        String email = getEmailFromToken();
+        List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);
+        List<Student> studentListIsInvitedInFunc = new ArrayList<>();
+        List<Student_InvitationDTO> studentList = new ArrayList<>();
+
+        Semester semester = semesterService.getSemesterCurrent();
+
+        for (int i = 0; i < invitationList.size(); i++) {
+            if (invitationList.get(i).getSemester().getId() != semester.getId()) {
+                invitationList.remove(invitationList.get(i));
+            }
+        }
+
+        for (int i = 0; i < invitationList.size(); i++) {
+            if (invitationList.get(i).getStudent().getCode().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                    invitationList.get(i).getStudent().getName().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                    invitationList.get(i).getStudent().getSpecialized().getName().toLowerCase().contains(valueSearch.toLowerCase())) {
+                Student_InvitationDTO student_invitationDTO = new Student_InvitationDTO();
+                Student student = studentService.getStudentIsInvited(invitationList.get(i).getStudent().getEmail());
+                List<Invitation> invitations = invitationService.getListInvitationByStudentEmail(student.getEmail());
+                student_invitationDTO.setInvitations(invitations);
+                student_invitationDTO.setStudent(student);
+                studentList.add(student_invitationDTO);
+                studentListIsInvitedInFunc.add(student);
+            }
+        }
+        if (studentList != null) {
+            studentListIsInvited = studentListIsInvitedInFunc;
+
+            return new ResponseEntity<List<Student_InvitationDTO>>(studentList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     public ResponseEntity<List<Student_InvitationDTO>> getListStudentOfBusiness() {
         String email = getEmailFromToken();
         List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);
@@ -546,9 +583,66 @@ public class StudentController {
 
     //check semester ok
     //danh sach nhung dua set cong ty vao nguyen vong va trang thai cua nv đó
+    @GetMapping("/getListStudentAndOptionAndStatusOptionByCodeName")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getListStudentByOptionNameBusinessAndStatusOption(@RequestParam String valueSearch) {
+        //email of business
+        String email = getEmailFromToken();
+
+        Business business = businessService.getBusinessByEmail(email);
+
+        //list student set cty vao nguyen vong
+        List<Student> studentList = studentService.findStudentByBusinessNameOption(business.getBusiness_eng_name(), business.getBusiness_eng_name());
+        List<Student> filteredStudentList = new ArrayList<Student>();
+        if (studentList != null) {
+            filteredStudentList = searchStudentByCodeName(studentList, valueSearch);
+        }
+        List<Student> listResult = new ArrayList<>();
+
+        String businessName = business.getBusiness_eng_name();
+
+        if (filteredStudentList != null) {
+            for (int i = 0; i < filteredStudentList.size(); i++) {
+                if (filteredStudentList.get(i).getOption1() == null && filteredStudentList.get(i).getOption2() == null) {
+                    continue;
+                }
+                if (filteredStudentList.get(i).getOption2() == null) {
+                    if (filteredStudentList.get(i).getOption1().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed1() == false) {
+                            listResult.add(filteredStudentList.get(i));
+                        }
+                    }
+                }
+                if (filteredStudentList.get(i).getOption1() == null) {
+                    if (filteredStudentList.get(i).getOption2().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed2() == false) {
+                            listResult.add(filteredStudentList.get(i));
+                        }
+                    }
+                }
+                if (filteredStudentList.get(i).getOption1() != null && filteredStudentList.get(i).getOption2() != null) {
+                    if (filteredStudentList.get(i).getOption1().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed1() == false) {
+                            listResult.add(filteredStudentList.get(i));
+                        }
+                    }
+                    if (filteredStudentList.get(i).getOption2().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed2() == false) {
+                            listResult.add(filteredStudentList.get(i));
+                        }
+                    }
+                }
+            }
+        }
+        if (listResult != null) {
+            return new ResponseEntity<List<Student>>(listResult, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     @GetMapping("/getListStudentByOptionAndStatusOption")
     @ResponseBody
-    public ResponseEntity<PagingDTO> getListStudentByOptionNameBusinessAndStatusOption(@RequestParam int currentPage
+    public ResponseEntity<PagingDTO> getListStudentByOptionNameBusinessAndStatusOption(@RequestParam int specializedID, @RequestParam int currentPage
             , @RequestParam int rowsPerPage) {
         //email of business
         String email = getEmailFromToken();
@@ -557,39 +651,49 @@ public class StudentController {
 
         //list student set cty vao nguyen vong
         List<Student> studentList = studentService.findStudentByBusinessNameOption(business.getBusiness_eng_name(), business.getBusiness_eng_name());
+        List<Student> filteredStudentList = new ArrayList<Student>();
+        if (specializedID == -1) {
+            filteredStudentList = studentList;
+        } else {
+            for (int i = 0; i < studentList.size(); i++) {
+                if (studentList.get(i).getSpecialized().getId() == specializedID) {
+                    filteredStudentList.add(studentList.get(i));
+                }
+            }
+        }
 
         List<Student> listResult = new ArrayList<>();
 
         String businessName = business.getBusiness_eng_name();
 
-        if (studentList != null) {
-            for (int i = 0; i < studentList.size(); i++) {
-                if (studentList.get(i).getOption1() == null && studentList.get(i).getOption2() == null) {
+        if (filteredStudentList != null) {
+            for (int i = 0; i < filteredStudentList.size(); i++) {
+                if (filteredStudentList.get(i).getOption1() == null && filteredStudentList.get(i).getOption2() == null) {
                     continue;
                 }
-                if (studentList.get(i).getOption2() == null) {
-                    if (studentList.get(i).getOption1().equals(businessName)) {
-                        if (studentList.get(i).isInterviewed1() == false) {
-                            listResult.add(studentList.get(i));
+                if (filteredStudentList.get(i).getOption2() == null) {
+                    if (filteredStudentList.get(i).getOption1().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed1() == false) {
+                            listResult.add(filteredStudentList.get(i));
                         }
                     }
                 }
-                if (studentList.get(i).getOption1() == null) {
-                    if (studentList.get(i).getOption2().equals(businessName)) {
-                        if (studentList.get(i).isInterviewed2() == false) {
-                            listResult.add(studentList.get(i));
+                if (filteredStudentList.get(i).getOption1() == null) {
+                    if (filteredStudentList.get(i).getOption2().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed2() == false) {
+                            listResult.add(filteredStudentList.get(i));
                         }
                     }
                 }
-                if (studentList.get(i).getOption1() != null && studentList.get(i).getOption2() != null) {
-                    if (studentList.get(i).getOption1().equals(businessName)) {
-                        if (studentList.get(i).isInterviewed1() == false) {
-                            listResult.add(studentList.get(i));
+                if (filteredStudentList.get(i).getOption1() != null && filteredStudentList.get(i).getOption2() != null) {
+                    if (filteredStudentList.get(i).getOption1().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed1() == false) {
+                            listResult.add(filteredStudentList.get(i));
                         }
                     }
-                    if (studentList.get(i).getOption2().equals(businessName)) {
-                        if (studentList.get(i).isInterviewed2() == false) {
-                            listResult.add(studentList.get(i));
+                    if (filteredStudentList.get(i).getOption2().equals(businessName)) {
+                        if (filteredStudentList.get(i).isInterviewed2() == false) {
+                            listResult.add(filteredStudentList.get(i));
                         }
                     }
                 }
@@ -617,6 +721,9 @@ public class StudentController {
 
         List<Student> listAllStudent = studentService.getAllStudentsBySemesterId();
 
+        String emailBusiness = getEmailFromToken();
+        List<Student> officialStudentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
+
         for (int i = 0; i < listStudentIsInvited.size(); i++) {
             String emailStudentIsInvited = listStudentIsInvited.get(i).getEmail();
             for (int j = 0; j < listAllStudent.size(); j++) {
@@ -628,10 +735,66 @@ public class StudentController {
             }
         }
 
-        Utils<Student> studentUtils = new Utils<>();
-        PagingDTO pagingDTO = studentUtils.paging(listAllStudent, currentPage, rowsPerPage);
+        for (int i = 0; i < officialStudentList.size(); i++) {
+            String emailStudentIsIn = officialStudentList.get(i).getEmail();
+            for (int j = 0; j < listAllStudent.size(); j++) {
+                String emailStudent = listAllStudent.get(j).getEmail();
+                if (emailStudent.equals(emailStudentIsIn)) {
+                    listAllStudent.remove(listAllStudent.get(j));
+                    break;
+                }
+            }
+        }
 
-        return new ResponseEntity<>(pagingDTO, HttpStatus.OK);
+        if (listAllStudent != null ) {
+            Utils<Student> studentUtils = new Utils<>();
+            PagingDTO pagingDTO = studentUtils.paging(listAllStudent, currentPage, rowsPerPage);
+
+            return new ResponseEntity<>(pagingDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/searchStudentNotYetInvitedAllFields")
+    @ResponseBody
+    public ResponseEntity<List<Student>> searchStudentNotYetInvitedAllFields(@RequestParam String valueSearch) {
+        getListStudentOfBusiness();
+
+        List<Student> listStudentIsInvited = studentListIsInvited;
+
+        List<Student> listAllStudent = studentService.getAllStudentsBySemesterId();
+
+        String emailBusiness = getEmailFromToken();
+        List<Student> officialStudentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
+
+        for (int i = 0; i < listStudentIsInvited.size(); i++) {
+            String emailStudentIsInvited = listStudentIsInvited.get(i).getEmail();
+            for (int j = 0; j < listAllStudent.size(); j++) {
+                String emailStudent = listAllStudent.get(j).getEmail();
+                if (emailStudent.equals(emailStudentIsInvited)) {
+                    listAllStudent.remove(listAllStudent.get(j));
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < officialStudentList.size(); i++) {
+            String emailStudentIsIn = officialStudentList.get(i).getEmail();
+            for (int j = 0; j < listAllStudent.size(); j++) {
+                String emailStudent = listAllStudent.get(j).getEmail();
+                if (emailStudent.equals(emailStudentIsIn)) {
+                    listAllStudent.remove(listAllStudent.get(j));
+                    break;
+                }
+            }
+        }
+
+        if (listAllStudent != null ) {
+            List<Student> searchStudentList = searchStudentByCodeNameSpecialized(listAllStudent, valueSearch);
+
+            return new ResponseEntity<>(searchStudentList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
     @PutMapping("/updateToken")
@@ -786,10 +949,59 @@ public class StudentController {
                 }
             }
         }
+
+        List<Student> officialStudentList = ojt_enrollmentService.getListStudentByBusiness(email);
+        for (int i = 0; i < officialStudentList.size(); i++) {
+            String emailStudentIsIn = officialStudentList.get(i).getEmail();
+            for (int j = 0; j < studentList.size(); j++) {
+                String emailStudent = studentList.get(j).getEmail();
+                if (emailStudent.equals(emailStudentIsIn)) {
+                    studentList.remove(studentList.get(j));
+                    break;
+                }
+            }
+        }
         if (studentList != null) {
             Utils<Student> studentUtils = new Utils<>();
             PagingDTO pagingDTO = studentUtils.paging(studentList, currentPage, rowsPerPage);
             return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/searchStudentSuggestAllFields")
+    @ResponseBody
+    public ResponseEntity<List<Student>> searchStudentSuggestAllFields(@RequestParam String valueSearch) {
+        getListStudentOfBusiness(); // lay ra nhung dua da moi
+
+        String email = getEmailFromToken();
+        List<Student> studentList = businessService.getSuggestListStudent(email);
+
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            for (int j = 0; j < studentListIsInvited.size(); j++) {
+                Student studentIsInvited = studentListIsInvited.get(j);
+                if (student.getEmail().equals(studentIsInvited.getEmail())) {
+                    studentList.remove(student); // xoa dua da duoc moi ra khoi list suggest
+                }
+            }
+        }
+
+        List<Student> officialStudentList = ojt_enrollmentService.getListStudentByBusiness(email);
+        for (int i = 0; i < officialStudentList.size(); i++) {
+            String emailStudentIsIn = officialStudentList.get(i).getEmail();
+            for (int j = 0; j < studentList.size(); j++) {
+                String emailStudent = studentList.get(j).getEmail();
+                if (emailStudent.equals(emailStudentIsIn)) {
+                    studentList.remove(studentList.get(j));
+                    break;
+                }
+            }
+        }
+        if (studentList != null ) {
+            List<Student> searchStudentList = searchStudentByCodeNameSpecialized(studentList, valueSearch);
+
+            return new ResponseEntity<>(searchStudentList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -1008,19 +1220,6 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
-
-    //check semester ok
-    @GetMapping("/studentsEvaluations")
-    @ResponseBody
-    public ResponseEntity<PagingDTO> getEvaluationsOfStudents(@RequestParam int currentPage
-            , @RequestParam int rowsPerPage) {
-        PagingDTO pagingDTO = studentService.getEvaluationsOfStudents(currentPage, rowsPerPage);
-        if (pagingDTO != null) {
-            return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-    }
-
     @PostMapping("/businessPropose")
     public ResponseEntity<Void> createBusinessPropose(@RequestBody Business_Proposed business_proposed) {
         String email = getEmailFromToken();
@@ -1184,6 +1383,51 @@ public class StudentController {
     public ResponseEntity<PagingDTO> getAllStudentPaging(@RequestParam int currentPage, @RequestParam int rowsPerPage) {
         PagingDTO pagingStudent = studentService.pagingStudent(currentPage, rowsPerPage);
         return new ResponseEntity<>(pagingStudent, HttpStatus.OK);
+    }
+
+    @GetMapping("/getListStudentByBusinessByCodeNameEmail")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getListStudentByBusinessByCodeNameEmail(@RequestParam String valueSearch) {
+        String emailBusiness = getEmailFromToken();
+        List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
+        if (studentList != null) {
+            List<Student> searchStudentList = searchStudentByCodeNameEmail(studentList, valueSearch);
+            return new ResponseEntity<List<Student>>(searchStudentList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    private List<Student> searchStudentByCodeNameEmail(List<Student> studentList, String valueSearch) {
+        List<Student> searchStudentList = new ArrayList<Student>();
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            if (student.getCode().toLowerCase().contains(valueSearch.toLowerCase()) || student.getName().toLowerCase().contains(valueSearch.toLowerCase()) || student.getEmail().toLowerCase().contains(valueSearch.toLowerCase())) {
+                searchStudentList.add(student);
+            }
+        }
+        return searchStudentList;
+    }
+
+    private List<Student> searchStudentByCodeName(List<Student> studentList, String valueSearch) {
+        List<Student> searchStudentList = new ArrayList<Student>();
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            if (student.getCode().toLowerCase().contains(valueSearch.toLowerCase()) || student.getName().toLowerCase().contains(valueSearch.toLowerCase())) {
+                searchStudentList.add(student);
+            }
+        }
+        return searchStudentList;
+    }
+
+    private List<Student> searchStudentByCodeNameSpecialized(List<Student> studentList, String valueSearch) {
+        List<Student> searchStudentList = new ArrayList<Student>();
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student = studentList.get(i);
+            if (student.getCode().toLowerCase().contains(valueSearch.toLowerCase()) || student.getName().toLowerCase().contains(valueSearch.toLowerCase()) || student.getSpecialized().getName().toLowerCase().contains(valueSearch.toLowerCase())) {
+                searchStudentList.add(student);
+            }
+        }
+        return searchStudentList;
     }
 
     //get email from token

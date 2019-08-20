@@ -603,13 +603,22 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public PagingDTO getEvaluationsOfStudents(int currentPage, int rowsPerPage) {
+    public PagingDTO getEvaluationsOfStudents(int specializedID, int currentPage, int rowsPerPage) {
         List<Student> studentList = getAllStudentsBySemesterId();
-
+        List<Student> filteredStudentList = new ArrayList<Student>();
+        if (specializedID == -1) {
+            filteredStudentList = studentList;
+        } else {
+            for (int i = 0; i < studentList.size(); i++) {
+                if (studentList.get(i).getSpecialized().getId() == specializedID) {
+                    filteredStudentList.add(studentList.get(i));
+                }
+            }
+        }
         List<Student_EvaluationDTO> student_evaluationDTOS = new ArrayList<>();
 
-        for (int i = 0; i < studentList.size(); i++) {
-            List<Evaluation> evaluationList = iEvaluationService.getEvaluationsByStudentEmail(studentList.get(i).getEmail());
+        for (int i = 0; i < filteredStudentList.size(); i++) {
+            List<Evaluation> evaluationList = iEvaluationService.getEvaluationsByStudentEmail(filteredStudentList.get(i).getEmail());
             Collections.sort(evaluationList);
             if (evaluationList.size() < 4) {
                 for (int j = evaluationList.size(); j < 4; j++) {
@@ -619,7 +628,7 @@ public class StudentService implements IStudentService {
             evaluationList = iEvaluationService.checkSemesterOfListEvaluation(evaluationList);
             Student_EvaluationDTO student_evaluationDTO = new Student_EvaluationDTO();
             student_evaluationDTO.setEvaluationList(evaluationList);
-            student_evaluationDTO.setStudent(studentList.get(i));
+            student_evaluationDTO.setStudent(filteredStudentList.get(i));
 
             student_evaluationDTOS.add(student_evaluationDTO);
         }

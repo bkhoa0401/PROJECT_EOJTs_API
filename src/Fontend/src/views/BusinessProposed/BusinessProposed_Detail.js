@@ -50,30 +50,40 @@ class BusinessProposed_Detail extends Component {
 
         console.log(role);
 
-        if (role === 'ROLE_STARTUP') {
-            if (business.isAcceptedByHeadOfTraining !== 'PENDING') {
+        // if (role === 'ROLE_STARTUP') {
+        //     if (business.isAcceptedByHeadOfTraining !== 'PENDING') {
+        //         document.getElementById('btnApprove').setAttribute("disabled", "disabled");
+        //         document.getElementById('btnReject').setAttribute("disabled", "disabled");
+        //     } else if (business.isAcceptedByStartupRoom === 'ACCEPTED') {
+        //         document.getElementById('btnApprove').setAttribute("disabled", "disabled");
+        //     } else if (business.isAcceptedByStartupRoom === 'REJECTED') {
+        //         document.getElementById('btnReject').setAttribute("disabled", "disabled");
+        //     }
+        // } else if (role === 'ROLE_HEADTRAINING') {
+        //     if (business.isAcceptedByHeadMaster !== 'PENDING') {
+        //         document.getElementById('btnApprove').setAttribute("disabled", "disabled");
+        //         document.getElementById('btnReject').setAttribute("disabled", "disabled");
+        //     } else if (business.isAcceptedByHeadOfTraining === 'ACCEPTED') {
+        //         document.getElementById('btnApprove').setAttribute("disabled", "disabled");
+        //     } else if (business.isAcceptedByHeadOfTraining === 'REJECTED') {
+        //         document.getElementById('btnReject').setAttribute("disabled", "disabled");
+        //     }
+        // }
+        // else if (role === 'ROLE_HEADMASTER') {
+        //     if (business.isAcceptedByHeadMaster === 'ACCEPTED') {
+        //         document.getElementById('btnApprove').setAttribute("disabled", "disabled");
+        //         document.getElementById('btnReject').setAttribute("disabled", "disabled");
+        //     } else if (business.isAcceptedByHeadMaster === 'REJECTED') {
+        //         document.getElementById('btnReject').setAttribute("disabled", "disabled");
+        //     }
+        // }
+
+        if (role === 'ROLE_ADMIN') {
+            if (business.isAcceptedByAdmin === 'ACCEPTED') {
                 document.getElementById('btnApprove').setAttribute("disabled", "disabled");
                 document.getElementById('btnReject').setAttribute("disabled", "disabled");
-            } else if (business.isAcceptedByStartupRoom === 'ACCEPTED') {
+            } else if (business.isAcceptedByAdmin === 'REJECTED') {
                 document.getElementById('btnApprove').setAttribute("disabled", "disabled");
-            } else if (business.isAcceptedByStartupRoom === 'REJECTED') {
-                document.getElementById('btnReject').setAttribute("disabled", "disabled");
-            }
-        } else if (role === 'ROLE_HEADTRAINING') {
-            if (business.isAcceptedByHeadMaster !== 'PENDING') {
-                document.getElementById('btnApprove').setAttribute("disabled", "disabled");
-                document.getElementById('btnReject').setAttribute("disabled", "disabled");
-            } else if (business.isAcceptedByHeadOfTraining === 'ACCEPTED') {
-                document.getElementById('btnApprove').setAttribute("disabled", "disabled");
-            } else if (business.isAcceptedByHeadOfTraining === 'REJECTED') {
-                document.getElementById('btnReject').setAttribute("disabled", "disabled");
-            }
-        }
-        else if (role === 'ROLE_HEADMASTER') {
-            if (business.isAcceptedByHeadMaster === 'ACCEPTED') {
-                document.getElementById('btnApprove').setAttribute("disabled", "disabled");
-                document.getElementById('btnReject').setAttribute("disabled", "disabled");
-            } else if (business.isAcceptedByHeadMaster === 'REJECTED') {
                 document.getElementById('btnReject').setAttribute("disabled", "disabled");
             }
         }
@@ -84,57 +94,77 @@ class BusinessProposed_Detail extends Component {
     }
 
     showStatus(status, role) {
-        if (status === 'ACCEPTED' && role === 'Startup') {
+        // if (status === 'ACCEPTED' && role === 'Startup') {
+        //     return (
+        //         <div style={{ marginLeft: "43%" }}>
+        //             <Badge color="success">ĐƯỢC CHẤP NHẬN</Badge>
+        //         </div>
+        //     )
+        // } else if (status === 'REJECTED' && role === 'Startup') {
+        //     return (
+        //         <div style={{ marginLeft: "43%" }}>
+        //             <Badge color="danger" style={{ marginLeft: "8%" }}>BỊ TỪ CHỐI</Badge>
+        //         </div>
+        //     )
+        // } else if (status === 'PENDING' && role === 'Startup') {
+        //     return (
+        //         <div style={{ marginLeft: "40%" }}>
+        //             <Badge color="warning">ĐANG CHỜ PHÊ DUYỆT</Badge>
+        //         </div>
+        //     )
+        // } else if (status === 'ACCEPTED' && role === 'Training') {
+        //     return (
+        //         <div style={{ marginLeft: "48%" }}>
+        //             <Badge color="success">ĐƯỢC CHẤP NHẬN</Badge>
+        //         </div>
+        //     )
+        // } else if (status === 'REJECTED' && role === 'Training') {
+        //     return (
+        //         <div style={{ marginLeft: "48%" }}>
+        //             <Badge color="danger" style={{ marginLeft: "8%" }}>BỊ TỪ CHỐI</Badge>
+        //         </div>
+        //     )
+        // } else if (status === 'PENDING' && role === 'Training') {
+        //     return (
+        //         <div style={{ marginLeft: "45%" }}>
+        //             <Badge color="warning">ĐANG CHỜ PHÊ DUYỆT</Badge>
+        //         </div>
+        //     )
+        // } else if (status === 'ACCEPTED' && role === 'Master') {
+        //     return (
+        //         <div style={{ marginLeft: "59%" }}>
+        //             <Badge color="success">ĐƯỢC CHẤP NHẬN</Badge>
+        //         </div>
+        //     )
+        // } else if (status === 'REJECTED' && role === 'Master') {
+        //     return (
+        //         <div style={{ marginLeft: "61%" }}>
+        //             <Badge color="danger">BỊ TỪ CHỐI</Badge>
+        //         </div>
+        //     )
+        // } else if (status === 'PENDING' && role === 'Master') {
+        //     return (
+        //         <div style={{ marginLeft: "58%" }}>
+        //             <Badge color="warning">ĐANG CHỜ PHÊ DUYỆT</Badge>
+        //         </div>
+        //     )
+        // }
+
+        if (status === 'ACCEPTED' && role === 'ROLE_ADMIN') {
             return (
-                <div style={{ marginLeft: "43%" }}>
-                    <Badge color="success">ĐƯỢC CHẤP NHẬN</Badge>
+                <div style={{ marginLeft: "60%" }}>
+                    <Badge color="success" style={{ marginLeft: "8%" }}>CHẤP NHẬN</Badge>
                 </div>
             )
-        } else if (status === 'REJECTED' && role === 'Startup') {
+        } else if (status === 'REJECTED' && role === 'ROLE_ADMIN') {
             return (
-                <div style={{ marginLeft: "43%" }}>
-                    <Badge color="danger" style={{ marginLeft: "8%" }}>BỊ TỪ CHỐI</Badge>
+                <div style={{ marginLeft: "60%" }}>
+                    <Badge color="danger" style={{ marginLeft: "8%" }}>TỪ CHỐI</Badge>
                 </div>
             )
-        } else if (status === 'PENDING' && role === 'Startup') {
+        } else if (status === 'PENDING' && role === 'ROLE_ADMIN') {
             return (
-                <div style={{ marginLeft: "40%" }}>
-                    <Badge color="warning">ĐANG CHỜ PHÊ DUYỆT</Badge>
-                </div>
-            )
-        } else if (status === 'ACCEPTED' && role === 'Training') {
-            return (
-                <div style={{ marginLeft: "48%" }}>
-                    <Badge color="success">ĐƯỢC CHẤP NHẬN</Badge>
-                </div>
-            )
-        } else if (status === 'REJECTED' && role === 'Training') {
-            return (
-                <div style={{ marginLeft: "48%" }}>
-                    <Badge color="danger" style={{ marginLeft: "8%" }}>BỊ TỪ CHỐI</Badge>
-                </div>
-            )
-        } else if (status === 'PENDING' && role === 'Training') {
-            return (
-                <div style={{ marginLeft: "45%" }}>
-                    <Badge color="warning">ĐANG CHỜ PHÊ DUYỆT</Badge>
-                </div>
-            )
-        } else if (status === 'ACCEPTED' && role === 'Master') {
-            return (
-                <div style={{ marginLeft: "59%" }}>
-                    <Badge color="success">ĐƯỢC CHẤP NHẬN</Badge>
-                </div>
-            )
-        } else if (status === 'REJECTED' && role === 'Master') {
-            return (
-                <div style={{ marginLeft: "61%" }}>
-                    <Badge color="danger">BỊ TỪ CHỐI</Badge>
-                </div>
-            )
-        } else if (status === 'PENDING' && role === 'Master') {
-            return (
-                <div style={{ marginLeft: "58%" }}>
+                <div style={{ marginLeft: "60%" }}>
                     <Badge color="warning">ĐANG CHỜ PHÊ DUYỆT</Badge>
                 </div>
             )
@@ -145,7 +175,7 @@ class BusinessProposed_Detail extends Component {
         const { status, business, role } = this.state;
         let message = '';
 
-        if (this.validator.allValid() || (role === 'ROLE_HEADMASTER' && status)) {
+        if (this.validator.allValid() || (role === 'ROLE_ADMIN' && status)) {
             if (status) {
                 this.setState({
                     success: false
@@ -231,13 +261,18 @@ class BusinessProposed_Detail extends Component {
             loading: true
         })
 
-        if (role === 'ROLE_STARTUP') {
-            result = await ApiServices.Put(`/heading/startup?id=${id}&comment=${comment}&status=${status}`);
-        } else if (role === 'ROLE_HEADTRAINING') {
-            result = await ApiServices.Put(`/heading/headTraining?id=${id}&comment=${comment}&status=${status}`);
-        } else if (role === 'ROLE_HEADMASTER') {
-            result = await ApiServices.Put(`/heading/headMaster?id=${id}&comment=${comment}&status=${status}`);
+        // if (role === 'ROLE_STARTUP') {
+        //     result = await ApiServices.Put(`/heading/startup?id=${id}&comment=${comment}&status=${status}`);
+        // } else if (role === 'ROLE_HEADTRAINING') {
+        //     result = await ApiServices.Put(`/heading/headTraining?id=${id}&comment=${comment}&status=${status}`);
+        // } else if (role === 'ROLE_HEADMASTER') {
+        //     result = await ApiServices.Put(`/heading/headMaster?id=${id}&comment=${comment}&status=${status}`);
+        // }
+
+        if (role === 'ROLE_ADMIN') {
+            result = await ApiServices.Put(`/heading/admin?id=${id}&comment=${comment}&status=${status}`);
         }
+
         if (result.status === 200) {
             Toastify.actionSuccess(messageSucces);
             this.setState({
@@ -255,24 +290,34 @@ class BusinessProposed_Detail extends Component {
                 });
             }
 
-            if (role === 'ROLE_STARTUP') {
-                if (business.isAcceptedByStartupRoom === 'ACCEPTED') {
+            // if (role === 'ROLE_STARTUP') {
+            //     if (business.isAcceptedByStartupRoom === 'ACCEPTED') {
+            //         document.getElementById('btnApprove').setAttribute("disabled", "disabled");
+            //     } else if (business.isAcceptedByStartupRoom === 'REJECTED') {
+            //         document.getElementById('btnReject').setAttribute("disabled", "disabled");
+            //     }
+            // } else if (role === 'ROLE_HEADTRAINING') {
+            //     if (business.isAcceptedByHeadOfTraining === 'ACCEPTED') {
+            //         document.getElementById('btnApprove').setAttribute("disabled", "disabled");
+            //     } else if (business.isAcceptedByHeadOfTraining === 'REJECTED') {
+            //         document.getElementById('btnReject').setAttribute("disabled", "disabled");
+            //     }
+            // }
+            // else if (role === 'ROLE_HEADMASTER') {
+            //     if (business.isAcceptedByHeadMaster === 'ACCEPTED') {
+            //         document.getElementById('btnReject').setAttribute("disabled", "disabled");
+            //         document.getElementById('btnApprove').setAttribute("disabled", "disabled");
+            //     } else if (business.isAcceptedByHeadMaster === 'REJECTED') {
+            //         document.getElementById('btnReject').setAttribute("disabled", "disabled");
+            //     }
+            // }
+
+            if (role === 'ROLE_ADMIN') {
+                if (business.isAcceptedByAdmin === 'ACCEPTED') {
                     document.getElementById('btnApprove').setAttribute("disabled", "disabled");
-                } else if (business.isAcceptedByStartupRoom === 'REJECTED') {
                     document.getElementById('btnReject').setAttribute("disabled", "disabled");
-                }
-            } else if (role === 'ROLE_HEADTRAINING') {
-                if (business.isAcceptedByHeadOfTraining === 'ACCEPTED') {
+                } else if (business.isAcceptedByAdmin === 'REJECTED') {
                     document.getElementById('btnApprove').setAttribute("disabled", "disabled");
-                } else if (business.isAcceptedByHeadOfTraining === 'REJECTED') {
-                    document.getElementById('btnReject').setAttribute("disabled", "disabled");
-                }
-            }
-            else if (role === 'ROLE_HEADMASTER') {
-                if (business.isAcceptedByHeadMaster === 'ACCEPTED') {
-                    document.getElementById('btnReject').setAttribute("disabled", "disabled");
-                    document.getElementById('btnApprove').setAttribute("disabled", "disabled");
-                } else if (business.isAcceptedByHeadMaster === 'REJECTED') {
                     document.getElementById('btnReject').setAttribute("disabled", "disabled");
                 }
             }
@@ -315,7 +360,7 @@ class BusinessProposed_Detail extends Component {
                             <Col xs="12" sm="12">
                                 <Card>
                                     <CardHeader>
-                                        <h4>Công ty đề xuất</h4>
+                                        <h4>Thông tin công ty đề xuất</h4>
                                     </CardHeader>
                                     <CardBody>
                                         <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -471,31 +516,57 @@ class BusinessProposed_Detail extends Component {
                                             <br />
                                             <hr />
                                             <FormGroup>
-                                                <h3 style={{ fontWeight: "bold" }}>Ý kiến phê duyệt từ các cấp</h3>
+                                                <h3 style={{ fontWeight: "bold" }}>Ý kiến của nhà trường</h3>
                                                 <hr />
                                                 <br />
                                             </FormGroup>
-                                            <FormGroup row>
-                                                <Col md="6">
-                                                    <h5 style={{ fontWeight: "bold", marginLeft: "30%" }}>Ý kiến của phòng khởi nghiệp</h5>
-                                                </Col>
-                                                <Col xs="12" md="4">
-                                                    <h5 style={{ fontWeight: "bold", marginLeft: "30%" }}>Ý kiến của phòng đào tạo</h5>
-                                                </Col>
-                                            </FormGroup>
-                                            <FormGroup row>
-                                                <Col md="6">
-                                                    {
-                                                        this.showStatus(business.isAcceptedByStartupRoom, "Startup")
-                                                    }
-                                                </Col>
-                                                <Col xs="12" md="4">
-                                                    {
-                                                        this.showStatus(business.isAcceptedByHeadOfTraining, "Training")
-                                                    }
-                                                </Col>
-                                            </FormGroup>
-                                            <FormGroup row>
+                                            {
+                                                business.isAcceptedByAdmin === 'PENDING' ? (
+                                                    <div>
+                                                        <FormGroup row>
+                                                            <Col md="6">
+                                                                <h5 style={{ fontWeight: "bold", marginLeft: "30%" }}>Ý kiến của phòng khởi nghiệp</h5>
+                                                            </Col>
+                                                            <Col xs="12" md="4">
+                                                                <h5 style={{ fontWeight: "bold", marginLeft: "30%" }}>Ý kiến của phòng đào tạo</h5>
+                                                            </Col>
+                                                        </FormGroup>
+                                                        <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br />
+                                                        <FormGroup row>
+                                                            <Col md="9">
+                                                                <h5 style={{ fontWeight: "bold", marginLeft: "50%" }}>Phê duyệt của ban giám hiệu</h5>
+                                                            </Col>
+                                                        </FormGroup>
+                                                        <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br />
+                                                    </div>
+                                                ) : (
+                                                        <div>
+                                                            <FormGroup row>
+                                                                <Col md="9">
+                                                                    {
+                                                                        this.showStatus(business.isAcceptedByAdmin, "ROLE_ADMIN")
+                                                                    }
+                                                                </Col>
+                                                            </FormGroup>
+                                                            <FormGroup row>
+                                                                <Col md="9">
+                                                                    <div style={{ marginLeft: "31%", textAlign: "center" }}>
+                                                                        {
+                                                                            business.isAcceptedByAdmin !== 'PENDING' ? (
+                                                                                <label style={{ width: "540px" }}>{business.commentAdmin}</label>
+                                                                            ) : (
+                                                                                    <label style={{ width: "300px" }}></label>
+                                                                                )
+                                                                        }
+                                                                    </div>
+                                                                </Col>
+                                                            </FormGroup>
+                                                        </div>
+                                                    )
+                                            }
+
+
+                                            {/* <FormGroup row>
                                                 <Col md="6">
                                                     <div style={{ marginLeft: "8%", textAlign: "center" }}>
                                                         {
@@ -518,14 +589,9 @@ class BusinessProposed_Detail extends Component {
                                                         }
                                                     </div>
                                                 </Col>
-                                            </FormGroup>
-                                            <br /><br />
-                                            <FormGroup row>
-                                                <Col md="9">
-                                                    <h5 style={{ fontWeight: "bold", marginLeft: "50%" }}>Phê duyệt của ban giám hiệu</h5>
-                                                </Col>
-                                            </FormGroup>
-                                            <FormGroup row>
+                                            </FormGroup> */}
+
+                                            {/* <FormGroup row>
                                                 <Col md="9">
                                                     {
                                                         this.showStatus(business.isAcceptedByHeadMaster, "Master")
@@ -544,7 +610,7 @@ class BusinessProposed_Detail extends Component {
                                                         }
                                                     </div>
                                                 </Col>
-                                            </FormGroup>
+                                            </FormGroup> */}
                                         </Form>
                                     </CardBody>
                                     <CardFooter className="p-4">
@@ -553,6 +619,17 @@ class BusinessProposed_Detail extends Component {
                                                 <Button block color="secondary" block onClick={() => this.handleDirect("/business-proposed")}>Trở về</Button>
                                             </Col>
                                             {
+                                                (role === 'ROLE_ADMIN' && business.isAcceptedByAdmin === 'PENDING') ? (
+                                                    <Col xs="3" sm="3">
+                                                        <Button id="btnUpdate" type="submit" block color="primary" onClick={() => this.handleDirect(`/business-proposed/update/${business.id}`)}>Chỉnh sửa</Button>
+                                                    </Col>
+                                                ) : (
+                                                        <Col xs="3" sm="3">
+                                                            <Button disabled id="btnUpdate" type="submit" block color="primary" onClick={() => this.handleDirect(`/business-proposed/update/${business.id}`)}>Chỉnh sửa</Button>
+                                                        </Col>
+                                                    )
+                                            }
+                                            {/* {
                                                 (role === 'ROLE_STARTUP' && business.isAcceptedByStartupRoom === 'PENDING') ? (
                                                     <Col xs="3" sm="3">
                                                         <Button id="btnUpdate" type="submit" block color="primary" onClick={() => this.handleDirect(`/business-proposed/update/${business.id}`)}>Chỉnh sửa</Button>
@@ -566,7 +643,7 @@ class BusinessProposed_Detail extends Component {
                                                                <></>
                                                             )
                                                     )
-                                            }
+                                            } */}
                                             <Col xs="3" sm="3">
                                                 {/* {
                                                     role === 'ROLE_HEADMASTER' ? (

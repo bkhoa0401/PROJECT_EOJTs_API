@@ -82,11 +82,11 @@ class ResetPassword extends Component {
                 <Container>
                     <Row className="justify-content-center">
                         <Col md="9" lg="7" xl="6">
-                            <Card className="mx-4">
+                            <Card className="mx-4  text-white bg-primary">
                                 <CardBody className="p-4">
                                     <Form>
                                         <h1>Đặt lại mật khẩu</h1>
-                                        <p className="text-muted">Mật khẩu mới</p>
+                                        <p className="text-muted" style={{fontWeight:"bold"}}>Mật khẩu mới</p>
                                         <InputGroup className="mb-3">
                                             <InputGroupAddon addonType="prepend">
                                                 <InputGroupText>
@@ -95,10 +95,10 @@ class ResetPassword extends Component {
                                             </InputGroupAddon>
                                             <Input type="password" onKeyDown={this.handleKeyDown} onChange={this.handleInput} placeholder="Mật khẩu" autoComplete="new-password" name="password" />
                                         </InputGroup>
-                                        <span className="form-error is-visible text-danger">
+                                        <span className="form-error is-visible" style={{color:"#F69D4B", fontWeight:"bold"}}>
                                             {this.validator.message('Mật khẩu ', this.state.password, 'required|min:6|max:50|alpha_num')}
                                         </span>
-                                        <p className="text-muted">Xác nhận lại mật khẩu</p>
+                                        <p className="text-muted" style={{fontWeight:"bold"}}>Xác nhận lại mật khẩu</p>
                                         <InputGroup className="mb-4">
                                             <InputGroupAddon addonType="prepend">
                                                 <InputGroupText>
@@ -107,7 +107,7 @@ class ResetPassword extends Component {
                                             </InputGroupAddon>
                                             <Input type="password" placeholder="Xác nhận mật khẩu" autoComplete="new-password" onKeyDown={this.handleKeyDown} onChange={this.handleInput} name="confirmPassword" />
                                         </InputGroup>
-                                        <span className="form-error is-visible text-danger">
+                                        <span className="form-error is-visible" style={{color:"#F69D4B", fontWeight:"bold"}}>
                                             {validatorConfirmPassword}
                                         </span>
                                         {/* <InputGroup className="mb-3">
@@ -134,7 +134,7 @@ class ResetPassword extends Component {
                     </InputGroup> */}
                                     </Form>
                                 </CardBody>
-                                <CardFooter className="p-4">
+                                <CardFooter className="p-4 bg-white">
                                     <Row>
                                         <Col>
                                             <div className="position-relative row form-group" style={{ paddingLeft: '40%' }}>

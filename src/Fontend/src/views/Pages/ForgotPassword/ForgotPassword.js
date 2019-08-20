@@ -18,8 +18,8 @@ class FotgotPassword extends Component {
 
   handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      // this.handleLogin();
-      alert('Enter pressed');
+      this.handleReset();
+      // alert('Enter pressed');
     }
   }
 
@@ -50,9 +50,11 @@ class FotgotPassword extends Component {
         loading: false,
       })
     } else {
-      messageError = "Tài khoản đã bị vô hiệu hoá hoặc không tồn tại trong hệ thống!";
+      Toastify.actionFail("Tài khoản đã bị vô hiệu hoá hoặc không tồn tại trong hệ thống!");
+      // messageError = "Tài khoản đã bị vô hiệu hoá hoặc không tồn tại trong hệ thống!";
       this.setState({
-        messageError: messageError,
+        // messageError: messageError,
+        loading: false,
       })
     }
   }
@@ -67,11 +69,11 @@ class FotgotPassword extends Component {
             <Container>
               <Row className="justify-content-center">
                 <Col md="9" lg="7" xl="6">
-                  <Card className="mx-4">
+                  <Card className="mx-4 text-white bg-primary">
                     <CardBody className="p-4">
                       <Form>
                         <h1>Quên mật khẩu</h1>
-                        <p className="text-muted">Email khởi tạo mật khẩu mới</p>
+                        <p className="text-muted" style={{fontWeight:"bold"}}>Email khởi tạo mật khẩu mới</p>
                         <InputGroup className="mb-3">
                           <InputGroupAddon addonType="prepend">
                             <InputGroupText>
@@ -80,9 +82,9 @@ class FotgotPassword extends Component {
                           </InputGroupAddon>
                           <Input type="text" onChange={this.handleInput} onKeyDown={this.handleKeyDown} name="emailReset" placeholder="Email" autoComplete="Email" />
                         </InputGroup>
-                        <span className="form-error is-visible text-danger">
+                        {/* <span className="form-error is-visible" style={{fontWeight:"bold", color:"#FE8007"}}>
                           {messageError}
-                        </span>
+                        </span> */}
                         {/* <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>@</InputGroupText>
@@ -108,10 +110,10 @@ class FotgotPassword extends Component {
                       </Form>
                       <ToastContainer />
                     </CardBody>
-                    <CardFooter className="p-4">
+                    <CardFooter className="p-4 bg-white">
                       <Row>
                         <Col xs="12" sm="6">
-                          <Button color="secondary" onClick={this.handleBack} block><span>Trở về</span></Button>
+                          <Button onClick={this.handleBack} block color="secondary"><span>Trở về</span></Button>
                         </Col>
                         <Col xs="12" sm="6">
                           <Button color="success" onClick={this.handleReset} block>Đặt lại mật khẩu</Button>

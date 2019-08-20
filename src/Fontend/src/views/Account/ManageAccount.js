@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { ToastContainer } from 'react-toastify';
-import { Badge, Button, Card, CardBody, CardHeader, Col, Row, Table, Input, Pagination } from 'reactstrap';
+import { Badge, Button, Card, CardBody, CardHeader, Col, Row, Table, Input, Pagination, Label, FormGroup } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import Toastify from '../../views/Toastify/Toastify';
@@ -17,7 +17,11 @@ class ManageAccount extends Component {
             loading: true,
             pageNumber: 1,
             currentPage: 0,
-            rowsPerPage: 10
+            rowsPerPage: 10,
+
+            numOfSupervisor: 0,
+            searchingList: [],
+            isSearching: false,
         }
     }
 
@@ -47,11 +51,13 @@ class ManageAccount extends Component {
     async componentDidMount() {
         const { currentPage, rowsPerPage } = this.state;
         const supervisors = await ApiServices.Get(`/business/getAllSupervisorABusiness/?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const numOfSupervisor = await ApiServices.Get(`/business/searchSupervisorABusinessAllFields?valueSearch=${""}`);
         if (supervisors !== null) {
             this.setState({
                 supervisors: supervisors.listData,
                 pageNumber: supervisors.pageNumber,
-                loading: false
+                loading: false,
+                numOfSupervisor: numOfSupervisor.length,
             });
         }
     }
@@ -137,9 +143,30 @@ class ManageAccount extends Component {
         }
     }
 
+    handleInputSearch = async (event) => {
+        const { name, value } = event.target;
+        if (value === "") {
+            await this.setState({
+                [name]: value.substr(0, 20),
+                isSearching: false,
+            })
+        } else {
+            const supervisors = await ApiServices.Get(`/business/searchSupervisorABusinessAllFields?valueSearch=${value.substr(0, 20)}`);
+            // console.log(supervisors);
+            if (supervisors !== null) {
+                this.setState({
+                    [name]: value.substr(0, 20),
+                    searchingList: supervisors,
+                    isSearching: true,
+                })
+            }
+        }
+    }
+
     render() {
         const { supervisors, loading, pageNumber, currentPage, rowsPerPage } = this.state;
-
+        const { numOfSupervisor, isSearching, searchingList } = this.state;
+        console.log(searchingList);
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -150,12 +177,31 @@ class ManageAccount extends Component {
                                 <Card>
                                     <CardHeader>
                                         <i className="fa fa-align-justify"></i> Danh sách tài khoản Supervisor
-                            </CardHeader>
+                                    </CardHeader>
                                     <CardBody>
-                                        <Button color="primary" onClick={() => this.handleDirect('/account/create')}>Tạo tài khoản mới</Button>
-                                        <br />
-                                        <br />
-                                        <br />
+                                        <FormGroup row>
+                                            <Col md="10">
+                                                <Button color="primary" onClick={() => this.handleDirect('/account/create')}>Tạo tài khoản mới</Button>
+                                            </Col>
+                                            <Col xs="12" md="2">
+                                                {isSearching === false ?
+                                                    <Row className="float-right">
+                                                        <h6>Số dòng trên trang: </h6>
+                                                        &nbsp;&nbsp;
+                                                        <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
+                                                            <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                            <option value={20}>20</option>
+                                                            <option value={50}>50</option>
+                                                        </Input>
+                                                    </Row> : <></>
+                                                }
+                                            </Col>
+                                        </FormGroup>
+                                        <nav className="navbar navbar-light bg-light justify-content-between">
+                                            <form className="form-inline">
+                                                <input onChange={this.handleInputSearch} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                            </form>
+                                        </nav>
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
@@ -169,46 +215,78 @@ class ManageAccount extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {
-                                                    supervisors && supervisors.map((supervisor, i) => {
-                                                        return (
-                                                            <tr key={i}>
-                                                                <td style={{ textAlign: "center" }}>{i + 1}</td>
-                                                                <td style={{ textAlign: "center" }}>{supervisor.email}</td>
-                                                                <td style={{ textAlign: "center" }}>{supervisor.name}</td>
-                                                                <td style={{ textAlign: "center" }}>{supervisor.phone}</td>
-                                                                <td style={{ textAlign: "center" }}>{supervisor.address}</td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {supervisor.active.toString() === 'true' ? (
-                                                                        <Badge color="success">KÍCH HOẠT</Badge>
-                                                                    ) : (
-                                                                            <Badge color="danger">VÔ HIỆU HOÁ</Badge>
-                                                                        )}
-                                                                </td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {supervisor.active.toString() === 'true' ? (
-                                                                        <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(supervisor.email, false)} type="submit"><i className="fa cui-ban"></i></Button>
-                                                                    ) : (
-                                                                            <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(supervisor.email, true)} type="submit"><i className="fa cui-circle-check"></i></Button>
-                                                                        )}
-                                                                    {/* <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/supervisor/update/${supervisor.id}`)}>Update</Button> */}
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    })
+                                                {isSearching === false ?
+                                                    (
+                                                        supervisors && supervisors.map((supervisor, i) => {
+                                                            return (
+                                                                <tr key={i}>
+                                                                    <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage  + i + 1}</td>
+                                                                    <td style={{ textAlign: "center" }}>{supervisor.email}</td>
+                                                                    <td style={{ textAlign: "center" }}>{supervisor.name}</td>
+                                                                    <td style={{ textAlign: "center" }}>{supervisor.phone}</td>
+                                                                    <td style={{ textAlign: "center" }}>{supervisor.address}</td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {supervisor.active.toString() === 'true' ? (
+                                                                            <Badge color="success">KÍCH HOẠT</Badge>
+                                                                        ) : (
+                                                                                <Badge color="danger">VÔ HIỆU HOÁ</Badge>
+                                                                            )}
+                                                                    </td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {supervisor.active.toString() === 'true' ? (
+                                                                            <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(supervisor.email, false)} type="submit"><i className="fa cui-ban"></i></Button>
+                                                                        ) : (
+                                                                                <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(supervisor.email, true)} type="submit"><i className="fa cui-circle-check"></i></Button>
+                                                                            )}
+                                                                        {/* <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/supervisor/update/${supervisor.id}`)}>Update</Button> */}
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })) : (
+                                                        searchingList && searchingList.map((supervisor, i) => {
+                                                            return (
+                                                                <tr key={i}>
+                                                                    <td style={{ textAlign: "center" }}>{i + 1}</td>
+                                                                    <td style={{ textAlign: "center" }}>{supervisor.email}</td>
+                                                                    <td style={{ textAlign: "center" }}>{supervisor.name}</td>
+                                                                    <td style={{ textAlign: "center" }}>{supervisor.phone}</td>
+                                                                    <td style={{ textAlign: "center" }}>{supervisor.address}</td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {supervisor.active.toString() === 'true' ? (
+                                                                            <Badge color="success">KÍCH HOẠT</Badge>
+                                                                        ) : (
+                                                                                <Badge color="danger">VÔ HIỆU HOÁ</Badge>
+                                                                            )}
+                                                                    </td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {supervisor.active.toString() === 'true' ? (
+                                                                            <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(supervisor.email, false)} type="submit"><i className="fa cui-ban"></i></Button>
+                                                                        ) : (
+                                                                                <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(supervisor.email, true)} type="submit"><i className="fa cui-circle-check"></i></Button>
+                                                                            )}
+                                                                        {/* <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/supervisor/update/${supervisor.id}`)}>Update</Button> */}
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        }))
                                                 }
                                             </tbody>
                                         </Table>
                                         <ToastContainer />
-                                        <Pagination style={{ marginTop: "3%" }}>
-                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                            <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
-                                            <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "7%" }}>
-                                                <option value={10} selected={rowsPerPage === 10}>10</option>
-                                                <option value={20}>20</option>
-                                                <option value={50}>50</option>
-                                            </Input>
-                                        </Pagination>
+                                        {isSearching === false ?
+                                            <Row>
+                                                <Col>
+                                                    <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + supervisors.length} trên tổng số {numOfSupervisor} kết quả</Label>
+                                                </Col>
+                                                <Col>
+                                                    <Row className="float-right">
+                                                        <Pagination style={{ marginTop: "3%" }}>
+                                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                                        </Pagination>
+                                                    </Row>
+                                                </Col>
+                                            </Row> : <></>
+                                        }
                                     </CardBody>
                                 </Card>
                             </Col>

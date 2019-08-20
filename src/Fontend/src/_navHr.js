@@ -11,7 +11,7 @@ export default {
       icon: 'icon-speedometer',
     },
     {
-      name: 'Quản lý Supervisor',
+      name: 'Tài khoản phụ',
       url: '/manage_account',
       icon: 'icon-equalizer',
       // children: [
@@ -37,6 +37,11 @@ export default {
       url: '/official_list',
       icon: 'icon-user-following',
     },
+    {
+      name: 'Danh sách nhiệm vụ',
+      url: '/hr-task',
+      icon: 'icon-notebook',
+    },    
     {
       name: 'Thông tin tuyển dụng',
       url: '/job_post_list_hr',
