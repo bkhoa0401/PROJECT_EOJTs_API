@@ -99,15 +99,21 @@ public class BusinessController {
     public ResponseEntity<Void> createNewBusiness(@RequestBody BusinessDTO businessDTO) throws Exception {
 
         List<Role> roleList = new ArrayList<>();
-        Role role = new Role();
         Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
         List<Ojt_Enrollment> ojtEnrollmentList = new ArrayList<>();
         Users users = new Users();
         String password = usersService.getAlphaNumericString();
 
+        Role role = new Role();
         role.setId(3);
         role.setDescription("ROLE_HR");
         roleList.add(role);
+
+        Role role_supervisor = new Role();
+        role_supervisor.setId(4);
+        role_supervisor.setDescription("ROLE_SUPERVISOR");
+        roleList.add(role_supervisor);
+
         users.setRoles(roleList);
         users.setEmail(businessDTO.getEmail());
         users.setPassword(password);

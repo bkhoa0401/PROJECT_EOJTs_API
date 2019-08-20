@@ -7,71 +7,76 @@ export default {
     },
     {
       name: 'Thông số lịch trình',
-      url: '/scheduleparameters',
+      url: '/admin/scheduleparameters',
       icon: 'icon-calendar',
     },
     {
-      name: 'Nhập tập tin',
-      url: '/importfiles',
-      icon: 'icon-folder',
-    },
-    {
       name: 'Chuyên ngành',
-      url: '/specialized',
+      url: '/admin/specialized',
       icon: 'icon-compass',
     },
     {
       name: 'Kỹ năng',
-      url: '/skill',
+      url: '/admin/skill',
       icon: 'icon-puzzle',
     },
     {
+      name: 'Nhập tập tin',
+      url: '/admin/importfiles',
+      icon: 'icon-folder',
+    },
+    {
+      name: 'Doanh nghiệp đề xuất',
+      url: '/admin/business-proposed',
+      icon: 'icon-note',
+    },
+    {
       name: 'Quản lý tài khoản',
-      url: '/admin_account',
+      url: '/admin/admin_account',
       icon: 'icon-user',
       children: [
         {
           name: 'Tài khoản sinh viên',
-          url: '/admin_account/studentList',
+          url: '/admin/admin_account/studentList',
           icon: 'icon-graduation',
         },
         {
           name: 'Tài khoản doanh nghiệp',
-          url: '/admin_account/businessList',
+          url: '/admin/admin_account/businessList',
           icon: 'icon-briefcase',
         },
       ]
     },
     {
       name: 'Quản lý danh sách',
-      url: '/list_management',
+      url: '/admin/list_management',
       icon: 'icon-list',
       children: [
         {
           name: 'Danh sách sinh viên',
-          url: '/list_management/student_list',
+          url: '/admin/list_management/student_list',
           icon: 'icon-graduation',
         },
         {
           name: 'Danh sách doanh nghiệp',
-          url: '/list_management/business_list',
+          url: '/admin/list_management/business_list',
           icon: 'icon-briefcase',
         },
       ]
     },
     {
       name: 'Tuyển dụng',
-      url: '/Job_Post/Job_Post_List',
+      url: '/admin/Job_Post_List',
       icon: 'icon-directions',
     },
     {
       name: 'Thông báo',
-      url: '/informmessage',
+      url: '/admin/informmessage',
       icon: 'icon-envelope-letter',
     },
     {
       name: 'Đánh giá',
-      url: '/report',
+      url: '/admin/report',
       icon: 'icon-docs',
     },
     // {
@@ -81,18 +86,13 @@ export default {
     // },
     {
       name: 'Quản lí câu hỏi',
-      url: '/question',
+      url: '/admin/question',
       icon: 'icon-question',
     },
     {
       name: 'Thống kê khảo sát',
-      url: '/answer-statistics',
+      url: '/admin/answer-statistics',
       icon: 'icon-book-open',
     },
-    {
-      name: 'Doanh nghiệp đề xuất',
-      url: '/business-proposed',
-      icon: 'icon-note',
-    }
   ]
 };

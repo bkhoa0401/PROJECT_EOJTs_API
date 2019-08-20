@@ -1,5 +1,5 @@
 import firebase from 'firebase/app';
-// import { initializeApp } from '../Invitation/push-notification';
+// import { initializeApp } from '../hr/invitation/push-notification';
 import 'firebase/storage';
 import decode from 'jwt-decode';
 import React, { Component } from 'react';
@@ -279,10 +279,10 @@ class CV extends Component {
                                             {
                                                 role && role === 'ROLE_ADMIN' ?
                                                     (<Col xs="3" sm="3">
-                                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/list_management/student_list")} type="submit" color="secondary" block>Trở về</Button>
+                                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/admin/list_management/student_list")} type="submit" color="secondary" block>Trở về</Button>
                                                     </Col>) :
                                                     (<Col xs="3" sm="3">
-                                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/ojt_registration")} type="submit" color="secondary" block>Trở về</Button>
+                                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr/ojt_registration")} type="submit" color="secondary" block>Trở về</Button>
                                                     </Col>)
                                             }
                                             {

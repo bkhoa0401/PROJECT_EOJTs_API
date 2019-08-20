@@ -55,6 +55,13 @@ public class BusinessService implements IBusinessService {
             values.set("business", businessList);
         }
         IBusinessRepository.save(business);
+
+        Supervisor supervisor = new Supervisor();
+        supervisor.setEmail(business.getEmail());
+        supervisor.setAddress(business.getBusiness_address());
+        supervisor.setName(business.getBusiness_eng_name());
+        supervisor.setPhone(business.getBusiness_phone());
+        iSupervisorService.createSupervisor(supervisor, null);
     }
 
     @Override

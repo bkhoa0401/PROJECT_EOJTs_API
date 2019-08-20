@@ -1,5 +1,5 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-// import { initializeApp } from '../Invitation/push-notification';
+// import { initializeApp } from '../hr/invitation/push-notification';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import firebase from 'firebase/app';
 import 'firebase/storage';
@@ -231,7 +231,7 @@ class BusinessProposed_Update extends Component {
                                     <CardFooter className="p-4">
                                         <Row>
                                             <Col xs="4" md="4">
-                                                <Button color="secondary" block onClick={() => this.handleDirect(`/business-proposed/${id}`)} type="submit">Trở về</Button>
+                                                <Button color="secondary" block onClick={() => this.handleDirect(`/admin/business-proposed/${id}`)} type="submit">Trở về</Button>
                                             </Col>
                                             <Col xs="4" md="4">
                                                 <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>

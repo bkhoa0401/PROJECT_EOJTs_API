@@ -125,7 +125,7 @@ class User_Student_Create extends Component {
                 Toastify.actionSuccess("Tạo tài khoản mới thành công!");
                 setTimeout(
                     function () {
-                        this.props.history.push('/admin_account/studentList');
+                        this.props.history.push('/admin/admin_account/studentList');
                     }
                         .bind(this),
                     2000
@@ -301,7 +301,7 @@ class User_Student_Create extends Component {
                                     <CardFooter className="p-4">
                                         <Row>
                                             <Col xs="4" sm="4">
-                                                <Button color="secondary" block onClick={() => this.handleDirect('/admin_account/studentList')}>Trở về</Button>
+                                                <Button color="secondary" block onClick={() => this.handleDirect('/admin/admin_account/studentList')}>Trở về</Button>
                                             </Col>
                                             <Col xs="4" sm="4">
                                                 <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>

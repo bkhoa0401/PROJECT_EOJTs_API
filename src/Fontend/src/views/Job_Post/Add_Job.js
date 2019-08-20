@@ -314,7 +314,7 @@ class Add_Job extends Component {
                 })
                 setTimeout(
                     function () {
-                        this.props.history.push('/job_post_list_hr');
+                        this.props.history.push('/hr/job_post_list_hr');
                     }
                         .bind(this),
                     2000
@@ -474,7 +474,7 @@ class Add_Job extends Component {
                                                 <Button color="danger" block onClick={() => this.handleReset()} type="reset">Reset</Button>
                                             </Col>
                                             <Col xs="3" sm="3">
-                                                <Button color="success" block onClick={() => this.handleDirect('/job_post_list_hr')}>Trở về</Button>
+                                                <Button color="success" block onClick={() => this.handleDirect('/hr/job_post_list_hr')}>Trở về</Button>
                                             </Col>
                                         </Row>
                                     </CardFooter>

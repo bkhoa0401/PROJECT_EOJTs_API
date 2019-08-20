@@ -32,6 +32,7 @@ class Create_InformMessage extends Component {
 
             description: '',
             title: '',
+            role: '',
         };
         this.openPopupRegist = this.openPopupRegist.bind(this);
         this.closePopupRegist = this.closePopupRegist.bind(this);
@@ -43,12 +44,14 @@ class Create_InformMessage extends Component {
         let students = [];
         let isSelect = [];
         let preIsSelect = [];
+        let role = "";
         if (token !== null) {
             const decoded = decode(token);
-            if (decoded.role === "ROLE_ADMIN") {
+            role = decoded.role;
+            if (role === "ROLE_ADMIN") {
                 students = await ApiServices.Get(`/admin/students`);
             }
-            if (decoded.role === "ROLE_HR") {
+            if (role === "ROLE_HR") {
                 students = await ApiServices.Get(`/business/getStudentsByBusinessNotPaging`);
             }
         }
@@ -73,6 +76,7 @@ class Create_InformMessage extends Component {
             time_created: today,
             isSelect: isSelect,
             preIsSelect: preIsSelect,
+            role: role,
         });
     }
 
@@ -299,7 +303,12 @@ class Create_InformMessage extends Component {
                 Toastify.actionSuccess("Tạo thông báo thành công!");
                 setTimeout(
                     function () {
-                        this.props.history.push('/informmessage');
+                        if (this.state.role === "ROLE_ADMIN") {
+                            this.props.history.push('/admin/informmessage');
+                        }
+                        if (this.state.role === "ROLE_HR") {
+                            this.props.history.push('/hr/informmessage');
+                        }
                     }
                         .bind(this),
                     2000
@@ -408,9 +417,14 @@ class Create_InformMessage extends Component {
                                     <CardFooter className="p-3">
                                         <Row style={{ marginLeft: "21%" }}>
                                             <Col xs="4" sm="4">
-                                                <Button block color="secondary" onClick={() => this.handleDirect('/informmessage')}>
-                                                    Trở về
-                                                </Button>
+                                                {this.state.role === "ROLE_ADMIN" ?
+                                                    <Button block color="secondary" onClick={() => this.handleDirect('/admin/informmessage')}>
+                                                        Trở về
+                                                    </Button> :
+                                                    <Button block color="secondary" onClick={() => this.handleDirect('/hr/informmessage')}>
+                                                        Trở về
+                                                    </Button>
+                                                }
                                             </Col>
                                             <Col xs="4" sm="4">
                                                 <Button block color="primary" onClick={() => this.handleSubmit()}>

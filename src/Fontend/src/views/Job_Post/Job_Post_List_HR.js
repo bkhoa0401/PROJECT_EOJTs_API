@@ -67,7 +67,7 @@ class Job_Post_List_HR extends Component {
                                         <i className="fa fa-align-justify"></i> Danh sách bài đăng tuyển dụng
                             </CardHeader>
                                     <CardBody>
-                                        <Button color="primary" onClick={() => this.handleDirect('/job_post_list_hr/add_job_post')}>Tạo bài đăng mới</Button>
+                                        <Button color="primary" onClick={() => this.handleDirect('/hr/job_post_list_hr/add_job_post')}>Tạo bài đăng mới</Button>
                                         <br />
                                         <br />
                                         <br />

@@ -709,7 +709,7 @@ class Invitation_Create extends Component {
             data: {
                 title: `Lời mời thực tập từ công ty ${business_name}`,
                 body: invitationContent,
-                click_action: "http://localhost:3000/#/invitation/new",
+                click_action: "http://localhost:3000/#/hr/invitation/new",
                 icon: "http://url-to-an-icon/icon.png"
             },
             to: `${deviceToken}`
@@ -856,7 +856,7 @@ class Invitation_Create extends Component {
                             <CardFooter className="p-4">
                                 <Row>
                                     <Col xs="3" sm="3">
-                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/invitation")} type="submit" color="secondary" block>Trở về</Button>
+                                        <Button id="submitBusinesses" onClick={() => this.handleDirect("/hr/invitation")} type="submit" color="secondary" block>Trở về</Button>
                                     </Col>
                                 </Row>
                             </CardFooter>

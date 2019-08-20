@@ -65,7 +65,7 @@ class Account_Create extends Component {
                 })
               setTimeout(
                 function () {
-                  this.props.history.push('/manage_account');
+                  this.props.history.push('/hr/manage_account');
                 }
                   .bind(this),
                 2000
@@ -148,7 +148,7 @@ class Account_Create extends Component {
                                     <CardFooter className="p-4">
                                         <Row>
                                             <Col xs="4" sm="4">
-                                                <Button color="secondary" block onClick={() => this.handleDirect('/manage_account')}>Trở về</Button>
+                                                <Button color="secondary" block onClick={() => this.handleDirect('/hr/manage_account')}>Trở về</Button>
                                             </Col>
                                             <Col xs="4" sm="4">
                                                 <Button color="warning" block onClick={() => this.handleReset()} type="reset">Reset</Button>
