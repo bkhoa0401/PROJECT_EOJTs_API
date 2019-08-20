@@ -415,42 +415,8 @@ public class BusinessController {
     @GetMapping("/getSpecializedsOfBusiness")
     @ResponseBody
     public ResponseEntity<List<Specialized>> getSpecializedsOfBusiness() {
-        String businessEmail = getEmailFromToken();
-
-        Business business = businessService.getBusinessByEmail(businessEmail);
-
-        Semester semesterCurrent = semesterService.getSemesterCurrent();
-        Ojt_Enrollment ojt_enrollment =
-                ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(businessEmail, semesterCurrent.getId());
-        List<Job_Post> job_postList = job_postService.getAllJobPostOfBusiness(ojt_enrollment);
-        List<Specialized> specializeds = new ArrayList<Specialized>();
-        if (job_postList != null) {
-            for (int i = 0; i < job_postList.size(); i++) {
-                for (int j = 0; j < job_postList.get(i).getJob_post_skills().size(); j++) {
-                    if (specializeds.size() >= 1) {
-                        boolean flagExist = false;
-                        for (int k = 0; k < specializeds.size(); k++) {
-                            if (specializeds.get(k).getId() == job_postList.get(i).getJob_post_skills().get(j).getSkill().getSpecialized().getId()) {
-                                flagExist = true;
-                            }
-                        }
-                        if (flagExist == false) {
-                            specializeds.add(job_postList.get(i).getJob_post_skills().get(j).getSkill().getSpecialized());
-                        }
-                    } else {
-                        specializeds.add(job_postList.get(i).getJob_post_skills().get(j).getSkill().getSpecialized());
-                    }
-                }
-
-            }
-            Collections.sort(specializeds, new Comparator<Specialized>() {
-                @Override
-                public int compare(Specialized o1, Specialized o2) {
-                    String name1 = o1.getName();
-                    String name2 = o2.getName();
-                    return name1.compareTo(name2);
-                }
-            });
+        List<Specialized> specializeds = getSpecializedsOfBusinessJobsPost();
+        if (specializeds != null) {
             return new ResponseEntity<List<Specialized>>(specializeds, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -794,6 +760,37 @@ public class BusinessController {
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private List<Specialized> getSpecializedsOfBusinessJobsPost() {
+        String businessEmail = getEmailFromToken();
+
+        Semester semesterCurrent = semesterService.getSemesterCurrent();
+        Ojt_Enrollment ojt_enrollment =
+                ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(businessEmail, semesterCurrent.getId());
+        List<Job_Post> job_postList = job_postService.getAllJobPostOfBusiness(ojt_enrollment);
+        List<Specialized> specializeds = new ArrayList<Specialized>();
+        if (job_postList != null) {
+            for (int i = 0; i < job_postList.size(); i++) {
+                for (int j = 0; j < job_postList.get(i).getJob_post_skills().size(); j++) {
+                    if (specializeds.size() >= 1) {
+                        boolean flagExist = false;
+                        for (int k = 0; k < specializeds.size(); k++) {
+                            if (specializeds.get(k).getId() == job_postList.get(i).getJob_post_skills().get(j).getSkill().getSpecialized().getId()) {
+                                flagExist = true;
+                            }
+                        }
+                        if (flagExist == false) {
+                            specializeds.add(job_postList.get(i).getJob_post_skills().get(j).getSkill().getSpecialized());
+                        }
+                    } else {
+                        specializeds.add(job_postList.get(i).getJob_post_skills().get(j).getSkill().getSpecialized());
+                    }
+                }
+
+            }
+        }
+        return specializeds;
     }
 
     //get email from token

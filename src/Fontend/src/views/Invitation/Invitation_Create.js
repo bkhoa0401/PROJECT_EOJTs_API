@@ -450,7 +450,7 @@ class Invitation_Create extends Component {
 
                                                     return (
                                                         <tr key={index}>
-                                                            <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
+                                                            <td style={{ textAlign: "center" }}>{index + 1}</td>
                                                             <td style={{ textAlign: "center" }}>{student.code}</td>
                                                             <td style={{ textAlign: "center" }}>{student.name}</td>
                                                             <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
@@ -583,7 +583,7 @@ class Invitation_Create extends Component {
 
                                                     return (
                                                         <tr key={index}>
-                                                            <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
+                                                            <td style={{ textAlign: "center" }}>{index + 1}</td>
                                                             <td style={{ textAlign: "center" }}>{suggestedStudent.code}</td>
                                                             <td style={{ textAlign: "center" }}>{suggestedStudent.name}</td>
                                                             <td style={{ textAlign: "center" }}>{suggestedStudent.specialized.name}</td>
