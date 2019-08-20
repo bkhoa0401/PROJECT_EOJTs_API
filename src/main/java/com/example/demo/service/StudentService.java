@@ -483,7 +483,7 @@ public class StudentService implements IStudentService {
         Admin admin = iAdminService.findAdminByEmail("admin@gmail.com");
         Event event = new Event();
         event.setTitle("Có feedback mới từ sinh viên");
-        event.setDescription("Nội dung feedback: " + content);
+        event.setDescription(content);
         event.setAdmin(admin);
         event.setTime_created(date);
         event.setRead(false);
@@ -600,6 +600,32 @@ public class StudentService implements IStudentService {
         Utils<Student_OjtenrollmentDTO> utils = new Utils<>();
 
         return utils.paging(student_ojtenrollmentDTOWithNoCompanyList, currentPage, rowsPerPage);
+    }
+
+    @Override
+    public List<Student_OjtenrollmentDTO> getStudentsWithHope() {
+        Semester semester = semesterService.getSemesterCurrent();
+        List<Student> studentList = getAllStudentsBySemesterId();
+
+        List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOList = new ArrayList<>();
+
+        for (int i = 0; i < studentList.size(); i++) {
+            Student_OjtenrollmentDTO student_ojtenrollmentDTO = new Student_OjtenrollmentDTO();
+            student_ojtenrollmentDTO.setStudent(studentList.get(i));
+            Ojt_Enrollment ojt_enrollment =
+                    ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(studentList.get(i).getEmail(), semester.getId());
+            if (ojt_enrollment.getBusiness() != null) {
+                student_ojtenrollmentDTO.setBusinessEnroll(ojt_enrollment.getBusiness().getBusiness_eng_name());
+            } else {
+                if (studentList.get(i).isInterviewed1() == true && studentList.get(i).isInterviewed2() == true) {
+                    if (studentList.get(i).isAcceptedOption1() == false && studentList.get(i).isAcceptedOption2() == false) {
+                        student_ojtenrollmentDTO.setBusinessEnroll("Rớt");
+                    }
+                }
+            }
+            student_ojtenrollmentDTOList.add(student_ojtenrollmentDTO);
+        }
+        return student_ojtenrollmentDTOList;
     }
 
     @Override

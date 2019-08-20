@@ -470,7 +470,7 @@ class Update_Job extends Component {
                                                 <Col md="2">
                                                     <h6>Kỹ năng - Số lượng:</h6></Col>
                                                 <Col xs="12" md="10">
-                                                    <Button color="primary" id="btnAddRow" outline onClick={this.addRow}>Thêm</Button>
+                                                    {/* <Button color="primary" id="btnAddRow" outline onClick={this.addRow}>Thêm</Button> */}
                                                 </Col>
                                             </FormGroup>
                                             <FormGroup row>
