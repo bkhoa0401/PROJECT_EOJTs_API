@@ -702,9 +702,9 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public void handlerStudentIsExisted(List<Student> students) {
+    public void handlerStudentIsExisted(List<Student> students,String semesterName) {
         try {
-            Semester semester = semesterService.getSemesterCurrent();
+            Semester semester = semesterService.getSemesterByName(semesterName);
 
             for (int i = 0; i < students.size(); i++) {
                 Student student = students.get(i);
