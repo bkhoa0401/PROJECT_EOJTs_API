@@ -103,7 +103,15 @@ public class StudentController {
         studentService.handlerStudentIsExisted(studentListIsExisted,semesterName); // handle xong may dua da ton tai
 
         List<Student> studentListNotYet = studentIsExistedAndNotYet.getStudentsNotYet();
-
+        List<HistoryDetail> details = new ArrayList<>();
+        HistoryAction action =
+                new HistoryAction(getEmailFromToken()
+                        , "ROLE_ADMIN", ActionEnum.INSERT, TAG, new Object() {
+                }
+                        .getClass()
+                        .getEnclosingMethod()
+                        .getName(), null, new java.util.Date());
+        HistoryDetail detail = null;
         for (int i = 0; i < studentListNotYet.size(); i++) {
             Users users = new Users();
             Specialized specialized = new Specialized();
@@ -144,7 +152,12 @@ public class StudentController {
 
             ojtEnrollmentList.add(ojt_enrollment);
             students.add(student);
+            HistoryDetail historyDetail = new HistoryDetail(Student.class.getName(), null, null, student.toString());
+
         }
+        action.setDetails(details);
+        iHistoryActionService.createHistory(action);
+
         try {
             studentService.saveListStudent(students);
             //List<Users> usersListNotYet = usersService.getUsersNotYet(usersList);

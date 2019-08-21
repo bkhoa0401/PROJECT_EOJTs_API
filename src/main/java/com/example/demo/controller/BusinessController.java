@@ -91,9 +91,24 @@ public class BusinessController {
                 listBusinessDTO.get(i).getSkillDTOList().get(j).setSkill(skill);
             }
         }
+        List<HistoryDetail> details = new ArrayList<>();
+        HistoryAction action =
+                new HistoryAction(getEmailFromToken()
+                        , "ROLE_ADMIN", ActionEnum.INSERT, TAG, new Object() {
+                }
+                        .getClass()
+                        .getEnclosingMethod()
+                        .getName(), null, new java.util.Date());
+        HistoryDetail detail = null;
         for (int i = 0; i < listBusinessDTO.size(); i++) {
             businessImportFileService.insertBusiness(listBusinessDTO.get(i));
+           detail = new HistoryDetail(Business.class.getName(), null, null, listBusinessDTO.get(i).toString());
+           detail.setHistoryAction(action);
+           details.add(detail);
         }
+        action.setDetails(details);
+        iHistoryActionService.createHistory(action);
+
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
