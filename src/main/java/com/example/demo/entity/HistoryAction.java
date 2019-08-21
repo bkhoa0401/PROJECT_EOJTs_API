@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "action_history")
-public class HistoryAction implements Serializable {
+public class HistoryAction implements Comparable<HistoryAction>, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -152,5 +152,10 @@ public class HistoryAction implements Serializable {
 
     public void setDetails(List<HistoryDetail> details) {
         this.details = details;
+    }
+
+    @Override
+    public int compareTo(HistoryAction o) {
+        return o.getActionTime().compareTo(this.actionTime);
     }
 }

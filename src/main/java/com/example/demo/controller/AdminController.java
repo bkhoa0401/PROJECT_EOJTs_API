@@ -736,4 +736,14 @@ public class AdminController {
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
+
+    @GetMapping("/histories")
+    @ResponseBody
+    public ResponseEntity<List<HistoryAction>> getAllHistoryAction() {
+        List<HistoryAction> actions = iHistoryActionService.getAllHistory();
+        if(actions != null) {
+            return new ResponseEntity<>(actions, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 }
