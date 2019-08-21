@@ -344,7 +344,7 @@ class Ojt_Registration extends Component {
                                                             </DropdownMenu>
                                                         </Dropdown>
                                                     </th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Gửi lời mời</th>
+                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Đã gửi lời mời</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nguyện vọng</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
                                                 </tr>
