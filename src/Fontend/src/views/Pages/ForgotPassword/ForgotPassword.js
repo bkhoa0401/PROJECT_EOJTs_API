@@ -65,7 +65,7 @@ class FotgotPassword extends Component {
       loading.toString() === 'true' ? (
         SpinnerLoading.showHashLoader(loading)
       ) : (
-          <div className="app flex-row align-items-center">
+          <div className="app flex-row align-items-center backgroundFPT">
             <Container>
               <Row className="justify-content-center">
                 <Col md="9" lg="7" xl="6">

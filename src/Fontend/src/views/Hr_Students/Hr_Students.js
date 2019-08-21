@@ -51,7 +51,7 @@ class Hr_Students extends Component {
 
     handleInput = async (event) => {
         const { name, value } = event.target;
-        if (value === "") {
+        if (value === "" || !value.trim()) {
             await this.setState({
                 [name]: value.substr(0, 20),
                 isSearching: false,
@@ -390,19 +390,6 @@ class Hr_Students extends Component {
                                         <i className="fa fa-align-justify"></i>Danh sách sinh viên
                                     </CardHeader>
                                     <CardBody>
-                                        {isSearching === false ?
-                                            <Row className="float-right">
-                                                <h6>Số dòng trên trang: </h6>
-                                                &nbsp;&nbsp;
-                                            <Input onChange={this.handleInputPagingAll} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
-                                                    <option value={10} selected={rowsPerPage === 10}>10</option>
-                                                    <option value={20}>20</option>
-                                                    <option value={50}>50</option>
-                                                </Input>
-                                            </Row> :
-                                            <></>
-                                        }
-                                        <br /><br /><br />
                                         <div>
                                             <nav className="navbar navbar-light bg-light justify-content-between">
                                                 <form className="form-inline">
@@ -412,13 +399,13 @@ class Hr_Students extends Component {
                                             <Table responsive striped>
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px"  }}>STT</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px"  }}>MSSV</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px"  }}>Họ và tên</th>
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px"  }}>Email</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>MSSV</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Họ và tên</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Email</th>
                                                         {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px"  }}>Chuyên ngành</th>
                                                         <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px"  }}>GPA</th> */}
-                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px"  }}></th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -487,13 +474,23 @@ class Hr_Students extends Component {
                                         {isSearching === false ?
                                             <Row>
                                                 <Col>
-                                                    <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
-                                                </Col>
-                                                <Col>
-                                                    <Row className="float-right">
+                                                    <Row>
                                                         <Pagination>
                                                             <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
                                                         </Pagination>
+                                                        &emsp;
+                                                        <h6 style={{ marginTop: '7px' }}>Số dòng trên trang: </h6>
+                                                        &nbsp;&nbsp;
+                                                        <Input onChange={this.handleInputPagingAll} type="select" name="rowsPerPage" style={{ width: "70px" }}>
+                                                            <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                            <option value={20}>20</option>
+                                                            <option value={50}>50</option>
+                                                        </Input>
+                                                    </Row>
+                                                </Col>
+                                                <Col>
+                                                    <Row className="float-right">
+                                                        <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
                                                     </Row>
                                                 </Col>
                                             </Row>
@@ -659,7 +656,7 @@ class Hr_Students extends Component {
                                     <hr />
                                     <FormGroup row style={{ paddingLeft: '70%' }}>
                                         Trạng thái: &nbsp;&nbsp;
-                                        <Input onChange={e => { this.handleSelectStateTask(e) }} type="select" name="stateTask" style={{ width: '150px' }} size="sm">
+                                        <Input onChange={e => { this.handleSelectStateTask(e) }} type="select" name="stateTask" style={{ width: '150px' }}>
                                             {stateTask && stateTask.map((state, i) => {
                                                 return (
                                                     <option value={i} selected={i == stateNo}>{state}</option>

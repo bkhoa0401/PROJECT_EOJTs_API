@@ -61,6 +61,10 @@ public class AdminController {
     @Autowired
     ISpecializedService specializedService;
 
+    @Autowired
+    IJob_PostService job_postService;
+
+
     @GetMapping
     @ResponseBody
     public ResponseEntity<List<Student>> getAllStudentByTypeStatusOption(@RequestParam int typeOfStatus) {
@@ -238,6 +242,40 @@ public class AdminController {
             Utils<Business_ListJobPostDTO> utils = new Utils<>();
             PagingDTO pagingDTO = utils.paging(business_listJobPostDTOS, currentPage, rowsPerPage);
             return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/getJobPostsOfBusinessesBySearchValue")
+    @ResponseBody
+    public ResponseEntity<List<Business_ListJobPostDTO>> getJobPostsOfBusinessesBySearchValue(@RequestParam String valueSearch) {
+        List<Business> businessList = businessService.getAllBusinessBySemester();
+        List<Business> searchList = new ArrayList<>();
+        for (int i = 0; i < businessList.size(); i++) {
+            if (businessList.get(i).getBusiness_name().toLowerCase().contains(valueSearch.toLowerCase())||
+                    businessList.get(i).getBusiness_eng_name().toLowerCase().contains(valueSearch.toLowerCase())) {
+                searchList.add(businessList.get(i));
+            }
+        }
+        List<Business_ListJobPostDTO> business_listJobPostDTOS = new ArrayList<>();
+
+        for (int i = 0; i < searchList.size(); i++) {
+
+            //Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(businessList.get(i));
+            Semester semesterCurrent = semesterService.getSemesterCurrent();
+            Ojt_Enrollment ojt_enrollment =
+                    ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(searchList.get(i).getEmail(), semesterCurrent.getId());
+
+            List<Job_Post> job_postList = job_postService.getAllJobPostOfBusiness(ojt_enrollment);
+
+            Business_ListJobPostDTO business_jobPostDTO = new Business_ListJobPostDTO();
+            business_jobPostDTO.setJob_postList(job_postList);
+            business_jobPostDTO.setBusiness(searchList.get(i));
+
+            business_listJobPostDTOS.add(business_jobPostDTO);
+        }
+        if (business_listJobPostDTOS != null) {
+            return new ResponseEntity<List<Business_ListJobPostDTO>>(business_listJobPostDTOS, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -695,6 +733,16 @@ public class AdminController {
         }
         if (student_evaluationDTOS != null) {
             return new ResponseEntity<List<Student_EvaluationDTO>>(student_evaluationDTOS, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/histories")
+    @ResponseBody
+    public ResponseEntity<List<HistoryAction>> getAllHistoryAction() {
+        List<HistoryAction> actions = iHistoryActionService.getAllHistory();
+        if(actions != null) {
+            return new ResponseEntity<>(actions, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

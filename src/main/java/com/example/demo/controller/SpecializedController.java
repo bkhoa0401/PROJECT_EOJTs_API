@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.PagingDTO;
 import com.example.demo.entity.Business;
 import com.example.demo.entity.Specialized;
+import com.example.demo.entity.Student;
 import com.example.demo.entity.Users;
 import com.example.demo.service.ISpecializedService;
 import com.example.demo.service.SpecializedService;
@@ -14,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -118,5 +121,21 @@ public class SpecializedController {
     public ResponseEntity<PagingDTO> getSpecializedPaging(@RequestParam int currentPage, @RequestParam int rowsPerPage) {
         PagingDTO specializedList = specializedService.pagingSpecialized(currentPage, rowsPerPage);
         return new ResponseEntity<>(specializedList, HttpStatus.OK);
+    }
+
+    @GetMapping("/searchSpecialized")
+    @ResponseBody
+    public ResponseEntity<List<Specialized>> searchSpecialized(@RequestParam String valueSearch) {
+        List<Specialized> specializeds = specializedService.getAllSpecialized();
+        List<Specialized> searchList = new ArrayList<>();
+        if (specializeds != null) {
+            for (int i = 0; i < specializeds.size(); i++) {
+                if (specializeds.get(i).getName().toLowerCase().contains(valueSearch.toLowerCase())) {
+                    searchList.add(specializeds.get(i));
+                }
+            }
+            return new ResponseEntity<List<Specialized>>(searchList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 }

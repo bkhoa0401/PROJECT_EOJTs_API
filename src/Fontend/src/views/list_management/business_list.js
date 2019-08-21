@@ -10,7 +10,7 @@ class business_list extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            businesses: null,
+            businesses: [],
             searchValue: '',
             loading: true,
             pageNumber: 1,
@@ -20,17 +20,23 @@ class business_list extends Component {
             modalDetail: false,
             business: null,
             role: '',
+
+            searchingList: [],
+            isSearching: false,
+            numOfBusiness: 0,
         };
     }
 
     async componentDidMount() {
         const { currentPage, rowsPerPage } = this.state;
         const businesses = await ApiServices.Get(`/business/pagination?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const numOfBusiness = await ApiServices.Get(`/business/searchListBusiness?valueSearch=${""}`);
         if (businesses !== null) {
             this.setState({
                 businesses: businesses.listData,
                 pageNumber: businesses.pageNumber,
-                loading: false
+                loading: false,
+                numOfBusiness: numOfBusiness.length,
             });
         }
     }
@@ -116,10 +122,31 @@ class business_list extends Component {
         this.props.history.push(uri);
     }
 
+    handleInputSearch = async (event) => {
+        const { name, value } = event.target;
+        if (value === "" || !value.trim()) {
+            await this.setState({
+                [name]: value.substr(0, 20),
+                isSearching: false,
+            })
+        } else {
+            const businesses = await ApiServices.Get(`/business/searchListBusiness?valueSearch=${value.substr(0, 20)}`);
+            // console.log(students);
+            if (businesses !== null) {
+                this.setState({
+                    [name]: value.substr(0, 20),
+                    searchingList: businesses,
+                    isSearching: true,
+                })
+            }
+        }
+    }
+
     render() {
         const { businesses, business, searchValue, loading } = this.state;
         const { pageNumber, currentPage, rowsPerPage } = this.state;
-
+        const { numOfBusiness, isSearching, searchingList } = this.state;
+        // console.log(businesses);
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -135,7 +162,7 @@ class business_list extends Component {
                                         <div>
                                             <nav className="navbar navbar-light bg-light justify-content-between">
                                                 <form className="form-inline">
-                                                    <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                                    <input onChange={this.handleInputSearch} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
                                                 </form>
                                             </nav>
                                             <Table responsive striped>
@@ -151,46 +178,90 @@ class business_list extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {businesses && businesses.map((business, index) => {
-                                                        return (
-                                                            <tr>
-                                                                <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                                <td style={{ textAlign: "center" }}>{business.business_name}<br />({business.business_eng_name})</td>
-                                                                {/* <td style={{ textAlign: "center" }}>{business.business_eng_name}</td> */}
-                                                                <td style={{ textAlign: "center" }}>{business.business_address}</td>
-                                                                {/* <td style={{ textAlign: "center" }}>{business.business_website}</td> */}
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    <span>Email: {business.email}<br /></span>
-                                                                    SĐT: {business.business_phone}
-                                                                </td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    <Button color="primary" onClick={() => this.toggleModalDetail(business.email)}><i className="fa fa-eye"></i></Button>
-                                                                    {/* <Button
+                                                    {
+                                                        isSearching === false ?
+                                                            (businesses && businesses.map((business, index) => {
+                                                                return (
+                                                                    <tr>
+                                                                        <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
+                                                                        <td style={{ textAlign: "center" }}>{business.business_name}<br />({business.business_eng_name})</td>
+                                                                        {/* <td style={{ textAlign: "center" }}>{business.business_eng_name}</td> */}
+                                                                        <td style={{ textAlign: "center" }}>{business.business_address}</td>
+                                                                        {/* <td style={{ textAlign: "center" }}>{business.business_website}</td> */}
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            <span>Email: {business.email}<br /></span>
+                                                                            SĐT: {business.business_phone}
+                                                                        </td>
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            <Button color="primary" onClick={() => this.toggleModalDetail(business.email)}><i className="fa fa-eye"></i></Button>
+                                                                            {/* <Button
                                                                         style={{ fontWeight: "bold", borderWidth: 0 }}
                                                                         color="primary"
                                                                         onClick={() => this.handleDirect(`/admin/list_management/business_list/Business_Detail/${business.email}`)}
                                                                     >
                                                                         Chi tiết
                                                                     </Button> */}
-                                                                    {/* &nbsp;&nbsp;
+                                                                            {/* &nbsp;&nbsp;
                                                         <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="danger">Xoá</Button> */}
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    })}
+                                                                        </td>
+                                                                    </tr>
+                                                                )
+                                                            })) : (searchingList && searchingList.map((business, index) => {
+                                                                return (
+                                                                    <tr>
+                                                                        <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                                        <td style={{ textAlign: "center" }}>{business.business_name}<br />({business.business_eng_name})</td>
+                                                                        {/* <td style={{ textAlign: "center" }}>{business.business_eng_name}</td> */}
+                                                                        <td style={{ textAlign: "center" }}>{business.business_address}</td>
+                                                                        {/* <td style={{ textAlign: "center" }}>{business.business_website}</td> */}
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            <span>Email: {business.email}<br /></span>
+                                                                            SĐT: {business.business_phone}
+                                                                        </td>
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            <Button color="primary" onClick={() => this.toggleModalDetail(business.email)}><i className="fa fa-eye"></i></Button>
+                                                                            {/* <Button
+                                                                        style={{ fontWeight: "bold", borderWidth: 0 }}
+                                                                        color="primary"
+                                                                        onClick={() => this.handleDirect(`/admin/list_management/business_list/Business_Detail/${business.email}`)}
+                                                                    >
+                                                                        Chi tiết
+                                                                    </Button> */}
+                                                                            {/* &nbsp;&nbsp;
+                                                        <Button style={{ fontWeight: "bold", borderWidth: 0 }} color="danger">Xoá</Button> */}
+                                                                        </td>
+                                                                    </tr>
+                                                                )
+                                                            }))
+                                                    }
                                                 </tbody>
                                             </Table>
                                         </div>
                                         <ToastContainer />
-                                        <Pagination style={{ marginTop: "3%" }}>
-                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                            <h6 style={{ marginLeft: "5%", width: "15%", marginTop: "7px" }}>Số dòng trên trang: </h6>
-                                            <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "7%" }}>
-                                                <option value={10} selected={rowsPerPage === 10}>10</option>
-                                                <option value={20}>20</option>
-                                                <option value={50}>50</option>
-                                            </Input>
-                                        </Pagination>
+                                        {isSearching === false ?
+                                            <Row>
+                                                <Col>
+                                                    <Row>
+                                                        <Pagination>
+                                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                                        </Pagination>
+                                                        &emsp;
+                                                        <h6 style={{ marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                                        &nbsp;&nbsp;
+                                                        <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "70px" }}>
+                                                            <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                            <option value={20}>20</option>
+                                                            <option value={50}>50</option>
+                                                        </Input>
+                                                    </Row>
+                                                </Col>
+                                                <Col>
+                                                    <Row className="float-right">
+                                                        <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + businesses.length} trên tổng số {numOfBusiness} kết quả</Label>
+                                                    </Row>
+                                                </Col>
+                                            </Row> : <></>
+                                        }
                                     </CardBody>
                                     {/* <CardFooter className="p-4">
                                 <Row>

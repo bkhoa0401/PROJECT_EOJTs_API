@@ -77,20 +77,23 @@ public class SupervisorService implements ISupervisorService {
             supervisor.setActive(true);
             ISupervisorRepository.save(supervisor);
 
-            String password = usersService.getAlphaNumericString();
+            if(emailBusiness!=null){
+                String password = usersService.getAlphaNumericString();
 
-            Users users = new Users(supervisor.getEmail(), password);
-            users.setActive(true);
+                Users users = new Users(supervisor.getEmail(), password);
+                users.setActive(true);
 
-            List<Role> roleList = new ArrayList<>();
-            Role role = new Role();
-            role.setId(4);
-            role.setDescription("ROLE_SUPERVISOR");
-            roleList.add(role);
+                List<Role> roleList = new ArrayList<>();
+                Role role = new Role();
+                role.setId(4);
+                role.setDescription("ROLE_SUPERVISOR");
+                roleList.add(role);
 
-            users.setRoles(roleList);
+                users.setRoles(roleList);
 
-            usersService.saveUser(users);
+                usersService.saveUser(users);
+            }
+
             return true;
         }
         return false;

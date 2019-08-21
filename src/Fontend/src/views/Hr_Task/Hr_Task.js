@@ -532,7 +532,7 @@ class Hr_Task extends Component {
 
     handleInput = async (event) => {
         const { name, value } = event.target;
-        if (value === "") {
+        if (value === "" || !value.trim()) {
             await this.setState({
                 [name]: value.substr(0, 20),
                 isSearching: false,
@@ -567,29 +567,12 @@ class Hr_Task extends Component {
                                         <i className="fa fa-align-justify"></i> Danh sách nhiệm vụ
                                     </CardHeader>
                                     <CardBody>
-                                        <FormGroup row>
-                                            <Col md="10">
-                                                {
-                                                    role === "ROLE_SUPERVISOR" ?
-                                                        <Button color="primary" onClick={() => this.handleDirect('/supervisor/hr-task/create')}>Tạo nhiệm vụ mới</Button> :
-                                                        <Button color="primary" onClick={() => this.handleDirect('/hr/hr-task/create')}>Tạo nhiệm vụ mới</Button>
-                                                }
-                                            </Col>
-                                            <Col xs="12" md="2">
-                                                {isSearching === false ?
-                                                    <Row>
-                                                        <h6>Số dòng trên trang: </h6>
-                                                        &nbsp;&nbsp;
-                                                        <Input onChange={this.handleInputPagingAll} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
-                                                            <option value={10} selected={rowsPerPage === 10}>10</option>
-                                                            <option value={20}>20</option>
-                                                            <option value={50}>50</option>
-                                                        </Input>
-                                                    </Row> :
-                                                    <></>
-                                                }
-                                            </Col>
-                                        </FormGroup>
+                                        {
+                                            role === "ROLE_SUPERVISOR" ?
+                                                <Button color="primary" onClick={() => this.handleDirect('/supervisor/hr-task/create')}>Tạo nhiệm vụ mới</Button> :
+                                                <Button color="primary" onClick={() => this.handleDirect('/hr/hr-task/create')}>Tạo nhiệm vụ mới</Button>
+                                        }
+                                        <br /><br /><br />
                                         <ToastContainer />
                                         <nav className="navbar navbar-light bg-light justify-content-between">
                                             <form className="form-inline">
@@ -738,13 +721,24 @@ class Hr_Task extends Component {
                                         {isSearching === false ?
                                             <Row>
                                                 <Col>
-                                                    <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + tasks.length} trên tổng số {numOfTask} kết quả</Label>
-                                                </Col>
-                                                <Col>
-                                                    <Row className="float-right">
+                                                    <Row>
                                                         <Pagination>
                                                             <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
                                                         </Pagination>
+                                                        &emsp;
+                                                        <h6 style={{ marginTop: '7px' }}>Số dòng trên trang: </h6>
+                                                        &nbsp;&nbsp;
+                                                        <Input onChange={this.handleInputPagingAll} type="select" name="rowsPerPage" style={{ width: "70px" }} >
+                                                            <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                            <option value={20}>20</option>
+                                                            <option value={50}>50</option>
+                                                        </Input>
+                                                    </Row>
+
+                                                </Col>
+                                                <Col>
+                                                    <Row className="float-right">
+                                                        <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + tasks.length} trên tổng số {numOfTask} kết quả</Label>
                                                     </Row>
                                                 </Col>
                                             </Row>
@@ -828,7 +822,7 @@ class Hr_Task extends Component {
                                                     </FormGroup>
                                                     <FormGroup row>
                                                         <Col md="4">
-                                                            <h6>Kiểm duyệt</h6>
+                                                            <h6>Đã kiểm duyệt</h6>
                                                         </Col>
                                                         <Col xs="12" md="8">
                                                             {

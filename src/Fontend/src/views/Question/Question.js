@@ -18,7 +18,15 @@ class Question extends Component {
             open: false,
             questionDetail: null,
             modalDetail: false,
+            searchValue:'',
         }
+    }
+
+    handleInput = async (event) => {
+        const { name, value } = event.target;
+        await this.setState({
+            [name]: value.substr(0, 20),
+        })
     }
 
     toggleModalDetail = async (question) => {
@@ -93,7 +101,20 @@ class Question extends Component {
     };
 
     render() {
-        const { questions, loading, questionDetail } = this.state;
+        const { questions, loading, questionDetail, searchValue } = this.state;
+
+        let filteredListQuestion;
+
+        if (questions !== null) {
+            console.log(questions);
+            filteredListQuestion = questions.filter(
+                (question) => {
+                    if (question.content.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
+                        return question;
+                    }
+                }
+            );
+        }
 
         return (
             loading.toString() === 'true' ? (
@@ -111,6 +132,11 @@ class Question extends Component {
                                         <br />
                                         <br />
                                         <br />
+                                        <nav className="navbar navbar-light bg-light justify-content-between">
+                                            <form className="form-inline">
+                                                <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                            </form>
+                                        </nav>
                                         <Table responsive striped>
                                             <thead>
                                                 <tr>
@@ -122,7 +148,7 @@ class Question extends Component {
                                             </thead>
                                             <tbody>
                                                 {
-                                                    questions && questions.map((question, i) => {
+                                                    filteredListQuestion && filteredListQuestion.map((question, i) => {
                                                         return (
                                                             <tr key={i}>
                                                                 <td style={{ textAlign: "center" }}>{i + 1}</td>

@@ -100,7 +100,7 @@ public class StudentController {
         StudentIsExistedAndNotYet studentIsExistedAndNotYet = studentService.getStudentsIsExisted(studentList);
 
         List<Student> studentListIsExisted = studentIsExistedAndNotYet.getStudentsIsExisted();
-        studentService.handlerStudentIsExisted(studentListIsExisted); // handle xong may dua da ton tai
+        studentService.handlerStudentIsExisted(studentListIsExisted,semesterName); // handle xong may dua da ton tai
 
         List<Student> studentListNotYet = studentIsExistedAndNotYet.getStudentsNotYet();
 
@@ -191,7 +191,7 @@ public class StudentController {
 
         Student student1 = new Student();
         student1.setEmail(student.getEmail());
-        Specialized specialized=iSpecializedService.getSpecializedById(student.getSpecialized().getId());
+        Specialized specialized = iSpecializedService.getSpecializedById(student.getSpecialized().getId());
         student1.setSpecialized(specialized);
         student1.setStatus(StudentStatus.NOTSTART);
         student1.setAddress(student.getAddress());
@@ -225,7 +225,7 @@ public class StudentController {
     //check semester //ok
     @GetMapping("/getAllStudent")
     @ResponseBody
-    public ResponseEntity<PagingDTO> getAllStudentsWithInternOptionState(@RequestParam int currentPage
+    public ResponseEntity<PagingDTO> getAllStudentsWithInternOptionState(@RequestParam int codeSortOrder, @RequestParam int nameSortOrder, @RequestParam int specializedID, @RequestParam int currentPage
             , @RequestParam int rowsPerPage) {
         LOG.info("Getting all student");
         Semester semester = semesterService.getSemesterCurrent();
@@ -233,9 +233,107 @@ public class StudentController {
         List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOList = new ArrayList<>();
         try {
             studentList = studentService.getAllStudentsBySemesterId();
+            List<Student> filteredStudentList = new ArrayList<Student>();
 
-            for (int i = 0; i < studentList.size(); i++) {
-                Student student = studentList.get(i);
+            if (specializedID == -1) {
+                filteredStudentList = studentList;
+                if (codeSortOrder != 0) {
+                    if (codeSortOrder == 1) {
+                        Collections.sort(filteredStudentList, new Comparator<Student>() {
+                            @Override
+                            public int compare(Student o1, Student o2) {
+                                String name1 = o1.getCode();
+                                String name2 = o2.getCode();
+                                return name1.compareTo(name2);
+                            }
+                        });
+                    }
+                    if (codeSortOrder == 2) {
+                        Collections.sort(filteredStudentList, new Comparator<Student>() {
+                            @Override
+                            public int compare(Student o1, Student o2) {
+                                String name1 = o1.getCode();
+                                String name2 = o2.getCode();
+                                return name2.compareTo(name1);
+                            }
+                        });
+                    }
+                }
+                if (nameSortOrder != 0) {
+                    if (nameSortOrder == 1) {
+                        Collections.sort(filteredStudentList, new Comparator<Student>() {
+                            @Override
+                            public int compare(Student o1, Student o2) {
+                                String name1 = o1.getName();
+                                String name2 = o2.getName();
+                                return name1.compareTo(name2);
+                            }
+                        });
+                    }
+                    if (nameSortOrder == 2) {
+                        Collections.sort(filteredStudentList, new Comparator<Student>() {
+                            @Override
+                            public int compare(Student o1, Student o2) {
+                                String name1 = o1.getName();
+                                String name2 = o2.getName();
+                                return name2.compareTo(name1);
+                            }
+                        });
+                    }
+                }
+            } else {
+                for (int i = 0; i < studentList.size(); i++) {
+                    if (studentList.get(i).getSpecialized().getId() == specializedID) {
+                        filteredStudentList.add(studentList.get(i));
+                    }
+                }
+                if (codeSortOrder != 0) {
+                    if (codeSortOrder == 1) {
+                        Collections.sort(filteredStudentList, new Comparator<Student>() {
+                            @Override
+                            public int compare(Student o1, Student o2) {
+                                String name1 = o1.getCode();
+                                String name2 = o2.getCode();
+                                return name1.compareTo(name2);
+                            }
+                        });
+                    }
+                    if (codeSortOrder == 2) {
+                        Collections.sort(filteredStudentList, new Comparator<Student>() {
+                            @Override
+                            public int compare(Student o1, Student o2) {
+                                String name1 = o1.getCode();
+                                String name2 = o2.getCode();
+                                return name2.compareTo(name1);
+                            }
+                        });
+                    }
+                }
+                if (nameSortOrder != 0) {
+                    if (nameSortOrder == 1) {
+                        Collections.sort(filteredStudentList, new Comparator<Student>() {
+                            @Override
+                            public int compare(Student o1, Student o2) {
+                                String name1 = o1.getName();
+                                String name2 = o2.getName();
+                                return name1.compareTo(name2);
+                            }
+                        });
+                    }
+                    if (nameSortOrder == 2) {
+                        Collections.sort(filteredStudentList, new Comparator<Student>() {
+                            @Override
+                            public int compare(Student o1, Student o2) {
+                                String name1 = o1.getName();
+                                String name2 = o2.getName();
+                                return name2.compareTo(name1);
+                            }
+                        });
+                    }
+                }
+            }
+            for (int i = 0; i < filteredStudentList.size(); i++) {
+                Student student = filteredStudentList.get(i);
                 Student_OjtenrollmentDTO student_ojtenrollmentDTO = new Student_OjtenrollmentDTO();
                 student_ojtenrollmentDTO.setStudent(student);
                 Ojt_Enrollment ojt_enrollment =
@@ -262,6 +360,32 @@ public class StudentController {
         return new ResponseEntity<>(pagingDTO, HttpStatus.OK);
     }
 
+    @GetMapping("/searchListStudent")
+    @ResponseBody
+    public ResponseEntity<List<Student>> getAllStudentsWithInternOptionState(@RequestParam String valueSearch) {
+        LOG.info("Getting all student");
+        Semester semester = semesterService.getSemesterCurrent();
+        List<Student> studentList;
+        List<Student> searchList = new ArrayList<>();
+        try {
+            studentList = studentService.getAllStudentsBySemesterId();
+
+            for (int i = 0; i < studentList.size(); i++) {
+                if (studentList.get(i).getCode().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                        studentList.get(i).getName().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                        studentList.get(i).getEmail().toLowerCase().contains(valueSearch.toLowerCase())){
+                    searchList.add(studentList.get(i));
+                }
+            }
+
+        } catch (Exception ex) {
+            LOG.info(ex.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(searchList, HttpStatus.OK);
+    }
+
     @GetMapping("/getStudentsWithNoCompany")
     @ResponseBody
     public ResponseEntity<PagingDTO> getStudentsWithNoCompany(@RequestParam int currentPage
@@ -270,6 +394,31 @@ public class StudentController {
         PagingDTO pagingDTO = studentService.getStudentsWithNoCompany(currentPage, rowsPerPage);
         if (pagingDTO != null) {
             return new ResponseEntity<>(pagingDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/searchStudentWithHope")
+    @ResponseBody
+    public ResponseEntity<List<Student_OjtenrollmentDTO>> searchStudentWithHope(@RequestParam String valueSearch, @RequestParam int type) {
+        List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOList = studentService.getStudentsWithHope();
+        List<Student_OjtenrollmentDTO> finalList = new ArrayList<>();
+        for (int i = 0; i < student_ojtenrollmentDTOList.size(); i++) {
+            if (student_ojtenrollmentDTOList.get(i).getStudent().getEmail().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                    student_ojtenrollmentDTOList.get(i).getStudent().getName().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                    student_ojtenrollmentDTOList.get(i).getStudent().getSpecialized().getName().toLowerCase().contains(valueSearch.toLowerCase())) {
+                if (type == 0) {
+                    finalList.add(student_ojtenrollmentDTOList.get(i));
+                }
+                if (type == 1) {
+                    if (student_ojtenrollmentDTOList.get(i).getBusinessEnroll() == null || student_ojtenrollmentDTOList.get(i).getBusinessEnroll().equals("Rớt")) {
+                        finalList.add(student_ojtenrollmentDTOList.get(i));
+                    }
+                }
+            }
+        }
+        if (student_ojtenrollmentDTOList != null) {
+            return new ResponseEntity<>(finalList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -490,6 +639,38 @@ public class StudentController {
             Utils<Student_InvitationDTO> student_invitationDTOUtils = new Utils<>();
             PagingDTO pagingDTO = student_invitationDTOUtils.paging(studentList, currentPage, rowsPerPage);
             return new ResponseEntity<PagingDTO>(pagingDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/getListStudentIsInvitedNotPaging")
+    @ResponseBody
+    public ResponseEntity<List<Student_InvitationDTO>> getListStudentIsInvitedNotPaging() {
+        String email = getEmailFromToken();
+        List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);
+        List<Student> studentListIsInvitedInFunc = new ArrayList<>();
+        List<Student_InvitationDTO> studentList = new ArrayList<>();
+
+        Semester semester = semesterService.getSemesterCurrent();
+
+        for (int i = 0; i < invitationList.size(); i++) {
+            if (invitationList.get(i).getSemester().getId() != semester.getId()) {
+                invitationList.remove(invitationList.get(i));
+            }
+        }
+
+        for (int i = 0; i < invitationList.size(); i++) {
+            Student_InvitationDTO student_invitationDTO = new Student_InvitationDTO();
+            Student student = studentService.getStudentIsInvited(invitationList.get(i).getStudent().getEmail());
+            List<Invitation> invitations = invitationService.getListInvitationByStudentEmail(student.getEmail());
+            student_invitationDTO.setInvitations(invitations);
+            student_invitationDTO.setStudent(student);
+            studentList.add(student_invitationDTO);
+            studentListIsInvitedInFunc.add(student);
+        }
+        if (studentList != null) {
+            studentListIsInvited = studentListIsInvitedInFunc;
+            return new ResponseEntity<>(studentList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
@@ -746,7 +927,7 @@ public class StudentController {
             }
         }
 
-        if (listAllStudent != null ) {
+        if (listAllStudent != null) {
             Utils<Student> studentUtils = new Utils<>();
             PagingDTO pagingDTO = studentUtils.paging(listAllStudent, currentPage, rowsPerPage);
 
@@ -789,7 +970,7 @@ public class StudentController {
             }
         }
 
-        if (listAllStudent != null ) {
+        if (listAllStudent != null) {
             List<Student> searchStudentList = searchStudentByCodeNameSpecialized(listAllStudent, valueSearch);
 
             return new ResponseEntity<>(searchStudentList, HttpStatus.OK);
@@ -998,7 +1179,7 @@ public class StudentController {
                 }
             }
         }
-        if (studentList != null ) {
+        if (studentList != null) {
             List<Student> searchStudentList = searchStudentByCodeNameSpecialized(studentList, valueSearch);
 
             return new ResponseEntity<>(searchStudentList, HttpStatus.OK);
