@@ -1,9 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.PagingDTO;
-import com.example.demo.dto.StudentAnswerDTO;
-import com.example.demo.dto.StudentIsExistedAndNotYet;
-import com.example.demo.dto.Student_ImportFileDTO;
+import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 
 import java.text.ParseException;
@@ -73,9 +70,11 @@ public interface IStudentService {
 
     PagingDTO getStudentsWithNoCompany(int currentPage, int rowsPerPage);
 
+    List<Student_OjtenrollmentDTO> getStudentsWithHope();
+
     PagingDTO getEvaluationsOfStudents(int specializedID, int currentPage, int rowsPerPage);
 
     StudentIsExistedAndNotYet getStudentsIsExisted(List<Student_ImportFileDTO> students);
 
-    void handlerStudentIsExisted(List<Student> students);
+    void handlerStudentIsExisted(List<Student> students,String semesterName);
 }

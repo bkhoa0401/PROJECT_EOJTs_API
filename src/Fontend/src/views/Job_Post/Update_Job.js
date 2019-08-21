@@ -217,7 +217,7 @@ class Update_Job extends Component {
 
         if (isChecked) {
 
-            document.getElementById('btnAddRow').removeAttribute("disabled");
+            // document.getElementById('btnAddRow').removeAttribute("disabled");
 
             const skillsChoosen = await ApiServices.Get(`/skill/bySpecializedId?specializedId=${selectSpecialized}`);
 
@@ -238,7 +238,7 @@ class Update_Job extends Component {
                 }
             }
         } else {
-            document.getElementById('btnAddRow').setAttribute("disabled", "disabled");
+            // document.getElementById('btnAddRow').setAttribute("disabled", "disabled");
             this.state.choseSpecialized = [];
             this.setState({
             })
@@ -386,7 +386,7 @@ class Update_Job extends Component {
                                                 <Col xs="12" md="10">
                                                     <Input value={description} onChange={this.handleInput} type="text" id="description" name="description" placeholder="Mô tả công việc" />
                                                     <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Mô tả công việc', description, 'required|max:100')}
+                                                        {this.validator.message('Mô tả công việc', description, 'required|max:255')}
                                                     </span>
                                                 </Col>
                                             </FormGroup>
@@ -397,7 +397,7 @@ class Update_Job extends Component {
                                                 <Col xs="12" md="10">
                                                     <Input value={interview_process} onChange={this.handleInput} type="text" id="interview_process" name="interview_process" placeholder="Quy trình tuyển" />
                                                     <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Quy trình tuyển', interview_process, 'required|max:100')}
+                                                        {this.validator.message('Quy trình tuyển', interview_process, 'required|max:255')}
                                                     </span>
                                                 </Col>
                                             </FormGroup>
@@ -408,7 +408,7 @@ class Update_Job extends Component {
                                                 <Col xs="12" md="10">
                                                     <Input value={interest} onChange={this.handleInput} type="text" id="interest" name="interest" placeholder="Phúc lợi" />
                                                     <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Phúc lợi', interest, 'required|max:100')}
+                                                        {this.validator.message('Phúc lợi', interest, 'required|max:255')}
                                                     </span>
                                                 </Col>
                                             </FormGroup>
@@ -419,7 +419,7 @@ class Update_Job extends Component {
                                                 <Col xs="12" md="10">
                                                     <Input value={contact} onChange={this.handleInput} type="text" id="contact" name="contact" placeholder="Thông tin liên hệ" />
                                                     <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Thông tin liên hệ', contact, 'required|max:100')}
+                                                        {this.validator.message('Thông tin liên hệ', contact, 'required|max:255')}
                                                     </span>
                                                 </Col>
                                             </FormGroup>
@@ -470,7 +470,7 @@ class Update_Job extends Component {
                                                 <Col md="2">
                                                     <h6>Kỹ năng - Số lượng:</h6></Col>
                                                 <Col xs="12" md="10">
-                                                    <Button color="primary" id="btnAddRow" outline onClick={this.addRow}>Thêm</Button>
+                                                    {/* <Button color="primary" id="btnAddRow" outline onClick={this.addRow}>Thêm</Button> */}
                                                 </Col>
                                             </FormGroup>
                                             <FormGroup row>
@@ -502,7 +502,7 @@ class Update_Job extends Component {
                                                                     </td>
                                                                     <td>:</td>
                                                                     <td><Input value={numbersForSave[index]} onBlur={e => { this.handleOnBlur(e, index) }} onChange={e => { this.handleInput(e, index) }} type="number" name="number" style={{ width: "170px" }}></Input></td>
-                                                                    <td><Button color="danger" onClick={() => this.deleteSkill(index)}>Xoá</Button></td>
+                                                                    {/* <td><Button color="danger" onClick={() => this.deleteSkill(index)}>Xoá</Button></td> */}
                                                                 </tr>
                                                             </>
                                                         )

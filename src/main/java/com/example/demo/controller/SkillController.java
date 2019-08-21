@@ -196,4 +196,21 @@ public class SkillController {
         PagingDTO pagingSkill = skillService.pagingSkill(currentPage, rowsPerPage);
         return new ResponseEntity<>(pagingSkill, HttpStatus.OK);
     }
+
+    @GetMapping("/searchSkill")
+    @ResponseBody
+    public ResponseEntity<List<Skill>> searchSkill(@RequestParam String valueSearch) {
+        List<Skill> skills = skillService.getAllSkill();
+        List<Skill> searchList = new ArrayList<>();
+        if (skills != null) {
+            for (int i = 0; i < skills.size(); i++) {
+                if (skills.get(i).getName().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                        skills.get(i).getSpecialized().getName().toLowerCase().contains(valueSearch.toLowerCase())) {
+                    searchList.add(skills.get(i));
+                }
+            }
+            return new ResponseEntity<List<Skill>>(searchList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
 }

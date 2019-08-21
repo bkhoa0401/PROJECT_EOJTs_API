@@ -70,6 +70,9 @@ public class BusinessController {
     ISemesterService semesterService;
 
     @Autowired
+    RedisTemplate template;
+
+    @Autowired
     IHistoryActionService iHistoryActionService;
 
     private final Logger LOG = LoggerFactory.getLogger(getClass());
@@ -177,6 +180,20 @@ public class BusinessController {
     public ResponseEntity<PagingDTO> getAllBusinessPaging(@RequestParam int currentPage, @RequestParam int rowsPerPage) {
         PagingDTO pagingBusiness = businessService.pagingBusiness(currentPage, rowsPerPage);
         return new ResponseEntity<>(pagingBusiness, HttpStatus.OK);
+    }
+
+    @GetMapping("/searchListBusiness")
+    @ResponseBody
+    public ResponseEntity<List<Business>> getAllBusinessPaging(@RequestParam String valueSearch) {
+        List<Business> businessList = businessService.getAllBusinessBySemester();
+        List<Business> searchList = new ArrayList<>();
+        for (int i = 0; i < businessList.size(); i++) {
+            if (businessList.get(i).getBusiness_name().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                    businessList.get(i).getBusiness_eng_name().toLowerCase().contains(valueSearch.toLowerCase())){
+                searchList.add(businessList.get(i));
+            }
+        }
+        return new ResponseEntity<>(searchList, HttpStatus.OK);
     }
 
 
@@ -321,6 +338,15 @@ public class BusinessController {
         invitation.setStudent(student);
         invitation.setBusiness(business);
         invitationService.createInvitation(invitation);
+
+        ValueOperations values = template.opsForValue();
+        List<Student> studentList = (List<Student>) values.get("students");
+
+        if (studentList != null) {
+            int position = checkPositionStudent(studentList, student);
+            studentList.remove(position);
+            values.set("students",studentList);
+        }
         HistoryDetail historyDetail = new HistoryDetail(Invitation.class.getName(), null, null, invitation.toString());
         HistoryAction action =
                 new HistoryAction(getEmailFromToken()
@@ -333,6 +359,16 @@ public class BusinessController {
         iHistoryActionService.createHistory(action);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    public int checkPositionStudent(List<Student> students, Student student) {
+        for (int i = 0; i < students.size(); i++) {
+            Student studentInList = students.get(i);
+            if (studentInList.getEmail().equals(student.getEmail())) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     // update status of option student when interview

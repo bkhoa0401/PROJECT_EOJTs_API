@@ -86,6 +86,10 @@ public class BusinessImportFileService implements IBusinessImportFileService {
             roleOfBusiness.setId(3);
             roleList.add(roleOfBusiness);
 
+            Role roleOfSupervisor = new Role();
+            roleOfSupervisor.setId(4);
+            roleList.add(roleOfSupervisor);
+
             users.setRoles(roleList);
 
             usersService.saveUser(users);

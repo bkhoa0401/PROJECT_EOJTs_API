@@ -34,12 +34,12 @@ class Official_List extends Component {
       sortDirection: 'desc',
       loading: true,
 
-      suggestedStudents: null,
+      suggestedStudents: [],
 
       colorTextSelect: ['Black', 'White'],
       colorBackSelect: ['White', 'DeepSkyBlue'],
       // listStudentEmail: [],
-      preListStudent: [],
+      preListStudent: null,
       isSelect: [],
       preSupervisor: '',
       modal: false,
@@ -62,6 +62,7 @@ class Official_List extends Component {
       selectedSpecialized: -1,
       searchingList: [],
       isSearching: false,
+      supervisors_FirstBlank_Obj: null,
     }
   }
 
@@ -87,11 +88,13 @@ class Official_List extends Component {
     }
 
     console.log(supervisors_FirstBlank);
-    if (supervisors_FirstBlank.length >= 1) {
-      // console.log(supervisors_FirstBlank.length);
-      supervisors_FirstBlank.unshift(supervisors_FirstBlank_Obj);
-    } else {
-      supervisors_FirstBlank.push(supervisors_FirstBlank_Obj);
+    if (supervisors_FirstBlank != null) {
+      if (supervisors_FirstBlank.length >= 1) {
+        // console.log(supervisors_FirstBlank.length);
+        supervisors_FirstBlank.unshift(supervisors_FirstBlank_Obj);
+      } else {
+        supervisors_FirstBlank.push(supervisors_FirstBlank_Obj);
+      }
     }
     if (students !== null && supervisors !== null && supervisors_FirstBlank !== null) {
       this.setState({
@@ -102,6 +105,8 @@ class Official_List extends Component {
         loading: false,
         numOfStudent: numOfStudent,
         dropdownSpecialized: dropdownSpecialized,
+        preSupervisor: supervisors_FirstBlank_Obj,
+        supervisors_FirstBlank_Obj: supervisors_FirstBlank_Obj,
       });
     }
     // console.log(this.state.supervisors);
@@ -114,7 +119,7 @@ class Official_List extends Component {
 
   handleInputSearch = async (event) => {
     const { name, value } = event.target;
-    if (value === "") {
+    if (value === "" || !value.trim()) {
       await this.setState({
         [name]: value.substr(0, 20),
         isSearching: false,
@@ -278,13 +283,22 @@ class Official_List extends Component {
   handleSelect = (studentEmail) => {
     let suggestedStudents = this.state.suggestedStudents;
     let isSelected = -1;
-    let preListStudent = this.state.preListStudent;
+    let preListStudent = [];
     let isSelect = this.state.isSelect;
-    for (let index = 0; index < preListStudent.length; index++) {
-      if (preListStudent[index].email === studentEmail) {
-        isSelected = index;
+    console.log(isSelect);
+    if (this.state.preListStudent.length > 0) {
+      preListStudent = this.state.preListStudent;
+      for (let index = 0; index < preListStudent.length; index++) {
+        // console.log("2." + preListStudent[index].email);
+        // console.log("3." + studentEmail);
+        if (preListStudent[index].email === studentEmail) {
+          isSelected = index;
+        }
       }
     }
+    // console.log("1." + preListStudent);
+    // let isSelect = this.state.isSelect;
+    
     if (isSelected !== -1) {
       preListStudent.splice(isSelected, 1);
     }
@@ -294,7 +308,7 @@ class Official_List extends Component {
           isSelect[index] = 0;
         } else {
           isSelect[index] = 1;
-          preListStudent[index] = suggestedStudents[index];
+          preListStudent.push(suggestedStudents[index]);
         }
       }
     }
@@ -326,7 +340,10 @@ class Official_List extends Component {
         suggestedStudents: suggestedStudents,
         isSelect: isSelect,
         loading: false,
+        preListStudent: [],
+        preSupervisor: this.state.supervisors_FirstBlank_Obj,
       });
+      // console.log(this.state.preListStudent);
     } else {
       this.setState({
         modal: !this.state.modal,
@@ -337,11 +354,12 @@ class Official_List extends Component {
   toggleModalWithConfirm = async () => {
     let { listDataEdited, preListStudent } = this.state;
     console.log(listDataEdited);
-    // console.log(this.state.preSupervisor);
+    console.log("preSupervisor: " + this.state.preSupervisor.name);
     if (preListStudent.length === 0 || this.state.preSupervisor.email === "") {
       this.setState({
         modal: !this.state.modal,
       })
+      Toastify.actionWarning("Không có sự thay đổi!");
     } else {
       for (let index = 0; index < preListStudent.length; index++) {
         listDataEdited.push(preListStudent[index]);
@@ -708,10 +726,10 @@ class Official_List extends Component {
     const { pageNumber, currentPage, rowsPerPage } = this.state;
     const { filterStudentTaskList, stateNo, stateTask } = this.state;
     const { numOfStudent, dropdownSpecialized, isSearching, searchingList } = this.state;
-    if (supervisors_FirstBlank != null) {
-      console.log(supervisors_FirstBlank);
-    }
-    console.log(students);
+    // if (supervisors_FirstBlank != null) {
+    //   console.log(supervisors_FirstBlank);
+    // }
+    // console.log(suggestedStudents);
     return (
       loading.toString() === 'true' ? (
         SpinnerLoading.showHashLoader(loading)
@@ -724,18 +742,6 @@ class Official_List extends Component {
                     <i className="fa fa-align-justify"></i> <b>Danh sách sinh viên thực tập tại doanh nghiệp</b>
                   </CardHeader>
                   <CardBody>
-                    {isSearching === false ?
-                      <Row className="float-right">
-                        <h6>Số dòng trên trang: </h6>
-                        &nbsp;&nbsp;
-                        <Input onChange={this.handleInputPaging} type="select" name="rowsPerPage" style={{ width: "70px" }} size="sm">
-                          <option value={10} selected={rowsPerPage === 10}>10</option>
-                          <option value={20}>20</option>
-                          <option value={50}>50</option>
-                        </Input>
-                      </Row> : <></>
-                    }
-                    <br /><br />
                     {students === null ?
                       <></> :
                       <FormGroup row style={{ paddingLeft: '90%' }}>
@@ -918,13 +924,24 @@ class Official_List extends Component {
                     {isSearching === false ?
                       <Row>
                         <Col>
-                          <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
-                        </Col>
-                        <Col>
-                          <Row className="float-right">
+                          <Row>
                             <Pagination>
                               <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
                             </Pagination>
+                            &emsp;
+                            <h6 style={{ marginTop: '7px' }}>Số dòng trên trang: </h6>
+                            &nbsp;&nbsp;
+                            <Input onChange={this.handleInputPaging} type="select" name="rowsPerPage" style={{ width: "70px" }}>
+                              <option value={10} selected={rowsPerPage === 10}>10</option>
+                              <option value={20}>20</option>
+                              <option value={50}>50</option>
+                            </Input>
+                          </Row>
+
+                        </Col>
+                        <Col>
+                          <Row className="float-right">
+                            <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
                           </Row>
                         </Col>
                       </Row> : <></>
