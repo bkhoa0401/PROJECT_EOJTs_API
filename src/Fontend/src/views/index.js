@@ -61,7 +61,8 @@ import {
   SiteSupervisor,
   Question,
   Add_Question,
-  Update_Question
+  Update_Question,
+  Log
 
 } from './Base';
 
@@ -174,7 +175,7 @@ export {
   SiteSupervisor,
   Question,
   Add_Question,
-  Update_Question
-  
+  Update_Question,
+  Log
 };
 
