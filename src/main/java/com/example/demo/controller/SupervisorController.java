@@ -50,6 +50,9 @@ public class SupervisorController {
     @Autowired
     IHistoryActionService iHistoryActionService;
 
+    @Autowired
+    IUsersService iUsersService;
+
     @GetMapping("")
     @ResponseBody
     public ResponseEntity<SupervisorDTO> getSupervisorDetails() {
@@ -85,6 +88,7 @@ public class SupervisorController {
     @PostMapping("")
     public ResponseEntity<Void> createNewTask(@RequestBody Task task, @RequestParam String emailStudent) {
         String email = getEmailFromToken();
+        Users users = iUsersService.findUserByEmail(email);
         Supervisor supervisor = supervisorService.findByEmail(email);
         Semester semesterCurrent = semesterService.getSemesterCurrent();
 
@@ -97,7 +101,7 @@ public class SupervisorController {
         HistoryDetail historyDetail = new HistoryDetail(Task.class.getName(), null, null, task.toString());
         HistoryAction action =
                 new HistoryAction(getEmailFromToken()
-                        , "ROLE_SUPERVISOR", ActionEnum.INSERT, TAG, new Object() {
+                        , users.getRoles().size()> 1 ? "ROLE_HR" : "ROLE_ADMIN", ActionEnum.INSERT, TAG, new Object() {
                 }
                         .getClass()
                         .getEnclosingMethod()
@@ -206,6 +210,7 @@ public class SupervisorController {
     @PostMapping("/evaluation")
     public ResponseEntity<Void> createNewEvaluation(@RequestBody Evaluation evaluation, @RequestParam String emailStudent) {
         String email = getEmailFromToken();
+        Users users = iUsersService.findUserByEmail(email);
 
         Supervisor supervisor = supervisorService.findByEmail(email);
         evaluation.setSupervisor(supervisor);
@@ -214,7 +219,7 @@ public class SupervisorController {
         HistoryDetail historyDetail = new HistoryDetail(Evaluation.class.getName(), null, null, evaluation.toString());
         HistoryAction action =
                 new HistoryAction(getEmailFromToken()
-                        , "ROLE_SUPERVISOR", ActionEnum.INSERT, TAG, new Object() {
+                        , users.getRoles().size()> 1 ? "ROLE_HR" : "ROLE_ADMIN", ActionEnum.INSERT, TAG, new Object() {
                 }
                         .getClass()
                         .getEnclosingMethod()
