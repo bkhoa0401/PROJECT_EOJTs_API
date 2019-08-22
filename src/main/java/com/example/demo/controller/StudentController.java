@@ -100,7 +100,7 @@ public class StudentController {
         StudentIsExistedAndNotYet studentIsExistedAndNotYet = studentService.getStudentsIsExisted(studentList);
 
         List<Student> studentListIsExisted = studentIsExistedAndNotYet.getStudentsIsExisted();
-        studentService.handlerStudentIsExisted(studentListIsExisted,semesterName); // handle xong may dua da ton tai
+        studentService.handlerStudentIsExisted(studentListIsExisted, semesterName); // handle xong may dua da ton tai
 
         List<Student> studentListNotYet = studentIsExistedAndNotYet.getStudentsNotYet();
 
@@ -146,17 +146,19 @@ public class StudentController {
             students.add(student);
         }
         try {
-            studentService.saveListStudent(students);
-            //List<Users> usersListNotYet = usersService.getUsersNotYet(usersList);
-            //usersService.saveListUser(usersListNotYet);
-            usersService.saveListUser(usersList);
+            boolean isSendMail = false;
+            for (int i = 0; i < usersList.size(); i++) {
+                isSendMail = usersService.sendEmail(nameList.get(i), usersList.get(i).getEmail(), usersList.get(i).getPassword());
+            }
 
-            ojt_enrollmentService.saveListOjtEnrollment(ojtEnrollmentList);
+            if (isSendMail == true) {
+                studentService.saveListStudent(students);
+                usersService.saveListUser(usersList);
 
-            if (usersService.saveListUser(usersList)) {
-                for (int i = 0; i < usersList.size(); i++) {
-                    usersService.sendEmail(nameList.get(i), usersList.get(i).getEmail(), usersList.get(i).getPassword());
-                }
+                ojt_enrollmentService.saveListOjtEnrollment(ojtEnrollmentList);
+            }
+            if (isSendMail == false) {
+                return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
             }
 
         } catch (PersistenceException ex) {
@@ -205,13 +207,18 @@ public class StudentController {
         ojt_enrollment.setStudent(student1);
         ojt_enrollment.setSemester(semester);
         try {
-            studentService.saveStudent(student1);
-            ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);
+            Student studentIsExited = studentService.getStudentByEmail(student1.getEmail());
+            if (studentIsExited == null) {
+                studentService.saveStudent(student1);
+                ojt_enrollmentService.saveOjtEnrollment(ojt_enrollment);
 
-            if (usersService.saveUser(users)) {
-                usersService.sendEmail(student.getName(), users.getEmail(), users.getPassword());
+                if (usersService.saveUser(users)) {
+                    usersService.sendEmail(student.getName(), users.getEmail(), users.getPassword());
+                }
+
+            } else {
+                return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
             }
-
         } catch (PersistenceException ex) {
             ex.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -373,7 +380,7 @@ public class StudentController {
             for (int i = 0; i < studentList.size(); i++) {
                 if (studentList.get(i).getCode().toLowerCase().contains(valueSearch.toLowerCase()) ||
                         studentList.get(i).getName().toLowerCase().contains(valueSearch.toLowerCase()) ||
-                        studentList.get(i).getEmail().toLowerCase().contains(valueSearch.toLowerCase())){
+                        studentList.get(i).getEmail().toLowerCase().contains(valueSearch.toLowerCase())) {
                     searchList.add(studentList.get(i));
                 }
             }
@@ -900,7 +907,7 @@ public class StudentController {
 
         List<Student> listStudentIsInvited = studentListIsInvited;
 
-        List<Student> listAllStudent = studentService.getAllStudentsBySemesterId();
+        List<Student> listAllStudent = studentService.getAllStudentsBySemesterIdAndNotYetInvitation();
 
         String emailBusiness = getEmailFromToken();
         List<Student> officialStudentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);

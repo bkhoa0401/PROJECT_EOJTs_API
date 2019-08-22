@@ -149,7 +149,10 @@ class User_Student_Create extends Component {
                     }
                 });
 
-            } else {
+            } else if (result.status === 417) {
+              Toastify.actionFail("Tài khoản đã tồn tại. Vui lòng thử lại!");
+            }else
+             {
                 Toastify.actionFail("Tạo tài khoản mới thất bại!");
                 this.setState({
                     loading: false

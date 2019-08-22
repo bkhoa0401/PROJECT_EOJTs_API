@@ -87,19 +87,21 @@ public class BusinessService implements IBusinessService {
                     ojt_enrollmentService.getOjt_EnrollmentsBySemesterIdAndBusinessEmailNotNull(semester.getId());
             List<Business> businessList = new ArrayList<>();
 
-            for (int i = 0; i < ojt_enrollmentList.size(); i++) {
-                Business business = ojt_enrollmentList.get(i).getBusiness();
-                for (int j = 0; j < businessList.size(); j++) {
-                    if (businessList.get(j).getEmail().equals(business.getEmail())) {
-                        businessList.remove(j);
+            if(ojt_enrollmentList!=null && ojt_enrollmentList.size()!=0){
+                for (int i = 0; i < ojt_enrollmentList.size(); i++) {
+                    Business business = ojt_enrollmentList.get(i).getBusiness();
+                    for (int j = 0; j < businessList.size(); j++) {
+                        if (businessList.get(j).getEmail().equals(business.getEmail())) {
+                            businessList.remove(j);
+                        }
                     }
+                    businessList.add(business);
                 }
-                businessList.add(business);
-            }
 
-            if (businessList != null) {
-                values.set("business", businessList);
-                return businessList;
+                if (businessList != null) {
+                    values.set("business", businessList);
+                    return businessList;
+                }
             }
         }
         return null;

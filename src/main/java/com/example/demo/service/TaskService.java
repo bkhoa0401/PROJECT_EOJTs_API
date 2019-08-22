@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -45,6 +46,7 @@ public class TaskService implements ITaskService {
             }
         }
         if (taskListCurrentSemester != null) {
+            Collections.sort(taskListCurrentSemester);
             return taskListCurrentSemester;
         }
         return null;
@@ -98,17 +100,17 @@ public class TaskService implements ITaskService {
     }
 
     @Override
-    public boolean updateStatusTask(int id, int typeStatusTask,String comment) {
+    public boolean updateStatusTask(int id, int typeStatusTask, String comment) {
         Task task = findTaskById(id);
         if (task != null) {
             if (typeStatusTask == 2) {
-                if(comment!=null){
+                if (comment != null) {
                     task.setStatus(Status.PENDING);
                     task.setComment(comment);
                 }
             } else if (typeStatusTask == 3) {
                 task.setStatus(Status.DONE);
-            }else if(typeStatusTask == 4) {
+            } else if (typeStatusTask == 4) {
                 task.setComment(comment);
                 task.setStatus(Status.APPROVED);
             }
@@ -162,7 +164,7 @@ public class TaskService implements ITaskService {
 
         List<Task> taskListResult = new ArrayList<>();
 
-        List<Task> taskListAfterCheckTime=new ArrayList<>();
+        List<Task> taskListAfterCheckTime = new ArrayList<>();
 
         for (int i = 0; i < supervisors.size(); i++) {
             taskListOfSupervisor = supervisors.get(i).getTasks();

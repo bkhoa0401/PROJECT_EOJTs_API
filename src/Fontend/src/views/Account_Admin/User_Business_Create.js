@@ -112,13 +112,15 @@ class User_Business_Create extends Component {
                         .bind(this),
                     2000
                 );
+            }else if (result.status === 417) {
+              Toastify.actionFail("Tài khoản đã tồn tại. Vui lòng thử lại!");
             } else {
                 Toastify.actionFail("Tạo tài khoản mới thất bại!");
                 this.setState({
                     loading: false
                 })
             }
-        } else {
+        }  else {
             this.validator.showMessages();
             this.forceUpdate();
         }
