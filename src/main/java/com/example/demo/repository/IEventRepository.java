@@ -19,6 +19,8 @@ public interface IEventRepository extends JpaRepository<Event, Integer> {
 
     List<Event> findEventsByBusinessEmail(String email);
 
+    List<Event> findEventsBySupervisorEmail(String email);
+
     //@Query("select count(e.id) from Event e join e.students st where st.email = ?1 and e.isRead='false'")
     @Query("select count(e.id) from Event e join e.student_events st where st.student.email = ?1 and e.isRead='false' and st.isStudent=false")
     int  findEventsByStudentEmailAndReadIsFalse(String email);

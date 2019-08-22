@@ -60,6 +60,15 @@ public class EventService implements IEventService {
     }
 
     @Override
+    public List<Event> getEventListOfSupervisor(String email) {
+        List<Event> events = IEventRepository.findEventsBySupervisorEmail(email);
+        if (events != null) {
+            return events;
+        }
+        return null;
+    }
+
+    @Override
     public List<Event> getEventListSent(List<Event> eventList) {
         Semester semester = iSemesterService.getSemesterCurrent();
         Date dateStartSemester = semester.getStart_choose_option_time();

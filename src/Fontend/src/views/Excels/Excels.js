@@ -787,7 +787,7 @@ class Excels extends Component {
                                 <Card>
                                     <CardHeader>
                                         <strong>Thêm danh sách sinh viên</strong>
-                                        <a style={{ marginLeft: "650px" }} href="https://docs.google.com/spreadsheets/d/1KHfCbg-Rr6Qii8gtJSLNWwBR3VWGN6OY/export?format=xlsx" download>Tải bản mẫu danh sách sinh viên</a>
+                                        <a className="float-right" href="https://docs.google.com/spreadsheets/d/1KHfCbg-Rr6Qii8gtJSLNWwBR3VWGN6OY/export?format=xlsx" download>Tải bản mẫu danh sách sinh viên</a>
                                     </CardHeader>
                                     <CardBody>
                                         <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -864,7 +864,7 @@ class Excels extends Component {
                                 <Card>
                                     <CardHeader>
                                         <strong>Thêm danh sách doanh nghiệp</strong>
-                                        <a style={{ marginLeft: "590px" }} href="https://docs.google.com/spreadsheets/d/174pKjfX-eboXL_78sGueXhOyYYjkN5oH/export?format=xlsx" download>Tải bản mẫu danh sách doanh nghiệp</a>
+                                        <a className="float-right" href="https://docs.google.com/spreadsheets/d/174pKjfX-eboXL_78sGueXhOyYYjkN5oH/export?format=xlsx" download>Tải bản mẫu danh sách doanh nghiệp</a>
                                     </CardHeader>
                                     <CardBody>
                                         <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
