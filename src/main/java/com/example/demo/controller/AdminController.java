@@ -131,10 +131,10 @@ public class AdminController {
     public ResponseEntity<List<EventDTO>> getAllEventOfAdminSent() {
         String email = getEmailFromToken();
         List<Event> events = eventService.getEventListOfAdmin(email);
-        List<Event> finalAdminListEvent = eventService.getEventListSent(events);
-        Collections.sort(finalAdminListEvent);
-        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalAdminListEvent);
-        if (eventDTOList != null) {
+        if (events != null) {
+            List<Event> finalAdminListEvent = eventService.getEventListSent(events);
+            Collections.sort(finalAdminListEvent);
+            List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalAdminListEvent);
             return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -145,10 +145,10 @@ public class AdminController {
     public ResponseEntity<List<EventDTO>> getAllEventOfAdminReceived() {
         String email = getEmailFromToken();
         List<Event> adminReceivedEvents = eventService.getEventListOfAdmin(email);
-        List<Event> finalListEvent = eventService.getEventListReceived(adminReceivedEvents);
-        Collections.sort(finalListEvent);
-        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEvent);
-        if (eventDTOList != null) {
+        if (adminReceivedEvents != null) {
+            List<Event> finalListEvent = eventService.getEventListReceived(adminReceivedEvents);
+            Collections.sort(finalListEvent);
+            List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEvent);
             return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -159,11 +159,11 @@ public class AdminController {
     public ResponseEntity<List<EventDTO>> getAllEventOfAdminReceivedNotRead() {
         String email = getEmailFromToken();
         List<Event> adminReceivedEvents = eventService.getEventListOfAdmin(email);
-        List<Event> finalListEvent = eventService.getEventListReceived(adminReceivedEvents);
-        List<Event> finalListEventNotRead = eventService.getEventListNotRead(finalListEvent);
-        Collections.sort(finalListEventNotRead);
-        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventNotRead);
-        if (eventDTOList != null) {
+        if (adminReceivedEvents != null) {
+            List<Event> finalListEvent = eventService.getEventListReceived(adminReceivedEvents);
+            List<Event> finalListEventNotRead = eventService.getEventListNotRead(finalListEvent);
+            Collections.sort(finalListEventNotRead);
+            List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventNotRead);
             return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -174,11 +174,11 @@ public class AdminController {
     public ResponseEntity<List<EventDTO>> getAllEventOfAdminReceivedRead() {
         String email = getEmailFromToken();
         List<Event> adminReceivedEvents = eventService.getEventListOfAdmin(email);
-        List<Event> finalListEvent = eventService.getEventListReceived(adminReceivedEvents);
-        List<Event> finalListEventRead = eventService.getEventListRead(finalListEvent);
-        Collections.sort(finalListEventRead);
-        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventRead);
-        if (eventDTOList != null) {
+        if (adminReceivedEvents != null) {
+            List<Event> finalListEvent = eventService.getEventListReceived(adminReceivedEvents);
+            List<Event> finalListEventRead = eventService.getEventListRead(finalListEvent);
+            Collections.sort(finalListEventRead);
+            List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventRead);
             return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);

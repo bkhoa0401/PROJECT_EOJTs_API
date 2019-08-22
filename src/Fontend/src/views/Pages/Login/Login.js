@@ -78,7 +78,7 @@ class Login extends Component {
     const { email, password } = this.state;
 
     return (
-      <div className="app flex-row align-items-center">
+      <div className="app flex-row align-items-center backgroundFPT">
         <Container>
           <Row className="justify-content-center">
             <Col md="8">

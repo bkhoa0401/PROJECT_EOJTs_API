@@ -18,8 +18,8 @@ class Invitation_Create extends Component {
         this.validator = new SimpleReactValidator();
         this.state = {
             modal: false,
-            students: null,
-            suggestedStudents: null,
+            students: [],
+            suggestedStudents: [],
             business_name: '',
             searchValue: '',
             searchSuggestedValue: '',
@@ -76,7 +76,7 @@ class Invitation_Create extends Component {
 
     handleInputSearchSum = async (event) => {
         const { name, value } = event.target;
-        if (value === "") {
+        if (value === "" || !value.trim()) {
             await this.setState({
                 [name]: value.substr(0, 20),
                 isSearchingSum: false,
@@ -96,7 +96,7 @@ class Invitation_Create extends Component {
 
     handleInputSearchSuggest = async (event) => {
         const { name, value } = event.target;
-        if (value === "") {
+        if (value === "" || !value.trim()) {
             await this.setState({
                 [name]: value.substr(0, 20),
                 isSearchingSuggest: false,
@@ -140,50 +140,77 @@ class Invitation_Create extends Component {
                         {/* <div style={{maxHeight:"663px", overflowY:'auto', overflowX:'hidden'}}> */}
                         <div>
                             <FormGroup row>
-                                <Col md="3">
-                                    <h6>Họ và tên:</h6>
+                                <Col md="4">
+                                    <h6>Ảnh đại diện</h6>
                                 </Col>
-                                <Col xs="12" md="9">
+                                <Col xs="12" md="8">
+                                    {studentDetail.avatarLink === null ?
+                                        <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "100px", height: "100px" }} alt="usericon" /> :
+                                        <img src={studentDetail.avatarLink} className="img-avatar" style={{ width: "100px", height: "100px" }} />
+                                    }
+                                </Col>
+                            </FormGroup>
+                            <FormGroup row>
+                                <Col md="4">
+                                    <h6>Họ và tên</h6>
+                                </Col>
+                                <Col xs="12" md="8">
                                     <label>{studentDetail.name}</label>
                                 </Col>
                             </FormGroup>
                             <FormGroup row>
-                                <Col md="3">
+                                <Col md="4">
                                     <h6>MSSV</h6>
                                 </Col>
-                                <Col xs="12" md="9">
+                                <Col xs="12" md="8">
                                     <label>{studentDetail.code}</label>
                                 </Col>
                             </FormGroup>
                             <FormGroup row>
-                                <Col md="3">
-                                    <h6>Chuyên ngành:</h6>
+                                <Col md="4">
+                                    <h6>Email</h6>
                                 </Col>
-                                <Col xs="12" md="9">
+                                <Col xs="12" md="8">
+                                    <label>{studentDetail.email}</label>
+                                </Col>
+                            </FormGroup>
+                            <FormGroup row>
+                                <Col md="4">
+                                    <h6>SĐT</h6>
+                                </Col>
+                                <Col xs="12" md="8">
+                                    <label>{studentDetail.phone}</label>
+                                </Col>
+                            </FormGroup>
+                            <FormGroup row>
+                                <Col md="4">
+                                    <h6>Chuyên ngành</h6>
+                                </Col>
+                                <Col xs="12" md="8">
                                     <label>{studentDetail.specialized.name}</label>
                                 </Col>
                             </FormGroup>
                             <FormGroup row>
-                                <Col md="3">
-                                    <h6>Giới thiệu bản thân:</h6>
+                                <Col md="4">
+                                    <h6>Giới thiệu bản thân</h6>
                                 </Col>
-                                <Col xs="12" md="9">
+                                <Col xs="12" md="8">
                                     <label>{studentDetail.objective}</label>
                                 </Col>
                             </FormGroup>
                             {/* <FormGroup row>
-                            <Col md="3">
-                                <h6>Bảng điểm:</h6>
-                            </Col>
-                            <Col xs="12" md="9">
-                                {
-                                    studentDetail.transcriptLink && studentDetail.transcriptLink ? (
-                                        <a href={studentDetail.transcriptLink} download>tải</a>
-                                    ) :
-                                        (<label>N/A</label>)
-                                }
-                            </Col>
-                        </FormGroup> */}
+                                            <Col md="4">
+                                                <h6>Bảng điểm</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                {
+                                                    studentDetail.transcriptLink && studentDetail.transcriptLink ? (
+                                                        <a href={studentDetail.transcriptLink} download>tải</a>
+                                                    ) :
+                                                        (<label>N/A</label>)
+                                                }
+                                            </Col>
+                                        </FormGroup> */}
                             <FormGroup row>
                                 <Col md="4">
                                     <h6>Kỹ năng chuyên ngành</h6>
@@ -229,11 +256,37 @@ class Invitation_Create extends Component {
                                 </Col>
                             </FormGroup>
                             <FormGroup row>
-                                <Col md="3">
-                                    <h6>GPA:</h6>
+                                <Col md="4">
+                                    <h6>GPA</h6>
                                 </Col>
-                                <Col xs="12" md="9">
+                                <Col xs="12" md="8">
                                     <label>{studentDetail.gpa}</label>
+                                </Col>
+                            </FormGroup>
+                            <FormGroup row>
+                                <Col md="4">
+                                    <h6>Bảng điểm</h6>
+                                </Col>
+                                <Col xs="12" md="8">
+                                    {
+                                        studentDetail.transcriptLink && studentDetail.transcriptLink ? (
+                                            <a href={studentDetail.transcriptLink} download>Tải về</a>
+                                        ) :
+                                            (<label>N/A</label>)
+                                    }
+                                </Col>
+                            </FormGroup>
+                            <FormGroup row>
+                                <Col md="4">
+                                    <h6>CV</h6>
+                                </Col>
+                                <Col xs="12" md="8">
+                                    {
+                                        studentDetail.resumeLink && studentDetail.resumeLink ?
+                                            <a target="_blank" href={`http://localhost:8000/api/file/downloadFile/${studentDetail.resumeLink}`} download>Tải về</a>
+                                            :
+                                            <label>N/A</label>
+                                    }
                                 </Col>
                             </FormGroup>
                         </div>
@@ -782,13 +835,13 @@ class Invitation_Create extends Component {
                         var seconds = (tempDate - tempDateFirebase) / 1000;
                         console.log(seconds);
 
-                        if (type === 'offline') {
-                            const result = ApiServices.Post('/business/sms', sms);
-                        } else if (type === 'online') {
-                            if (seconds > 10) {
-                                const result = ApiServices.Post('/business/sms', sms);
-                            }
-                        }
+                        // if (type === 'offline') {
+                        //     const result = ApiServices.Post('/business/sms', sms);
+                        // } else if (type === 'online') {
+                        //     if (seconds > 10) {
+                        //         const result = ApiServices.Post('/business/sms', sms);
+                        //     }
+                        // }
                     }
                 });
             }

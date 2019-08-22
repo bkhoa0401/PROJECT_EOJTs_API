@@ -13,7 +13,7 @@ class Specialized extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            specializeds: null,
+            specializeds: [],
             loading: true,
             pageNumber: 1,
             currentPage: 0,
@@ -204,7 +204,7 @@ class Specialized extends Component {
 
     handleInputSearch = async (event) => {
         const { name, value } = event.target;
-        if (value === "") {
+        if (value === "" || !value.trim()) {
             await this.setState({
                 [name]: value.substr(0, 20),
                 isSearching: false,

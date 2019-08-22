@@ -13,7 +13,7 @@ class ManageAccount extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            supervisors: null,
+            supervisors: [],
             loading: true,
             pageNumber: 1,
             currentPage: 0,
@@ -145,7 +145,7 @@ class ManageAccount extends Component {
 
     handleInputSearch = async (event) => {
         const { name, value } = event.target;
-        if (value === "") {
+        if (value === "" || !value.trim()) {
             await this.setState({
                 [name]: value.substr(0, 20),
                 isSearching: false,

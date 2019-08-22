@@ -1,7 +1,7 @@
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import React, { Component } from 'react';
 import { Bar, Doughnut, Line, Polar, Radar } from 'react-chartjs-2';
-import { Card, CardBody, CardHeader, Col, FormGroup, Input, Table } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, FormGroup, Input, Row } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
@@ -373,116 +373,112 @@ class SiteAdmin extends Component {
         SpinnerLoading.showHashLoader(loading)
       ) : (
           <div className="animated fadeIn">
-            <Table style={{ tableLayout: "fixed" }}>
-              <tbody>
-                <tr>
-                  <td>
-                    <Card>
-                      <CardHeader>
-                        <h6>Thống kê kết quả các đánh giá hàng tháng</h6>
-                      </CardHeader>
-                      <CardBody>
-                        <div className="chart-wrapper">
-                          <Radar data={radar} />
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </td>
-                  <td>
-                    <Card>
-                      <CardHeader>
-                        <h6>Tỉ lệ sinh viên trả lời khảo sát</h6>
-                      </CardHeader>
-                      <CardBody>
-                        <div className="chart-wrapper">
-                          <Doughnut data={doughnut} />
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </td>
-                </tr>
-                <tr>
-                  <div style={{ width: "1100px" }}>
-                    <Card>
-                      <CardHeader>
-                        <h6>Số lượng sinh viên đăng kí nguyện vọng vào doanh nghiệp</h6>
-                      </CardHeader>
-                      <CardBody>
-                        <div className="chart-wrapper">
-                          <Line data={line} options={options} />
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </div>
-                </tr>
-                <tr>
-                  <div style={{ width: "1100px" }}>
-                    <Card>
-                      <CardHeader>
-                        <h6>Số lượng sinh viên đang thực tập tại doanh nghiệp</h6>
-                      </CardHeader>
-                      <CardBody>
-                        <div className="chart-wrapper">
-                          <Bar data={bar} options={options} />
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </div>
-                </tr>
-                <tr>
-                  <td>
-                    <Card>
-                      <CardHeader>
-                        <FormGroup row>
-                          <Col md="8">
-                            <h6>Thống kê kết quả đánh giá của sinh viên qua các kì</h6>
-                          </Col>
-                          <Col md="3" style={{ width: "150px", marginLeft: "1%" }}>
-                            <Input onChange={this.handleInput} type="select" name="statisticalStudentInSemester" style={{ width: "140px" }}>
-                              {semesters && semesters.map((semester, i) => {
-                                return (
-                                  <option value={i} selected={semesterItem.id === semester.id}>{semester.name}</option>
-                                )
-                              })}
-                            </Input>
-                          </Col>
-                        </FormGroup>
-                      </CardHeader>
-                      <CardBody>
-                        <div className="chart-wrapper">
-                          <Polar data={polar} options={options} />
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </td>
-                  <td>
-                    <Card>
-                      <CardHeader>
-                        <FormGroup row>
-                          <Col md="8">
-                            <h6>Thống kê kết quả thực tập của sinh viên qua các kì</h6>
-                          </Col>
-                          <Col md="3" style={{ width: "150px", marginLeft: "1%" }}>
-                            <Input onChange={this.handleInput} type="select" name="result" style={{ width: "140px" }}>
-                              {semesters && semesters.map((semester, i) => {
-                                return (
-                                  <option value={i} selected={semesterItemResult.id === semester.id}>{semester.name}</option>
-                                )
-                              })}
-                            </Input>
-                          </Col>
-                        </FormGroup>
-                      </CardHeader>
-                      <CardBody>
-                        <div className="chart-wrapper">
-                          <Polar data={pie} options={options} />
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </td>
-                </tr>
-              </tbody>
-            </Table>
+            <Row>
+              <Col xs="12" sm="6">
+                <Card>
+                  <CardHeader>
+                    <h6>Thống kê kết quả các đánh giá hàng tháng</h6>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="chart-wrapper">
+                      <Radar data={radar} />
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col xs="12" sm="6">
+                <Card>
+                  <CardHeader>
+                    <h6>Tỉ lệ sinh viên trả lời khảo sát</h6>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="chart-wrapper">
+                      <Doughnut data={doughnut} />
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs="12">
+                <Card>
+                  <CardHeader>
+                    <h6>Số lượng sinh viên đăng kí nguyện vọng vào doanh nghiệp</h6>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="chart-wrapper">
+                      <Line data={line} options={options} />
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs="12">
+                <Card>
+                  <CardHeader>
+                    <h6>Số lượng sinh viên đang thực tập tại doanh nghiệp</h6>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="chart-wrapper">
+                      <Bar data={bar} options={options} />
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs="12" sm="6">
+                <Card>
+                  <CardHeader>
+                    <FormGroup row>
+                      <Col md="8">
+                        <h6>Thống kê kết quả đánh giá của sinh viên qua các kì</h6>
+                      </Col>
+                      <Col md="3" style={{ width: "150px", marginLeft: "1%" }}>
+                        <Input onChange={this.handleInput} type="select" name="statisticalStudentInSemester" style={{ width: "140px" }}>
+                          {semesters && semesters.map((semester, i) => {
+                            return (
+                              <option value={i} selected={semesterItem.id === semester.id}>{semester.name}</option>
+                            )
+                          })}
+                        </Input>
+                      </Col>
+                    </FormGroup>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="chart-wrapper">
+                      <Polar data={polar} options={options} />
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col xs="12" sm="6">
+                <Card>
+                  <CardHeader>
+                    <FormGroup row>
+                      <Col md="8">
+                        <h6>Thống kê kết quả thực tập của sinh viên qua các kì</h6>
+                      </Col>
+                      <Col md="3" style={{ width: "150px", marginLeft: "1%" }}>
+                        <Input onChange={this.handleInput} type="select" name="result" style={{ width: "140px" }}>
+                          {semesters && semesters.map((semester, i) => {
+                            return (
+                              <option value={i} selected={semesterItemResult.id === semester.id}>{semester.name}</option>
+                            )
+                          })}
+                        </Input>
+                      </Col>
+                    </FormGroup>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="chart-wrapper">
+                      <Polar data={pie} options={options} />
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
           </div>
         )
     );

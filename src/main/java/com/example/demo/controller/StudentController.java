@@ -1083,6 +1083,57 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    //Only use for export excel - don't use it anywhere else
+    @GetMapping("/evaluationsOfStudent")
+    @ResponseBody
+    public ResponseEntity<List<Evaluation>> getEvaluationsByStudentEmail(@RequestParam String email) {
+
+        List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(email);
+        Evaluation finalEvaluation = new Evaluation();
+        finalEvaluation.setOjt_enrollment(evaluationList.get(evaluationList.size() -1).getOjt_enrollment());
+        float score_discipline = 0;
+        float score_work = 0;
+        float score_activity = 0;
+        int daysWork = 0;
+        for (int i = 0; i < evaluationList.size(); i++) {
+            score_discipline += evaluationList.get(i).getScore_discipline();
+            score_work += evaluationList.get(i).getScore_work();
+            score_activity += evaluationList.get(i).getScore_activity();
+            daysWork += evaluationList.get(i).getWorkDays();
+        }
+        finalEvaluation.setScore_activity(score_activity/4);
+        finalEvaluation.setScore_discipline(score_discipline/4);
+        finalEvaluation.setScore_work(score_work/4);
+        finalEvaluation.setProject_name("Đánh giá tổng");
+        finalEvaluation.setTimeStart(evaluationList.get(0).getTimeStart());
+        finalEvaluation.setTimeEnd(evaluationList.get(evaluationList.size() -1).getTimeEnd());
+        finalEvaluation.setWorkDays(daysWork);
+        finalEvaluation.setRemark("");
+        finalEvaluation.setSupervisor(evaluationList.get(evaluationList.size() -1).getSupervisor());
+        evaluationList.add(finalEvaluation);
+        if (evaluationList != null) {
+            return new ResponseEntity<List<Evaluation>>(evaluationList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    //Only use for export excel - don't use it anywhere else
+    @GetMapping("/businessesOfEvaluations")
+    @ResponseBody
+    public ResponseEntity<List<String>> getBusinessOfEvaluations(@RequestParam String email) {
+
+        List<Evaluation> evaluationList = evaluationService.getEvaluationsByStudentEmail(email);
+        List<String> listBusiness = new ArrayList<>();
+        for (int i = 0; i < evaluationList.size(); i++) {
+            listBusiness.add(evaluationList.get(i).getOjt_enrollment().getBusiness().getBusiness_name());
+        }
+        listBusiness.add(evaluationList.get(evaluationList.size() - 1).getOjt_enrollment().getBusiness().getBusiness_name());
+        if (evaluationList != null) {
+            return new ResponseEntity<List<String>>(listBusiness, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     @GetMapping("/business")
     @ResponseBody
     public ResponseEntity<Business> getBusinessOfStudent(@RequestParam String email) {
