@@ -24,6 +24,8 @@ class Report_Detail extends Component {
             titleHeader: '',
             titleReport: '',
             // data: null,
+            reportFileName: '',
+            reportName: '',
         };
     }
 
@@ -115,6 +117,13 @@ class Report_Detail extends Component {
             //     remark: report.remark,
             // }];
             // const data =  process(reportDownload).data;
+            let reportFileName = "";
+            let reportName = "Đánh giá tháng " + report.title[report.title.length -1]
+            let fileNameFormat = student.name.split(" ");
+            reportFileName = reportName + "_" + fileNameFormat[fileNameFormat.length - 1];
+            for (let index = 0; index < fileNameFormat.length - 1; index++) {
+                reportFileName += fileNameFormat[index].substring(0,1);
+            }
             this.setState({
                 loading: false,
                 report: report,
@@ -140,6 +149,8 @@ class Report_Detail extends Component {
                     daysWork: report.workDays,
                     remark: report.remark,
                 }],
+                reportFileName: reportFileName,
+                reportName: reportName,
                 // reportDownload: reportDownload,
                 // data: data,
             });
@@ -159,7 +170,7 @@ class Report_Detail extends Component {
     }
 
     render() {
-        const { loading, reportColor, rate, report, role, student, onScreenRate, businessName, supervisorName, reportDownload, titleHeader, titleReport } = this.state;
+        const { loading, reportColor, rate, report, role, student, onScreenRate, businessName, supervisorName, reportDownload, titleHeader, titleReport, reportFileName, reportName } = this.state;
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -194,10 +205,10 @@ class Report_Detail extends Component {
                                                     <Button outline color="primary" onClick={this.export}>Tải đánh giá</Button>
                                                     <ExcelExport
                                                         data={reportDownload}
-                                                        fileName={report.title + "_" + student.name.replace(/\s/g, "") + student.code}
+                                                        fileName={reportFileName}
                                                         ref={(exporter) => { this._exporter = exporter; }}
                                                     >
-                                                        <ExcelExportColumnGroup title={report.title}
+                                                        <ExcelExportColumnGroup title={reportName}
                                                             headerCellOptions={{ textAlign: 'center', background: '#ffffff', bold: true, color: '#000000', fontSize: 18 }}
                                                         >
                                                             <ExcelExportColumn field="MSSV" title="MSSV"
