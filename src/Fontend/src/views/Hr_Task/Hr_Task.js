@@ -822,7 +822,7 @@ class Hr_Task extends Component {
                                                     </FormGroup>
                                                     <FormGroup row>
                                                         <Col md="4">
-                                                            <h6>Kiểm duyệt</h6>
+                                                            <h6>Đã kiểm duyệt</h6>
                                                         </Col>
                                                         <Col xs="12" md="8">
                                                             {
