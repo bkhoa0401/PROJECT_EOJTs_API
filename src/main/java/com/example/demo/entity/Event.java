@@ -31,7 +31,7 @@ public class Event implements Comparable<Event>, Serializable {
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "admin_email")
-    @JsonIgnore
+    //@JsonIgnore
     private Admin admin;
 
     @ManyToOne
