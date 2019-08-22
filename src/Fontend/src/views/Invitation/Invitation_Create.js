@@ -18,8 +18,8 @@ class Invitation_Create extends Component {
         this.validator = new SimpleReactValidator();
         this.state = {
             modal: false,
-            students: null,
-            suggestedStudents: null,
+            students: [],
+            suggestedStudents: [],
             business_name: '',
             searchValue: '',
             searchSuggestedValue: '',

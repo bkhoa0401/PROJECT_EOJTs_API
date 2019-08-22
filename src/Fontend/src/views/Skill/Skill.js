@@ -14,7 +14,7 @@ class Skill extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            skills: null,
+            skills: [],
             loading: true,
             pageNumber: 1,
             currentPage: 0,

@@ -1,7 +1,7 @@
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import React, { Component } from 'react';
 import { Bar, Line, Radar } from 'react-chartjs-2';
-import { Card, CardBody, CardHeader, Table } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
@@ -207,52 +207,48 @@ class SiteSupervisor extends Component {
         SpinnerLoading.showHashLoader(loading)
       ) : (
           <div className="animated fadeIn">
-            <Table style={{ tableLayout: "fixed" }}>
-              <tbody>
-                <tr>
-                  <div style={{ width: "1100px" }}>
-                    <Card>
-                      <CardHeader>
-                        <h6>Thống kê số lượng task giao cho từng sinh viên </h6>
-                      </CardHeader>
-                      <CardBody>
-                        <div className="chart-wrapper">
-                          <Line data={line} options={options} />
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </div>
-                </tr>
-                <tr>
-                  <div style={{ width: "1100px" }}>
-                    <Card>
-                      <CardHeader>
-                        <h6>Tỉ lệ % hoàn thành task của từng sinh viên</h6>
-                      </CardHeader>
-                      <CardBody>
-                        <div className="chart-wrapper">
-                          <Bar data={bar} options={options} />
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </div>
-                </tr>
-                <tr>
-                  <td>
-                    <Card>
-                      <CardHeader>
-                        <h6>Thống kê các đánh giá của sinh viên thực tập tại doanh nghiệp</h6>
-                      </CardHeader>
-                      <CardBody>
-                        <div className="chart-wrapper">
-                          <Radar data={radar} options={options} />
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </td>
-                </tr>
-              </tbody>
-            </Table>
+            <Row>
+              <Col xs="12">
+                <Card>
+                  <CardHeader>
+                    <h6>Thống kê số lượng task giao cho từng sinh viên </h6>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="chart-wrapper">
+                      <Line data={line} options={options} />
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs="12">
+                <Card>
+                  <CardHeader>
+                    <h6>Tỉ lệ % hoàn thành task của từng sinh viên</h6>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="chart-wrapper">
+                      <Bar data={bar} options={options} />
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs="12">
+                <Card>
+                  <CardHeader>
+                    <h6>Thống kê các đánh giá của sinh viên thực tập tại doanh nghiệp</h6>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="chart-wrapper">
+                      <Radar data={radar} options={options} />
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
           </div>
         )
     );

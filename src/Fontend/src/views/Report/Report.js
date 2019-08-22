@@ -16,7 +16,7 @@ class Report extends Component {
             finalReportColor: ['lime', 'DeepSkyBlue', 'gold', 'red', 'black'],
             rate: ['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu'],
             role: '',
-            students: null,
+            students: [],
             overviewReports: null,
             overviewReportsRate: null,
             onScreenStatus: null,

@@ -1,7 +1,7 @@
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import React, { Component } from 'react';
 import { Bar, Doughnut, Line, Radar } from 'react-chartjs-2';
-import { Card, CardBody, CardHeader, Col, FormGroup, Input, Table } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, FormGroup, Input, Row } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
@@ -277,106 +277,78 @@ class SiteHr extends Component {
         SpinnerLoading.showHashLoader(loading)
       ) : (
           <div className="animated fadeIn">
-            <Table style={{ tableLayout: "fixed" }}>
-              <tbody>
-                <tr>
-                  <td>
-                    <Card>
-                      <CardHeader>
-                        <h6>Thống kê các đánh giá của sinh viên thực tập tại doanh nghiệp</h6>
-                      </CardHeader>
-                      <CardBody>
-                        <div className="chart-wrapper">
-                          <Radar data={radar} options={options} />
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </td>
-                  <td>
-                    <Card>
-                      <CardHeader>
-                        <FormGroup row>
-                          <Col md="8">
-                            <h6>Thống kê tỉ lệ về trạng thái task của sinh viên</h6>
-                          </Col>
-                          <Col md="3" style={{ width: "150px", marginLeft: "1%" }}>
-                            <Input onChange={this.handleInput} type="select" name="month" style={{ width: "110px" }}>
-                              {month && month.map((mth, i) => {
-                                return (
-                                  <option value={i}>{'Tháng ' + `${mth}`}</option>
-                                )
-                              })}
-                            </Input>
-                          </Col>
-                        </FormGroup>
-                      </CardHeader>
-                      <CardBody>
-                        <div className="chart-wrapper">
-                          <Doughnut data={doughnut} />
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </td>
-                </tr>
-                <tr>
-                  <div style={{ width: "1100px" }}>
-                    <Card>
-                      <CardHeader>
-                        <h6>Thống kê số lượng sinh viên set nguyện vọng vào công ty qua các kì</h6>
-                      </CardHeader>
-                      <CardBody>
-                        <div className="chart-wrapper">
-                          <Line data={line} options={options} />
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </div>
-                </tr>
-                <tr>
-                  <div style={{ width: "1100px" }}>
-                    <Card>
-                      <CardHeader>
-                        <h6>Thống kê số lượng sinh viên đc nhận thực tập tại doanh nghiệp qua các kì</h6>
-                        {/* <div className="card-header-actions">
+            <Row>
+              <Col xs="12" sm="6">
+                <Card>
+                  <CardHeader>
+                    <FormGroup row>
+                      <Col md="8">
+                        <h6>Thống kê tỉ lệ về trạng thái task của sinh viên</h6>
+                      </Col>
+                      <Col md="3" style={{ width: "150px", marginLeft: "1%" }}>
+                        <Input onChange={this.handleInput} type="select" name="month" style={{ width: "110px" }}>
+                          {month && month.map((mth, i) => {
+                            return (
+                              <option value={i}>{'Tháng ' + `${mth}`}</option>
+                            )
+                          })}
+                        </Input>
+                      </Col>
+                    </FormGroup>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="chart-wrapper">
+                      <Doughnut data={doughnut} />
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col xs="12" sm="6">
+                <Card>
+                  <CardHeader>
+                    <h6>Thống kê các đánh giá của sinh viên thực tập tại doanh nghiệp</h6>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="chart-wrapper">
+                      <Radar data={radar} options={options} />
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs="12">
+                <Card>
+                  <CardHeader>
+                    <h6>Thống kê số lượng sinh viên set nguyện vọng vào công ty qua các kì</h6>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="chart-wrapper">
+                      <Line data={line} options={options} />
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs="12">
+                <Card>
+                  <CardHeader>
+                    <h6>Thống kê số lượng sinh viên đc nhận thực tập tại doanh nghiệp qua các kì</h6>
+                    {/* <div className="card-header-actions">
                 <a href="http://www.chartjs.org" className="card-header-action">
                   <small className="text-muted">docs</small>
                 </a>
               </div> */}
-                      </CardHeader>
-                      <CardBody>
-                        <div className="chart-wrapper">
-                          <Bar data={bar} options={options} />
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </div>
-                </tr>
-                {/* <tr>
-                  <td>
-                    <Card>
-                      <CardHeader>
-                        <h6>Thống kê kết quả thực tập của sinh viên</h6>
-                        <div className="card-header-actions">
-                          <a href="http://www.chartjs.org" className="card-header-action">
-                            <small className="text-muted">docs</small>
-                          </a>
-                        </div>
-                        <Input type="select" style={{ width: "150px" }}>
-                          <option>SPRING2019</option>
-                          <option>SUMMER2019</option>
-                          <option>WINTER2019</option>
-                        </Input>
-                      </CardHeader>
-                      <CardBody>
-                        <div className="chart-wrapper">
-                          <Polar data={polar} options={options} />
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </td>
-                </tr> */}
-              </tbody>
-            </Table>
+                  </CardHeader>
+                  <CardBody>
+                    <div className="chart-wrapper">
+                      <Bar data={bar} options={options} />
+                    </div>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
           </div>
         )
     );

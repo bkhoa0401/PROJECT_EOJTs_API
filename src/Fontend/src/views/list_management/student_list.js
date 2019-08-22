@@ -27,7 +27,7 @@ class student_list extends Component {
             studentFeedBack: null,
             activeTab: new Array(1).fill('1'),
             // open: false,
-            students: null,
+            students: [],
             searchValue: '',
             loading: true,
             suggestedBusiness: null,

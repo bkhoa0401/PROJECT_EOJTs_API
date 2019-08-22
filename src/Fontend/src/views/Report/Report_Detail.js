@@ -194,7 +194,7 @@ class Report_Detail extends Component {
                                                     <Button outline color="primary" onClick={this.export}>Tải đánh giá</Button>
                                                     <ExcelExport
                                                         data={reportDownload}
-                                                        fileName={report.title}
+                                                        fileName={report.title + "_" + student.name.replace(/\s/g, "") + student.code}
                                                         ref={(exporter) => { this._exporter = exporter; }}
                                                     >
                                                         <ExcelExportColumnGroup title={report.title}

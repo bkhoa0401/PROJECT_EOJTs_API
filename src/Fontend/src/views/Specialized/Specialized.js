@@ -13,7 +13,7 @@ class Specialized extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            specializeds: null,
+            specializeds: [],
             loading: true,
             pageNumber: 1,
             currentPage: 0,
