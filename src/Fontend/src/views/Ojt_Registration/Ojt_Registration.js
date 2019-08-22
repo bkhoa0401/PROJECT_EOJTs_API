@@ -505,6 +505,22 @@ class Ojt_Registration extends Component {
                                         </FormGroup>
                                         <FormGroup row>
                                             <Col md="4">
+                                                <h6>Email</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.email}</label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
+                                                <h6>SĐT</h6>
+                                            </Col>
+                                            <Col xs="12" md="8">
+                                                <label>{studentDetail.phone}</label>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="4">
                                                 <h6>Chuyên ngành</h6>
                                             </Col>
                                             <Col xs="12" md="8">

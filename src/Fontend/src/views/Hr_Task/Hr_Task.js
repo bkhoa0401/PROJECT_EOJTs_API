@@ -85,11 +85,13 @@ class Hr_Task extends Component {
     async componentDidMount() {
         const { currentPage, rowsPerPage } = this.state;
         const token = localStorage.getItem('id_token');
+        let studentsNosupervisor = [];
         let role = '';
         if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
         }
+
         const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=${this.state.taskStatus}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         const numOfTask = await ApiServices.Get("/supervisor/getNumTask");
         if (numOfTask === null) {
@@ -103,6 +105,13 @@ class Hr_Task extends Component {
                 numOfTask: numOfTask,
                 role: role,
             });
+        }
+
+        if (role === 'ROLE_HR') {
+            studentsNosupervisor = await ApiServices.Get('/business/getStudentsByBusinessWithNoSupervisor');
+            if (studentsNosupervisor.length == 0) {
+                document.getElementById('btnHrCreateTask').setAttribute('disabled', 'disabled');
+            }
         }
     }
 
@@ -445,13 +454,13 @@ class Hr_Task extends Component {
                 if (student.token != null) {
                     let body = '';
                     if (statusUpdate === 4) {
-                        body = 'Trạng thái task ' + '[ ' + this.state.title + '] đã chuyển thành HOÀN THÀNH'
+                        body = 'Nhiệm vụ' + '[ ' + this.state.title + '] đã được kiểm duyệt'
                     } else {
-                        body = 'Trạng thái task ' + '[' + this.state.title + '] đã chuyển thành CẦN CHỈNH SỬA'
+                        body = 'Trạng thái nhiệm vụ' + '[' + this.state.title + '] đã chuyển thành CẦN CHỈNH SỬA'
                     }
                     const notificationDTO = {
                         data: {
-                            title: 'Trạng thái task bị thay đổi',
+                            title: 'Trạng thái task thay đổi',
                             body: body,
                             click_action: "http://localhost:3000/#/hr/invitation/new",
                             icon: "http://url-to-an-icon/icon.png"
@@ -570,7 +579,7 @@ class Hr_Task extends Component {
                                         {
                                             role === "ROLE_SUPERVISOR" ?
                                                 <Button color="primary" onClick={() => this.handleDirect('/supervisor/hr-task/create')}>Tạo nhiệm vụ mới</Button> :
-                                                <Button color="primary" onClick={() => this.handleDirect('/hr/hr-task/create')}>Tạo nhiệm vụ mới</Button>
+                                                <Button id="btnHrCreateTask" color="primary" onClick={() => this.handleDirect('/hr/hr-task/create')}>Tạo nhiệm vụ mới</Button>
                                         }
                                         <br /><br /><br />
                                         <ToastContainer />
@@ -607,7 +616,7 @@ class Hr_Task extends Component {
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
                                                         <Dropdown isOpen={this.state.dropdownApprovedOpen} toggle={() => this.toggleDropdownApproved()}>
                                                             <DropdownToggle nav caret style={{ color: "black" }}>
-                                                                Kiểm duyệt
+                                                                Đã kiểm duyệt
                                                             </DropdownToggle>
                                                             <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
                                                                 {dropdownApproved && dropdownApproved.map((approvedTask, index) => {
