@@ -17,10 +17,6 @@ class DefaultAside extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
-      logo: null,
-      role: '',
-      linkProfile: '',
       informs: null,
     }
   }
@@ -31,44 +27,15 @@ class DefaultAside extends Component {
       const decoded = decode(token);
       const email = decoded.email;
       const role = decoded.role;
-      let actor = null;
-      let username = '';
-      let logo = null;
-      let linkProfile = '';
       let informs = null;
       if (role === "ROLE_ADMIN" || role === "ROLE_STARTUP" || role === "ROLE_HEADTRAINING" || role === "ROLE_HEADMASTER") {
         if (role === "ROLE_ADMIN") {
           informs = await ApiServices.Get(`/admin/eventsReceivedNotRead`);
         }
-        actor = await ApiServices.Get(`/admin/getCurrentUser`);
-        if (actor !== null) {
-          username = actor.name;
-          logo = actor.logo;
-          linkProfile = `/account_detail`;
-        }
       } else if (role === "ROLE_HR") {
         informs = await ApiServices.Get(`/business/eventsReceivedNotRead`);
-        actor = await ApiServices.Get(`/business/getBusiness`);
-        if (actor !== null) {
-          username = actor.business_eng_name;
-          logo = actor.logo;
-          linkProfile = `/Business_Detail/${actor.email}`;
-        }
-      } else if (role === "ROLE_SUPERVISOR") {
-        let tmpActor = await ApiServices.Get(`/supervisor`);
-        actor = tmpActor.supervisor;
-        if (actor !== null) {
-          username = actor.name;
-          logo = actor.logo;
-          linkProfile = `/account_detail`;
-        }
       }
       this.setState({
-        email: email,
-        role: role,
-        username: username,
-        logo: logo,
-        linkProfile: linkProfile,
         informs: informs,
       });
     }
@@ -85,15 +52,18 @@ class DefaultAside extends Component {
   }
 
   render() {
-
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
     const { informs } = this.state;
+    var numOfIncomeMessage = 0;
+    if (informs !== null) {
+      numOfIncomeMessage = informs.length;
+    }
     // console.log(informs);
     return (
       <React.Fragment>
         <ListGroup className="list-group-accent" tag={'div'}>
-          <ListGroupItem className="list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">Thông báo đến</ListGroupItem>
+          <ListGroupItem className="list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">Thông báo đến ({numOfIncomeMessage})</ListGroupItem>
           {this.state.role === "ROLE_ADMIN" ?
             <ListGroupItem action tag="a" href={`/#/admin/InformMessage`} className="list-group-item-accent-secondary text-center font-weight-bold list-group-item-divider" style={{ fontSize: '12px', color: 'DeepSkyBlue', textDecoration: 'underline' }}>Đến trang thông báo</ListGroupItem> :
             <ListGroupItem action tag="a" href={`/#/hr/InformMessage`} className="list-group-item-accent-secondary text-center font-weight-bold list-group-item-divider" style={{ fontSize: '12px', color: 'DeepSkyBlue', textDecoration: 'underline' }}>Đến trang thông báo</ListGroupItem>

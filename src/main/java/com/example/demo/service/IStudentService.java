@@ -18,6 +18,8 @@ public interface IStudentService {
 
     List<Student> getAllStudentsBySemesterId();
 
+    List<Student> getAllStudentsBySemesterIdAndNotYetInvitation();
+
     int getSpecializedIdByEmail(String email);
 
     boolean updateInforStudent(String email, String ojective, List<Skill> skillList);

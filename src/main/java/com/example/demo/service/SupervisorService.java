@@ -5,6 +5,10 @@ import com.example.demo.dto.Student_EvaluationDTO;
 import com.example.demo.entity.*;
 import com.example.demo.repository.ISupervisorRepository;
 import com.example.demo.utils.Utils;
+import io.netty.util.internal.logging.InternalLogger;
+
+import java.util.logging.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +39,8 @@ public class SupervisorService implements ISupervisorService {
     @Autowired
     IEvaluationService iEvaluationService;
 
+    Logger log = Logger.getLogger(
+            SupervisorService.class.getName());
 
     @Override
     public Supervisor findByEmail(String email) {
@@ -71,13 +77,13 @@ public class SupervisorService implements ISupervisorService {
                 ojt_enrollment =
                         ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(emailBusiness, semesterCurrent.getId());
             }
-            if(ojt_enrollment!=null){
+            if (ojt_enrollment != null) {
                 supervisor.setBusiness(ojt_enrollment.getBusiness());
             }
             supervisor.setActive(true);
             ISupervisorRepository.save(supervisor);
 
-            if(emailBusiness!=null){
+            if (emailBusiness != null) {
                 String password = usersService.getAlphaNumericString();
 
                 Users users = new Users(supervisor.getEmail(), password);
@@ -91,6 +97,12 @@ public class SupervisorService implements ISupervisorService {
 
                 users.setRoles(roleList);
 
+                try {
+                    log.warning("Sending email to user " + supervisor.getName());
+                    usersService.sendEmailToSupervisor(supervisor.getName(), supervisor.getEmail(), password);
+                } catch (Exception e) {
+                    log.warning("Email could not be sent to user " + supervisor.getName());
+                }
                 usersService.saveUser(users);
             }
 

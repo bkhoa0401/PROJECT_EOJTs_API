@@ -31,6 +31,13 @@ class Report_Detail extends Component {
 
     async componentDidMount() {
         const token = localStorage.getItem('id_token');
+        let role = '';
+        let email = '';
+        if (token !== null) {
+            const decoded = decode(token);
+            role = decoded.role;
+            email = decoded.email;
+        }
         var param = window.location.href.split("/").pop();
         var needId = param.split('~');
         const report = await ApiServices.Get(`/supervisor/getEvaluation?id=${needId[0]}`);
@@ -43,15 +50,16 @@ class Report_Detail extends Component {
         let formatTimeEnd = timeEnd.split('-');
         report.timeEnd = formatTimeEnd[2] + "/" + formatTimeEnd[1] + "/" + formatTimeEnd[0];
         const student = await ApiServices.Get(`/student/student/${needId[1]}`);
-        let role = '';
+        let businessName = '';
         let owner = await ApiServices.Get(`/supervisor/business?email=${report.supervisor_email}`);
-        let businessName = owner.business_name;
+        if (owner !== null) {
+            businessName = owner.business_name;
+        } else {
+            owner = await ApiServices.Get("/business/getBusiness");
+            businessName = owner.business_name;
+        }
         let actor = await ApiServices.Get(`/supervisor/supervisor?email=${report.supervisor_email}`);
         let supervisorName = actor.name;
-        if (token !== null) {
-            const decoded = decode(token);
-            role = decoded.role;
-        }
         // if (role === 'ROLE_SUPERVISOR') {
         //     owner = await ApiServices.Get(`/supervisor`);
         //     businessName = owner.business.business_name;

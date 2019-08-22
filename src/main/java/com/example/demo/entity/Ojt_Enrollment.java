@@ -62,7 +62,7 @@ public class Ojt_Enrollment implements Serializable{
     @Enumerated(EnumType.STRING)
     @Check(constraints = "status IN ('DEVELOPER' ,'TESTER')")
     @Column(name = "positionIntern")
-    private PositionIntern positionIntern = PositionIntern.DEVELOPER;
+    private PositionIntern positionIntern ;
 
     public Ojt_Enrollment() {
     }
