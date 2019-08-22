@@ -301,18 +301,22 @@ class student_list extends Component {
         if (value == 0) {
             filterStudentTaskList = listStudentTask;
         } else if (value == 1) {
+          if(listStudentTask!=null) {
             for (let index = 0; index < listStudentTask.length; index++) {
-                if (listStudentTask[index].status === "APPROVED") {
-                    console.log(listStudentTask[index].status === "APPROVED");
-                    filterStudentTaskList.push(listStudentTask[index]);
-                }
+              if (listStudentTask[index].status === "APPROVED") {
+                console.log(listStudentTask[index].status === "APPROVED");
+                filterStudentTaskList.push(listStudentTask[index]);
+              }
             }
+          }
         } else if (value == 2) {
+          if(listStudentTask!=null) {
             for (let index = 0; index < listStudentTask.length; index++) {
-                if (listStudentTask[index].status !== "APPROVED") {
-                    filterStudentTaskList.push(listStudentTask[index]);
-                }
+              if (listStudentTask[index].status !== "APPROVED") {
+                filterStudentTaskList.push(listStudentTask[index]);
+              }
             }
+          }
         }
         // console.log(value);
         // console.log(filterStudentTaskList);
