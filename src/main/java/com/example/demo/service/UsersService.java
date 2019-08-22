@@ -44,13 +44,31 @@ public class UsersService implements IUsersService {
     private RedisTemplate<Object, Object> template;
 
     @Override
-    public void sendEmail(String name, String mail, String password) throws Exception {
+    public boolean sendEmail(String name, String mail, String password) {
+        try {
+            MimeMessage message = sender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+
+            helper.setTo(mail);
+            helper.setText("Hi " + name + "," + "welcome you to my system.\nYour password are : " + password + "\nThanks and Regards");
+            helper.setSubject("[THÔNG BÁO]");
+
+            sender.send(message);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public void sendEmailToSupervisor(String name, String email, String password) throws Exception {
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
-        helper.setTo(mail);
-        helper.setText("Hi " + name + ",\n" + "welcome you to my system.\nYour password are : " + password + "\nThanks and Regards");
-        helper.setSubject("[TEST EOJTs]");
+        helper.setTo(email);
+        helper.setText("Hi " + name + "," + "welcome you to my system.\nYour password are : " + password + "\n.You are appointed " +
+                "as a supervisor for internship management at the company this semester.\nThanks and Regards");
+        helper.setSubject("[THÔNG BÁO]");
 
         sender.send(message);
     }
@@ -63,7 +81,7 @@ public class UsersService implements IUsersService {
         helper.setTo(mail);
         helper.setText("Xin chào " + name + " , đã tới kì OJT mới. Vui lòng sử dụng tài khoản kì vừa rồi để tiếp tục sử dụng hệ thống" +
                 ". Chúc bạn có kì OJT thật tốt và nhiều thành công! \nThanks and Regards");
-        helper.setSubject("[Thông báo]");
+        helper.setSubject("[THÔNG BÁO]");
 
         sender.send(message);
     }
@@ -75,8 +93,8 @@ public class UsersService implements IUsersService {
 
         helper.setTo(mail);
         helper.setText("Xin chào " + name + " , đã tới kì OJT mới. Vui lòng sử dụng tài khoản kì vừa rồi để tiếp tục sử dụng hệ thống" +
-                ". Chúc công ty "+ name + " có kì OJT mới thật tốt và nhiều thành công! \nThanks and Regards");
-        helper.setSubject("[Thông báo]");
+                ". Chúc công ty " + name + " có kì OJT mới thật tốt và nhiều thành công! \nThanks and Regards");
+        helper.setSubject("[THÔNG BÁO]");
 
         sender.send(message);
     }
@@ -155,15 +173,15 @@ public class UsersService implements IUsersService {
         List<Role> roleList = users.getRoles();
         for (int i = 0; i < roleList.size(); i++) {
             Role role = roleList.get(i);
-           // if (role.getDescription().equals("ROLE_STUDENT")) {
-            if (role.getId()==2) {
+            // if (role.getDescription().equals("ROLE_STUDENT")) {
+            if (role.getId() == 2) {
                 List<Users> usersList = (List<Users>) values.get("ROLE_STUDENTusers");
                 if (usersList != null) {
                     usersList.add(users);
                     values.set("ROLE_STUDENTusers", usersList);
                 }
-            //} else if (role.getDescription().equals("ROLE_HR")) {
-            } else if (role.getId()==3) {
+                //} else if (role.getDescription().equals("ROLE_HR")) {
+            } else if (role.getId() == 3) {
                 List<Users> usersList = (List<Users>) values.get("ROLE_HRusers");
                 if (usersList != null) {
                     usersList.add(users);
@@ -207,7 +225,7 @@ public class UsersService implements IUsersService {
                     usersList.remove(index);
 
                     users.setActive(isActive);
-                    usersList.add(index,users);
+                    usersList.add(index, users);
                     values.set("ROLE_STUDENTusers", usersList);
                 }
             } else if (role.getDescription().equals("ROLE_HR")) {
@@ -217,7 +235,7 @@ public class UsersService implements IUsersService {
                     usersList.remove(index);
 
                     users.setActive(isActive);
-                    usersList.add(index,users);
+                    usersList.add(index, users);
                     values.set("ROLE_HRusers", usersList);
                 }
             }

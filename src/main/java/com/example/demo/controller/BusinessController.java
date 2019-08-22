@@ -86,9 +86,12 @@ public class BusinessController {
                 listBusinessDTO.get(i).getSkillDTOList().get(j).setSkill(skill);
             }
         }
-        for (int i = 0; i < listBusinessDTO.size(); i++) {
-            businessImportFileService.insertBusiness(listBusinessDTO.get(i));
+
+        boolean isSendMail = businessImportFileService.insertBusiness(listBusinessDTO);
+        if (isSendMail == false) {
+            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
+
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -128,12 +131,16 @@ public class BusinessController {
         business.setOjt_enrollments(ojtEnrollmentList);
 
         try {
-            businessService.saveBusiness(business);
+            Business businessIsExisted=businessService.getBusinessByEmail(business.getEmail());
+            if(businessIsExisted==null){
+                businessService.saveBusiness(business);
 
-            if (usersService.saveUser(users)) {
-                usersService.sendEmail(business.getBusiness_name(), users.getEmail(), users.getPassword());
+                if (usersService.saveUser(users)) {
+                    usersService.sendEmail(business.getBusiness_name(), users.getEmail(), users.getPassword());
+                }
+            }else{
+                return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
             }
-
         } catch (PersistenceException ex) {
             ex.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -184,7 +191,7 @@ public class BusinessController {
         List<Business> searchList = new ArrayList<>();
         for (int i = 0; i < businessList.size(); i++) {
             if (businessList.get(i).getBusiness_name().toLowerCase().contains(valueSearch.toLowerCase()) ||
-                    businessList.get(i).getBusiness_eng_name().toLowerCase().contains(valueSearch.toLowerCase())){
+                    businessList.get(i).getBusiness_eng_name().toLowerCase().contains(valueSearch.toLowerCase())) {
                 searchList.add(businessList.get(i));
             }
         }
@@ -324,12 +331,12 @@ public class BusinessController {
         invitationService.createInvitation(invitation);
 
         ValueOperations values = template.opsForValue();
-        List<Student> studentList = (List<Student>) values.get("students");
+        List<Student> studentList = (List<Student>) values.get("studentsIsInvitation");
 
         if (studentList != null) {
             int position = checkPositionStudent(studentList, student);
             studentList.remove(position);
-            values.set("students",studentList);
+            values.set("studentsIsInvitation", studentList);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -640,10 +647,10 @@ public class BusinessController {
     public ResponseEntity<List<EventDTO>> getAllEventOfBusinessSent() {
         String email = getEmailFromToken();
         List<Event> events = eventService.getEventListOfBusiness(email);
-        List<Event> finalBusinessListEvent = eventService.getEventListSent(events);
-        Collections.sort(finalBusinessListEvent);
-        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalBusinessListEvent);
-        if (eventDTOList != null) {
+        if (events != null) {
+            List<Event> finalBusinessListEvent = eventService.getEventListSent(events);
+            Collections.sort(finalBusinessListEvent);
+            List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalBusinessListEvent);
             return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -654,10 +661,10 @@ public class BusinessController {
     public ResponseEntity<List<EventDTO>> getAllEventOfBusinessReceived() {
         String email = getEmailFromToken();
         List<Event> businessReceivedEvents = eventService.getEventListOfBusiness(email);
-        List<Event> finalListEvent = eventService.getEventListReceived(businessReceivedEvents);
-        Collections.sort(finalListEvent);
-        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEvent);
-        if (eventDTOList != null) {
+        if (businessReceivedEvents != null) {
+            List<Event> finalListEvent = eventService.getEventListReceived(businessReceivedEvents);
+            Collections.sort(finalListEvent);
+            List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEvent);
             return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -668,11 +675,11 @@ public class BusinessController {
     public ResponseEntity<List<EventDTO>> getAllEventOfBusinessReceivedNotRead() {
         String email = getEmailFromToken();
         List<Event> businessReceivedEvents = eventService.getEventListOfBusiness(email);
-        List<Event> finalListEvent = eventService.getEventListReceived(businessReceivedEvents);
-        List<Event> finalListEventNotRead = eventService.getEventListNotRead(finalListEvent);
-        Collections.sort(finalListEventNotRead);
-        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventNotRead);
-        if (eventDTOList != null) {
+        if (businessReceivedEvents != null) {
+            List<Event> finalListEvent = eventService.getEventListReceived(businessReceivedEvents);
+            List<Event> finalListEventNotRead = eventService.getEventListNotRead(finalListEvent);
+            Collections.sort(finalListEventNotRead);
+            List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventNotRead);
             return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
@@ -683,11 +690,11 @@ public class BusinessController {
     public ResponseEntity<List<EventDTO>> getAllEventOfBusinessReceivedRead() {
         String email = getEmailFromToken();
         List<Event> businessReceivedEvents = eventService.getEventListOfBusiness(email);
-        List<Event> finalListEvent = eventService.getEventListReceived(businessReceivedEvents);
-        List<Event> finalListEventRead = eventService.getEventListRead(finalListEvent);
-        Collections.sort(finalListEventRead);
-        List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventRead);
-        if (eventDTOList != null) {
+        if (businessReceivedEvents != null) {
+            List<Event> finalListEvent = eventService.getEventListReceived(businessReceivedEvents);
+            List<Event> finalListEventRead = eventService.getEventListRead(finalListEvent);
+            Collections.sort(finalListEventRead);
+            List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventRead);
             return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);

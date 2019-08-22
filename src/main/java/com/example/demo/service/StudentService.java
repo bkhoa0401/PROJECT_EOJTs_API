@@ -121,12 +121,36 @@ public class StudentService implements IStudentService {
             Semester semester = semesterService.getSemesterCurrent();
             List<Ojt_Enrollment> ojt_enrollmentList =
                     ojt_enrollmentService.getOjt_EnrollmentsBySemesterIdAndStudentEmailNotNull(semester.getId());
+            if (ojt_enrollmentList != null && ojt_enrollmentList.size()!=0) {
+                for (int i = 0; i < ojt_enrollmentList.size(); i++) {
+                    Student student = ojt_enrollmentList.get(i).getStudent();
+                    studentList.add(student);
+                }
+                if (studentList != null) {
+                    values.set("students", studentList);
+                    return studentList;
+                }
+            }
+        }
+        return studentList;
+    }
+
+    @Override
+    public List<Student> getAllStudentsBySemesterIdAndNotYetInvitation() {
+        ValueOperations values = template.opsForValue();
+        List<Student> studentList = (List<Student>) values.get("studentsIsInvitation");
+
+        if (studentList == null) {
+            studentList = new ArrayList<>();
+            Semester semester = semesterService.getSemesterCurrent();
+            List<Ojt_Enrollment> ojt_enrollmentList =
+                    ojt_enrollmentService.getOjt_EnrollmentsBySemesterIdAndStudentEmailNotNull(semester.getId());
             for (int i = 0; i < ojt_enrollmentList.size(); i++) {
                 Student student = ojt_enrollmentList.get(i).getStudent();
                 studentList.add(student);
             }
             if (studentList != null) {
-                values.set("students", studentList);
+                values.set("studentsIsInvitation", studentList);
                 return studentList;
             }
         }
@@ -507,6 +531,10 @@ public class StudentService implements IStudentService {
             Student student = student_answers.get(i).getStudent();
             //phải có super trc khi có survey
             Business business = student.getSupervisor().getBusiness();
+
+            if (business == null) {
+                business = businessService.getBusinessByEmail(student.getSupervisor().getEmail());
+            }
             Answer answer = student_answers.get(i).getAnswer();
             Question question = answer.getQuestion();
 
@@ -676,8 +704,8 @@ public class StudentService implements IStudentService {
             if (studentIsExisted != null) {
                 studentListIsExisted.add(studentIsExisted);
             } else if (studentIsExisted == null) {
-                Student studentParameter=new Student();
-                Student studentIsParse=parseStudentImportFileToStudent(student,studentParameter);
+                Student studentParameter = new Student();
+                Student studentIsParse = parseStudentImportFileToStudent(student, studentParameter);
                 studentNotYet.add(studentIsParse);
             }
         }
@@ -687,7 +715,7 @@ public class StudentService implements IStudentService {
         return existedAndNotYets;
     }
 
-    public Student parseStudentImportFileToStudent(Student_ImportFileDTO student_importFileDTO,Student student){
+    public Student parseStudentImportFileToStudent(Student_ImportFileDTO student_importFileDTO, Student student) {
         student.setCode(student_importFileDTO.getCode());
         student.setName(student_importFileDTO.getName());
         student.setDob(student_importFileDTO.getDob());
@@ -702,7 +730,7 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public void handlerStudentIsExisted(List<Student> students,String semesterName) {
+    public void handlerStudentIsExisted(List<Student> students, String semesterName) {
         try {
             Semester semester = semesterService.getSemesterByName(semesterName);
 
