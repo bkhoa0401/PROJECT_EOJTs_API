@@ -13,7 +13,7 @@ class Ojt_Registration extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            students: null,
+            students: [],
             business_name: '',
             business_eng_name: '',
             searchValue: '',
@@ -76,7 +76,7 @@ class Ojt_Registration extends Component {
 
     handleInput = async (event) => {
         const { name, value } = event.target;
-        if (value === "") {
+        if (value === "" || !value.trim()) {
             await this.setState({
                 [name]: value.substr(0, 20),
                 isSearching: false,
@@ -315,123 +315,124 @@ class Ojt_Registration extends Component {
                                         <i className="fa fa-align-justify"></i> Danh sách sinh viên đăng kí thực tập tại công ty
                                     </CardHeader>
                                     <CardBody>
-                                        <br /><br /><br />
-                                        <nav className="navbar navbar-light bg-light justify-content-between">
-                                            <form className="form-inline">
-                                                <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-                                            </form>
+                                        <div>
+                                            <nav className="navbar navbar-light bg-light justify-content-between">
+                                                <form className="form-inline">
+                                                    <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                                </form>
 
-                                        </nav>
-                                        <Table responsive striped>
-                                            <thead>
-                                                <tr>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>MSSV</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Họ và tên</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                                                        <Dropdown isOpen={this.state.dropdownSpecializedOpen} toggle={() => this.toggleDropdownSpecialized()}>
-                                                            <DropdownToggle nav caret style={{ color: "black" }}>
-                                                                Chuyên ngành
+                                            </nav>
+                                            <Table responsive striped>
+                                                <thead>
+                                                    <tr>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>MSSV</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Họ và tên</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                            <Dropdown isOpen={this.state.dropdownSpecializedOpen} toggle={() => this.toggleDropdownSpecialized()}>
+                                                                <DropdownToggle nav caret style={{ color: "black" }}>
+                                                                    Chuyên ngành
                                                             </DropdownToggle>
-                                                            <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
-                                                                <DropdownItem onClick={() => this.handleSelectSpecialized(-1)}>Tổng</DropdownItem>
-                                                                {dropdownSpecialized && dropdownSpecialized.map((specialized, index) => {
-                                                                    return (
-                                                                        <DropdownItem onClick={() => this.handleSelectSpecialized(specialized.id)}>{specialized.name}</DropdownItem>
-                                                                    )
-                                                                })
-                                                                }
-                                                            </DropdownMenu>
-                                                        </Dropdown>
-                                                    </th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Đã gửi lời mời</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nguyện vọng</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {isSearching === false ?
-                                                    (students && students.map((student, index) => {
-
-                                                        let email = student.email;
-                                                        let numberOfOption = 'N/A';
-
-                                                        if (student.option1 === business_eng_name && student.option2 !== business_eng_name) {
-                                                            numberOfOption = "1";
-                                                        } else if (student.option2 === business_eng_name && student.option1 !== business_eng_name) {
-                                                            numberOfOption = "2";
-                                                        } else {
-                                                            numberOfOption = "1, 2";
-                                                            students.splice(index, 1);
-                                                        }
-
-
-                                                        return (
-                                                            <tr key={index}>
-                                                                <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
-                                                                <td style={{ textAlign: "center" }}>{student.code}</td>
-                                                                <td style={{ textAlign: "center" }}>{student.name}</td>
-                                                                <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {listInvitation && listInvitation[index] === true ?
-                                                                        <Badge color="success" style={{ fontSize: '12px' }}>CÓ</Badge> :
-                                                                        <Badge color="danger" style={{ fontSize: '12px' }}>KHÔNG</Badge>
+                                                                <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
+                                                                    <DropdownItem onClick={() => this.handleSelectSpecialized(-1)}>Tổng</DropdownItem>
+                                                                    {dropdownSpecialized && dropdownSpecialized.map((specialized, index) => {
+                                                                        return (
+                                                                            <DropdownItem onClick={() => this.handleSelectSpecialized(specialized.id)}>{specialized.name}</DropdownItem>
+                                                                        )
+                                                                    })
                                                                     }
-                                                                </td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    <strong>{numberOfOption}</strong>
-                                                                </td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {/* <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}><i className="fa fa-eye"></i></Button> */}
-                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa fa-eye"></i></Button>
-                                                                    <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(student, numberOfOption, false)}><i className="fa cui-ban"></i></Button>
-                                                                    <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(student, numberOfOption, true)}><i className="fa cui-circle-check"></i></Button>
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    })) :
-                                                    (searchingList && searchingList.map((student, index) => {
+                                                                </DropdownMenu>
+                                                            </Dropdown>
+                                                        </th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Đã gửi lời mời</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nguyện vọng</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {isSearching === false ?
+                                                        (students && students.map((student, index) => {
 
-                                                        let email = student.email;
-                                                        let numberOfOption = 'N/A';
+                                                            let email = student.email;
+                                                            let numberOfOption = 'N/A';
 
-                                                        if (student.option1 === business_eng_name && student.option2 !== business_eng_name) {
-                                                            numberOfOption = "1";
-                                                        } else if (student.option2 === business_eng_name && student.option1 !== business_eng_name) {
-                                                            numberOfOption = "2";
-                                                        } else {
-                                                            numberOfOption = "1, 2";
-                                                            searchingList.splice(index, 1);
-                                                        }
+                                                            if (student.option1 === business_eng_name && student.option2 !== business_eng_name) {
+                                                                numberOfOption = "1";
+                                                            } else if (student.option2 === business_eng_name && student.option1 !== business_eng_name) {
+                                                                numberOfOption = "2";
+                                                            } else {
+                                                                numberOfOption = "1, 2";
+                                                                students.splice(index, 1);
+                                                            }
 
 
-                                                        return (
-                                                            <tr key={index}>
-                                                                <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                                <td style={{ textAlign: "center" }}>{student.code}</td>
-                                                                <td style={{ textAlign: "center" }}>{student.name}</td>
-                                                                <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {listInvitation && listInvitation[index] === true ?
-                                                                        <Badge color="success" style={{ fontSize: '12px' }}>Có</Badge> :
-                                                                        <Badge color="danger" style={{ fontSize: '12px' }}>Không</Badge>
-                                                                    }
-                                                                </td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    <strong>{numberOfOption}</strong>
-                                                                </td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {/* <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}><i className="fa fa-eye"></i></Button> */}
-                                                                    <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa fa-eye"></i></Button>
-                                                                    <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(student, numberOfOption, false)}><i className="fa cui-ban"></i></Button>
-                                                                    <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(student, numberOfOption, true)}><i className="fa cui-circle-check"></i></Button>
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    }))
-                                                }
-                                            </tbody>
-                                        </Table>
+                                                            return (
+                                                                <tr key={index}>
+                                                                    <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
+                                                                    <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                                    <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                                    <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {listInvitation && listInvitation[index] === true ?
+                                                                            <Badge color="success" style={{ fontSize: '12px' }}>CÓ</Badge> :
+                                                                            <Badge color="danger" style={{ fontSize: '12px' }}>KHÔNG</Badge>
+                                                                        }
+                                                                    </td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        <strong>{numberOfOption}</strong>
+                                                                    </td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {/* <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}><i className="fa fa-eye"></i></Button> */}
+                                                                        <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa fa-eye"></i></Button>
+                                                                        <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(student, numberOfOption, false)}><i className="fa cui-ban"></i></Button>
+                                                                        <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(student, numberOfOption, true)}><i className="fa cui-circle-check"></i></Button>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })) :
+                                                        (searchingList && searchingList.map((student, index) => {
+
+                                                            let email = student.email;
+                                                            let numberOfOption = 'N/A';
+
+                                                            if (student.option1 === business_eng_name && student.option2 !== business_eng_name) {
+                                                                numberOfOption = "1";
+                                                            } else if (student.option2 === business_eng_name && student.option1 !== business_eng_name) {
+                                                                numberOfOption = "2";
+                                                            } else {
+                                                                numberOfOption = "1, 2";
+                                                                searchingList.splice(index, 1);
+                                                            }
+
+
+                                                            return (
+                                                                <tr key={index}>
+                                                                    <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                                    <td style={{ textAlign: "center" }}>{student.code}</td>
+                                                                    <td style={{ textAlign: "center" }}>{student.name}</td>
+                                                                    <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {listInvitation && listInvitation[index] === true ?
+                                                                            <Badge color="success" style={{ fontSize: '12px' }}>Có</Badge> :
+                                                                            <Badge color="danger" style={{ fontSize: '12px' }}>Không</Badge>
+                                                                        }
+                                                                    </td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        <strong>{numberOfOption}</strong>
+                                                                    </td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {/* <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/student/${student.email}`)}><i className="fa fa-eye"></i></Button> */}
+                                                                        <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa fa-eye"></i></Button>
+                                                                        <Button id={'r' + index} type="submit" style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(student, numberOfOption, false)}><i className="fa cui-ban"></i></Button>
+                                                                        <Button id={'a' + index} type="submit" style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(student, numberOfOption, true)}><i className="fa cui-circle-check"></i></Button>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        }))
+                                                    }
+                                                </tbody>
+                                            </Table>
+                                        </div>
                                         <ToastContainer />
                                         {isSearching === false ?
                                             <Row>

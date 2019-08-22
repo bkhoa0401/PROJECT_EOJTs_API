@@ -24,7 +24,7 @@ class Official_List extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      students: null,
+      students: [],
       supervisors: [],
       supervisors_FirstBlank: [],
       listDataEdited: [],
@@ -34,12 +34,12 @@ class Official_List extends Component {
       sortDirection: 'desc',
       loading: true,
 
-      suggestedStudents: null,
+      suggestedStudents: [],
 
       colorTextSelect: ['Black', 'White'],
       colorBackSelect: ['White', 'DeepSkyBlue'],
       // listStudentEmail: [],
-      preListStudent: [],
+      preListStudent: null,
       isSelect: [],
       preSupervisor: '',
       modal: false,
@@ -119,7 +119,7 @@ class Official_List extends Component {
 
   handleInputSearch = async (event) => {
     const { name, value } = event.target;
-    if (value === "") {
+    if (value === "" || !value.trim()) {
       await this.setState({
         [name]: value.substr(0, 20),
         isSearching: false,
@@ -283,13 +283,22 @@ class Official_List extends Component {
   handleSelect = (studentEmail) => {
     let suggestedStudents = this.state.suggestedStudents;
     let isSelected = -1;
-    let preListStudent = this.state.preListStudent;
+    let preListStudent = [];
     let isSelect = this.state.isSelect;
-    for (let index = 0; index < preListStudent.length; index++) {
-      if (preListStudent[index].email === studentEmail) {
-        isSelected = index;
+    console.log(isSelect);
+    if (this.state.preListStudent.length > 0) {
+      preListStudent = this.state.preListStudent;
+      for (let index = 0; index < preListStudent.length; index++) {
+        // console.log("2." + preListStudent[index].email);
+        // console.log("3." + studentEmail);
+        if (preListStudent[index].email === studentEmail) {
+          isSelected = index;
+        }
       }
     }
+    // console.log("1." + preListStudent);
+    // let isSelect = this.state.isSelect;
+
     if (isSelected !== -1) {
       preListStudent.splice(isSelected, 1);
     }
@@ -299,7 +308,7 @@ class Official_List extends Component {
           isSelect[index] = 0;
         } else {
           isSelect[index] = 1;
-          preListStudent[index] = suggestedStudents[index];
+          preListStudent.push(suggestedStudents[index]);
         }
       }
     }
@@ -334,6 +343,7 @@ class Official_List extends Component {
         preListStudent: [],
         preSupervisor: this.state.supervisors_FirstBlank_Obj,
       });
+      // console.log(this.state.preListStudent);
     } else {
       this.setState({
         modal: !this.state.modal,
@@ -716,10 +726,10 @@ class Official_List extends Component {
     const { pageNumber, currentPage, rowsPerPage } = this.state;
     const { filterStudentTaskList, stateNo, stateTask } = this.state;
     const { numOfStudent, dropdownSpecialized, isSearching, searchingList } = this.state;
-    if (supervisors_FirstBlank != null) {
-      console.log(supervisors_FirstBlank);
-    }
-    console.log(students);
+    // if (supervisors_FirstBlank != null) {
+    //   console.log(supervisors_FirstBlank);
+    // }
+    // console.log(suggestedStudents);
     return (
       loading.toString() === 'true' ? (
         SpinnerLoading.showHashLoader(loading)
@@ -738,11 +748,12 @@ class Official_List extends Component {
                         <Button color="primary" outline onClick={() => this.toggleModal()}>Phân nhóm</Button>
                       </FormGroup>
                     }
-                    <nav className="navbar navbar-light bg-light justify-content-between">
-                      <form className="form-inline">
-                        <input onChange={this.handleInputSearch} name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
-                      </form>
-                      {/* <div style={{ marginRight: "70px" }}>
+                    <div>
+                      <nav className="navbar navbar-light bg-light justify-content-between">
+                        <form className="form-inline">
+                          <input onChange={this.handleInputSearch} name="searchValue" className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
+                        </form>
+                        {/* <div style={{ marginRight: "70px" }}>
                         <b>Sắp xếp theo: </b>
                         &nbsp;&nbsp;&nbsp;
                         <select>
@@ -751,52 +762,52 @@ class Official_List extends Component {
                           <option value="olala">olala 3</option>
                         </select>
                       </div> */}
-                    </nav>
+                      </nav>
 
-                    <Table responsive striped>
-                      <thead>
-                        <tr>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>MSSV</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Họ và tên</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Email</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                            <Dropdown isOpen={this.state.dropdownSpecializedOpen} toggle={() => this.toggleDropdownSpecialized()}>
-                              <DropdownToggle nav caret style={{ color: "black" }}>
-                                Chuyên ngành
+                      <Table responsive striped>
+                        <thead>
+                          <tr>
+                            <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                            <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>MSSV</th>
+                            <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Họ và tên</th>
+                            <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Email</th>
+                            <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                              <Dropdown isOpen={this.state.dropdownSpecializedOpen} toggle={() => this.toggleDropdownSpecialized()}>
+                                <DropdownToggle nav caret style={{ color: "black" }}>
+                                  Chuyên ngành
                               </DropdownToggle>
-                              <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
-                                <DropdownItem onClick={() => this.handleSelectSpecialized(-1)}>Tổng</DropdownItem>
-                                {dropdownSpecialized && dropdownSpecialized.map((specialized, index) => {
-                                  return (
-                                    <DropdownItem onClick={() => this.handleSelectSpecialized(specialized.id)}>{specialized.name}</DropdownItem>
-                                  )
-                                })
-                                }
-                              </DropdownMenu>
-                            </Dropdown>
-                          </th>
-                          {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
-                          {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>GPA</th>
+                                <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
+                                  <DropdownItem onClick={() => this.handleSelectSpecialized(-1)}>Tổng</DropdownItem>
+                                  {dropdownSpecialized && dropdownSpecialized.map((specialized, index) => {
+                                    return (
+                                      <DropdownItem onClick={() => this.handleSelectSpecialized(specialized.id)}>{specialized.name}</DropdownItem>
+                                    )
+                                  })
+                                  }
+                                </DropdownMenu>
+                              </Dropdown>
+                            </th>
+                            {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}><div onClick={() => this.handleSort('Chuyên ngành')}>Chuyên ngành</div></th> */}
+                            {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>GPA</th>
                       <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>CV</th>
                       <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Bảng điểm</th> */}
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Người hướng dẫn</th>
-                          <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {isSearching === false ?
-                          (
-                            students && students.map((student, index) => {
-                              const linkDownCV = `http://localhost:8000/api/file/downloadFile/${student.resumeLink}`;
-                              return (
-                                <tr key={index}>
-                                  <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
-                                  <td style={{ textAlign: "center" }}>{student.code}</td>
-                                  <td style={{ textAlign: "center" }}>{student.name}</td>
-                                  <td style={{ textAlign: "center" }}>{student.email}</td>
-                                  <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                                  {/* <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                            <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Người hướng dẫn</th>
+                            <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {isSearching === false ?
+                            (
+                              students && students.map((student, index) => {
+                                const linkDownCV = `http://localhost:8000/api/file/downloadFile/${student.resumeLink}`;
+                                return (
+                                  <tr key={index}>
+                                    <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
+                                    <td style={{ textAlign: "center" }}>{student.code}</td>
+                                    <td style={{ textAlign: "center" }}>{student.name}</td>
+                                    <td style={{ textAlign: "center" }}>{student.email}</td>
+                                    <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                    {/* <td style={{ textAlign: "center" }}>{student.gpa}</td>
                             <td style={{ textAlign: "center" }}>
                               {
                                 student.resumeLink && student.resumeLink ? (
@@ -813,50 +824,50 @@ class Official_List extends Component {
                                   (<label>N/A</label>)
                               }
                             </td> */}
-                                  <td style={{ textAlign: "center" }}>
-                                    {
-                                      student.supervisor === null ? (
+                                    <td style={{ textAlign: "center" }}>
+                                      {
+                                        student.supervisor === null ? (
 
-                                        <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="withBlank">
-                                          {supervisors_FirstBlank && supervisors_FirstBlank.map((supervisor, i) => {
-                                            return (
-                                              <option value={i}>{supervisor.name}</option>
-                                            )
-                                          })}
-                                        </Input>
-                                      ) : (
-                                          <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="supervisor">
-                                            {supervisors && supervisors.map((supervisor, i) => {
+                                          <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="withBlank">
+                                            {supervisors_FirstBlank && supervisors_FirstBlank.map((supervisor, i) => {
                                               return (
-                                                <option value={i} selected={student.supervisor.email === supervisor.email}>{supervisor.name}</option>
+                                                <option value={i}>{supervisor.name}</option>
                                               )
                                             })}
                                           </Input>
-                                        )
-                                    }
+                                        ) : (
+                                            <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="supervisor">
+                                              {supervisors && supervisors.map((supervisor, i) => {
+                                                return (
+                                                  <option value={i} selected={student.supervisor.email === supervisor.email}>{supervisor.name}</option>
+                                                )
+                                              })}
+                                            </Input>
+                                          )
+                                      }
 
-                                  </td>
-                                  <td style={{ textAlign: "center" }}>
-                                    {/* <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}><i className="fa fa-eye"></i></Button> */}
-                                    <Button color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa fa-eye"></i></Button>
-                                    &nbsp;&nbsp;
+                                    </td>
+                                    <td style={{ textAlign: "center" }}>
+                                      {/* <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}><i className="fa fa-eye"></i></Button> */}
+                                      <Button color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa fa-eye"></i></Button>
+                                      &nbsp;&nbsp;
                                   {/* <Button style={{ width: '100px' }} color="success" onClick={() => this.handleDirect(`/details_task/${student.email}`)}><i className="fa cui-task"></i></Button> */}
-                                    <Button color="success" onClick={() => this.toggleModalTask(student)}><i className="fa cui-task"></i></Button>
-                                  </td>
-                                </tr>
-                              )
-                            })
-                          ) : (
-                            searchingList && searchingList.map((student, index) => {
-                              const linkDownCV = `http://localhost:8000/api/file/downloadFile/${student.resumeLink}`;
-                              return (
-                                <tr key={index}>
-                                  <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
-                                  <td style={{ textAlign: "center" }}>{student.code}</td>
-                                  <td style={{ textAlign: "center" }}>{student.name}</td>
-                                  <td style={{ textAlign: "center" }}>{student.email}</td>
-                                  <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
-                                  {/* <td style={{ textAlign: "center" }}>{student.gpa}</td>
+                                      <Button color="success" onClick={() => this.toggleModalTask(student)}><i className="fa cui-task"></i></Button>
+                                    </td>
+                                  </tr>
+                                )
+                              })
+                            ) : (
+                              searchingList && searchingList.map((student, index) => {
+                                const linkDownCV = `http://localhost:8000/api/file/downloadFile/${student.resumeLink}`;
+                                return (
+                                  <tr key={index}>
+                                    <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
+                                    <td style={{ textAlign: "center" }}>{student.code}</td>
+                                    <td style={{ textAlign: "center" }}>{student.name}</td>
+                                    <td style={{ textAlign: "center" }}>{student.email}</td>
+                                    <td style={{ textAlign: "center" }}>{student.specialized.name}</td>
+                                    {/* <td style={{ textAlign: "center" }}>{student.gpa}</td>
                               <td style={{ textAlign: "center" }}>
                                 {
                                   student.resumeLink && student.resumeLink ? (
@@ -873,43 +884,44 @@ class Official_List extends Component {
                                     (<label>N/A</label>)
                                 }
                               </td> */}
-                                  <td style={{ textAlign: "center" }}>
-                                    {
-                                      student.supervisor === null ? (
+                                    <td style={{ textAlign: "center" }}>
+                                      {
+                                        student.supervisor === null ? (
 
-                                        <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="withBlank">
-                                          {supervisors_FirstBlank && supervisors_FirstBlank.map((supervisor, i) => {
-                                            return (
-                                              <option value={i}>{supervisor.name}</option>
-                                            )
-                                          })}
-                                        </Input>
-                                      ) : (
-                                          <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="supervisor">
-                                            {supervisors && supervisors.map((supervisor, i) => {
+                                          <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="withBlank">
+                                            {supervisors_FirstBlank && supervisors_FirstBlank.map((supervisor, i) => {
                                               return (
-                                                <option value={i} selected={student.supervisor.email === supervisor.email}>{supervisor.name}</option>
+                                                <option value={i}>{supervisor.name}</option>
                                               )
                                             })}
                                           </Input>
-                                        )
-                                    }
+                                        ) : (
+                                            <Input onChange={e => { this.handleInputSupervisor(e, student) }} type="select" name="supervisor">
+                                              {supervisors && supervisors.map((supervisor, i) => {
+                                                return (
+                                                  <option value={i} selected={student.supervisor.email === supervisor.email}>{supervisor.name}</option>
+                                                )
+                                              })}
+                                            </Input>
+                                          )
+                                      }
 
-                                  </td>
-                                  <td style={{ textAlign: "center" }}>
-                                    {/* <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}><i className="fa fa-eye"></i></Button> */}
-                                    <Button color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa fa-eye"></i></Button>
-                                    &nbsp;&nbsp;
+                                    </td>
+                                    <td style={{ textAlign: "center" }}>
+                                      {/* <Button style={{ width: '100px', marginRight: '2px' }} color="primary" onClick={() => this.handleDirect(`/student-detail/${student.email}`)}><i className="fa fa-eye"></i></Button> */}
+                                      <Button color="primary" onClick={() => this.toggleModalDetail(student)}><i className="fa fa-eye"></i></Button>
+                                      &nbsp;&nbsp;
                                     {/* <Button style={{ width: '100px' }} color="success" onClick={() => this.handleDirect(`/details_task/${student.email}`)}><i className="fa cui-task"></i></Button> */}
-                                    <Button color="success" onClick={() => this.toggleModalTask(student)}><i className="fa cui-task"></i></Button>
-                                  </td>
-                                </tr>
-                              )
-                            })
-                          )
-                        }
-                      </tbody>
-                    </Table>
+                                      <Button color="success" onClick={() => this.toggleModalTask(student)}><i className="fa cui-task"></i></Button>
+                                    </td>
+                                  </tr>
+                                )
+                              })
+                            )
+                          }
+                        </tbody>
+                      </Table>
+                    </div>
                     <ToastContainer />
                     {isSearching === false ?
                       <Row>

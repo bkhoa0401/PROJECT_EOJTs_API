@@ -15,7 +15,7 @@ class Invitation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            students: null,
+            students: [],
             business_eng_name: '',
             searchValue: '',
             columnToSort: '',
@@ -58,7 +58,7 @@ class Invitation extends Component {
 
     handleInputSearch = async (event) => {
         const { name, value } = event.target;
-        if (value === "") {
+        if (value === "" || !value.trim()) {
             await this.setState({
                 [name]: value.substr(0, 20),
                 isSearching: false,

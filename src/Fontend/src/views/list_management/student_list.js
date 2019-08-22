@@ -27,7 +27,7 @@ class student_list extends Component {
             studentFeedBack: null,
             activeTab: new Array(1).fill('1'),
             // open: false,
-            students: null,
+            students: [],
             searchValue: '',
             loading: true,
             suggestedBusiness: null,
@@ -664,7 +664,7 @@ class student_list extends Component {
     handleInput = async (event) => {
         const { name, value } = event.target;
         console.log(value);
-        if (value === "") {
+        if (value === "" || !value.trim()) {
             // console.log(1);
             await this.setState({
                 [name]: value.substr(0, 20),
@@ -686,7 +686,7 @@ class student_list extends Component {
     handleInputTab2 = async (event) => {
         const { name, value } = event.target;
         console.log(value);
-        if (value === "") {
+        if (value === "" || !value.trim()) {
             // console.log(1);
             await this.setState({
                 [name]: value.substr(0, 20),
@@ -1640,6 +1640,7 @@ class student_list extends Component {
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>MSSV</th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Họ và tên</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Email</th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Chuyên ngành</th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nguyện vọng 1</th>
                                                 <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nguyện vọng 2</th>
@@ -1655,6 +1656,7 @@ class student_list extends Component {
                                                             <td style={{ textAlign: "center" }}>{currentPageCbAll * rowsPerPageCbAll + index + 1}</td>
                                                             <td style={{ textAlign: "center" }}>{student.student.code}</td>
                                                             <td style={{ textAlign: "center" }}>{student.student.name}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.email}</td>
                                                             <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
                                                             <td style={{ textAlign: "center" }}>{student.student.option1 === null ? 'N/A' : student.student.option1}</td>
                                                             <td style={{ textAlign: "center" }}>{student.student.option2 === null ? 'N/A' : student.student.option2}</td>
@@ -1678,6 +1680,7 @@ class student_list extends Component {
                                                             <td style={{ textAlign: "center" }}>{index + 1}</td>
                                                             <td style={{ textAlign: "center" }}>{student.student.code}</td>
                                                             <td style={{ textAlign: "center" }}>{student.student.name}</td>
+                                                            <td style={{ textAlign: "center" }}>{student.student.email}</td>
                                                             <td style={{ textAlign: "center" }}>{student.student.specialized.name}</td>
                                                             <td style={{ textAlign: "center" }}>{student.student.option1 === null ? 'N/A' : student.student.option1}</td>
                                                             <td style={{ textAlign: "center" }}>{student.student.option2 === null ? 'N/A' : student.student.option2}</td>

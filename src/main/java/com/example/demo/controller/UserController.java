@@ -107,6 +107,22 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/searchUser")
+    @ResponseBody
+    public ResponseEntity<List<Users>> searchUser(@RequestParam int type, @RequestParam String valueSearch) {
+        List<Users> usersList = userService.getAllUsersByType(type);
+        List<Users> finalList = new ArrayList<>();
+        for (int i = 0; i < usersList.size(); i++) {
+            if (usersList.get(i).getEmail().toLowerCase().contains(valueSearch.toLowerCase())) {
+                finalList.add(usersList.get(i));
+            }
+        }
+        if (usersList != null) {
+            return new ResponseEntity<List<Users>>(finalList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
 
     //get email from token
     private String getEmailFromToken() {
