@@ -4,6 +4,7 @@ import com.example.demo.config.BusinessProposedStatus;
 import com.example.demo.config.StudentStatus;
 import com.example.demo.entity.*;
 import com.example.demo.repository.IBusiness_ProposedRepository;
+import com.example.demo.repository.ISupervisorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,6 +40,9 @@ public class Business_ProposedService implements IBusiness_ProposedService {
 
     @Autowired
     IStudent_EventService iStudent_eventService;
+
+    @Autowired
+    ISupervisorRepository iSupervisorRepository;
 
     @Override
     public List<Business_Proposed> getAll() {
@@ -197,11 +201,6 @@ public class Business_ProposedService implements IBusiness_ProposedService {
             iStudent_eventService.saveStudentEvent(student_event);
         }
 
-//        }
-//        else if (status && !emailHeading.equals("headmaster@gmail.com")) {
-//            // gửi mail cho người kế tiếp
-//            iUsersService.sendEmailHeading(emailNextHeading, emailContent);
-//        }
         if (status) {
             // Xử lí logic khúc này: add vô bảng business + set ojt_enrollment
 
@@ -232,26 +231,39 @@ public class Business_ProposedService implements IBusiness_ProposedService {
             business.setBusiness_website(business_proposed.getBusiness_website());
             business.setLogo(business_proposed.getLogo());
 
-            ojt_enrollment.setBusiness(business);
-            ojt_enrollment.setSemester(semester);
-            ojtEnrollmentList.add(ojt_enrollment);
+            Ojt_Enrollment ojt_enrollmentIsExisted=
+                    iOjt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId
+                            (business_proposed.getStudent_proposed().getEmail(),semester.getId());
+
+            ojt_enrollmentIsExisted.setBusiness(business);
+            Date timeEnroll = new Date(Calendar.getInstance().getTime().getTime());
+            ojt_enrollmentIsExisted.setTimeEnroll(timeEnroll);
+            iOjt_enrollmentService.saveOjtEnrollment(ojt_enrollmentIsExisted);
+
+            Ojt_Enrollment newOjtEnrollmentForBusiness=new Ojt_Enrollment();
+            newOjtEnrollmentForBusiness.setBusiness(business);
+            newOjtEnrollmentForBusiness.setSemester(semester);
+            ojtEnrollmentList.add(newOjtEnrollmentForBusiness);
             business.setOjt_enrollments(ojtEnrollmentList);
+
+            Supervisor supervisor=new Supervisor();
+            supervisor.setEmail(business_proposed.getEmail());
+            supervisor.setAddress(business_proposed.getBusiness_address());
+            supervisor.setActive(true);
+            supervisor.setName(business_proposed.getBusiness_eng_name());
+            supervisor.setPhone(business_proposed.getBusiness_phone());
+            iSupervisorRepository.save(supervisor);
 
 
             //update status student when raise business success
             Student student = business_proposed.getStudent_proposed();
             student.setStatus(StudentStatus.STARTED);
+            student.setSupervisor(supervisor);
             iStudentService.saveStudent(student);
 
             iBusinessService.saveBusiness(business);
             iUsersService.saveUser(users);
 
-            Ojt_Enrollment updateBusinessForStudent =
-                    iOjt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(student.getEmail(), semester.getId());
-            updateBusinessForStudent.setBusiness(business);
-            Date timeEnroll = new Date(Calendar.getInstance().getTime().getTime());
-            updateBusinessForStudent.setTimeEnroll(timeEnroll);
-            iOjt_enrollmentService.saveOjtEnrollment(updateBusinessForStudent);
 
             if (iUsersService.saveUser(users)) {
                 iUsersService.sendEmail(business.getBusiness_name(), users.getEmail(), users.getPassword());

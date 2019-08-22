@@ -377,7 +377,7 @@ class Job_Post_List extends Component {
                                     </div>
                                 </div>
                                 <ToastContainer />
-                                {isSearching === false ?
+                                {businesses && businesses !== null ? (isSearching === false ?
                                     <Row>
                                         <Col>
                                             <Row>
@@ -399,7 +399,7 @@ class Job_Post_List extends Component {
                                                 <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + businesses.length} trên tổng số {numOfBusiness} kết quả</Label>
                                             </Row>
                                         </Col>
-                                    </Row> : <></>
+                                    </Row> : <></>) : <></>
                                 }
                             </CardBody>
                             {/* <CardFooter className="p-4">

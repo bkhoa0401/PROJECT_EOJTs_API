@@ -24,6 +24,9 @@ public class TaskService implements ITaskService {
     @Autowired
     ISemesterService semesterService;
 
+    @Autowired
+    IEventService iEventService;
+
     @Override
     public void createTaskForStudent(Task task) {
         Date date = new Date(Calendar.getInstance().getTime().getTime());
@@ -62,6 +65,7 @@ public class TaskService implements ITaskService {
                 ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email, semesterCurrent.getId());
         List<Task> taskList = ITaskRepository.findTasksByOjt_enrollment(ojt_enrollment);
         if (taskList != null) {
+            Collections.sort(taskList);
             return taskList;
         }
         return null;
@@ -109,6 +113,13 @@ public class TaskService implements ITaskService {
                     task.setComment(comment);
                 }
             } else if (typeStatusTask == 3) {
+                Event event = new Event();
+                Date date = new Date(Calendar.getInstance().getTime().getTime());
+                event.setTime_created(date);
+                event.setTitle("Thông báo");
+                event.setDescription(task.getOjt_enrollment().getStudent().getName() +
+                        " đã thay đổi trạng thái nhiệm vụ " + task.getTitle() + " thành hoàn thành");
+                iEventService.createEvent(event);
                 task.setStatus(Status.DONE);
             } else if (typeStatusTask == 4) {
                 task.setComment(comment);
@@ -128,6 +139,7 @@ public class TaskService implements ITaskService {
 
         List<Task> taskList = ITaskRepository.findTasksByOjt_enrollmentAndStatusIsDone(ojt_enrollment);
         if (taskList != null) {
+            Collections.sort(taskList);
             return taskList;
         }
         return null;

@@ -90,7 +90,7 @@ export default {
       icon: 'icon-book-open',
     },
     {
-      name: 'Lịch sử log hệ thống',
+      name: 'Nhật ký hoạt động',
       url: '/admin/log',
       icon: 'icon-star',
     }

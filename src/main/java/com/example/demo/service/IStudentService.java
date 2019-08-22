@@ -14,6 +14,8 @@ public interface IStudentService {
 
     boolean saveStudent(Student student);
 
+    boolean updateStudent(Student student);
+
     List<Student> getAllStudents();
 
     List<Student> getAllStudentsBySemesterId();

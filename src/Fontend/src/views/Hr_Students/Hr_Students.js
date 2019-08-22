@@ -471,7 +471,7 @@ class Hr_Students extends Component {
                                             </Table>
                                         </div>
                                         <ToastContainer />
-                                        {isSearching === false ?
+                                        {students && students !== null ? (isSearching === false ?
                                             <Row>
                                                 <Col>
                                                     <Row>
@@ -495,7 +495,7 @@ class Hr_Students extends Component {
                                                 </Col>
                                             </Row>
                                             :
-                                            <></>
+                                            <></>) : <></>
                                         }
                                     </CardBody>
                                 </Card>

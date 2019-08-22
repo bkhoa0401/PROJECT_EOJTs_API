@@ -1412,29 +1412,30 @@ class Report extends Component {
                                             </Table>
                                         </div>
                                         <ToastContainer />
-                                        {isSearching === false ?
-                                            <Row>
-                                                <Col>
-                                                    <Row>
-                                                        <Pagination>
-                                                            <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                                        </Pagination>
-                                                        &emsp;
+                                        {students && students !== null ?
+                                            (isSearching === false ?
+                                                <Row>
+                                                    <Col>
+                                                        <Row>
+                                                            <Pagination>
+                                                                <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                                            </Pagination>
+                                                            &emsp;
                                                         <h6 style={{ marginTop: '7px' }}>Số dòng trên trang: </h6>
-                                                        &nbsp;&nbsp;
+                                                            &nbsp;&nbsp;
                                                         <Input onChange={this.handleInputPaging} type="select" name="rowsPerPage" style={{ width: "70px" }}>
-                                                            <option value={10} selected={rowsPerPage === 10}>10</option>
-                                                            <option value={20}>20</option>
-                                                            <option value={50}>50</option>
-                                                        </Input>
-                                                    </Row>
-                                                </Col>
-                                                <Col>
-                                                    <Row className="float-right">
-                                                        <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
-                                                    </Row>
-                                                </Col>
-                                            </Row> : <></>
+                                                                <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                                <option value={20}>20</option>
+                                                                <option value={50}>50</option>
+                                                            </Input>
+                                                        </Row>
+                                                    </Col>
+                                                    <Col>
+                                                        <Row className="float-right">
+                                                            <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
+                                                        </Row>
+                                                    </Col>
+                                                </Row> : <></>) : <></>
                                         }
                                     </CardBody>
                                     {/* <CardFooter>

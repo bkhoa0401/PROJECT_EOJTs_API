@@ -152,8 +152,11 @@ class Create_InformMessage extends Component {
 
     handleSelect = (selectEmail) => {
         let preListStudentEmail = this.state.preListStudentEmail;
+        // console.log(preListStudentEmail);
         let preIsSelect = this.state.preIsSelect;
+        // console.log(preIsSelect);
         let students = this.state.students;
+        // console.log(students);
         let informTo = '';
         if (preListStudentEmail.includes(selectEmail)) {
             for (let index = 0; index < preListStudentEmail.length; index++) {
@@ -162,10 +165,11 @@ class Create_InformMessage extends Component {
                 }
             }
             for (let index = 0; index < students.length; index++) {
-                if (students[index].email === selectEmail) {
+                if (students[index].email == selectEmail) {
                     preIsSelect[index] = 0;
                 }
             }
+            console.log(preIsSelect);
         } else {
             preListStudentEmail.push(selectEmail);
             for (let i = 0; i < students.length; i++) {
@@ -177,6 +181,7 @@ class Create_InformMessage extends Component {
                 if (students[i].email === selectEmail) {
                     preIsSelect[i] = 1;
                 }
+                console.log(preIsSelect);
             }
         }
         for (let index = 0; index < preListStudentEmail.length; index++) {

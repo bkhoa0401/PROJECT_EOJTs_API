@@ -201,34 +201,34 @@ class User_Business extends Component {
                                             <tbody>
                                                 {isSearching === false ?
                                                     (
-                                                    businesses && businesses.map((business, i) => {
-                                                        return (
-                                                            <tr key={i}>
-                                                                <td style={{ textAlign: "center" }}>{i + 1}</td>
-                                                                <td style={{ textAlign: "center" }}>{business.email}</td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {
-                                                                        business.roles[0].description === 'ROLE_HR' ? ('HR') : ('')
-                                                                    }
-                                                                </td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {business.active.toString() === 'true' ? (
-                                                                        <Badge color="success">KÍCH HOẠT</Badge>
-                                                                    ) : (
-                                                                            <Badge color="danger">VÔ HIỆU HOÁ</Badge>
-                                                                        )}
-                                                                </td>
-                                                                <td style={{ textAlign: "center" }}>
-                                                                    {business.active.toString() === 'true' ? (
-                                                                        <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(business.email, false)} type="submit"><i className="fa cui-ban"></i></Button>
-                                                                    ) : (
-                                                                            <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(business.email, true)} type="submit"><i className="fa cui-circle-check"></i></Button>
-                                                                        )}
-                                                                    {/* <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/business/update/${business.id}`)}>Update</Button> */}
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    })) :
+                                                        businesses && businesses.map((business, i) => {
+                                                            return (
+                                                                <tr key={i}>
+                                                                    <td style={{ textAlign: "center" }}>{i + 1}</td>
+                                                                    <td style={{ textAlign: "center" }}>{business.email}</td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {
+                                                                            business.roles[0].description === 'ROLE_HR' ? ('HR') : ('')
+                                                                        }
+                                                                    </td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {business.active.toString() === 'true' ? (
+                                                                            <Badge color="success">KÍCH HOẠT</Badge>
+                                                                        ) : (
+                                                                                <Badge color="danger">VÔ HIỆU HOÁ</Badge>
+                                                                            )}
+                                                                    </td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {business.active.toString() === 'true' ? (
+                                                                            <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(business.email, false)} type="submit"><i className="fa cui-ban"></i></Button>
+                                                                        ) : (
+                                                                                <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(business.email, true)} type="submit"><i className="fa cui-circle-check"></i></Button>
+                                                                            )}
+                                                                        {/* <Button style={{ marginRight: "1.5px" }} type="submit" color="success" onClick={() => this.handleDirect(`/business/update/${business.id}`)}>Update</Button> */}
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })) :
                                                     (
                                                         searchingList && searchingList.map((business, i) => {
                                                             return (
@@ -262,7 +262,7 @@ class User_Business extends Component {
                                             </tbody>
                                         </Table>
                                         <ToastContainer />
-                                        {isSearching === false ?
+                                        {businesses && businesses !== null ? (isSearching === false ?
                                             <Row>
                                                 <Col>
                                                     <Row>
@@ -284,7 +284,7 @@ class User_Business extends Component {
                                                         <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + businesses.length} trên tổng số {numOfAccBusiness} kết quả</Label>
                                                     </Row>
                                                 </Col>
-                                            </Row> : <></>
+                                            </Row> : <></>) : <></>
                                         }
                                     </CardBody>
                                 </Card>

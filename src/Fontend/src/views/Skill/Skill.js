@@ -232,36 +232,36 @@ class Skill extends Component {
                                                                 </tr>
                                                             )
                                                         })) :
-                                                        (
-                                                            searchingList && searchingList.map((skill, i) => {
-                                                                return (
-                                                                    <tr key={i}>
-                                                                        <td style={{ textAlign: "center" }}>{i + 1}</td>
-                                                                        <td style={{ textAlign: "center" }}>{skill.name}</td>
-                                                                        <td style={{ textAlign: "center" }}>{skill.specialized.name}</td>
-                                                                        <td style={{ textAlign: "center" }}>
-                                                                            {skill.status.toString() === 'true' ? (
-                                                                                <Badge color="success">KÍCH HOẠT</Badge>
-                                                                            ) : (
-                                                                                    <Badge color="danger">VÔ HIỆU HOÁ</Badge>
-                                                                                )}
-                                                                        </td>
-                                                                        <td style={{ textAlign: "center" }}>
-                                                                            {skill.status.toString() === 'true' ? (
-                                                                                <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(skill, false)} type="submit"><i className="fa cui-ban"></i></Button>
-                                                                            ) : (
-                                                                                    <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(skill, true)} type="submit"><i className="fa cui-circle-check"></i></Button>
-                                                                                )}
-                                                                            <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/admin/skill/update/${skill.id}`)}><i className="fa cui-note"></i></Button>
-                                                                        </td>
-                                                                    </tr>
-                                                                )
-                                                            })) 
+                                                    (
+                                                        searchingList && searchingList.map((skill, i) => {
+                                                            return (
+                                                                <tr key={i}>
+                                                                    <td style={{ textAlign: "center" }}>{i + 1}</td>
+                                                                    <td style={{ textAlign: "center" }}>{skill.name}</td>
+                                                                    <td style={{ textAlign: "center" }}>{skill.specialized.name}</td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {skill.status.toString() === 'true' ? (
+                                                                            <Badge color="success">KÍCH HOẠT</Badge>
+                                                                        ) : (
+                                                                                <Badge color="danger">VÔ HIỆU HOÁ</Badge>
+                                                                            )}
+                                                                    </td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        {skill.status.toString() === 'true' ? (
+                                                                            <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(skill, false)} type="submit"><i className="fa cui-ban"></i></Button>
+                                                                        ) : (
+                                                                                <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(skill, true)} type="submit"><i className="fa cui-circle-check"></i></Button>
+                                                                            )}
+                                                                        <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.handleDirect(`/admin/skill/update/${skill.id}`)}><i className="fa cui-note"></i></Button>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        }))
                                                 }
                                             </tbody>
                                         </Table>
                                         <ToastContainer />
-                                        {isSearching === false ?
+                                        {skills && skills !== null ? (isSearching === false ?
                                             <Row>
                                                 <Col>
                                                     <Row>
@@ -283,7 +283,7 @@ class Skill extends Component {
                                                         <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + skills.length} trên tổng số {numOfSkill} kết quả</Label>
                                                     </Row>
                                                 </Col>
-                                            </Row> : <></>
+                                            </Row> : <></>) : <></>
                                         }
                                     </CardBody>
                                 </Card>
