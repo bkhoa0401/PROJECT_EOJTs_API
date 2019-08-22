@@ -309,7 +309,7 @@ class Specialized extends Component {
                                             </tbody>
                                         </Table>
                                         <ToastContainer />
-                                        {isSearching === false ?
+                                        {specializeds && specializeds !== null ? (isSearching === false ?
                                             <Row>
                                                 <Col>
                                                     <Row>
@@ -331,7 +331,7 @@ class Specialized extends Component {
                                                         <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + specializeds.length} trên tổng số {numOfSpecialized} kết quả</Label>
                                                     </Row>
                                                 </Col>
-                                            </Row> : <></>
+                                            </Row> : <></>) : <></>
                                         }
                                     </CardBody>
                                 </Card>

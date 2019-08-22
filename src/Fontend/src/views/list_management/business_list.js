@@ -238,7 +238,7 @@ class business_list extends Component {
                                             </Table>
                                         </div>
                                         <ToastContainer />
-                                        {isSearching === false ?
+                                        {businesses && businesses !== null ? (isSearching === false ?
                                             <Row>
                                                 <Col>
                                                     <Row>
@@ -260,7 +260,7 @@ class business_list extends Component {
                                                         <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + businesses.length} trên tổng số {numOfBusiness} kết quả</Label>
                                                     </Row>
                                                 </Col>
-                                            </Row> : <></>
+                                            </Row> : <></>) : <></>
                                         }
                                     </CardBody>
                                     {/* <CardFooter className="p-4">

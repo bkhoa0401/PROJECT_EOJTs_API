@@ -262,7 +262,7 @@ class User_Student extends Component {
                                             </tbody>
                                         </Table>
                                         <ToastContainer />
-                                        {isSearching === false ?
+                                        {students && students !== null ? (isSearching === false ?
                                             <Row>
                                                 <Col>
                                                     <Row>
@@ -284,7 +284,7 @@ class User_Student extends Component {
                                                         <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfAccStudent} kết quả</Label>
                                                     </Row>
                                                 </Col>
-                                            </Row> : <></>
+                                            </Row> : <></>) : <></>
                                         }
                                     </CardBody>
                                 </Card>

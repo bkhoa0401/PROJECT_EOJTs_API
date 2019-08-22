@@ -437,7 +437,7 @@ class Ojt_Registration extends Component {
                                             </Table>
                                         </div>
                                         <ToastContainer />
-                                        {isSearching === false ?
+                                        {students && students !== null ? (isSearching === false ?
                                             <Row>
                                                 <Col>
                                                     <Row>
@@ -460,7 +460,7 @@ class Ojt_Registration extends Component {
                                                         <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudent} kết quả</Label>
                                                     </Row>
                                                 </Col>
-                                            </Row> : <></>
+                                            </Row> : <></>) : <></>
                                         }
                                     </CardBody>
                                     {/* <CardFooter className="p-4">

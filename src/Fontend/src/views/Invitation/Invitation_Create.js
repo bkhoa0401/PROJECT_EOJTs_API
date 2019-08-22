@@ -528,30 +528,32 @@ class Invitation_Create extends Component {
                                             }
                                         </tbody>
                                     </Table>
-                                    {isSearchingSum === false ?
-                                        <Row>
-                                            <Col>
+                                    {
+                                        students && students !== null ?
+                                            (isSearchingSum === false ?
                                                 <Row>
-                                                    <Pagination>
-                                                        <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
-                                                    </Pagination>
-                                                    &emsp;
+                                                    <Col>
+                                                        <Row>
+                                                            <Pagination>
+                                                                <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} />
+                                                            </Pagination>
+                                                            &emsp;
                                                     <h6 style={{ marginTop: "7px" }}>Số dòng trên trang: </h6>
-                                                    &nbsp;&nbsp;
+                                                            &nbsp;&nbsp;
                                                     <Input onChange={this.handleInput} type="select" name="rowsPerPage" style={{ width: "70px" }} >
-                                                        <option value={10} selected={rowsPerPage === 10}>10</option>
-                                                        <option value={20}>20</option>
-                                                        <option value={50}>50</option>
-                                                    </Input>
-                                                </Row>
-                                            </Col>
-                                            <Col>
-                                                <Row className="float-right">
-                                                    <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudentSum} kết quả</Label>
-
-                                                </Row>
-                                            </Col>
-                                        </Row> : <></>
+                                                                <option value={10} selected={rowsPerPage === 10}>10</option>
+                                                                <option value={20}>20</option>
+                                                                <option value={50}>50</option>
+                                                            </Input>
+                                                        </Row>
+                                                    </Col>
+                                                    <Col>
+                                                        <Row className="float-right">
+                                                            <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudentSum} kết quả</Label>
+                                                        </Row>
+                                                    </Col>
+                                                </Row> : <></>) :
+                                            <></>
                                     }
                                 </div>
                             }
@@ -661,29 +663,32 @@ class Invitation_Create extends Component {
                                             }
                                         </tbody>
                                     </Table>
-                                    {isSearchingSuggest === false ?
-                                        <Row>
-                                            <Col>
+                                    {
+                                        suggestedStudents && suggestedStudents !== null ?
+                                            (isSearchingSuggest === false ?
                                                 <Row>
-                                                    <Pagination>
-                                                        <PaginationComponent pageNumber={pageNumberSuggest} handlePageNumber={this.handlePageNumberSuggest} handlePageNext={this.handlePageNextSuggest} handlePagePrevious={this.handlePagePreviousSuggest} currentPage={currentPageSuggest} />
-                                                    </Pagination>
-                                                    &emsp;
+                                                    <Col>
+                                                        <Row>
+                                                            <Pagination>
+                                                                <PaginationComponent pageNumber={pageNumberSuggest} handlePageNumber={this.handlePageNumberSuggest} handlePageNext={this.handlePageNextSuggest} handlePagePrevious={this.handlePagePreviousSuggest} currentPage={currentPageSuggest} />
+                                                            </Pagination>
+                                                            &emsp;
                                                     <h6 style={{ marginTop: "7px" }}>Số dòng trên trang: </h6>
-                                                    &nbsp;&nbsp;
+                                                            &nbsp;&nbsp;
                                                     <Input onChange={this.handleInputSuggest} type="select" name="rowsPerPageSuggest" style={{ width: "70px" }} >
-                                                        <option value={10} selected={rowsPerPageSuggest === 10}>10</option>
-                                                        <option value={20}>20</option>
-                                                        <option value={50}>50</option>
-                                                    </Input>
-                                                </Row>
-                                            </Col>
-                                            <Col>
-                                                <Row className="float-right">
-                                                    <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + suggestedStudents.length} trên tổng số {numOfStudentSuggest} kết quả</Label>
-                                                </Row>
-                                            </Col>
-                                        </Row> : <></>
+                                                                <option value={10} selected={rowsPerPageSuggest === 10}>10</option>
+                                                                <option value={20}>20</option>
+                                                                <option value={50}>50</option>
+                                                            </Input>
+                                                        </Row>
+                                                    </Col>
+                                                    <Col>
+                                                        <Row className="float-right">
+                                                            <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + suggestedStudents.length} trên tổng số {numOfStudentSuggest} kết quả</Label>
+                                                        </Row>
+                                                    </Col>
+                                                </Row> : <></>) :
+                                            <></>
                                     }
                                 </div>
                             }

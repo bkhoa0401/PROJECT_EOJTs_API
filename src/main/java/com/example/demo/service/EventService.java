@@ -62,7 +62,7 @@ public class EventService implements IEventService {
     @Override
     public List<Event> getEventListSent(List<Event> eventList) {
         Semester semester = iSemesterService.getSemesterCurrent();
-        Date dateStartSemester = semester.getStart_date();
+        Date dateStartSemester = semester.getStart_choose_option_time();
         Date dateEndSemester = semester.getEnd_date();
         List<Event> finalListEvent = new ArrayList<Event>();
         for (int i = 0; i < eventList.size(); i++) {
@@ -79,7 +79,7 @@ public class EventService implements IEventService {
     @Override
     public List<Event> getEventListReceived(List<Event> eventList) {
         Semester semester = iSemesterService.getSemesterCurrent();
-        Date dateStartSemester = semester.getStart_date();
+        Date dateStartSemester = semester.getStart_choose_option_time();
         Date dateEndSemester = semester.getEnd_date();
         List<Event> finalListEvent = new ArrayList<Event>();
         for (int i = 0; i < eventList.size(); i++) {

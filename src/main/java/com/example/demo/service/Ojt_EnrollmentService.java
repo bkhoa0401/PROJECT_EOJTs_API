@@ -28,7 +28,8 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
     @Autowired
     IHistoryActionService historyActionService;
 
-
+    @Autowired
+    ISupervisorService iSupervisorService;
 
     @Autowired
     IStudentService iStudentService;
@@ -71,7 +72,7 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
             if (student.isAcceptedOption1() == true) {
                 Business businessOption1 = businessService.findBusinessByName(student.getOption1());
 
-               // Ojt_Enrollment ojt_enrollment = getOjt_EnrollmentByStudentEmail(student.getEmail());
+                // Ojt_Enrollment ojt_enrollment = getOjt_EnrollmentByStudentEmail(student.getEmail());
                 Ojt_Enrollment ojt_enrollment = getOjtEnrollmentByStudentEmailAndSemesterId(student.getEmail(), semester.getId());
                 ojt_enrollment.setBusiness(businessOption1);
 
@@ -134,8 +135,10 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
 
     @Override
     public void updateBusinessForStudent(String emailBusiness, String emailStudent) {
+        Supervisor supervisor=iSupervisorService.findByEmail(emailBusiness);
         Student student = iStudentService.getStudentByEmail(emailStudent);
         student.setStatus(StudentStatus.STARTED);
+        student.setSupervisor(supervisor);
 
         Business business = businessService.getBusinessByEmail(emailBusiness);
         Date date = new Date(Calendar.getInstance().getTime().getTime());
@@ -148,7 +151,8 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
         ojt_enrollment.setTimeEnroll(date);
         ojt_enrollment.setBusiness(business);
 
-        iStudentService.saveStudent(student);
+       // iStudentService.saveStudent(student);
+        iStudentService.updateStudent(student);
         ojtEnrollmentRepository.save(ojt_enrollment);
 
         Invitation invitation = iInvitationService.getInvitationByBusinessEmailAndStudentEmail(emailBusiness, emailStudent);
@@ -157,7 +161,7 @@ public class Ojt_EnrollmentService implements IOjt_EnrollmentService {
             iInvitationRepository.save(invitation);
         }
 
-        if(ojtEnrollmentRepository.save(ojt_enrollment) != null) {
+        if (ojtEnrollmentRepository.save(ojt_enrollment) != null) {
             HistoryDetail historyDetail = new HistoryDetail(Ojt_Enrollment.class.getName(), "business_email", String.valueOf(ojt_enrollment.getId()), emailBusiness);
             HistoryAction action =
                     new HistoryAction(emailStudent

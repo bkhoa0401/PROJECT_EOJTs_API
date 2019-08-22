@@ -1168,7 +1168,7 @@ class student_list extends Component {
                                             }
                                         </tbody>
                                     </Table>
-                                    {isSearchingAll === false ?
+                                    {students && students !== null ? (isSearchingAll === false ?
                                         <Row>
                                             <Col>
                                                 <Row>
@@ -1190,7 +1190,7 @@ class student_list extends Component {
                                                     <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + students.length} trên tổng số {numOfStudentAll} kết quả</Label>
                                                 </Row>
                                             </Col>
-                                        </Row> : <></>
+                                        </Row> : <></>) : <></>
                                     }
                                 </div>
                             }
@@ -1704,41 +1704,19 @@ class student_list extends Component {
                                     {
                                         (this.state.typeSelected) === 0 ? (
                                             isSearchingSuggest === false ?
-                                                <Row>
-                                                    <Col>
-                                                        <Row>
-                                                            <Pagination>
-                                                                <PaginationComponent pageNumber={pageNumberCbAll} handlePageNumber={this.handlePageNumberCbAll} handlePageNext={this.handlePageNextCbAll} handlePagePrevious={this.handlePagePreviousCbAll} currentPage={currentPageCbAll} />
-                                                            </Pagination>
-                                                            &emsp;
-                                                            <h6 style={{ marginTop: "7px" }}>Số dòng trên trang: </h6>
-                                                            &nbsp;&nbsp;
-                                                            <Input onChange={this.handleInputPagingCbAll} type="select" name="rowsPerPageCbAll" style={{ width: "70px" }}>
-                                                                <option value={10} selected={rowsPerPageCbAll === 10}>10</option>
-                                                                <option value={20}>20</option>
-                                                                <option value={50}>50</option>
-                                                            </Input>
-                                                        </Row>
-                                                    </Col>
-                                                    <Col>
-                                                        <Row className="float-right">
-                                                            <Label>Bạn đang xem kết quả từ {currentPageCbAll * rowsPerPageCbAll + 1} - {currentPageCbAll * rowsPerPageCbAll + students.length} trên tổng số {numOfStudentAll} kết quả</Label>
-                                                        </Row>
-                                                    </Col>
-                                                </Row> : <></>
-                                        ) : (
-                                                isSearchingSuggest === false ?
+                                                (students && students !== null ?
                                                     <Row>
                                                         <Col>
                                                             <Row>
+                                                                {}
                                                                 <Pagination>
-                                                                    <PaginationComponent pageNumber={pageNumberSuggest} handlePageNumber={this.handlePageNumberSuggest} handlePageNext={this.handlePageNextSuggest} handlePagePrevious={this.handlePagePreviousSuggest} currentPage={currentPageSuggest} />
+                                                                    <PaginationComponent pageNumber={pageNumberCbAll} handlePageNumber={this.handlePageNumberCbAll} handlePageNext={this.handlePageNextCbAll} handlePagePrevious={this.handlePagePreviousCbAll} currentPage={currentPageCbAll} />
                                                                 </Pagination>
                                                                 &emsp;
-                                                                <h6 style={{ marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                                            <h6 style={{ marginTop: "7px" }}>Số dòng trên trang: </h6>
                                                                 &nbsp;&nbsp;
-                                                                <Input onChange={this.handleInputPagingSuggest} type="select" name="rowsPerPageSuggest" style={{ width: "70px" }}>
-                                                                    <option value={10} selected={rowsPerPageSuggest === 10}>10</option>
+                                                            <Input onChange={this.handleInputPagingCbAll} type="select" name="rowsPerPageCbAll" style={{ width: "70px" }}>
+                                                                    <option value={10} selected={rowsPerPageCbAll === 10}>10</option>
                                                                     <option value={20}>20</option>
                                                                     <option value={50}>50</option>
                                                                 </Input>
@@ -1746,10 +1724,35 @@ class student_list extends Component {
                                                         </Col>
                                                         <Col>
                                                             <Row className="float-right">
-                                                                <Label>Bạn đang xem kết quả từ {currentPageSuggest * rowsPerPageSuggest + 1} - {currentPageSuggest * rowsPerPageSuggest + students.length} trên tổng số {numOfStudentSuggest} kết quả</Label>
+                                                                <Label>Bạn đang xem kết quả từ {currentPageCbAll * rowsPerPageCbAll + 1} - {currentPageCbAll * rowsPerPageCbAll + students.length} trên tổng số {numOfStudentAll} kết quả</Label>
                                                             </Row>
                                                         </Col>
-                                                    </Row> : <></>
+                                                    </Row> : <></>) : <></>
+                                        ) : (
+                                                isSearchingSuggest === false ?
+                                                    (students && students !== null ?
+                                                        <Row>
+                                                            <Col>
+                                                                <Row>
+                                                                    <Pagination>
+                                                                        <PaginationComponent pageNumber={pageNumberSuggest} handlePageNumber={this.handlePageNumberSuggest} handlePageNext={this.handlePageNextSuggest} handlePagePrevious={this.handlePagePreviousSuggest} currentPage={currentPageSuggest} />
+                                                                    </Pagination>
+                                                                    &emsp;
+                                                                <h6 style={{ marginTop: "7px" }}>Số dòng trên trang: </h6>
+                                                                    &nbsp;&nbsp;
+                                                                <Input onChange={this.handleInputPagingSuggest} type="select" name="rowsPerPageSuggest" style={{ width: "70px" }}>
+                                                                        <option value={10} selected={rowsPerPageSuggest === 10}>10</option>
+                                                                        <option value={20}>20</option>
+                                                                        <option value={50}>50</option>
+                                                                    </Input>
+                                                                </Row>
+                                                            </Col>
+                                                            <Col>
+                                                                <Row className="float-right">
+                                                                    <Label>Bạn đang xem kết quả từ {currentPageSuggest * rowsPerPageSuggest + 1} - {currentPageSuggest * rowsPerPageSuggest + students.length} trên tổng số {numOfStudentSuggest} kết quả</Label>
+                                                                </Row>
+                                                            </Col>
+                                                        </Row> : <></>) : <></>
                                             )
                                     }
 
