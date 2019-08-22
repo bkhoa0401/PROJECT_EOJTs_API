@@ -1,12 +1,9 @@
 package com.example.demo.service;
 
-import com.example.demo.config.ActionEnum;
 import com.example.demo.config.Status;
 import com.example.demo.entity.*;
 import com.example.demo.repository.ITaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -28,7 +25,7 @@ public class TaskService implements ITaskService {
     ISemesterService semesterService;
 
     @Autowired
-    IHistoryActionService iHistoryActionService;
+    IEventService iEventService;
 
     @Override
     public void createTaskForStudent(Task task) {
@@ -109,42 +106,26 @@ public class TaskService implements ITaskService {
     @Override
     public boolean updateStatusTask(int id, int typeStatusTask, String comment) {
         Task task = findTaskById(id);
-        HistoryDetail historyDetail = null;
-        HistoryDetail historyDetail2 = null;
         if (task != null) {
             if (typeStatusTask == 2) {
                 if (comment != null) {
                     task.setStatus(Status.PENDING);
                     task.setComment(comment);
-                    historyDetail = new HistoryDetail(Task.class.getName(), "status", String.valueOf(id), Status.PENDING.toString());
-                    historyDetail2 = new HistoryDetail(Task.class.getName(), "comment", String.valueOf(id), comment);
-
                 }
             } else if (typeStatusTask == 3) {
+                Event event = new Event();
+                Date date = new Date(Calendar.getInstance().getTime().getTime());
+                event.setTime_created(date);
+                event.setTitle("Thông báo");
+                event.setDescription(task.getOjt_enrollment().getStudent().getName() +
+                        " đã thay đổi trạng thái nhiệm vụ " + task.getTitle() + " thành hoàn thành");
+                iEventService.createEvent(event);
                 task.setStatus(Status.DONE);
             } else if (typeStatusTask == 4) {
-                historyDetail = new HistoryDetail(Task.class.getName(), "status", String.valueOf(id), Status.DONE.toString());
-            }else if(typeStatusTask == 4) {
                 task.setComment(comment);
                 task.setStatus(Status.APPROVED);
-                historyDetail = new HistoryDetail(Task.class.getName(), "status", String.valueOf(id), Status.APPROVED.toString());
-
             }
             ITaskRepository.save(task);
-            List<HistoryDetail> details = new ArrayList<>();
-            HistoryAction action =
-                    new HistoryAction(getEmailFromToken()
-                            , "ROLE_SUPERVISOR", ActionEnum.INSERT, "SupervisorController", new Object() {
-                    }
-                            .getClass()
-                            .getEnclosingMethod()
-                            .getName(), null, new java.util.Date());
-            historyDetail.setHistoryAction(action);
-            historyDetail2.setHistoryAction(action);
-            details.add(historyDetail);
-            details.add(historyDetail2);
-            action.setDetails(details);
-            iHistoryActionService.createHistory(action);
             return true;
         }
         return false;
@@ -218,16 +199,5 @@ public class TaskService implements ITaskService {
         Date taskDate = task.getTime_created();
 
         return taskDate.after(dateStart) && taskDate.before(dateEnd);
-    }
-
-    private String getEmailFromToken() {
-        String email = "";
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            email = ((UserDetails) principal).getUsername();
-        } else {
-            email = principal.toString();
-        }
-        return email;
     }
 }

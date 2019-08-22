@@ -79,6 +79,7 @@ public class StudentService implements IStudentService {
     IUsersService iUsersService;
 
 
+
     @Override
     public Student getStudentByEmail(String email) {
         Student student = IStudentRepository.findByEmail(email);
@@ -99,6 +100,12 @@ public class StudentService implements IStudentService {
             studentList.add(student);
             values.set("students", studentList);
         }
+        IStudentRepository.save(student);
+        return true;
+    }
+
+    @Override
+    public boolean updateStudent(Student student) {
         IStudentRepository.save(student);
         return true;
     }

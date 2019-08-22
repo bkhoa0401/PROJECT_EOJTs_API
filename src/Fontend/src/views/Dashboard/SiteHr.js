@@ -334,7 +334,7 @@ class SiteHr extends Component {
               <Col xs="12">
                 <Card>
                   <CardHeader>
-                    <h6>Thống kê số lượng sinh viên đc nhận thực tập tại doanh nghiệp qua các kì</h6>
+                    <h6>Thống kê số lượng sinh viên được nhận thực tập tại doanh nghiệp qua các kì</h6>
                     {/* <div className="card-header-actions">
                 <a href="http://www.chartjs.org" className="card-header-action">
                   <small className="text-muted">docs</small>

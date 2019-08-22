@@ -257,7 +257,7 @@ class ManageAccount extends Component {
                                             </tbody>
                                         </Table>
                                         <ToastContainer />
-                                        {isSearching === false ?
+                                        {supervisors && supervisors!== null ? (isSearching === false ?
                                             <Row>
                                                 <Col>
                                                     <Row>
@@ -279,7 +279,7 @@ class ManageAccount extends Component {
                                                         <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + supervisors.length} trên tổng số {numOfSupervisor} kết quả</Label>
                                                     </Row>
                                                 </Col>
-                                            </Row> : <></>
+                                            </Row> : <></>) : <></>
                                         }
                                     </CardBody>
                                 </Card>
