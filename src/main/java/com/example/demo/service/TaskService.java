@@ -68,6 +68,7 @@ public class TaskService implements ITaskService {
                 ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email, semesterCurrent.getId());
         List<Task> taskList = ITaskRepository.findTasksByOjt_enrollment(ojt_enrollment);
         if (taskList != null) {
+            Collections.sort(taskList);
             return taskList;
         }
         return null;
@@ -157,6 +158,7 @@ public class TaskService implements ITaskService {
 
         List<Task> taskList = ITaskRepository.findTasksByOjt_enrollmentAndStatusIsDone(ojt_enrollment);
         if (taskList != null) {
+            Collections.sort(taskList);
             return taskList;
         }
         return null;

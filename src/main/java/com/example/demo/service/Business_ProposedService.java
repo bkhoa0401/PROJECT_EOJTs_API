@@ -235,6 +235,8 @@ public class Business_ProposedService implements IBusiness_ProposedService {
             ojt_enrollment.setBusiness(business);
             ojt_enrollment.setSemester(semester);
             ojtEnrollmentList.add(ojt_enrollment);
+            Date timeEnroll = new Date(Calendar.getInstance().getTime().getTime());
+            ojt_enrollment.setTimeEnroll(timeEnroll);
             business.setOjt_enrollments(ojtEnrollmentList);
 
 
@@ -246,12 +248,12 @@ public class Business_ProposedService implements IBusiness_ProposedService {
             iBusinessService.saveBusiness(business);
             iUsersService.saveUser(users);
 
-            Ojt_Enrollment updateBusinessForStudent =
-                    iOjt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(student.getEmail(), semester.getId());
-            updateBusinessForStudent.setBusiness(business);
-            Date timeEnroll = new Date(Calendar.getInstance().getTime().getTime());
-            updateBusinessForStudent.setTimeEnroll(timeEnroll);
-            iOjt_enrollmentService.saveOjtEnrollment(updateBusinessForStudent);
+//            Ojt_Enrollment updateBusinessForStudent =
+//                    iOjt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(student.getEmail(), semester.getId());
+//            updateBusinessForStudent.setBusiness(business);
+//            Date timeEnroll = new Date(Calendar.getInstance().getTime().getTime());
+//            updateBusinessForStudent.setTimeEnroll(timeEnroll);
+//            iOjt_enrollmentService.saveOjtEnrollment(updateBusinessForStudent);
 
             if (iUsersService.saveUser(users)) {
                 iUsersService.sendEmail(business.getBusiness_name(), users.getEmail(), users.getPassword());
