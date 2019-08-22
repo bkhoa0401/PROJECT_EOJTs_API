@@ -2,7 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.dto.BusinessDTO;
 
+import java.util.List;
+
 public interface IBusinessImportFileService {
 
-    void insertBusiness(BusinessDTO businessDTO) throws Exception;
+    boolean insertBusiness(List<BusinessDTO> businessDTO) throws Exception;
 }

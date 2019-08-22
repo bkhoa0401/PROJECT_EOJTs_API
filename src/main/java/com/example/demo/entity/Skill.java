@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -48,7 +48,7 @@ public class Skill implements Serializable {
     private Boolean status;
 
     @Column(name = "isSoftSkill")
-    private Boolean isSoftSkill;
+    private Boolean isSoftSkill=false;
 
     public int getId() {
         return id;

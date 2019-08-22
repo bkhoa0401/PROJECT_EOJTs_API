@@ -4,5 +4,6 @@ public enum Status {
     NOTSTART,
     PENDING,
     DONE,
-    APPROVED
+    APPROVED,
+    NOTFINISHED
 }

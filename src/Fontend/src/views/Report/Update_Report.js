@@ -63,7 +63,13 @@ class Update_Report extends Component {
         var needId = param.split('~');
         const report = await ApiServices.Get(`/supervisor/getEvaluation?id=${needId[0]}`);
         let owner = await ApiServices.Get(`/supervisor/business?email=${report.supervisor_email}`);
-        let businessName = owner.business_name;
+        let businessName = '';
+        if (owner !== null) {
+            businessName = owner.business_name;
+        } else {
+            owner = await ApiServices.Get("/business/getBusiness");
+            businessName = owner.business_name;
+        }
         const student = await ApiServices.Get(`/student/student/${needId[1]}`);
         let title = '';
         title = report.title;
@@ -363,6 +369,20 @@ class Update_Report extends Component {
                                         </FormGroup>
                                         <FormGroup row>
                                             <Col md="2">
+                                                <h6 style={{ fontWeight: "bold" }}>Điểm kỷ luật:</h6>
+                                            </Col>
+                                            <Col xs="12" md="10">
+                                                <Input value={score_discipline} type='number' style={{ width: '70px' }} onChange={this.handleInputScore} id="score_discipline" name="score_discipline" min="0" max="10"></Input>
+                                                <span className="form-error is-visible text-danger">
+                                                    {this.validator.message('Điểm kỷ luật', score_discipline, 'required|numeric')}
+                                                </span>
+                                                <span className="form-error is-visible text-danger">
+                                                    {validatorNumRange_score_discipline}
+                                                </span>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="2">
                                                 <h6 style={{ fontWeight: "bold" }}>Điểm hiệu quả công việc:</h6>
                                             </Col>
                                             <Col xs="12" md="10">
@@ -386,20 +406,6 @@ class Update_Report extends Component {
                                                 </span>
                                                 <span className="form-error is-visible text-danger">
                                                     {validatorNumRange_score_activity}
-                                                </span>
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="2">
-                                                <h6 style={{ fontWeight: "bold" }}>Điểm kỷ luật:</h6>
-                                            </Col>
-                                            <Col xs="12" md="10">
-                                                <Input value={score_discipline} type='number' style={{ width: '70px' }} onChange={this.handleInputScore} id="score_discipline" name="score_discipline" min="0" max="10"></Input>
-                                                <span className="form-error is-visible text-danger">
-                                                    {this.validator.message('Điểm kỷ luật', score_discipline, 'required|numeric')}
-                                                </span>
-                                                <span className="form-error is-visible text-danger">
-                                                    {validatorNumRange_score_discipline}
                                                 </span>
                                             </Col>
                                         </FormGroup>

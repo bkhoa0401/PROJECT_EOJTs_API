@@ -57,12 +57,13 @@ public class AdminController {
     IAnswerService iAnswerService;
 
     @Autowired
-    IHistoryActionService iHistoryActionService;
-    @Autowired
     ISpecializedService specializedService;
 
     @Autowired
     IJob_PostService job_postService;
+
+    @Autowired
+    IHistoryActionService iHistoryActionService;
 
 
     @GetMapping
@@ -252,7 +253,7 @@ public class AdminController {
         List<Business> businessList = businessService.getAllBusinessBySemester();
         List<Business> searchList = new ArrayList<>();
         for (int i = 0; i < businessList.size(); i++) {
-            if (businessList.get(i).getBusiness_name().toLowerCase().contains(valueSearch.toLowerCase())||
+            if (businessList.get(i).getBusiness_name().toLowerCase().contains(valueSearch.toLowerCase()) ||
                     businessList.get(i).getBusiness_eng_name().toLowerCase().contains(valueSearch.toLowerCase())) {
                 searchList.add(businessList.get(i));
             }
@@ -739,10 +740,23 @@ public class AdminController {
 
     @GetMapping("/histories")
     @ResponseBody
-    public ResponseEntity<List<HistoryAction>> getAllHistoryAction() {
+    public ResponseEntity<PagingDTO> getAllHistoryAction(@RequestParam int currentPage
+            , @RequestParam int rowsPerPage) {
         List<HistoryAction> actions = iHistoryActionService.getAllHistory();
-        if(actions != null) {
-            return new ResponseEntity<>(actions, HttpStatus.OK);
+        if (actions != null) {
+            Utils<HistoryAction> utils = new Utils<>();
+            PagingDTO pagingDTO = utils.paging(actions, currentPage, rowsPerPage);
+            return new ResponseEntity<>(pagingDTO, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/historiesId")
+    @ResponseBody
+    public ResponseEntity<HistoryAction> getHistoryActionById(@RequestParam int id) {
+        HistoryAction action = iHistoryActionService.getHistoryActionById(id);
+        if (action != null) {
+            return new ResponseEntity<>(action, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

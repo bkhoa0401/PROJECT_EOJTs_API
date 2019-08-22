@@ -7,5 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface IHistoryActionRepository extends JpaRepository<HistoryAction,Integer> {
+public interface IHistoryActionRepository extends JpaRepository<HistoryAction, Integer> {
+
+    HistoryAction findHistoryActionById(int id);
 }

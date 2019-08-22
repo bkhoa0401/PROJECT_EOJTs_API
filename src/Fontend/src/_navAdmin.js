@@ -79,11 +79,6 @@ export default {
       url: '/admin/report',
       icon: 'icon-docs',
     },
-    // {
-    //   name: 'Phản hồi',
-    //   url: '/Feedback/Feedback',
-    //   icon: 'icon-star',
-    // },
     {
       name: 'Quản lí câu hỏi',
       url: '/admin/question',
@@ -94,5 +89,10 @@ export default {
       url: '/admin/answer-statistics',
       icon: 'icon-book-open',
     },
+    {
+      name: 'Lịch sử log hệ thống',
+      url: '/admin/log',
+      icon: 'icon-star',
+    }
   ]
 };

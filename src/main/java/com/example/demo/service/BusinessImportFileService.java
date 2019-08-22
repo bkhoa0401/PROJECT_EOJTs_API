@@ -35,76 +35,109 @@ public class BusinessImportFileService implements IBusinessImportFileService {
 
     @Transactional
     @Override
-    public void insertBusiness(BusinessDTO businessDTO) throws Exception {
+    public boolean insertBusiness(List<BusinessDTO> businessDTOList) {
 
-        Business businessIsExisted = iBusinessService.getBusinessByEmail(businessDTO.getEmail());
-        Business business = new Business(businessDTO.getEmail(), businessDTO.getBusiness_name()
-                , businessDTO.getBusiness_eng_name(), businessDTO.getBusiness_phone()
-                , businessDTO.getBusiness_address(), businessDTO.getBusiness_overview(), businessDTO.getBusiness_website(), businessDTO.getLogo());
+        boolean isSendMail = sendMailBusiness(businessDTOList);
+
+        if (isSendMail == true) {
+            for (int i = 0; i < businessDTOList.size(); i++) {
+                BusinessDTO businessDTO = businessDTOList.get(i);
+
+                Business businessIsExisted = iBusinessService.getBusinessByEmail(businessDTO.getEmail());
+
+                Business business = new Business(businessDTO.getEmail(), businessDTO.getBusiness_name()
+                        , businessDTO.getBusiness_eng_name(), businessDTO.getBusiness_phone()
+                        , businessDTO.getBusiness_address(), businessDTO.getBusiness_overview(), businessDTO.getBusiness_website(), businessDTO.getLogo());
 
 
-        Semester semester = semesterService.getSemesterByName(businessDTO.getNameSemester());
-        Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
-        if (businessIsExisted == null) {
-            ojt_enrollment.setBusiness(business);
-        } else {
-            ojt_enrollment.setBusiness(businessIsExisted);
-        }
-        ojt_enrollment.setSemester(semester);
+                Semester semester = semesterService.getSemesterByName(businessDTO.getNameSemester());
+                Ojt_Enrollment ojt_enrollment = new Ojt_Enrollment();
+                if (businessIsExisted == null) {
+                    ojt_enrollment.setBusiness(business);
+                } else {
+                    ojt_enrollment.setBusiness(businessIsExisted);
+                }
+                ojt_enrollment.setSemester(semester);
 
-        Date datePost = new Date(Calendar.getInstance().getTime().getTime());
-        Job_Post job_post = new Job_Post(businessDTO.getDescription(), businessDTO.getTime_post(), businessDTO.getViews(), businessDTO.getContact()
-                , businessDTO.getInterview_process(), businessDTO.getInterest());
-        job_post.setOjt_enrollment(ojt_enrollment);
-        job_post.setTimePost(datePost);
+                Date datePost = new Date(Calendar.getInstance().getTime().getTime());
+                Job_Post job_post = new Job_Post(businessDTO.getDescription(), businessDTO.getTime_post(), businessDTO.getViews(), businessDTO.getContact()
+                        , businessDTO.getInterview_process(), businessDTO.getInterest());
+                job_post.setOjt_enrollment(ojt_enrollment);
+                job_post.setTimePost(datePost);
 
-        List<SkillDTO> skillDTOList = businessDTO.getSkillDTOList();
+                List<SkillDTO> skillDTOList = businessDTO.getSkillDTOList();
 
-        Job_Post_Skill job_post_skill = new Job_Post_Skill();
+                Job_Post_Skill job_post_skill = new Job_Post_Skill();
 
-        //import all file to db
-        for (int i = 0; i < skillDTOList.size(); i++) {
-            job_post_skill.setJob_post(job_post);
-            job_post_skill.setSkill(skillDTOList.get(i).getSkill());
-            job_post_skill.setNumber(skillDTOList.get(i).getNumber());
-            job_post_skillService.saveJobPostSkill(job_post_skill);
+                //import all file to db
+                for (int j = 0; j < skillDTOList.size(); j++) {
+                    job_post_skill.setJob_post(job_post);
+                    job_post_skill.setSkill(skillDTOList.get(j).getSkill());
+                    job_post_skill.setNumber(skillDTOList.get(j).getNumber());
+                    job_post_skillService.saveJobPostSkill(job_post_skill);
 
-            job_post_skill = new Job_Post_Skill();
-        }
+                    job_post_skill = new Job_Post_Skill();
+                }
 
 //        insert account to table user
-        if (businessIsExisted == null) {
-            String name = businessDTO.getBusiness_name();
-            String email = businessDTO.getEmail();
-            String password = usersService.getAlphaNumericString();
-            usersService.sendEmail(name, email, password);
-            Users users = new Users(email, password);
-            users.setActive(true);
+                if (businessIsExisted == null) {
+                    String email = businessDTO.getEmail();
+                    String password = usersService.getAlphaNumericString();
 
-            List<Role> roleList = new ArrayList<>();
-            Role roleOfBusiness = new Role();
-            roleOfBusiness.setId(3);
-            roleList.add(roleOfBusiness);
+                    Users users = new Users(email, password);
+                    users.setActive(true);
 
-            Role roleOfSupervisor = new Role();
-            roleOfSupervisor.setId(4);
-            roleList.add(roleOfSupervisor);
+                    List<Role> roleList = new ArrayList<>();
+                    Role roleOfBusiness = new Role();
+                    roleOfBusiness.setId(3);
+                    roleList.add(roleOfBusiness);
 
-            users.setRoles(roleList);
+                    Role roleOfSupervisor = new Role();
+                    roleOfSupervisor.setId(4);
+                    roleList.add(roleOfSupervisor);
 
-            usersService.saveUser(users);
+                    users.setRoles(roleList);
 
-            Supervisor supervisor = new Supervisor();
-            supervisor.setEmail(businessDTO.getEmail());
-            supervisor.setAddress(businessDTO.getBusiness_address());
-            supervisor.setName(businessDTO.getBusiness_eng_name());
-            supervisor.setPhone(businessDTO.getBusiness_phone());
-            iSupervisorService.createSupervisor(supervisor, null);
+                    usersService.saveUser(users);
+
+                    Supervisor supervisor = new Supervisor();
+                    supervisor.setEmail(businessDTO.getEmail());
+                    supervisor.setAddress(businessDTO.getBusiness_address());
+                    supervisor.setName(businessDTO.getBusiness_eng_name());
+                    supervisor.setPhone(businessDTO.getBusiness_phone());
+                    iSupervisorService.createSupervisor(supervisor, null);
+                }
+            }
+            return true;
         } else {
-            String name = businessIsExisted.getBusiness_name();
-            String email = businessIsExisted.getEmail();
-            usersService.sendEmailToBusinessIsExisted(name, email);
+            return false;
         }
-
     }
+
+    public boolean sendMailBusiness(List<BusinessDTO> businessDTOS) {
+        try {
+            for (int i = 0; i < businessDTOS.size(); i++) {
+                BusinessDTO businessDTO = businessDTOS.get(i);
+                Business businessIsExisted = iBusinessService.getBusinessByEmail(businessDTO.getEmail());
+                if (businessIsExisted == null) {
+                    String name = businessDTO.getBusiness_name();
+                    String email = businessDTO.getEmail();
+                    String password = usersService.getAlphaNumericString();
+
+                    boolean isSendMail=usersService.sendEmail(name, email, password);
+                    if(isSendMail==false){
+                        return false;
+                    }
+                } else {
+                    String name = businessIsExisted.getBusiness_name();
+                    String email = businessIsExisted.getEmail();
+                    usersService.sendEmailToBusinessIsExisted(name, email);
+                }
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
 }

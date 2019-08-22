@@ -8,4 +8,6 @@ public interface IHistoryActionService {
     boolean createHistory(HistoryAction HistoryAction);
 
     List<HistoryAction> getAllHistory();
+
+    HistoryAction getHistoryActionById(int id);
 }
