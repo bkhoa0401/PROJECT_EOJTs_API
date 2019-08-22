@@ -916,6 +916,7 @@ class Report extends Component {
         for (let index = 0; index < formatStudentName.length - 1; index++) {
             reportFileName += formatStudentName[index].substring(0, 1);
         }
+        reportFileName += studentCode;
         const reports = await ApiServices.Get(`/student/evaluationsOfStudent?email=${studentEmail}`);
         console.log(reports);
         const businessesOfReport = await ApiServices.Get(`/student/businessesOfEvaluations?email=${studentEmail}`);

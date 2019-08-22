@@ -124,6 +124,7 @@ class Report_Detail extends Component {
             for (let index = 0; index < fileNameFormat.length - 1; index++) {
                 reportFileName += fileNameFormat[index].substring(0,1);
             }
+            reportFileName += student.code;
             this.setState({
                 loading: false,
                 report: report,
