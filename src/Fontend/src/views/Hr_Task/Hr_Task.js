@@ -85,11 +85,13 @@ class Hr_Task extends Component {
     async componentDidMount() {
         const { currentPage, rowsPerPage } = this.state;
         const token = localStorage.getItem('id_token');
+        let studentsNosupervisor = [];
         let role = '';
         if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
         }
+
         const tasks = await ApiServices.Get(`/supervisor/tasks?taskStatus=${this.state.taskStatus}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         const numOfTask = await ApiServices.Get("/supervisor/getNumTask");
         if (numOfTask === null) {
@@ -103,6 +105,13 @@ class Hr_Task extends Component {
                 numOfTask: numOfTask,
                 role: role,
             });
+        }
+
+        if (role === 'ROLE_HR') {
+            studentsNosupervisor = await ApiServices.Get('/business/getStudentsByBusinessWithNoSupervisor');
+            if (studentsNosupervisor.length == 0) {
+                document.getElementById('btnHrCreateTask').setAttribute('disabled', 'disabled');
+            }
         }
     }
 
@@ -445,13 +454,13 @@ class Hr_Task extends Component {
                 if (student.token != null) {
                     let body = '';
                     if (statusUpdate === 4) {
-                        body = 'Trạng thái task ' + '[ ' + this.state.title + '] đã chuyển thành HOÀN THÀNH'
+                        body = 'Nhiệm vụ' + '[ ' + this.state.title + '] đã được kiểm duyệt'
                     } else {
-                        body = 'Trạng thái task ' + '[' + this.state.title + '] đã chuyển thành CẦN CHỈNH SỬA'
+                        body = 'Trạng thái nhiệm vụ' + '[' + this.state.title + '] đã chuyển thành CẦN CHỈNH SỬA'
                     }
                     const notificationDTO = {
                         data: {
-                            title: 'Trạng thái task bị thay đổi',
+                            title: 'Trạng thái task thay đổi',
                             body: body,
                             click_action: "http://localhost:3000/#/hr/invitation/new",
                             icon: "http://url-to-an-icon/icon.png"
@@ -570,154 +579,156 @@ class Hr_Task extends Component {
                                         {
                                             role === "ROLE_SUPERVISOR" ?
                                                 <Button color="primary" onClick={() => this.handleDirect('/supervisor/hr-task/create')}>Tạo nhiệm vụ mới</Button> :
-                                                <Button color="primary" onClick={() => this.handleDirect('/hr/hr-task/create')}>Tạo nhiệm vụ mới</Button>
+                                                <Button id="btnHrCreateTask" color="primary" onClick={() => this.handleDirect('/hr/hr-task/create')}>Tạo nhiệm vụ mới</Button>
                                         }
                                         <br /><br /><br />
                                         <ToastContainer />
-                                        <nav className="navbar navbar-light bg-light justify-content-between">
-                                            <form className="form-inline">
-                                                <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-                                            </form>
-                                        </nav>
-                                        <Table responsive striped>
-                                            <thead>
-                                                <tr>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nhiệm vụ</th>
-                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Ưu tiên</th> */}
-                                                    {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Hạn cuối</th>
+                                        <div>
+                                            <nav className="navbar navbar-light bg-light justify-content-between">
+                                                <form className="form-inline">
+                                                    <input onChange={this.handleInput} name="searchValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                                                </form>
+                                            </nav>
+                                            <Table responsive striped>
+                                                <thead>
+                                                    <tr>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Nhiệm vụ</th>
+                                                        {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Ưu tiên</th> */}
+                                                        {/* <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Hạn cuối</th>
                                                     <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Mức độ</th> */}
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Người giao</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Sinh viên</th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                                                        <Dropdown isOpen={this.state.dropdownStateOpen} toggle={() => this.toggleDropdownState()}>
-                                                            <DropdownToggle nav caret style={{ color: "black" }}>
-                                                                Trạng thái
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Người giao</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Sinh viên</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                            <Dropdown isOpen={this.state.dropdownStateOpen} toggle={() => this.toggleDropdownState()}>
+                                                                <DropdownToggle nav caret style={{ color: "black" }}>
+                                                                    Trạng thái
                                                             </DropdownToggle>
-                                                            <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
-                                                                {dropdownState && dropdownState.map((stateTask, index) => {
-                                                                    return (
-                                                                        <DropdownItem onClick={() => this.handleSelectTaskStatus(stateTask)}>{stateTask}</DropdownItem>
-                                                                    )
-                                                                })
-                                                                }
-                                                            </DropdownMenu>
-                                                        </Dropdown>
-                                                    </th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                                                        <Dropdown isOpen={this.state.dropdownApprovedOpen} toggle={() => this.toggleDropdownApproved()}>
-                                                            <DropdownToggle nav caret style={{ color: "black" }}>
-                                                                Kiểm duyệt
+                                                                <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
+                                                                    {dropdownState && dropdownState.map((stateTask, index) => {
+                                                                        return (
+                                                                            <DropdownItem onClick={() => this.handleSelectTaskStatus(stateTask)}>{stateTask}</DropdownItem>
+                                                                        )
+                                                                    })
+                                                                    }
+                                                                </DropdownMenu>
+                                                            </Dropdown>
+                                                        </th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                                                            <Dropdown isOpen={this.state.dropdownApprovedOpen} toggle={() => this.toggleDropdownApproved()}>
+                                                                <DropdownToggle nav caret style={{ color: "black" }}>
+                                                                    Đã kiểm duyệt
                                                             </DropdownToggle>
-                                                            <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
-                                                                {dropdownApproved && dropdownApproved.map((approvedTask, index) => {
-                                                                    return (
-                                                                        <DropdownItem onClick={() => this.handleSelectTaskStatus(approvedTask)}>{approvedTask}</DropdownItem>
-                                                                    )
-                                                                })
-                                                                }
-                                                            </DropdownMenu>
-                                                        </Dropdown>
-                                                    </th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {isSearching === false ?
-                                                    (
-                                                        tasks && tasks.map((task, index) => {
-                                                            return (
-                                                                <tr>
-                                                                    <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
-                                                                    <td style={{ textAlign: "center" }}>
-                                                                        {
-                                                                            task.task.title.length > 30 ? (task.task.title.replace(task.task.title.substr(31, task.task.title.length), "...")) : (task.task.title)
-                                                                        }
-                                                                    </td>
-                                                                    {/* <td style={{ textAlign: "center" }}>{task.priority}</td> */}
-                                                                    {/* <td style={{ textAlign: "center" }}>{task.time_end}</td>
+                                                                <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
+                                                                    {dropdownApproved && dropdownApproved.map((approvedTask, index) => {
+                                                                        return (
+                                                                            <DropdownItem onClick={() => this.handleSelectTaskStatus(approvedTask)}>{approvedTask}</DropdownItem>
+                                                                        )
+                                                                    })
+                                                                    }
+                                                                </DropdownMenu>
+                                                            </Dropdown>
+                                                        </th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {isSearching === false ?
+                                                        (
+                                                            tasks && tasks.map((task, index) => {
+                                                                return (
+                                                                    <tr>
+                                                                        <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            {
+                                                                                task.task.title.length > 30 ? (task.task.title.replace(task.task.title.substr(31, task.task.title.length), "...")) : (task.task.title)
+                                                                            }
+                                                                        </td>
+                                                                        {/* <td style={{ textAlign: "center" }}>{task.priority}</td> */}
+                                                                        {/* <td style={{ textAlign: "center" }}>{task.time_end}</td>
                                                                 <td style={{ textAlign: "center" }}>{task.level_task}</td> */}
-                                                                    <td style={{ textAlign: "center" }}>{task.task.supervisor.name}</td>
-                                                                    <td style={{ textAlign: "center" }}>{task.nameStudent}</td>
-                                                                    <td style={{ textAlign: "center" }}>
-                                                                        {
-                                                                            this.showTaskState(task.task.status)
-                                                                        }
-                                                                    </td>
-                                                                    <td style={{ textAlign: "center" }}>
-                                                                        {
-                                                                            task.task.status === 'APPROVED' ? (
-                                                                                <i style={{ color: "#4dbd74" }} className="fa fa-check"></i>
-                                                                            ) : (
-                                                                                    task.task.status === 'PENDING' ? (
-                                                                                        <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
-                                                                                    ) : (
-                                                                                            <i style={{ color: "#003322" }} className="fa fa-circle-o-notch fa-spin"></i>
-                                                                                        )
-                                                                                )
-                                                                        }
-                                                                    </td>
-                                                                    <td style={{ textAlign: "center" }}>
-                                                                        <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.toggleModal(task.task.id)}><i className="fa fa-eye"></i></Button>
-                                                                        {
-                                                                            task.status === 'DONE' ? (
-                                                                                <Button disabled style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
-                                                                            ) : (
-                                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
-                                                                                )
-                                                                        }
-                                                                    </td>
-                                                                </tr>
-                                                            )
-                                                        })
-                                                    ) :
-                                                    (
-                                                        searchingTaskList && searchingTaskList.map((task, index) => {
-                                                            return (
-                                                                <tr>
-                                                                    <td style={{ textAlign: "center" }}>{index + 1}</td>
-                                                                    <td style={{ textAlign: "center" }}>{task.task.title}</td>
-                                                                    {/* <td style={{ textAlign: "center" }}>{task.priority}</td> */}
-                                                                    {/* <td style={{ textAlign: "center" }}>{task.time_end}</td>
+                                                                        <td style={{ textAlign: "center" }}>{task.task.supervisor.name}</td>
+                                                                        <td style={{ textAlign: "center" }}>{task.nameStudent}</td>
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            {
+                                                                                this.showTaskState(task.task.status)
+                                                                            }
+                                                                        </td>
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            {
+                                                                                task.task.status === 'APPROVED' ? (
+                                                                                    <i style={{ color: "#4dbd74" }} className="fa fa-check"></i>
+                                                                                ) : (
+                                                                                        task.task.status === 'PENDING' ? (
+                                                                                            <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
+                                                                                        ) : (
+                                                                                                <i style={{ color: "#003322" }} className="fa fa-circle-o-notch fa-spin"></i>
+                                                                                            )
+                                                                                    )
+                                                                            }
+                                                                        </td>
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.toggleModal(task.task.id)}><i className="fa fa-eye"></i></Button>
+                                                                            {
+                                                                                task.status === 'DONE' ? (
+                                                                                    <Button disabled style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
+                                                                                ) : (
+                                                                                        <Button style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
+                                                                                    )
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                )
+                                                            })
+                                                        ) :
+                                                        (
+                                                            searchingTaskList && searchingTaskList.map((task, index) => {
+                                                                return (
+                                                                    <tr>
+                                                                        <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                                        <td style={{ textAlign: "center" }}>{task.task.title}</td>
+                                                                        {/* <td style={{ textAlign: "center" }}>{task.priority}</td> */}
+                                                                        {/* <td style={{ textAlign: "center" }}>{task.time_end}</td>
                                                                     <td style={{ textAlign: "center" }}>{task.level_task}</td> */}
-                                                                    <td style={{ textAlign: "center" }}>{task.task.supervisor.name}</td>
-                                                                    <td style={{ textAlign: "center" }}>{task.nameStudent}</td>
-                                                                    <td style={{ textAlign: "center" }}>
-                                                                        {
-                                                                            this.showTaskState(task.task.status)
-                                                                        }
-                                                                    </td>
-                                                                    <td style={{ textAlign: "center" }}>
-                                                                        {
-                                                                            task.task.status === 'APPROVED' ? (
-                                                                                <i style={{ color: "#4dbd74" }} className="fa fa-check"></i>
-                                                                            ) : (
-                                                                                    task.task.status === 'PENDING' ? (
-                                                                                        <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
-                                                                                    ) : (
-                                                                                            <i style={{ color: "#003322" }} className="fa fa-circle-o-notch fa-spin"></i>
-                                                                                        )
-                                                                                )
-                                                                        }
-                                                                    </td>
-                                                                    <td style={{ textAlign: "center" }}>
-                                                                        <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.toggleModal(task.task.id)}><i className="fa fa-eye"></i></Button>
-                                                                        {
-                                                                            task.status === 'DONE' ? (
-                                                                                <Button disabled style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
-                                                                            ) : (
-                                                                                    <Button style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
-                                                                                )
-                                                                        }
-                                                                    </td>
-                                                                </tr>
-                                                            )
-                                                        })
-                                                    )
+                                                                        <td style={{ textAlign: "center" }}>{task.task.supervisor.name}</td>
+                                                                        <td style={{ textAlign: "center" }}>{task.nameStudent}</td>
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            {
+                                                                                this.showTaskState(task.task.status)
+                                                                            }
+                                                                        </td>
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            {
+                                                                                task.task.status === 'APPROVED' ? (
+                                                                                    <i style={{ color: "#4dbd74" }} className="fa fa-check"></i>
+                                                                                ) : (
+                                                                                        task.task.status === 'PENDING' ? (
+                                                                                            <i style={{ color: "#f86c6b" }} className="fa fa-close"></i>
+                                                                                        ) : (
+                                                                                                <i style={{ color: "#003322" }} className="fa fa-circle-o-notch fa-spin"></i>
+                                                                                            )
+                                                                                    )
+                                                                            }
+                                                                        </td>
+                                                                        <td style={{ textAlign: "center" }}>
+                                                                            <Button style={{ marginRight: "1.5px" }} type="submit" color="primary" onClick={() => this.toggleModal(task.task.id)}><i className="fa fa-eye"></i></Button>
+                                                                            {
+                                                                                task.status === 'DONE' ? (
+                                                                                    <Button disabled style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
+                                                                                ) : (
+                                                                                        <Button style={{ marginRight: "1.5px" }} type="submit" color="danger" onClick={() => this.handleConfirm(task.task)}><i className="fa cui-trash"></i></Button>
+                                                                                    )
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                )
+                                                            })
+                                                        )
 
-                                                }
-                                            </tbody>
-                                        </Table>
+                                                    }
+                                                </tbody>
+                                            </Table>
+                                        </div>
                                         {isSearching === false ?
                                             <Row>
                                                 <Col>

@@ -95,7 +95,7 @@ class DefaultLayout extends Component {
               <DefaultHeader onLogout={e => this.signOut(e)} />
             </Suspense>
           </AppHeader>
-          <div className="app-body">
+          <div className="app-body creamLayout">
             <AppSidebar fixed display="lg">
               <AppSidebarHeader />
               <AppSidebarForm />

@@ -5,6 +5,7 @@ import { Button, Card, CardBody, CardFooter, CardHeader, Col, Row, Table, Input,
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import PaginationComponent from '../Paginations/pagination';
+import { ExcelExport, ExcelExportColumn, ExcelExportColumnGroup } from '@progress/kendo-react-excel-export';
 
 class Report extends Component {
 
@@ -16,7 +17,7 @@ class Report extends Component {
             finalReportColor: ['lime', 'DeepSkyBlue', 'gold', 'red', 'black'],
             rate: ['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu'],
             role: '',
-            students: null,
+            students: [],
             overviewReports: null,
             overviewReportsRate: null,
             onScreenStatus: null,
@@ -35,6 +36,36 @@ class Report extends Component {
             searchOnScreenStatus: null,
             searchFinalOnScreenStatus: null,
             selectedSpecialized: -1,
+            // MSSV: student.code,
+            // name: student.name,
+            // companyName: businessName,
+            // projectName: report.project_name,
+            // startDate: report.timeStart,
+            // endDate: report.timeEnd,
+            // discipline: report.score_discipline,
+            // workEffect: report.score_work,
+            // activity: report.score_activity,
+            // averageScore: averageScore,
+            // rating: rating,
+            // daysWork: report.workDays,
+            // remark: report.remark,
+            reportDownload: {
+                MSSV: "",
+                name: "",
+                companyName: "",
+                projectName: "",
+                startDate: "",
+                endDate: "",
+                discipline: "",
+                workEffect: "",
+                activity: "",
+                averageScore: "",
+                rating: "",
+                daysWork: "",
+                remark: "",
+            },
+            listReportDownload: [],
+            reportFileName: '',
         };
     }
 
@@ -873,10 +904,96 @@ class Report extends Component {
         }
     }
 
+    _exporter;
+    export = async (studentName, studentCode, studentEmail) => {
+        // console.log(studentName);
+        // console.log(studentCode);
+        // console.log(studentEmail);
+        //name
+        let reportFileName = "";
+        let formatStudentName = studentName.split(" ");
+        reportFileName = "Đánh giá hàng tháng_" + formatStudentName[formatStudentName.length - 1];
+        for (let index = 0; index < formatStudentName.length - 1; index++) {
+            reportFileName += formatStudentName[index].substring(0, 1);
+        }
+        reportFileName += studentCode;
+        const reports = await ApiServices.Get(`/student/evaluationsOfStudent?email=${studentEmail}`);
+        console.log(reports);
+        const businessesOfReport = await ApiServices.Get(`/student/businessesOfEvaluations?email=${studentEmail}`);
+        //report
+        // MSSV: student.code,
+        // name: student.name,
+        // companyName: businessName,
+        // projectName: report.project_name,
+        // startDate: report.timeStart,
+        // endDate: report.timeEnd,
+        // discipline: report.score_discipline,
+        // workEffect: report.score_work,
+        // activity: report.score_activity,
+        // averageScore: averageScore,
+        // rating: rating,
+        // daysWork: report.workDays,
+        // remark: report.remark,
+        let listReportDownload = [];
+        if (reports !== null) {
+            for (let index = 0; index < reports.length; index++) {
+                let reportDownload = this.state.reportDownload;
+                reportDownload.MSSV = studentCode;
+                reportDownload.name = studentName;
+                reportDownload.companyName = businessesOfReport[index];
+                reportDownload.projectName = reports[index].project_name;
+                reportDownload.startDate = reports[index].timeStart;
+                reportDownload.endDate = reports[index].timeEnd;
+                reportDownload.discipline = reports[index].score_discipline.toFixed(1);
+                reportDownload.workEffect = reports[index].score_work.toFixed(1);
+                reportDownload.activity = reports[index].score_activity.toFixed(1);
+                reportDownload.averageScore = (parseFloat(reports[index].score_discipline) * 0.4 + parseFloat(reports[index].score_work) * 0.5 + parseFloat(reports[index].score_activity) * 0.1).toFixed(1);
+                if (reportDownload.averageScore > 9) {
+                    reportDownload.rating = "Xuất sắc";
+                } else if (reportDownload.averageScore > 8) {
+                    reportDownload.rating = "Tốt";
+                } else if (reportDownload.averageScore > 7) {
+                    reportDownload.rating = "Khá";
+                } else if (reportDownload.averageScore >= 5) {
+                    reportDownload.rating = "Trung bình";
+                } else {
+                    reportDownload.rating = "Yếu";
+                }
+                reportDownload.daysWork = reports[index].workDays;
+                reportDownload.remark = reports[index].remark;
+                listReportDownload.push(reportDownload);
+                await this.setState({
+                    reportDownload: {
+                        MSSV: "",
+                        name: "",
+                        companyName: "",
+                        projectName: "",
+                        startDate: "",
+                        endDate: "",
+                        discipline: "",
+                        workEffect: "",
+                        activity: "",
+                        averageScore: "",
+                        rating: "",
+                        daysWork: "",
+                        remark: "",
+                    },
+                })
+            }
+        }
+
+        await this.setState({
+            reportFileName: reportFileName,
+            listReportDownload: listReportDownload,
+        })
+        console.log(listReportDownload);
+        this._exporter.save();
+    }
+
     render() {
         const { loading, reportColor, rate, role, students, overviewReports, onScreenStatus, finalOnScreenStatus, finalReportColor } = this.state;
         const { pageNumber, currentPage, rowsPerPage } = this.state;
-        const { numOfStudent, dropdownSpecialized, searchingEvaluationList, isSearching, searchFinalOnScreenStatus, searchOnScreenStatus, searchOverviewReports } = this.state;
+        const { numOfStudent, dropdownSpecialized, searchingEvaluationList, isSearching, searchFinalOnScreenStatus, searchOnScreenStatus, searchOverviewReports, reportFileName, listReportDownload } = this.state;
 
         // if (students != null) {
         //     console.log(students);
@@ -886,6 +1003,45 @@ class Report extends Component {
                 SpinnerLoading.showHashLoader(loading)
             ) : (
                     <div className="animated fadeIn">
+                        <ExcelExport
+                            data={listReportDownload}
+                            fileName={reportFileName}
+                            ref={(exporter) => { this._exporter = exporter; }}
+                        >
+                            <ExcelExportColumnGroup title="Đánh giá tháng 1, 2, 3, 4 & Đánh giá tổng"
+                                headerCellOptions={{ textAlign: 'center', background: '#ffffff', bold: true, color: '#000000', fontSize: 18 }}
+                            >
+                                <ExcelExportColumn field="MSSV" title="MSSV"
+                                    headerCellOptions={{ textAlign: 'center', bold: true, background: '#ffffff', color: '#000000', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                <ExcelExportColumn field="name" title="Họ Tên"
+                                    headerCellOptions={{ textAlign: 'center', bold: true, background: '#ffffff', color: '#000000', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                <ExcelExportColumn field="companyName" title="Tên Doanh Nghiệp"
+                                    headerCellOptions={{ textAlign: 'center', bold: true, background: '#ffffff', color: '#000000', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                <ExcelExportColumn field="projectName" title="Tên Dự Án"
+                                    headerCellOptions={{ textAlign: 'center', bold: true, background: '#ffffff', color: '#000000', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                <ExcelExportColumn field="startDate" title="Ngày bắt đầu đánh giá"
+                                    headerCellOptions={{ textAlign: 'center', bold: true, background: '#ffffff', color: '#000000', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                <ExcelExportColumn field="endDate" title="Ngày kết thúc đánh giá"
+                                    headerCellOptions={{ textAlign: 'center', bold: true, background: '#ffffff', color: '#000000', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                <ExcelExportColumnGroup title="Đánh giá OJT"
+                                    headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }}>
+                                    <ExcelExportColumn field="discipline" title="Kỷ luật(40%)"
+                                        headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                    <ExcelExportColumn field="workEffect" title="Hiệu quả công việc(50%)"
+                                        headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                    <ExcelExportColumn field="activity" title="Tham gia các hoạt động(10%)"
+                                        headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                    <ExcelExportColumn field="averageScore" title="Kết quả thực tập"
+                                        headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                    <ExcelExportColumn field="rating" title="Xếp loại"
+                                        headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                    <ExcelExportColumn field="daysWork" title="Số ngày làm việc"
+                                        headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                    <ExcelExportColumn field="remark" title="Nhận xét"
+                                        headerCellOptions={{ textAlign: 'center', bold: true, color: '#000000', background: '#FFFF00', borderTop: "size:2", borderLeft: "size:2", borderRight: "size:2", borderBottom: "size:2" }} />
+                                </ExcelExportColumnGroup>
+                            </ExcelExportColumnGroup>
+                        </ExcelExport>
                         <Row>
                             <Col xs="12" lg="12">
                                 <Card>
@@ -1094,7 +1250,11 @@ class Report extends Component {
                                                                 </td>
                                                                 {finalOnScreenStatus[index] === null ?
                                                                     <td style={{ textAlign: "center" }}>N/A</td> :
-                                                                    <td style={{ textAlign: "center", fontWeight: 'bold', color: finalReportColor[finalOnScreenStatus[index]] }}>{rate[finalOnScreenStatus[index]]}</td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        <Button style={{ fontWeight: 'bold', color: finalReportColor[finalOnScreenStatus[index]] }} color="link" onClick={() => this.export(student.name, student.code, student.email)}>
+                                                                            {rate[finalOnScreenStatus[index]]}
+                                                                        </Button>
+                                                                    </td>
                                                                 }
                                                             </tr>
                                                         )) :
@@ -1239,7 +1399,11 @@ class Report extends Component {
                                                                 </td>
                                                                 {searchFinalOnScreenStatus[index] === null ?
                                                                     <td style={{ textAlign: "center" }}>N/A</td> :
-                                                                    <td style={{ textAlign: "center", fontWeight: 'bold', color: finalReportColor[searchFinalOnScreenStatus[index]] }}>{rate[searchFinalOnScreenStatus[index]]}</td>
+                                                                    <td style={{ textAlign: "center" }}>
+                                                                        <Button style={{ fontWeight: 'bold', color: finalReportColor[searchFinalOnScreenStatus[index]] }} color="link" onClick={() => this.export(student.name, student.code, student.email)}>
+                                                                            {rate[searchFinalOnScreenStatus[index]]}
+                                                                        </Button>
+                                                                    </td>
                                                                 }
                                                             </tr>
                                                         ))

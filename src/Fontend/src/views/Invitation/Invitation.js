@@ -15,7 +15,7 @@ class Invitation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            students: null,
+            students: [],
             business_eng_name: '',
             searchValue: '',
             columnToSort: '',

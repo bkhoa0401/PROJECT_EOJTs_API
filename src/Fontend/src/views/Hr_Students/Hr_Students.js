@@ -10,7 +10,7 @@ class Hr_Students extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            students: null,
+            students: [],
             searchValue: '',
             loading: true,
             modalDetail: false,

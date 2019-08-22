@@ -3,10 +3,13 @@ import decode from 'jwt-decode';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Col, DropdownItem, Badge, DropdownMenu, DropdownToggle, FormGroup, Label, Nav, NavItem } from 'reactstrap';
+import { Col, DropdownItem, DropdownMenu, DropdownToggle, FormGroup, Label, Nav, NavItem } from 'reactstrap';
 import sygnet from '../../assets/img/brand/sygnet.svg';
 import ApiServices from '../../service/api-service';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
+import Badge from '@material-ui/core/Badge';
+import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
+import DraftsOutlinedIcon from '@material-ui/icons/DraftsOutlined';
 
 
 const propTypes = {
@@ -23,6 +26,8 @@ class DefaultHeader extends Component {
       username: '',
       logo: null,
       linkProfile: '',
+      informs: null,
+      role: '',
     }
   }
 
@@ -37,7 +42,11 @@ class DefaultHeader extends Component {
       let username = '';
       let logo = null;
       let linkProfile = '';
+      let informs = null;
       if (role === "ROLE_ADMIN" || role === "ROLE_STARTUP" || role === "ROLE_HEADTRAINING" || role === "ROLE_HEADMASTER") {
+        if (role === "ROLE_ADMIN") {
+          informs = await ApiServices.Get(`/admin/eventsReceivedNotRead`);
+        }
         actor = await ApiServices.Get(`/admin/getCurrentUser`);
         if (actor !== null) {
           username = actor.name;
@@ -45,6 +54,7 @@ class DefaultHeader extends Component {
           linkProfile = `/account_detail`;
         }
       } else if (role === "ROLE_HR") {
+        informs = await ApiServices.Get(`/business/eventsReceivedNotRead`);
         actor = await ApiServices.Get(`/business/getBusiness`);
         if (actor !== null) {
           username = actor.business_eng_name;
@@ -64,6 +74,8 @@ class DefaultHeader extends Component {
         username: username,
         logo: logo,
         linkProfile: linkProfile,
+        informs: informs,
+        role: role,
       });
     }
   }
@@ -71,8 +83,11 @@ class DefaultHeader extends Component {
   render() {
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
-    const { username, logo, linkProfile } = this.state;
-
+    const { username, logo, linkProfile, informs, role } = this.state;
+    let numberOfInforms = 0;
+    if (informs != null) {
+      numberOfInforms = informs.length;
+    }
     return (
       <React.Fragment>
         <AppSidebarToggler className="d-lg-none" display="md" mobile />
@@ -105,9 +120,20 @@ class DefaultHeader extends Component {
               }
             </NavLink>
           </NavItem>
+          {role && role !== "ROLE_SUPERVISOR" ?
+            <AppAsideToggler className="d-md-down-none">
+              {numberOfInforms > 0 ?
+                <Badge variant="dot" color="secondary">
+                  <EmailOutlinedIcon style={{ color: "Gray" }}/>
+                </Badge> :
+                <DraftsOutlinedIcon style={{ color: "Gray" }}/>
+              }
+            </AppAsideToggler> :
+            <></>
+          }
           <NavItem style={{ width: "30px" }}>
             <NavLink onClick={e => this.props.onLogout(e)} className="nav-link">
-              <ExitToAppIcon fontSize="medium" />
+              <ExitToAppOutlinedIcon fontSize="medium" style={{ color: "Gray" }} />
             </NavLink>
           </NavItem>
           {/* <NavItem className="d-md-down-none">
@@ -201,7 +227,6 @@ class DefaultHeader extends Component {
             </AppHeaderDropdown> : <></>
           } */}
         </Nav>
-        <AppAsideToggler className="d-md-down-none"/>
         {/*<AppAsideToggler className="d-lg-none" mobile />*/}
       </React.Fragment>
     );

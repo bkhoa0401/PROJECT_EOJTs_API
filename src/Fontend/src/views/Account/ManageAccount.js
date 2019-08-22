@@ -13,7 +13,7 @@ class ManageAccount extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            supervisors: null,
+            supervisors: [],
             loading: true,
             pageNumber: 1,
             currentPage: 0,

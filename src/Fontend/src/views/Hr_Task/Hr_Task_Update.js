@@ -32,12 +32,18 @@ class Hr_Task_Update extends Component {
     async componentDidMount() {
         const id = window.location.href.split("/").pop();
         const task = await ApiServices.Get(`/supervisor/task?id=${id}`);
-        const students = await ApiServices.Get('/supervisor/students');
         const token = localStorage.getItem('id_token');
         let role = '';
         if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
+        }
+
+        var students = null;
+        if (role === 'ROLE_SUPERVISOR') {
+            students = await ApiServices.Get('/supervisor/students');
+        } else if (role === 'ROLE_HR') {
+            students = await ApiServices.Get('/business/getStudentsByBusinessWithNoSupervisor');
         }
 
         if (students !== null) {
