@@ -76,7 +76,7 @@ class Invitation_Create extends Component {
 
     handleInputSearchSum = async (event) => {
         const { name, value } = event.target;
-        if (value === "") {
+        if (value === "" || !value.trim()) {
             await this.setState({
                 [name]: value.substr(0, 20),
                 isSearchingSum: false,
@@ -96,7 +96,7 @@ class Invitation_Create extends Component {
 
     handleInputSearchSuggest = async (event) => {
         const { name, value } = event.target;
-        if (value === "") {
+        if (value === "" || !value.trim()) {
             await this.setState({
                 [name]: value.substr(0, 20),
                 isSearchingSuggest: false,

@@ -78,7 +78,7 @@ class ResetPassword extends Component {
     render() {
         const { validatorConfirmPassword } = this.state;
         return (
-            <div className="app flex-row align-items-center">
+            <div className="app flex-row align-items-center backgroundFPT">
                 <Container>
                     <Row className="justify-content-center">
                         <Col md="9" lg="7" xl="6">
