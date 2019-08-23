@@ -62,6 +62,7 @@ class DefaultHeader extends Component {
           linkProfile = `/Business_Detail/${actor.email}`;
         }
       } else if (role === "ROLE_SUPERVISOR") {
+        informs = await ApiServices.Get(`/supervisor/eventsReceivedNotRead`);
         let tmpActor = await ApiServices.Get(`/supervisor`);
         actor = tmpActor.supervisor;
         if (actor !== null) {
@@ -120,17 +121,14 @@ class DefaultHeader extends Component {
               }
             </NavLink>
           </NavItem>
-          {role && role !== "ROLE_SUPERVISOR" ?
-            <AppAsideToggler className="d-md-down-none">
-              {numberOfInforms > 0 ?
-                <Badge variant="dot" color="secondary">
-                  <EmailOutlinedIcon style={{ color: "Gray" }}/>
-                </Badge> :
-                <DraftsOutlinedIcon style={{ color: "Gray" }}/>
-              }
-            </AppAsideToggler> :
-            <></>
-          }
+          <AppAsideToggler className="d-md-down-none">
+            {numberOfInforms > 0 ?
+              <Badge variant="dot" color="secondary">
+                <EmailOutlinedIcon style={{ color: "Gray" }} />
+              </Badge> :
+              <DraftsOutlinedIcon style={{ color: "Gray" }} />
+            }
+          </AppAsideToggler>
           <NavItem style={{ width: "30px" }}>
             <NavLink onClick={e => this.props.onLogout(e)} className="nav-link">
               <ExitToAppOutlinedIcon fontSize="medium" style={{ color: "Gray" }} />

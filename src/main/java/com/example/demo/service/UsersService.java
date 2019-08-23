@@ -162,6 +162,15 @@ public class UsersService implements IUsersService {
 
     @Override
     public boolean saveListUser(List<Users> usersList) {
+        ValueOperations values = template.opsForValue();
+        List<Users> usersListIsExisted = (List<Users>) values.get("ROLE_STUDENTusers");
+        if(usersListIsExisted==null){
+            values.set("ROLE_STUDENTusers",usersList);
+        }else{
+            usersListIsExisted.addAll(usersList);
+            values.set("ROLE_STUDENTusers",usersListIsExisted);
+        }
+
         usersRepository.saveAll(usersList);
         return true;
     }

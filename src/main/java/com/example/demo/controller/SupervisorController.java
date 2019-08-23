@@ -2,10 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.config.ActionEnum;
 import com.example.demo.config.Status;
-import com.example.demo.dto.PagingDTO;
-import com.example.demo.dto.Student_EvaluationDTO;
-import com.example.demo.dto.SupervisorDTO;
-import com.example.demo.dto.TaskDTO;
+import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import com.example.demo.utils.Utils;
@@ -46,6 +43,9 @@ public class SupervisorController {
 
     @Autowired
     ISemesterService semesterService;
+
+    @Autowired
+    IEventService eventService;
 
     @Autowired
     IHistoryActionService iHistoryActionService;
@@ -488,6 +488,64 @@ public class SupervisorController {
         }
         if (student_evaluationDTOS != null) {
             return new ResponseEntity<List<Student_EvaluationDTO>>(student_evaluationDTOS, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/events")
+    @ResponseBody
+    public ResponseEntity<List<EventDTO>> getAllEventOfSupervisorSent() {
+        String email = getEmailFromToken();
+        List<Event> events = eventService.getEventListOfSupervisor(email);
+        if (events != null) {
+            List<Event> finalSupervisorListEvent = eventService.getEventListSent(events);
+            Collections.sort(finalSupervisorListEvent);
+            List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalSupervisorListEvent);
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/eventsReceived")
+    @ResponseBody
+    public ResponseEntity<List<EventDTO>> getAllEventOfSupervisorReceived() {
+        String email = getEmailFromToken();
+        List<Event> supervisorReceivedEvents = eventService.getEventListOfSupervisor(email);
+        if (supervisorReceivedEvents != null) {
+            List<Event> finalListEvent = eventService.getEventListReceived(supervisorReceivedEvents);
+            Collections.sort(finalListEvent);
+            List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEvent);
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/eventsReceivedNotRead")
+    @ResponseBody
+    public ResponseEntity<List<EventDTO>> getAllEventOfSupervisorReceivedNotRead() {
+        String email = getEmailFromToken();
+        List<Event> supervisorReceivedEvents = eventService.getEventListOfSupervisor(email);
+        if (supervisorReceivedEvents != null) {
+            List<Event> finalListEvent = eventService.getEventListReceived(supervisorReceivedEvents);
+            List<Event> finalListEventNotRead = eventService.getEventListNotRead(finalListEvent);
+            Collections.sort(finalListEventNotRead);
+            List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventNotRead);
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @GetMapping("/eventsReceivedRead")
+    @ResponseBody
+    public ResponseEntity<List<EventDTO>> getAllEventOfSupervisorReceivedRead() {
+        String email = getEmailFromToken();
+        List<Event> supervisorReceivedEvents = eventService.getEventListOfBusiness(email);
+        if (supervisorReceivedEvents != null) {
+            List<Event> finalListEvent = eventService.getEventListReceived(supervisorReceivedEvents);
+            List<Event> finalListEventRead = eventService.getEventListRead(finalListEvent);
+            Collections.sort(finalListEventRead);
+            List<EventDTO> eventDTOList = eventService.transformListEventToEventDTO(finalListEventRead);
+            return new ResponseEntity<List<EventDTO>>(eventDTOList, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }

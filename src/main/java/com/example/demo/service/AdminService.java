@@ -77,21 +77,22 @@ public class AdminService implements IAdminService {
 
         List<Business> businessList = businessService.getAllBusinessBySemester();
         List<Business_ListJobPostDTO> business_listJobPostDTOS = new ArrayList<>();
+        if (businessList != null) {
+            for (int i = 0; i < businessList.size(); i++) {
 
-        for (int i = 0; i < businessList.size(); i++) {
+                //Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(businessList.get(i));
+                Semester semesterCurrent = semesterService.getSemesterCurrent();
+                Ojt_Enrollment ojt_enrollment =
+                        ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(businessList.get(i).getEmail(), semesterCurrent.getId());
 
-            //Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjt_enrollmentOfBusiness(businessList.get(i));
-            Semester semesterCurrent = semesterService.getSemesterCurrent();
-            Ojt_Enrollment ojt_enrollment =
-                    ojt_enrollmentService.getOjtEnrollmentByBusinessEmailAndSemesterId(businessList.get(i).getEmail(), semesterCurrent.getId());
+                List<Job_Post> job_postList = job_postService.getAllJobPostOfBusiness(ojt_enrollment);
 
-            List<Job_Post> job_postList = job_postService.getAllJobPostOfBusiness(ojt_enrollment);
+                Business_ListJobPostDTO business_jobPostDTO = new Business_ListJobPostDTO();
+                business_jobPostDTO.setJob_postList(job_postList);
+                business_jobPostDTO.setBusiness(businessList.get(i));
 
-            Business_ListJobPostDTO business_jobPostDTO = new Business_ListJobPostDTO();
-            business_jobPostDTO.setJob_postList(job_postList);
-            business_jobPostDTO.setBusiness(businessList.get(i));
-
-            business_listJobPostDTOS.add(business_jobPostDTO);
+                business_listJobPostDTOS.add(business_jobPostDTO);
+            }
         }
         return business_listJobPostDTOS;
     }

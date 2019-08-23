@@ -14,6 +14,8 @@ public interface IEventService {
 
     List<Event> getEventListOfBusiness(String email);
 
+    List<Event> getEventListOfSupervisor(String email);
+
     List<Event> getEventListSent(List<Event> eventList);
 
     List<Event> getEventListReceived(List<Event> eventList);

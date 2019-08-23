@@ -11,6 +11,11 @@ export default {
       icon: 'icon-graduation',
     },
     {
+      name: 'Thông báo',
+      url: '/supervisor/informmessage',
+      icon: 'icon-envelope-letter',
+    },
+    {
       name: 'Danh sách nhiệm vụ',
       url: '/supervisor/hr-task',
       icon: 'icon-notebook',

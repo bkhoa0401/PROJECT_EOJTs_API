@@ -1,7 +1,7 @@
 import decode from 'jwt-decode';
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
-import { Input, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Label, Pagination, Row, Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { Input, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Label, Pagination, Row, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -161,7 +161,7 @@ class InformMessage_Detail extends Component {
                                             <Col md="2">
                                                 <h6>Từ:</h6>
                                             </Col>
-                                            <Col xs="12" md="4">
+                                            <Col xs="12" md="9">
                                                 {isStudentSent === false ?
                                                     <Label>{<>{informFromName}<br />({informFromEmail})</>}</Label> :
                                                     <div>
@@ -175,8 +175,8 @@ class InformMessage_Detail extends Component {
                                             </Col>
                                             {
                                                 isStudentSent === true ? (
-                                                    <Col md="2">
-                                                        <Button style={{ marginLeft: "480px" }} color="primary" onClick={() => this.toggleModalReply()}>
+                                                    <Col md="1">
+                                                        <Button color="ghost-secondary" onClick={() => this.toggleModalReply()}>
                                                             <i className="fa fa-mail-reply"></i>
                                                         </Button>
                                                     </Col>
@@ -242,91 +242,70 @@ class InformMessage_Detail extends Component {
                                     </CardFooter>
                                 </Card>
                                 <Modal isOpen={this.state.modalReply} toggle={this.toggleModalReply}
-                                    className={'modal-lg ' + this.props.className}>
-                                    <ModalHeader style={{ backgroundColor: "#20a8d8", color: "#f0f8ff" }} toggle={this.toggleModalReply}>Trả lời thông báo</ModalHeader>
+                                    className={this.props.className}>
+                                    <ModalHeader style={{ fontWeight: 'bold', backgroundColor:"#F0F3F5" }} toggle={this.toggleModalReply}>Trả lời thông báo</ModalHeader>
                                     <ModalBody>
-                                        <Row>
-                                            <Col xs="12" lg="12">
-                                                <Card>
-                                                    <CardHeader style={{ fontWeight: "bold" }}>
-                                                        <i className="fa fa-align-justify"></i>Soạn thông báo
-                                                    </CardHeader>
-                                                    <CardBody>
-                                                        <FormGroup row>
-                                                            <Col md="2">
-                                                                <h6>Từ:</h6>
-                                                            </Col>
-                                                            <Col xs="12" md="10">
-                                                                <Input type="text" disabled defaultValue={informFromEmail} />
-                                                            </Col>
-                                                        </FormGroup>
-                                                        <FormGroup row>
-                                                            <Col md="2">
-                                                                <h6>Đến:</h6>
-                                                            </Col>
-                                                            <Col xs="12" md="9">
-                                                                {students && students.map((student, index) => {
-                                                                    return (
-                                                                        <Input type="text" disabled defaultValue={student.email} />
-                                                                    )
-                                                                })}
-                                                            </Col>
-                                                            <Col xs="12" md="1">
-                                                                {/* <Button block outline color="primary" onClick={this.openPopupRegist}>Thêm</Button> */}
-                                                            </Col>
-                                                        </FormGroup>
-                                                        <FormGroup row>
-                                                            <Col md="2">
-                                                                <h6>Chủ đề:</h6>
-                                                            </Col>
-                                                            <Col xs="12" md="10">
-                                                                <Input type="text" value={titleReply} onChange={this.handleInput} id="titleReply" name="titleReply" />
-                                                                <span className="form-error is-visible text-danger">
-                                                                    {this.validator.message('Chủ đề', titleReply, 'required')}
-                                                                </span>
-                                                            </Col>
-                                                        </FormGroup>
-                                                        <hr />
-                                                        <FormGroup row>
-                                                            <Col md="2">
-                                                                <h6>Nội dung:</h6>
-                                                            </Col>
-                                                            <Col xs="12" md="10">
-                                                                <CKEditor
-                                                                    editor={ClassicEditor}
-                                                                    data={descriptionReply}
-                                                                    onChange={(event, editor) => {
-                                                                        this.setState({
-                                                                            descriptionReply: editor.getData(),
-                                                                        })
-                                                                    }}
-                                                                />
-                                                                <span className="form-error is-visible text-danger">
-                                                                    {this.validator.message('Nội dung', descriptionReply, 'required')}
-                                                                </span>
-                                                            </Col>
-                                                        </FormGroup>
-                                                        <ToastContainer />
-                                                    </CardBody>
-
-                                                    <CardFooter className="p-3">
-                                                        <Row style={{ marginLeft: "21%" }}>
-                                                            <Col xs="4" sm="4">
-                                                                <Button block color="secondary" onClick={this.toggleModalReply}>
-                                                                    Hủy
-                                                                 </Button>
-                                                            </Col>
-                                                            <Col xs="4" sm="4">
-                                                                <Button block color="primary" onClick={() => this.handleSubmit()}>
-                                                                    Tạo
-                                                                </Button>
-                                                            </Col>
-                                                        </Row>
-                                                    </CardFooter>
-                                                </Card>
+                                        <FormGroup row>
+                                            <Col md="3">
+                                                <h6>Từ:</h6>
                                             </Col>
-                                        </Row>
+                                            <Col xs="12" md="9">
+                                                <Input type="text" disabled defaultValue={informFromEmail} />
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="3">
+                                                <h6>Đến:</h6>
+                                            </Col>
+                                            <Col xs="12" md="9">
+                                                {students && students.map((student, index) => {
+                                                    return (
+                                                        <Input type="text" disabled defaultValue={student.email} />
+                                                    )
+                                                })}
+                                            </Col>
+                                            <Col xs="12" md="1">
+                                                {/* <Button block outline color="primary" onClick={this.openPopupRegist}>Thêm</Button> */}
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Col md="3">
+                                                <h6>Chủ đề:</h6>
+                                            </Col>
+                                            <Col xs="12" md="9">
+                                                <Input type="text" value={titleReply} onChange={this.handleInput} id="titleReply" name="titleReply" />
+                                                <span className="form-error is-visible text-danger">
+                                                    {this.validator.message('Chủ đề', titleReply, 'required')}
+                                                </span>
+                                            </Col>
+                                        </FormGroup>
+                                        <hr />
+                                        <FormGroup row>
+                                            <Col md="3">
+                                                <h6>Nội dung:</h6>
+                                            </Col>
+                                            <Col xs="12" md="9">
+                                                <Input type="textarea" name="descriptionReply" id="descriptionReply" rows="9" value={descriptionReply} onChange={this.handleInput} />
+                                                {/* <CKEditor
+                                                    editor={ClassicEditor}
+                                                    data={descriptionReply}
+                                                    onChange={(event, editor) => {
+                                                        this.setState({
+                                                            descriptionReply: editor.getData(),
+                                                        })
+                                                    }}
+                                                /> */}
+                                                <span className="form-error is-visible text-danger">
+                                                    {this.validator.message('Nội dung', descriptionReply, 'required')}
+                                                </span>
+                                            </Col>
+                                        </FormGroup>
                                     </ModalBody>
+                                    <ModalFooter>
+                                        <Button color="primary" onClick={() => this.handleSubmit()}>
+                                            Tạo
+                                        </Button>
+                                    </ModalFooter>
                                 </Modal>
                             </Col>
                         </Row>
