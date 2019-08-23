@@ -31,13 +31,14 @@ class Log extends Component {
     async componentDidMount() {
         const { currentPage, rowsPerPage } = this.state;
         const logs = await ApiServices.Get(`/admin/histories?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const numOfLogs = await ApiServices.Get(`/admin/searchListAction?valueSearch=${""}`);
         // const numOfLogs = await ApiServices.Get(`/business/searchListBusiness?valueSearch=${""}`);
         if (logs !== null) {
             this.setState({
                 logs: logs.listData,
                 pageNumber: logs.pageNumber,
                 loading: false,
-                // numOfLogs: numOfLogs.length,
+                numOfLogs: numOfLogs.length,
             });
         }
     }
@@ -165,6 +166,7 @@ class Log extends Component {
                                                         <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
                                                         <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Email</th>
                                                         <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Vai trò</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Controller</th>
                                                         <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Chức năng</th>
                                                         <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Tên chức năng</th>
                                                         <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Thời điểm</th>
@@ -180,6 +182,7 @@ class Log extends Component {
                                                                         <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
                                                                         <td style={{ textAlign: "center" }}>{log.email}</td>
                                                                         <td style={{ textAlign: "center" }}>{log.role}</td>
+                                                                        <td style={{ textAlign: "center" }}>{log.controller}</td>
                                                                         <td style={{ textAlign: "center" }}>{log.function_type}</td>
                                                                         <td style={{ textAlign: "center" }}>{log.function_name}</td>
                                                                         <td style={{ textAlign: "center" }}><Moment>{log.actionTime}</Moment></td>
