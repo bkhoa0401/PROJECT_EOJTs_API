@@ -31,13 +31,14 @@ class Log extends Component {
     async componentDidMount() {
         const { currentPage, rowsPerPage } = this.state;
         const logs = await ApiServices.Get(`/admin/histories?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
+        const numOfLogs = await ApiServices.Get(`/admin/searchListAction?valueSearch=${""}`);
         // const numOfLogs = await ApiServices.Get(`/business/searchListBusiness?valueSearch=${""}`);
         if (logs !== null) {
             this.setState({
                 logs: logs.listData,
                 pageNumber: logs.pageNumber,
                 loading: false,
-                // numOfLogs: numOfLogs.length,
+                numOfLogs: numOfLogs.length,
             });
         }
     }
@@ -126,7 +127,7 @@ class Log extends Component {
                 isSearching: false,
             })
         } else {
-            const logs = await ApiServices.Get(`/business/searchListBusiness?valueSearch=${value.substr(0, 20)}`);
+            const logs = await ApiServices.Get(`/admin/searchListAction?valueSearch=${value.substr(0, 20)}`);
             if (logs !== null) {
                 this.setState({
                     [name]: value.substr(0, 20),
@@ -162,11 +163,13 @@ class Log extends Component {
                                             <Table responsive striped>
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ textAlign: "center" }}>STT</th>
-                                                        <th style={{ textAlign: "center" }}>Email</th>
-                                                        <th style={{ textAlign: "center" }}>Vai trò</th>
-                                                        <th style={{ textAlign: "center" }}>Chức năng</th>
-                                                        <th style={{ textAlign: "center" }}>Thời điểm</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Email</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Vai trò</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Controller</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Chức năng</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Tên chức năng</th>
+                                                        <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Thời điểm</th>
                                                         <th style={{ textAlign: "center" }}></th>
                                                     </tr>
                                                 </thead>
@@ -179,7 +182,9 @@ class Log extends Component {
                                                                         <td style={{ textAlign: "center" }}>{currentPage * rowsPerPage + index + 1}</td>
                                                                         <td style={{ textAlign: "center" }}>{log.email}</td>
                                                                         <td style={{ textAlign: "center" }}>{log.role}</td>
+                                                                        <td style={{ textAlign: "center" }}>{log.controller}</td>
                                                                         <td style={{ textAlign: "center" }}>{log.function_type}</td>
+                                                                        <td style={{ textAlign: "center" }}>{log.function_name}</td>
                                                                         <td style={{ textAlign: "center" }}><Moment>{log.actionTime}</Moment></td>
                                                                         <td style={{ textAlign: "center" }}>
                                                                             <Button color="primary" onClick={() => this.toggleModalDetail(log.id)}><i className="fa fa-eye"></i></Button>
@@ -193,6 +198,7 @@ class Log extends Component {
                                                                         <td style={{ textAlign: "center" }}>{log.email}</td>
                                                                         <td style={{ textAlign: "center" }}>{log.role}</td>
                                                                         <td style={{ textAlign: "center" }}>{log.function_type}</td>
+                                                                        <td style={{ textAlign: "center" }}>{log.function_name}</td>
                                                                         <td style={{ textAlign: "center" }}><Moment>{log.actionTime}</Moment></td>
                                                                         <td style={{ textAlign: "center" }}>
                                                                             <Button color="primary" onClick={() => this.toggleModalDetail(log.id)}><i className="fa fa-eye"></i></Button>
@@ -205,7 +211,7 @@ class Log extends Component {
                                             </Table>
                                         </div>
                                         <ToastContainer />
-                                        {isSearching === false ?
+                                        {logs && logs !== null ? (isSearching === false ?
                                             <Row>
                                                 <Col>
                                                     <Row>
@@ -227,146 +233,41 @@ class Log extends Component {
                                                         <Label>Bạn đang xem kết quả từ {currentPage * rowsPerPage + 1} - {currentPage * rowsPerPage + logs.length} trên tổng số {numOfLogs} kết quả</Label>
                                                     </Row>
                                                 </Col>
-                                            </Row> : <></>
+                                            </Row> : <></>) : <></>
                                         }
                                     </CardBody>
                                 </Card>
                             </Col>
                         </Row>
-                        <Modal isOpen={this.state.modalDetail} toggle={this.toggleModalDetail} className={'modal-primary ' + this.props.className}>
-                            <ModalHeader toggle={this.toggleModalDetail}>Chi tiết hoạt động</ModalHeader>
+                        <Modal isOpen={this.state.modalDetail} toggle={this.toggleModalDetail} className={'modal-lg ' + this.props.className}>
+                            <ModalHeader toggle={this.toggleModalDetail} style={{ color: "white", backgroundColor: "#20A8D8" }}>Chi tiết hoạt động</ModalHeader>
                             <ModalBody>
-                                <div>
-                                    <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>Email</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                {log === null ?
-                                                    <></> :
-                                                    <Label>{log.email}</Label>
-                                                }
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>Vai trò</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                {log === null ?
-                                                    <></> :
-                                                    <Label>{log.role}</Label>
-                                                }
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>Chức năng</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                {log === null ?
-                                                    <></> :
-                                                    <Label>{log.function_type}</Label>
-                                                }
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>Controller</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                {log === null ?
-                                                    <></> :
-                                                    <Label>{log.controller}</Label>
-                                                }
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>Tên chức năng</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                {log === null ?
-                                                    <></> :
-                                                    <Label>{log.function_name}</Label>
-                                                }
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>Đối tượng tương tác</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                {log === null ?
-                                                    <Label>N/A</Label> :
-                                                    <Label>{log.targetEmail}</Label>
-                                                }
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Col md="4">
-                                                <h6>Thời điểm</h6>
-                                            </Col>
-                                            <Col xs="12" md="8">
-                                                {log === null ?
-                                                    <></> :
-                                                    <Label><Moment>{log.actionTime}</Moment></Label>
-                                                }
-                                            </Col>
-                                        </FormGroup>
-                                        {
-                                            log === null ? <></> :
-                                                (
-                                                    log.details.map((detail, index) => {
-                                                        return (
-                                                            <div>
-                                                                <FormGroup row>
-                                                                    <Col md="4">
-                                                                        <h6>Tên bảng</h6>
-                                                                    </Col>
-                                                                    <Col xs="12" md="8">
-                                                                        {
-                                                                            <Label>{detail.tableName}</Label>
-                                                                        }
-                                                                    </Col>
-                                                                </FormGroup>
-                                                                <FormGroup row>
-                                                                    <Col md="4">
-                                                                        <h6>Thuộc tính thay đổi</h6>
-                                                                    </Col>
-                                                                    <Col xs="12" md="8">
-                                                                        {
-                                                                            <Label>{detail.columnName}</Label>
-                                                                        }
-                                                                    </Col>
-                                                                </FormGroup>
-                                                                {/* <FormGroup row>
-                                                                    <Col md="4">
-                                                                        <h6>Target Id</h6>
-                                                                    </Col>
-                                                                    <Col xs="12" md="8">
-                                                                        {
-                                                                            <Label>{detail.targetId}</Label>
-                                                                        }
-                                                                    </Col>
-                                                                </FormGroup> */}
-                                                                <FormGroup row>
-                                                                    <Col md="4">
-                                                                        <h6>Giá trị mới</h6>
-                                                                    </Col>
-                                                                    <Col xs="12" md="8">
-                                                                        {
-                                                                            <Label>{detail.newValue}</Label>
-                                                                        }
-                                                                    </Col>
-                                                                </FormGroup>
-                                                            </div>
-                                                        )
-                                                    })
-                                                )
-                                        }
-                                    </Form>
+                                <div style={{ maxHeight: '563px', overflowY: 'auto' }}>
+                                    <Table responsive striped>
+                                        <thead>
+                                            <tr>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>STT</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Tên bảng tương tác</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Tên cột tương tác</th>
+                                                <th style={{ textAlign: "center", whiteSpace: "nowrap", paddingBottom: "20px" }}>Trạng thái sau khi sửa</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {log !== null ?
+                                                log.details && log.details.map((detail, index) => {
+                                                    return (
+                                                        <tr>
+                                                            <td style={{ textAlign: "center" }}>{index + 1}</td>
+                                                            <td style={{ textAlign: "center" }}>{detail.tableName}</td>
+                                                            <td style={{ textAlign: "center" }}>{detail.columnName}</td>
+                                                            <td style={{ textAlign: "center" }}>{detail.newValue}</td>
+                                                        </tr>
+                                                    )
+                                                }) :
+                                                <></>
+                                            }
+                                        </tbody>
+                                    </Table>
                                 </div>
                             </ModalBody>
                         </Modal>

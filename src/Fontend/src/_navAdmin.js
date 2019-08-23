@@ -3,7 +3,7 @@ export default {
     {
       name: 'Dashboard',
       url: '/admin',
-      icon: 'icon-speedometer',
+      icon: 'icon-screen-desktop',
     },
     {
       name: 'Thông số lịch trình',
@@ -92,7 +92,7 @@ export default {
     {
       name: 'Nhật ký hoạt động',
       url: '/admin/log',
-      icon: 'icon-star',
+      icon: 'icon-speedometer',
     }
   ]
 };

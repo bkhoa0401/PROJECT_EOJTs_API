@@ -36,6 +36,9 @@ public class EvaluationService implements IEvaluationService {
     @Autowired
     IStudentService iStudentService;
 
+    @Autowired
+    ISupervisorService iSupervisorService;
+
     //check semester //ok
     @Override
     public void createNewEvaluation(Evaluation evaluation, String studentEmail) {
@@ -66,14 +69,14 @@ public class EvaluationService implements IEvaluationService {
             } else {
                 student.setStatus(StudentStatus.FAIL);
             }
-            iStudentService.saveStudent(student);
+            iStudentService.updateStudentPassOrFailRedis(student);
         }
     }
 
     public boolean checkStudentPassOrFail(Evaluation evaluation) {
-        float scoreActivity = (float) (evaluation.getScore_activity()*0.1);
-        float scoreDiscipline = (float) (evaluation.getScore_discipline()*0.4);
-        float scoreWork = (float) (evaluation.getScore_work()*0.5);
+        float scoreActivity = (float) (evaluation.getScore_activity() * 0.1);
+        float scoreDiscipline = (float) (evaluation.getScore_discipline() * 0.4);
+        float scoreWork = (float) (evaluation.getScore_work() * 0.5);
 
         float result = (scoreActivity + scoreDiscipline + scoreWork);
         if (result >= 5) {
@@ -148,9 +151,20 @@ public class EvaluationService implements IEvaluationService {
     public List<Evaluation> getEvaluationsByBusinessEmail(String email) {
         Semester semesterCurrent = semesterService.getSemesterCurrent();
 
-
         Business business = iBusinessService.getBusinessByEmail(email);
         List<Supervisor> supervisors = business.getSupervisors();
+
+        if (supervisors == null) {
+            Supervisor supervisorIsBusiness = iSupervisorService.findByEmail(business.getEmail());
+            supervisors.add(supervisorIsBusiness);
+        }
+
+        if (supervisors != null) {
+            Supervisor supervisorIsBusiness = iSupervisorService.findByEmail(business.getEmail());
+            if (supervisorIsBusiness != null) {
+                supervisors.add(supervisorIsBusiness);
+            }
+        }
 
         if (supervisors != null) {
             List<Evaluation> evaluationList = new ArrayList<>();
@@ -162,7 +176,7 @@ public class EvaluationService implements IEvaluationService {
                 }
             } //get all evaluation of a business
 
-            if(evaluationList.size()!=0){
+            if (evaluationList.size() != 0) {
                 List<Evaluation> evaluationListResult = new ArrayList<>();
                 for (int i = 0; i < evaluationList.size(); i++) {
                     Evaluation evaluation = evaluationList.get(i);

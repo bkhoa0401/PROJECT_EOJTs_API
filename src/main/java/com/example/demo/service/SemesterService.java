@@ -93,7 +93,7 @@ public class SemesterService implements ISemesterService {
         Semester semesterByStartDateAndEndDate = new Semester();
 
         for (int i = 0; i < semesters.size(); i++) {
-            String startDate = semesters.get(i).getStart_date().toString();
+            String startDate = semesters.get(i).getStart_choose_option_time().toString();
             String endDate = semesters.get(i).getEnd_date().toString();
 
             boolean getSemesterByStartDateAndEndDate = Utils.aDateBetweenTwoDate(startDate, endDate);

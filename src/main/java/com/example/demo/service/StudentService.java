@@ -110,6 +110,30 @@ public class StudentService implements IStudentService {
         return true;
     }
 
+    @Override
+    public boolean updateStudentPassOrFailRedis(Student student) {
+        ValueOperations values = template.opsForValue();
+        List<Student> studentList = (List<Student>) values.get("students");
+        int position=findPositionStudentInList(studentList,student);
+        if (studentList != null) {
+            studentList.remove(position);
+            studentList.add(student);
+            values.set("students", studentList);
+        }
+        IStudentRepository.save(student);
+        return true;
+    }
+
+    public int findPositionStudentInList(List<Student> list,Student student){
+        for (int i=0;i<list.size();i++){
+            Student studentIsExisted=list.get(i);
+            if(studentIsExisted.getEmail().equals(student.getEmail())){
+                return i;
+            }
+        }
+        return -1;
+    }
+
     //@Cacheable(value = "students")
     @Override
     public List<Student> getAllStudents() {
@@ -123,7 +147,7 @@ public class StudentService implements IStudentService {
         ValueOperations values = template.opsForValue();
         List<Student> studentList = (List<Student>) values.get("students");
 
-        if (studentList == null) {
+        if (studentList == null || studentList.size()==0) {
             studentList = new ArrayList<>();
             Semester semester = semesterService.getSemesterCurrent();
             List<Ojt_Enrollment> ojt_enrollmentList =
@@ -143,9 +167,9 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public List<Student> getAllStudentsBySemesterIdAndNotYetInvitation() {
+    public List<Student> getAllStudentsBySemesterIdAndNotYetInvitation(String businessEmail) {
         ValueOperations values = template.opsForValue();
-        List<Student> studentList = (List<Student>) values.get("studentsIsInvitation");
+        List<Student> studentList = (List<Student>) values.get("studentsIsInvitation"+businessEmail);
 
         if (studentList == null) {
             studentList = new ArrayList<>();
@@ -157,7 +181,7 @@ public class StudentService implements IStudentService {
                 studentList.add(student);
             }
             if (studentList != null) {
-                values.set("studentsIsInvitation", studentList);
+                values.set("studentsIsInvitation"+businessEmail, studentList);
                 return studentList;
             }
         }
