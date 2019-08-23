@@ -36,6 +36,7 @@ class Report extends Component {
             searchOnScreenStatus: null,
             searchFinalOnScreenStatus: null,
             selectedSpecialized: -1,
+            currentEmail: '',
             // MSSV: student.code,
             // name: student.name,
             // companyName: businessName,
@@ -75,6 +76,7 @@ class Report extends Component {
         let overviewReportsRate = [];
         let onScreenStatus = [];
         let role = '';
+        let email = '';
         let students = [];
         let overviewReports = [];
         let finalOnScreenStatus = [];
@@ -84,6 +86,7 @@ class Report extends Component {
         if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
+            email = decoded.email;
         }
         if (role === 'ROLE_SUPERVISOR') {
             listStudentAndReport = await ApiServices.Get(`/supervisor/studentsEvaluations?currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
@@ -96,11 +99,11 @@ class Report extends Component {
             }
         } else if (role === 'ROLE_HR') {
             listStudentAndReport = await ApiServices.Get(`/business/studentsEvaluations?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
-            console.log(listStudentAndReport);
+            // console.log(listStudentAndReport);
             numOfStudent = await ApiServices.Get("/business/getNumStudent");
             // console.log(numOfStudent);
             dropdownSpecialized = await ApiServices.Get("/business/getSpecializedsOfStudentsInBusiness");
-            console.log(dropdownSpecialized);
+            // console.log(dropdownSpecialized);
             for (let index = 0; index < listStudentAndReport.listData.length; index++) {
                 students.push(listStudentAndReport.listData[index].student);
                 for (let index1 = 0; index1 < listStudentAndReport.listData[index].evaluationList.length; index1++) {
@@ -171,9 +174,11 @@ class Report extends Component {
                 }
             }
         }
+        console.log(listStudentAndReport);
         this.setState({
             loading: false,
             role: role,
+            currentEmail: email,
             students: students,
             overviewReports: overviewReports,
             overviewReportsRate: overviewReportsRate,
@@ -993,7 +998,7 @@ class Report extends Component {
     render() {
         const { loading, reportColor, rate, role, students, overviewReports, onScreenStatus, finalOnScreenStatus, finalReportColor } = this.state;
         const { pageNumber, currentPage, rowsPerPage } = this.state;
-        const { numOfStudent, dropdownSpecialized, searchingEvaluationList, isSearching, searchFinalOnScreenStatus, searchOnScreenStatus, searchOverviewReports, reportFileName, listReportDownload } = this.state;
+        const { numOfStudent, dropdownSpecialized, searchingEvaluationList, isSearching, searchFinalOnScreenStatus, searchOnScreenStatus, searchOverviewReports, reportFileName, listReportDownload, currentEmail } = this.state;
 
         // if (students != null) {
         //     console.log(students);
@@ -1123,9 +1128,12 @@ class Report extends Component {
                                                                                     <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/1~${student.email}`)}>
                                                                                         Tạo
                                                                                     </Button> :
-                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/1~${student.email}`)}>
-                                                                                        Tạo
-                                                                                    </Button>
+                                                                                    (student.supervisor.email === currentEmail ?
+                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/1~${student.email}`)}>
+                                                                                            Tạo
+                                                                                    </Button> :
+                                                                                        <p>N/A</p>
+                                                                                    )
                                                                                 )
                                                                                 :
                                                                                 <p>N/A</p>
@@ -1155,9 +1163,12 @@ class Report extends Component {
                                                                                         <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/2~${student.email}`)}>
                                                                                             Tạo
                                                                                         </Button> :
-                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/2~${student.email}`)}>
-                                                                                            Tạo
-                                                                                        </Button>
+                                                                                        (student.supervisor.email === currentEmail ?
+                                                                                            <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/2~${student.email}`)}>
+                                                                                                Tạo
+                                                                                        </Button> :
+                                                                                            <p>N/A</p>
+                                                                                        )
                                                                                     )
                                                                                     :
                                                                                     <p>N/A</p>
@@ -1189,9 +1200,12 @@ class Report extends Component {
                                                                                         <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/3~${student.email}`)}>
                                                                                             Tạo
                                                                                         </Button> :
-                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/3~${student.email}`)}>
-                                                                                            Tạo
-                                                                                        </Button>
+                                                                                        (student.supervisor.email === currentEmail ?
+                                                                                            <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/3~${student.email}`)}>
+                                                                                                Tạo
+                                                                                        </Button> :
+                                                                                            <p>N/A</p>
+                                                                                        )
                                                                                     )
                                                                                     :
                                                                                     <p>N/A</p>
@@ -1223,9 +1237,12 @@ class Report extends Component {
                                                                                         <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/4~${student.email}`)}>
                                                                                             Tạo
                                                                                         </Button> :
-                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/4~${student.email}`)}>
-                                                                                            Tạo
-                                                                                        </Button>
+                                                                                        (student.supervisor.email === currentEmail ?
+                                                                                            <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/4~${student.email}`)}>
+                                                                                                Tạo
+                                                                                        </Button> :
+                                                                                            <p>N/A</p>
+                                                                                        )
                                                                                     )
                                                                                     :
                                                                                     <p>N/A</p>
@@ -1272,9 +1289,12 @@ class Report extends Component {
                                                                                     <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/1~${student.email}`)}>
                                                                                         Tạo
                                                                                     </Button> :
-                                                                                    <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/1~${student.email}`)}>
-                                                                                        Tạo
-                                                                                    </Button>
+                                                                                    (student.supervisor.email === currentEmail ?
+                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/1~${student.email}`)}>
+                                                                                            Tạo
+                                                                                    </Button> :
+                                                                                        <p>N/A</p>
+                                                                                    )
                                                                                 )
                                                                                 :
                                                                                 <p>N/A</p>
@@ -1304,9 +1324,12 @@ class Report extends Component {
                                                                                         <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/2~${student.email}`)}>
                                                                                             Tạo
                                                                                         </Button> :
-                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/2~${student.email}`)}>
-                                                                                            Tạo
-                                                                                        </Button>
+                                                                                        (student.supervisor.email === currentEmail ?
+                                                                                            <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/2~${student.email}`)}>
+                                                                                                Tạo
+                                                                                        </Button> :
+                                                                                            <p>N/A</p>
+                                                                                        )
                                                                                     )
                                                                                     :
                                                                                     <p>N/A</p>
@@ -1338,9 +1361,12 @@ class Report extends Component {
                                                                                         <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/3~${student.email}`)}>
                                                                                             Tạo
                                                                                         </Button> :
-                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/3~${student.email}`)}>
-                                                                                            Tạo
-                                                                                        </Button>
+                                                                                        (student.supervisor.email === currentEmail ?
+                                                                                            <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/3~${student.email}`)}>
+                                                                                                Tạo
+                                                                                        </Button> :
+                                                                                            <p>N/A</p>
+                                                                                        )
                                                                                     )
                                                                                     :
                                                                                     <p>N/A</p>
@@ -1372,9 +1398,12 @@ class Report extends Component {
                                                                                         <Button color='primary' onClick={() => this.handleDirect(`/supervisor/Report/Create_Report/4~${student.email}`)}>
                                                                                             Tạo
                                                                                         </Button> :
-                                                                                        <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/4~${student.email}`)}>
-                                                                                            Tạo
-                                                                                        </Button>
+                                                                                        (student.supervisor.email === currentEmail ?
+                                                                                            <Button color='primary' onClick={() => this.handleDirect(`/hr/Report/Create_Report/4~${student.email}`)}>
+                                                                                                Tạo
+                                                                                        </Button> :
+                                                                                            <p>N/A</p>
+                                                                                        )
                                                                                     )
                                                                                     :
                                                                                     <p>N/A</p>
