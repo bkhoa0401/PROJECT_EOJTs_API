@@ -27,6 +27,9 @@ public class TaskService implements ITaskService {
     @Autowired
     IEventService iEventService;
 
+    @Autowired
+    ISupervisorService iSupervisorService;
+
     @Override
     public void createTaskForStudent(Task task) {
         Date date = new Date(Calendar.getInstance().getTime().getTime());
@@ -171,6 +174,11 @@ public class TaskService implements ITaskService {
         //Semester semester = semesterService.getSemesterByStartDateAndEndDate();
         Semester semester = semesterService.getSemesterCurrent();
         List<Supervisor> supervisors = business.getSupervisors();
+
+        Supervisor supervisorIsBusiness=iSupervisorService.findByEmail(business.getEmail());
+        if(supervisorIsBusiness!=null){
+            supervisors.add(supervisorIsBusiness);
+        }
 
         List<Task> taskListOfSupervisor;
 
