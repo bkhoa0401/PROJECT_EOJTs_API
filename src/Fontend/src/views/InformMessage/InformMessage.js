@@ -29,6 +29,7 @@ class InformMessage extends Component {
         let informs = null;
         let role = "";
         let activeTab = 0;
+        let viewSent = true;
         if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
@@ -42,6 +43,7 @@ class InformMessage extends Component {
             if (role === "ROLE_SUPERVISOR") {
                 informs = await ApiServices.Get('/supervisor/eventsReceived');
                 activeTab = 1;
+                viewSent = false;
             }
         }
         if (informs !== null) {
@@ -50,6 +52,7 @@ class InformMessage extends Component {
                 informs,
                 role: role,
                 activeTab: activeTab,
+                viewSent: viewSent,
             });
         }
         // console.log(informs);
