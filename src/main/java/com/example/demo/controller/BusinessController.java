@@ -490,7 +490,7 @@ public class BusinessController {
         List<Student> studentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
         List<Student> students = new ArrayList<>();
         for (int i = 0; i < studentList.size(); i++) {
-            if (studentList.get(i).getSupervisor() == null) {
+            if (studentList.get(i).getSupervisor().getEmail().equals(emailBusiness)) {
                 students.add(studentList.get(i));
             }
         }
