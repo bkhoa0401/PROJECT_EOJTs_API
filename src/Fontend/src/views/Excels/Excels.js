@@ -364,7 +364,21 @@ class Excels extends Component {
                     // if (dateButtonBusiness.toString() === "true") {
                     //     document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
                     // }
-                } else {
+                }else if(resultStudents.status === 417){
+                  this.setState({
+                    loading: false
+                  })
+                  confirmAlert({
+                    title: 'Xác nhận',
+                    message: `Có lỗi mail xảy ra. Vui lòng thử lại!`,
+                    buttons: [
+                      {
+                        label: 'Xác nhận'
+                      }
+                    ]
+                  });
+                }
+                else {
                     this.setState({
                         loading: false
                     })
@@ -491,7 +505,20 @@ class Excels extends Component {
                         //     document.getElementById("submitStudents").setAttribute("disabled", "disabled");
                         // }
 
-                    } else {
+                    } else if(result.status === 417){
+                      this.setState({
+                        loading: false
+                      })
+                      confirmAlert({
+                        title: 'Xác nhận',
+                        message: `Có lỗi mail xảy ra. Vui lòng thử lại!`,
+                        buttons: [
+                          {
+                            label: 'Xác nhận'
+                          }
+                        ]
+                      });
+                    }else {
                         this.setState({
                             loading: false
                         })

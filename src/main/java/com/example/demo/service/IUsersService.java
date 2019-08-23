@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IUsersService {
 
-    void sendEmail(String name, String mail, String password) throws Exception;
+    boolean sendEmail(String name, String mail, String password) throws Exception;
 
     void sendResetEmail(String token, String email) throws Exception;
 
@@ -46,4 +46,6 @@ public interface IUsersService {
     List<Users> getUsersNotYet(List<Users> users);
 
     void sendEmailToBusinessIsExisted(String name, String mail) throws Exception;
+
+    void sendEmailToSupervisor(String name,String email,String password)throws Exception;
 }

@@ -13,7 +13,7 @@ import java.sql.Date;
 
 @Entity
 @Table(name = "task")
-public class Task implements Serializable {
+public class Task implements Serializable, Comparable<Task> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -39,7 +39,7 @@ public class Task implements Serializable {
 
 
     @Enumerated(EnumType.STRING)
-    @Check(constraints = "status IN ('NOTSTART' ,'PENDING', 'DONE','APPROVED')")
+    @Check(constraints = "status IN ('NOTSTART' ,'PENDING', 'DONE','APPROVED','NOTFINISHED')")
     @Column(name = "status")
     private Status status = Status.NOTSTART;
 
@@ -148,4 +148,8 @@ public class Task implements Serializable {
         this.comment = comment;
     }
 
+    @Override
+    public int compareTo(Task task) {
+        return task.getTime_created().compareTo(this.getTime_created());
+    }
 }
