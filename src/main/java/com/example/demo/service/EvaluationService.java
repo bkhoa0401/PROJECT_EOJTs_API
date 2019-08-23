@@ -36,6 +36,9 @@ public class EvaluationService implements IEvaluationService {
     @Autowired
     IStudentService iStudentService;
 
+    @Autowired
+    ISupervisorService iSupervisorService;
+
     //check semester //ok
     @Override
     public void createNewEvaluation(Evaluation evaluation, String studentEmail) {
@@ -66,7 +69,7 @@ public class EvaluationService implements IEvaluationService {
             } else {
                 student.setStatus(StudentStatus.FAIL);
             }
-            iStudentService.saveStudent(student);
+            iStudentService.updateStudentPassOrFailRedis(student);
         }
     }
 
@@ -148,9 +151,13 @@ public class EvaluationService implements IEvaluationService {
     public List<Evaluation> getEvaluationsByBusinessEmail(String email) {
         Semester semesterCurrent = semesterService.getSemesterCurrent();
 
-
         Business business = iBusinessService.getBusinessByEmail(email);
         List<Supervisor> supervisors = business.getSupervisors();
+
+        Supervisor supervisorIsBusiness=iSupervisorService.findByEmail(business.getEmail());
+        if (supervisorIsBusiness != null) {
+            supervisors.add(supervisorIsBusiness);
+        }
 
         if (supervisors != null) {
             List<Evaluation> evaluationList = new ArrayList<>();

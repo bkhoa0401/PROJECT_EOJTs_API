@@ -78,44 +78,50 @@ class SiteSupervisor extends Component {
         }
         datasets.push(data1);
       }
-      if (statisticalEvaluationOfSupervisor[1] !== null) {
-        let data2 = {
-          label: 'Tháng 2',
-          backgroundColor: 'rgba(255,99,132,0.2)',
-          borderColor: 'rgba(255,99,132,1)',
-          pointBackgroundColor: 'rgba(255,99,132,1)',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgba(255,99,132,1)',
-          data: statisticalEvaluationOfSupervisor[1].statisticalTypeEvaluation,
+      if (statisticalEvaluationOfSupervisor.length > 1) {
+        if (statisticalEvaluationOfSupervisor[1] !== null) {
+          let data2 = {
+            label: 'Tháng 2',
+            backgroundColor: 'rgba(255,99,132,0.2)',
+            borderColor: 'rgba(255,99,132,1)',
+            pointBackgroundColor: 'rgba(255,99,132,1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(255,99,132,1)',
+            data: statisticalEvaluationOfSupervisor[1].statisticalTypeEvaluation,
+          }
+          datasets.push(data2);
         }
-        datasets.push(data2);
-      }
-      if (statisticalEvaluationOfSupervisor[2] !== null) {
-        let data3 = {
-          label: 'Tháng 3',
-          backgroundColor: '#CCFFFF',
-          borderColor: '#00FFFF',
-          pointBackgroundColor: '#00FFFF',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: '#00FFFF',
-          data: statisticalEvaluationOfSupervisor[2].statisticalTypeEvaluation,
+        if (statisticalEvaluationOfSupervisor.length > 2) {
+          if (statisticalEvaluationOfSupervisor[2] !== null) {
+            let data3 = {
+              label: 'Tháng 3',
+              backgroundColor: '#CCFFFF',
+              borderColor: '#00FFFF',
+              pointBackgroundColor: '#00FFFF',
+              pointBorderColor: '#fff',
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: '#00FFFF',
+              data: statisticalEvaluationOfSupervisor[2].statisticalTypeEvaluation,
+            }
+            datasets.push(data3);
+          }
+          if (statisticalEvaluationOfSupervisor.length > 3) {
+            if (statisticalEvaluationOfSupervisor[3] !== null) {
+              let data4 = {
+                label: 'Tháng 4',
+                backgroundColor: '#FFF68F',
+                borderColor: '#CDAD00',
+                pointBackgroundColor: '#CDAD00',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#CDAD00',
+                data: statisticalEvaluationOfSupervisor[3].statisticalTypeEvaluation,
+              }
+              datasets.push(data4);
+            }
+          }
         }
-        datasets.push(data3);
-      }
-      if (statisticalEvaluationOfSupervisor[3] !== null) {
-        let data4 = {
-          label: 'Tháng 4',
-          backgroundColor: '#FFF68F',
-          borderColor: '#CDAD00',
-          pointBackgroundColor: '#CDAD00',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: '#CDAD00',
-          data: statisticalEvaluationOfSupervisor[3].statisticalTypeEvaluation,
-        }
-        datasets.push(data4);
       }
       var radar = {
         labels: ['Xuất sắc', 'Tốt', 'Khá', 'Trung Bình', 'Yếu'],

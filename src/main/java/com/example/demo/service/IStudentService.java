@@ -16,11 +16,13 @@ public interface IStudentService {
 
     boolean updateStudent(Student student);
 
+    boolean updateStudentPassOrFailRedis(Student student);
+
     List<Student> getAllStudents();
 
     List<Student> getAllStudentsBySemesterId();
 
-    List<Student> getAllStudentsBySemesterIdAndNotYetInvitation();
+    List<Student> getAllStudentsBySemesterIdAndNotYetInvitation(String businessEmail);
 
     int getSpecializedIdByEmail(String email);
 
