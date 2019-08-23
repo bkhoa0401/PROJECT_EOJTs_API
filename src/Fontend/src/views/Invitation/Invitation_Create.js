@@ -561,7 +561,6 @@ class Invitation_Create extends Component {
                         <TabPane tabId="2">
                             {
                                 <div>
-                                    <br /><br /><br />
                                     <nav className="navbar navbar-light bg-light justify-content-between">
                                         <form className="form-inline">
                                             <input onChange={this.handleInputSearchSuggest} name="searchSuggestedValue" className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />

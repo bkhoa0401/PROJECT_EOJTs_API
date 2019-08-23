@@ -920,9 +920,10 @@ public class StudentController {
 
         List<Student> listStudentIsInvited = studentListIsInvited;
 
-        List<Student> listAllStudent = studentService.getAllStudentsBySemesterIdAndNotYetInvitation();
-
         String emailBusiness = getEmailFromToken();
+
+        List<Student> listAllStudent = studentService.getAllStudentsBySemesterIdAndNotYetInvitation(emailBusiness);
+
         List<Student> officialStudentList = ojt_enrollmentService.getListStudentByBusiness(emailBusiness);
 
         for (int i = 0; i < listStudentIsInvited.size(); i++) {

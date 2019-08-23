@@ -3,7 +3,7 @@ export default {
     {
       name: 'Site Head Training',
       url: '/headtraining',
-      icon: 'icon-speedometer',
+      icon: 'icon-screen-desktop',
     },
     {
       name: 'Doanh nghiệp đề xuất',
