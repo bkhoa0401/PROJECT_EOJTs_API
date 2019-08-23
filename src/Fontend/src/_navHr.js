@@ -8,7 +8,7 @@ export default {
     {
       name: 'Dashboard',
       url: '/hr',
-      icon: 'icon-speedometer',
+      icon: 'icon-screen-desktop',
     },
     {
       name: 'Tài khoản phụ',

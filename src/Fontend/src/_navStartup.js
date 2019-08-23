@@ -3,7 +3,7 @@ export default {
     {
       name: 'Site Startup',
       url: '/startup',
-      icon: 'icon-speedometer',
+      icon: 'icon-screen-desktop',
     },
     {
       name: 'Doanh nghiệp đề xuất',

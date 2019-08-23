@@ -3,7 +3,7 @@ export default {
     {
       name: 'Site Supervisor',
       url: '/supervisor',
-      icon: 'icon-speedometer',
+      icon: 'icon-screen-desktop',
     },
     {
       name: 'Danh sách sinh viên',
