@@ -708,6 +708,22 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/searchListAction")
+    @ResponseBody
+    public ResponseEntity<List<HistoryAction>> searchListAction(@RequestParam String valueSearch) {
+        List<HistoryAction> actions = iHistoryActionService.getAllHistory();
+        List<HistoryAction> searchList = new ArrayList<>();
+        for (int i = 0; i < actions.size(); i++) {
+            if (actions.get(i).getEmail().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                    actions.get(i).getRole().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                    actions.get(i).getFunction_name().toLowerCase().contains(valueSearch.toLowerCase()) ||
+                    actions.get(i).getFunction_type().toString().toLowerCase().contains(valueSearch.toLowerCase())) {
+                searchList.add(actions.get(i));
+            }
+        }
+        return new ResponseEntity<>(searchList, HttpStatus.OK);
+    }
+
     @GetMapping("/historiesId")
     @ResponseBody
     public ResponseEntity<HistoryAction> getHistoryActionById(@RequestParam int id) {
