@@ -153,6 +153,7 @@ public class StudentController {
             ojtEnrollmentList.add(ojt_enrollment);
             students.add(student);
             detail = new HistoryDetail(Student.class.getName(), null, null, student.toString());
+            detail.setHistoryAction(action);
             details.add(detail);
         }
         action.setDetails(details);

@@ -128,6 +128,7 @@ public class BusinessImportFileService implements IBusinessImportFileService {
                     supervisor.setPhone(businessDTO.getBusiness_phone());
                     iSupervisorService.createSupervisor(supervisor, null);
                     detail = new HistoryDetail(Business.class.getName(), null, null, businessDTO.toString());
+                    detail.setHistoryAction(action);
                     details.add(detail);
                 }
             }

@@ -123,4 +123,8 @@ public class Invitation implements Serializable {
         isRead = read;
     }
 
+    @Override
+    public String toString() {
+        return this.title + "/" + this.description;
+    }
 }
