@@ -92,35 +92,37 @@ class SiteSupervisor extends Component {
           }
           datasets.push(data2);
         }
-        if (statisticalEvaluationOfSupervisor.length > 2) {
-          if (statisticalEvaluationOfSupervisor[2] !== null) {
-            let data3 = {
-              label: 'Tháng 3',
-              backgroundColor: '#CCFFFF',
-              borderColor: '#00FFFF',
-              pointBackgroundColor: '#00FFFF',
-              pointBorderColor: '#fff',
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: '#00FFFF',
-              data: statisticalEvaluationOfSupervisor[2].statisticalTypeEvaluation,
-            }
-            datasets.push(data3);
+
+
+      }
+      if (statisticalEvaluationOfSupervisor.length > 2) {
+        if (statisticalEvaluationOfSupervisor[2] !== null) {
+          let data3 = {
+            label: 'Tháng 3',
+            backgroundColor: '#CCFFFF',
+            borderColor: '#00FFFF',
+            pointBackgroundColor: '#00FFFF',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#00FFFF',
+            data: statisticalEvaluationOfSupervisor[2].statisticalTypeEvaluation,
           }
-          if (statisticalEvaluationOfSupervisor.length > 3) {
-            if (statisticalEvaluationOfSupervisor[3] !== null) {
-              let data4 = {
-                label: 'Tháng 4',
-                backgroundColor: '#FFF68F',
-                borderColor: '#CDAD00',
-                pointBackgroundColor: '#CDAD00',
-                pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#CDAD00',
-                data: statisticalEvaluationOfSupervisor[3].statisticalTypeEvaluation,
-              }
-              datasets.push(data4);
-            }
+          datasets.push(data3);
+        }
+      }
+      if (statisticalEvaluationOfSupervisor.length > 3) {
+        if (statisticalEvaluationOfSupervisor[3] !== null) {
+          let data4 = {
+            label: 'Tháng 4',
+            backgroundColor: '#FFF68F',
+            borderColor: '#CDAD00',
+            pointBackgroundColor: '#CDAD00',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#CDAD00',
+            data: statisticalEvaluationOfSupervisor[3].statisticalTypeEvaluation,
           }
+          datasets.push(data4);
         }
       }
       var radar = {

@@ -179,35 +179,38 @@ class SiteAdmin extends Component {
           }
           datasets.push(data2);
         }
-        if (statisticalEvaluations.length > 2) {
-          if (statisticalEvaluations[2] !== null) {
-            let data3 = {
-              label: 'Tháng 3',
-              backgroundColor: '#CCFFFF',
-              borderColor: '#00FFFF',
-              pointBackgroundColor: '#00FFFF',
-              pointBorderColor: '#fff',
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: '#00FFFF',
-              data: statisticalEvaluations[2].statisticalTypeEvaluation,
-            }
-            datasets.push(data3);
+
+
+      }
+      if (statisticalEvaluations.length > 2) {
+        if (statisticalEvaluations[2] !== null) {
+          let data3 = {
+            label: 'Tháng 3',
+            backgroundColor: '#CCFFFF',
+            borderColor: '#00FFFF',
+            pointBackgroundColor: '#00FFFF',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#00FFFF',
+            data: statisticalEvaluations[2].statisticalTypeEvaluation,
           }
-          if (statisticalEvaluations.length > 3) {
-            if (statisticalEvaluations[3] !== null) {
-              let data4 = {
-                label: 'Tháng 4',
-                backgroundColor: '#FFF68F',
-                borderColor: '#CDAD00',
-                pointBackgroundColor: '#CDAD00',
-                pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#CDAD00',
-                data: statisticalEvaluations[3].statisticalTypeEvaluation,
-              }
-              datasets.push(data4);
-            }
+          datasets.push(data3);
+        }
+
+      }
+      if (statisticalEvaluations.length > 3) {
+        if (statisticalEvaluations[3] !== null) {
+          let data4 = {
+            label: 'Tháng 4',
+            backgroundColor: '#FFF68F',
+            borderColor: '#CDAD00',
+            pointBackgroundColor: '#CDAD00',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#CDAD00',
+            data: statisticalEvaluations[3].statisticalTypeEvaluation,
           }
+          datasets.push(data4);
         }
       }
 
