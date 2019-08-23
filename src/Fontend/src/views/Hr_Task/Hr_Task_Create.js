@@ -25,19 +25,26 @@ class Hr_Task_Create extends Component {
             students: [],
             studentItem: {},
             validPassed: '',
-            
-            role:'',
+
+            role: '',
         }
     }
 
     async componentDidMount() {
-        const students = await ApiServices.Get('/supervisor/students');
         const token = localStorage.getItem('id_token');
         let role = '';
         if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
         }
+
+        var students = null;
+        if (role === 'ROLE_SUPERVISOR') {
+            students = await ApiServices.Get('/supervisor/students');
+        } else if (role === 'ROLE_HR') {
+            students = await ApiServices.Get('/business/getStudentsByBusinessWithNoSupervisor');
+        }
+
         if (students !== null) {
             this.setState({
                 students,

@@ -397,7 +397,7 @@ class Update_Job extends Component {
                                                 <Col xs="12" md="10">
                                                     <Input value={interview_process} onChange={this.handleInput} type="text" id="interview_process" name="interview_process" placeholder="Quy trình tuyển" />
                                                     <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Quy trình tuyển', interview_process, 'required|max:255')}
+                                                        {this.validator.message('Quy trình tuyển', interview_process, 'required')}
                                                     </span>
                                                 </Col>
                                             </FormGroup>
@@ -408,7 +408,7 @@ class Update_Job extends Component {
                                                 <Col xs="12" md="10">
                                                     <Input value={interest} onChange={this.handleInput} type="text" id="interest" name="interest" placeholder="Phúc lợi" />
                                                     <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Phúc lợi', interest, 'required|max:255')}
+                                                        {this.validator.message('Phúc lợi', interest, 'required')}
                                                     </span>
                                                 </Col>
                                             </FormGroup>
@@ -419,7 +419,7 @@ class Update_Job extends Component {
                                                 <Col xs="12" md="10">
                                                     <Input value={contact} onChange={this.handleInput} type="text" id="contact" name="contact" placeholder="Thông tin liên hệ" />
                                                     <span className="form-error is-visible text-danger">
-                                                        {this.validator.message('Thông tin liên hệ', contact, 'required|max:255')}
+                                                        {this.validator.message('Thông tin liên hệ', contact, 'required|max:500')}
                                                     </span>
                                                 </Col>
                                             </FormGroup>

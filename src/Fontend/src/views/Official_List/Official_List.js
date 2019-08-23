@@ -1129,6 +1129,19 @@ class Official_List extends Component {
                     </FormGroup>
                     <FormGroup row>
                       <Col md="4">
+                        <h6>CV</h6>
+                      </Col>
+                      <Col xs="12" md="8">
+                        {
+                          studentDetail.resumeLink && studentDetail.resumeLink ? (
+                            <a href={studentDetail.resumeLink} download>Tải về</a>
+                          ) :
+                            (<label>N/A</label>)
+                        }
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Col md="4">
                         <h6>Bảng điểm</h6>
                       </Col>
                       <Col xs="12" md="8">
