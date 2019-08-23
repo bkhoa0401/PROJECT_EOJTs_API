@@ -401,4 +401,10 @@ public class Student implements Serializable {
 //    public void setAnswers(List<Answer> answers) {
 //        this.answers = answers;
 //    }
+
+
+    @Override
+    public String toString() {
+        return this.getEmail() + "/" + this.getName() + "/" + this.getCode() + "/" + this.getPhone();
+    }
 }

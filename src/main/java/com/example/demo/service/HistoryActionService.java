@@ -23,7 +23,7 @@ public class HistoryActionService implements IHistoryActionService {
     public List<HistoryAction> getAllHistory() {
         List<HistoryAction> actions = historyActionRepository.findAll();
         Collections.sort(actions);
-        return historyActionRepository.findAll();
+        return actions;
     }
 
     @Override

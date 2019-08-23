@@ -152,4 +152,10 @@ public class Task implements Serializable, Comparable<Task> {
     public int compareTo(Task task) {
         return task.getTime_created().compareTo(this.getTime_created());
     }
+
+    @Override
+    public String toString() {
+        String str = this.title + "/"  + this.time_end + "/" + this.level_task + "/" + this.description + "/" + this.comment;
+        return str;
+    }
 }

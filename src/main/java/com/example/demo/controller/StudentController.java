@@ -152,8 +152,8 @@ public class StudentController {
 
             ojtEnrollmentList.add(ojt_enrollment);
             students.add(student);
-            HistoryDetail historyDetail = new HistoryDetail(Student.class.getName(), null, null, student.toString());
-
+            detail = new HistoryDetail(Student.class.getName(), null, null, student.toString());
+            details.add(detail);
         }
         action.setDetails(details);
         iHistoryActionService.createHistory(action);

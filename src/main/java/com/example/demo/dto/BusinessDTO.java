@@ -153,4 +153,10 @@ public class BusinessDTO {
     public void setNameSemester(String nameSemester) {
         this.nameSemester = nameSemester;
     }
+
+    @Override
+    public String toString() {
+        String str = this.getEmail() + "/" +this.getBusiness_name() + "/" +this.getBusiness_eng_name() + "/" +this.getBusiness_address() + "/" +this.getBusiness_phone();
+        return str;
+    }
 }

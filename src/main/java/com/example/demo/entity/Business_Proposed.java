@@ -267,4 +267,10 @@ public class Business_Proposed implements Serializable {
     public void setCommentAdmin(String commentAdmin) {
         this.commentAdmin = commentAdmin;
     }
+
+    @Override
+    public String toString() {
+
+        return this.email + "/" +business_name + "/" +business_eng_name + "/" +business_address + "/" +business_phone;
+    }
 }

@@ -205,4 +205,11 @@ public class Evaluation implements Comparable<Evaluation>, Serializable {
     public int compareTo(Evaluation evaluation) {
         return this.getTimeCreated().compareTo(evaluation.timeCreated);
     }
+
+    @Override
+    public String toString() {
+
+        return "Work Score: " + this.score_work + "Activity score: "
+                + this.score_activity + "discipline score: " + this.score_discipline + "\nRemark: " + this.remark;
+    }
 }

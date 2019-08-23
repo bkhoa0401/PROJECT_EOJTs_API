@@ -7,6 +7,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class HistoryAction implements Comparable<HistoryAction>, Serializable {
     private String targetEmail;
 
     @Column(name = "actionTime")
-    Date actionTime;
+    private Date actionTime;
 
     @OneToMany(mappedBy = "historyAction", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)

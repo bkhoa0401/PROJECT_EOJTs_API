@@ -94,4 +94,9 @@ public class Question implements Serializable {
     public void setManyOption(boolean manyOption) {
         isManyOption = manyOption;
     }
+
+    @Override
+    public String toString() {
+        return this.content;
+    }
 }

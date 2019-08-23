@@ -1,9 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.config.ActionEnum;
 import com.example.demo.dto.BusinessDTO;
 import com.example.demo.dto.SkillDTO;
 import com.example.demo.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +36,9 @@ public class BusinessImportFileService implements IBusinessImportFileService {
     @Autowired
     ISupervisorService iSupervisorService;
 
+    @Autowired
+    IHistoryActionService iHistoryActionService;
+
     private List<String> listPass = new ArrayList<>();
 
     @Transactional
@@ -41,7 +47,20 @@ public class BusinessImportFileService implements IBusinessImportFileService {
 
         boolean isSendMail = sendMailBusiness(businessDTOList);
 
+
+
         if (isSendMail == true) {
+
+            List<HistoryDetail> details = new ArrayList<>();
+            HistoryAction action =
+                    new HistoryAction(getEmailFromToken()
+                            , "ROLE_ADMIN", ActionEnum.INSERT, "BusinessController", new Object() {
+                    }
+                            .getClass()
+                            .getEnclosingMethod()
+                            .getName(), null, new java.util.Date());
+            HistoryDetail detail = null;
+
             for (int i = 0; i < businessDTOList.size(); i++) {
                 BusinessDTO businessDTO = businessDTOList.get(i);
 
@@ -108,8 +127,12 @@ public class BusinessImportFileService implements IBusinessImportFileService {
                     supervisor.setName(businessDTO.getBusiness_eng_name());
                     supervisor.setPhone(businessDTO.getBusiness_phone());
                     iSupervisorService.createSupervisor(supervisor, null);
+                    detail = new HistoryDetail(Business.class.getName(), null, null, businessDTO.toString());
+                    details.add(detail);
                 }
             }
+            action.setDetails(details);
+            iHistoryActionService.createHistory(action);
             return true;
         } else {
             return false;
@@ -142,5 +165,14 @@ public class BusinessImportFileService implements IBusinessImportFileService {
         }
         return true;
     }
-
+    private String getEmailFromToken() {
+        String email = "";
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            email = ((UserDetails) principal).getUsername();
+        } else {
+            email = principal.toString();
+        }
+        return email;
+    }
 }

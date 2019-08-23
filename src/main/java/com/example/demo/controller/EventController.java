@@ -117,7 +117,7 @@ public class EventController {
                     }
                             .getClass()
                             .getEnclosingMethod()
-                            .getName(), null, new java.util.Date(), historyDetail);
+                            .getName(), listStudentEmail.toString(), new java.util.Date(), historyDetail);
             historyDetail.setHistoryAction(action);
             iHistoryActionService.createHistory(action);
             return new ResponseEntity<>(HttpStatus.CREATED);

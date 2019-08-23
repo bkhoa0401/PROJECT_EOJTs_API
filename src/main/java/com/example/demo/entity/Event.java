@@ -166,4 +166,9 @@ public class Event implements Comparable<Event>, Serializable {
     public void setSupervisor(Supervisor supervisor) {
         this.supervisor = supervisor;
     }
+
+    @Override
+    public String toString() {
+        return this.title + "\n" + this.description;
+    }
 }
