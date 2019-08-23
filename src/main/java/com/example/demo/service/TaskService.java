@@ -173,16 +173,21 @@ public class TaskService implements ITaskService {
     public List<Task> findTasksOfBusinessAndSemester(Business business) {
         //Semester semester = semesterService.getSemesterByStartDateAndEndDate();
         Semester semester = semesterService.getSemesterCurrent();
-        List<Supervisor> supervisors = business.getSupervisors();
 
-        Supervisor supervisorIsBusiness=iSupervisorService.findByEmail(business.getEmail());
-        if(supervisorIsBusiness!=null){
+        List<Supervisor> supervisors = business.getSupervisors();
+        if (supervisors == null) {
+            Supervisor supervisorIsBusiness = iSupervisorService.findByEmail(business.getEmail());
             supervisors.add(supervisorIsBusiness);
         }
 
-        List<Task> taskListOfSupervisor;
-
+        if (supervisors != null) {
+            Supervisor supervisorIsBusiness = iSupervisorService.findByEmail(business.getEmail());
+            if (supervisorIsBusiness != null) {
+                supervisors.add(supervisorIsBusiness);
+            }
+        }
         List<Task> taskListResult = new ArrayList<>();
+        List<Task> taskListOfSupervisor;
 
         List<Task> taskListAfterCheckTime = new ArrayList<>();
 
@@ -197,6 +202,7 @@ public class TaskService implements ITaskService {
             taskListResult.addAll(taskListAfterCheckTime);
         }
         return taskListResult;
+
     }
 
     public boolean checkTaskListIsInSemester(Semester semester, Task task) {

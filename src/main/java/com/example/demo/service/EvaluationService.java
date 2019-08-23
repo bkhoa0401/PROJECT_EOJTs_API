@@ -74,9 +74,9 @@ public class EvaluationService implements IEvaluationService {
     }
 
     public boolean checkStudentPassOrFail(Evaluation evaluation) {
-        float scoreActivity = (float) (evaluation.getScore_activity()*0.1);
-        float scoreDiscipline = (float) (evaluation.getScore_discipline()*0.4);
-        float scoreWork = (float) (evaluation.getScore_work()*0.5);
+        float scoreActivity = (float) (evaluation.getScore_activity() * 0.1);
+        float scoreDiscipline = (float) (evaluation.getScore_discipline() * 0.4);
+        float scoreWork = (float) (evaluation.getScore_work() * 0.5);
 
         float result = (scoreActivity + scoreDiscipline + scoreWork);
         if (result >= 5) {
@@ -154,9 +154,16 @@ public class EvaluationService implements IEvaluationService {
         Business business = iBusinessService.getBusinessByEmail(email);
         List<Supervisor> supervisors = business.getSupervisors();
 
-        Supervisor supervisorIsBusiness=iSupervisorService.findByEmail(business.getEmail());
-        if (supervisorIsBusiness != null) {
+        if (supervisors == null) {
+            Supervisor supervisorIsBusiness = iSupervisorService.findByEmail(business.getEmail());
             supervisors.add(supervisorIsBusiness);
+        }
+
+        if (supervisors != null) {
+            Supervisor supervisorIsBusiness = iSupervisorService.findByEmail(business.getEmail());
+            if (supervisorIsBusiness != null) {
+                supervisors.add(supervisorIsBusiness);
+            }
         }
 
         if (supervisors != null) {
@@ -169,7 +176,7 @@ public class EvaluationService implements IEvaluationService {
                 }
             } //get all evaluation of a business
 
-            if(evaluationList.size()!=0){
+            if (evaluationList.size() != 0) {
                 List<Evaluation> evaluationListResult = new ArrayList<>();
                 for (int i = 0; i < evaluationList.size(); i++) {
                     Evaluation evaluation = evaluationList.get(i);
