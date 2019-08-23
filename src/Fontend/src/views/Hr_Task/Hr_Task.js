@@ -604,22 +604,6 @@ class Hr_Task extends Component {
                                                                 <DropdownToggle nav caret style={{ color: "black" }}>
                                                                     Trạng thái
                                                             </DropdownToggle>
-<<<<<<< HEAD
-                                                            <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
-                                                                {dropdownState && dropdownState.map((stateTask, index) => {
-                                                                    return (
-                                                                        <DropdownItem onClick={() => this.handleSelectTaskStatus(stateTask)}>{stateTask}</DropdownItem>
-                                                                    )
-                                                                })
-                                                                }
-                                                            </DropdownMenu>
-                                                        </Dropdown>
-                                                    </th>
-                                                    <th style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                                                        <Dropdown isOpen={this.state.dropdownApprovedOpen} toggle={() => this.toggleDropdownApproved()}>
-                                                            <DropdownToggle nav caret style={{ color: "black" }}>
-                                                                Đã kiểm duyệt
-=======
                                                                 <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
                                                                     {dropdownState && dropdownState.map((stateTask, index) => {
                                                                         return (
@@ -634,7 +618,6 @@ class Hr_Task extends Component {
                                                             <Dropdown isOpen={this.state.dropdownApprovedOpen} toggle={() => this.toggleDropdownApproved()}>
                                                                 <DropdownToggle nav caret style={{ color: "black" }}>
                                                                     Kiểm duyệt
->>>>>>> master
                                                             </DropdownToggle>
                                                                 <DropdownMenu style={{ textAlign: 'center', right: 'auto' }}>
                                                                     {dropdownApproved && dropdownApproved.map((approvedTask, index) => {
