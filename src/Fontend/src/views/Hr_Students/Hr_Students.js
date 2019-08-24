@@ -86,7 +86,7 @@ class Hr_Students extends Component {
     handleSelectMonth = async (event, studentDetail) => {
         const { name, value } = event.target;
         const { months } = this.state;
-        let listStudentTask = null;
+        let listStudentTask = [];
         // console.log(value);
         if (value <= 0) {
             listStudentTask = await ApiServices.Get(`/supervisor/allTasksByStudentEmail?emailStudent=${studentDetail.email}`);
