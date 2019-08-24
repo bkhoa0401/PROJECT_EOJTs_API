@@ -151,19 +151,20 @@ class SiteAdmin extends Component {
 
     if (statisticalEvaluations !== null) {
       var datasets = [];
-
-      if (statisticalEvaluations[0] !== null) {
-        let data1 = {
-          label: 'Tháng 1',
-          backgroundColor: 'rgba(179,181,198,0.2)',
-          borderColor: 'rgba(179,181,198,1)',
-          pointBackgroundColor: 'rgba(179,181,198,1)',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgba(179,181,198,1)',
-          data: statisticalEvaluations[0].statisticalTypeEvaluation,
+      if (statisticalEvaluations > 0) {
+        if (statisticalEvaluations[0] !== null) {
+          let data1 = {
+            label: 'Tháng 1',
+            backgroundColor: 'rgba(179,181,198,0.2)',
+            borderColor: 'rgba(179,181,198,1)',
+            pointBackgroundColor: 'rgba(179,181,198,1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(179,181,198,1)',
+            data: statisticalEvaluations[0].statisticalTypeEvaluation,
+          }
+          datasets.push(data1);
         }
-        datasets.push(data1);
       }
       if (statisticalEvaluations.length > 1) {
         if (statisticalEvaluations[1] !== null) {

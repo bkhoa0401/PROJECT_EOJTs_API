@@ -65,18 +65,20 @@ class SiteSupervisor extends Component {
     if (statisticalEvaluationOfSupervisor !== null) {
       var datasets = [];
 
-      if (statisticalEvaluationOfSupervisor[0] !== null) {
-        let data1 = {
-          label: 'Tháng 1',
-          backgroundColor: 'rgba(179,181,198,0.2)',
-          borderColor: 'rgba(179,181,198,1)',
-          pointBackgroundColor: 'rgba(179,181,198,1)',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgba(179,181,198,1)',
-          data: statisticalEvaluationOfSupervisor[0].statisticalTypeEvaluation,
+      if (statisticalEvaluationOfSupervisor.length > 0) {
+        if (statisticalEvaluationOfSupervisor[0] !== null) {
+          let data1 = {
+            label: 'Tháng 1',
+            backgroundColor: 'rgba(179,181,198,0.2)',
+            borderColor: 'rgba(179,181,198,1)',
+            pointBackgroundColor: 'rgba(179,181,198,1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(179,181,198,1)',
+            data: statisticalEvaluationOfSupervisor[0].statisticalTypeEvaluation,
+          }
+          datasets.push(data1);
         }
-        datasets.push(data1);
       }
       if (statisticalEvaluationOfSupervisor.length > 1) {
         if (statisticalEvaluationOfSupervisor[1] !== null) {

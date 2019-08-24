@@ -268,7 +268,7 @@ class student_list extends Component {
     handleSelectMonth = async (event, studentDetail) => {
         const { name, value } = event.target;
         const { months } = this.state;
-        let listStudentTask = null;
+        let listStudentTask = [];
         // console.log(value);
         if (value <= 0) {
             listStudentTask = await ApiServices.Get(`/supervisor/allTasksByStudentEmail?emailStudent=${studentDetail.email}`);
@@ -383,7 +383,7 @@ class student_list extends Component {
             let months = [];
             var date = new Date();
             let isThisMonth = -1;
-            let listStudentTask = null;
+            let listStudentTask = [];
 
             const ojtEnrollment = await ApiServices.Get(`/enrollment/getSelectedStuEnrollment?email=${studentDetail.email}`);
             var dateEnroll = ojtEnrollment.timeEnroll;

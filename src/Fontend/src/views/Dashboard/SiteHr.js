@@ -92,18 +92,20 @@ class SiteHr extends Component {
     if (statisticalEvaluationsBusiness !== null) {
       var datasets = [];
 
-      if (statisticalEvaluationsBusiness[0] !== null) {
-        let data1 = {
-          label: 'Tháng 1',
-          backgroundColor: 'rgba(179,181,198,0.2)',
-          borderColor: 'rgba(179,181,198,1)',
-          pointBackgroundColor: 'rgba(179,181,198,1)',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgba(179,181,198,1)',
-          data: statisticalEvaluationsBusiness[0].statisticalTypeEvaluation,
+      if (statisticalEvaluationsBusiness.length > 0) {
+        if (statisticalEvaluationsBusiness[0] !== null) {
+          let data1 = {
+            label: 'Tháng 1',
+            backgroundColor: 'rgba(179,181,198,0.2)',
+            borderColor: 'rgba(179,181,198,1)',
+            pointBackgroundColor: 'rgba(179,181,198,1)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgba(179,181,198,1)',
+            data: statisticalEvaluationsBusiness[0].statisticalTypeEvaluation,
+          }
+          datasets.push(data1);
         }
-        datasets.push(data1);
       }
       if (statisticalEvaluationsBusiness.length > 1) {
         if (statisticalEvaluationsBusiness[1] !== null) {
