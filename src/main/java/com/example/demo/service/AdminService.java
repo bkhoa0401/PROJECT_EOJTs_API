@@ -372,7 +372,7 @@ public class AdminService implements IAdminService {
     }
 
     public ReportType typeOfEvaluation(double scoreActivity, double scoreDiscipline, double scoreWork) {
-        double ave = (scoreActivity + scoreDiscipline + scoreWork) / 3;
+        double ave=scoreActivity*0.1+scoreDiscipline*0.4+scoreWork*0.5;
         if (ave > 9) {
             return ReportType.Excellent;
         } else if (ave <= 9 && ave > 8) {
