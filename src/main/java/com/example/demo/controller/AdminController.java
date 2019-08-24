@@ -486,7 +486,7 @@ public class AdminController {
         String email = getEmailFromToken();
 
         List<Statistical_EvaluationDTO> evaluationDTOS = adminService.getListStatistical_EvaluationOfSupervisorDTO(email);
-        if (evaluationDTOS != null && evaluationDTOS.size() != 0) {
+        if (evaluationDTOS != null) {
             return new ResponseEntity<List<Statistical_EvaluationDTO>>(evaluationDTOS, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
