@@ -9,6 +9,7 @@ import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import SimpleReactValidator from '../../validator/simple-react-validator';
 import Toastify from '../../views/Toastify/Toastify';
 import * as jsPDF from 'jspdf';
+import ReactToPrint from "react-to-print";
 
 class BusinessProposed_Detail extends Component {
 
@@ -344,45 +345,13 @@ class BusinessProposed_Detail extends Component {
         });
     }
 
-    downloadPDF = () => {
-        var pdf = new jsPDF('p', 'pt', 'letter');
-        var source = document.getElementById('divPDF');
-        var specialElementHandlers = {
-            '#bypassme': function (element, renderer) {
-                return true
-            }
-        };
-
-        var margins = {
-            top: 50,
-            left: 60,
-            width: 800
-        };
-
-        pdf.addFont('ArialMS', 'Arial', 'normal');
-        pdf.setFont('Arial');
-
-        pdf.fromHTML(
-            source // HTML string or DOM elem ref.
-            , margins.left // x coord
-            , margins.top // y coord
-            , {
-                'width': margins.width // max width of content on PDF
-                , 'elementHandlers': specialElementHandlers
-            },
-            function (dispose) {
-                pdf.save('BusinessProposed.pdf');
-            }
-        )
-    }
-
     render() {
-        const { business, loading, role } = this.state;
+        const { business, loading, role, urlImage } = this.state;
         let linkDownContact = '';
         if (business !== null) {
             linkDownContact = `http://localhost:8000/api/file/downloadFile/${business.contactLink}`;
         }
-
+        console.log(urlImage);
         return (
             loading.toString() === 'true' ? (
                 SpinnerLoading.showHashLoader(loading)
@@ -394,12 +363,11 @@ class BusinessProposed_Detail extends Component {
                                 <Card>
                                     <CardHeader>
                                         <h4>Thông tin công ty đề xuất</h4>
-                                        <Button color="primary" type="submit" onClick={() => this.downloadPDF()}>Download PDF</Button>
                                     </CardHeader>
                                     <CardBody>
                                         <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
                                             <div style={{ paddingLeft: "3%", paddingRight: "3%", textAlign: "center" }}>
-                                                <img src="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410" />
+                                                <img src="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410" width="675px" height="148px" />
                                                 <br /><br /><br />
                                                 <h2 style={{ fontWeight: "bold" }}>PHIẾU ĐĂNG KÍ THỰC TẬP CÔNG TY NGOÀI DANH SÁCH</h2>
                                             </div>
@@ -792,4 +760,18 @@ class BusinessProposed_Detail extends Component {
     }
 }
 
-export default BusinessProposed_Detail;
+class Example extends React.Component {
+    render() {
+        return (
+            <div>
+                <ReactToPrint
+                    trigger={() => <Button color="primary">Tải phiếu đăng kí thực tập</Button>}
+                    content={() => this.componentRef}
+                />
+                <BusinessProposed_Detail urlImage="https://firebasestorage.googleapis.com/v0/b/project-eojts.appspot.com/o/images%2FLOGO_FPT.png?alt=media&token=462172c4-bfb4-4ee6-a687-76bb1853f410" ref={el => (this.componentRef = el)} />
+            </div>
+        );
+    }
+}
+
+export default Example;
