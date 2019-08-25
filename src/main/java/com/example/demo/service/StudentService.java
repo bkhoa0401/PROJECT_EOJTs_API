@@ -198,6 +198,9 @@ public class StudentService implements IStudentService {
 
     @Override
     public boolean updateInforStudent(String email, String objective, List<Skill> skillList) {
+        ValueOperations values = template.opsForValue();
+        List<Student> studentList = (List<Student>) values.get("students");
+
         Student student = getStudentByEmail(email);
         for (int i = 0; i < skillList.size(); i++) {
             Skill skill = skillList.get(i);
@@ -213,6 +216,11 @@ public class StudentService implements IStudentService {
         if (student != null) {
             student.setObjective(objective);
             student.setSkills(skillList);
+
+            int position=findPositionStudentInList(studentList,student);
+            studentList.remove(position);
+            values.set("students",studentList);
+
             IStudentRepository.save(student);
             return true;
         }
