@@ -35,7 +35,7 @@ class DefaultAside extends Component {
       } else if (role === "ROLE_HR") {
         informs = await ApiServices.Get(`/business/eventsReceivedNotRead`);
       } else if (role === "ROLE_SUPERVISOR") {
-        informs = await ApiServices.Get(`/business/eventsReceivedNotRead`);
+        informs = await ApiServices.Get(`/supervisor/eventsReceivedNotRead`);
       }
       this.setState({
         informs: informs,

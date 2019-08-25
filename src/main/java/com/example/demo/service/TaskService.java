@@ -30,6 +30,9 @@ public class TaskService implements ITaskService {
     @Autowired
     ISupervisorService iSupervisorService;
 
+    @Autowired
+    IStudent_EventService iStudent_eventService;
+
     @Override
     public void createTaskForStudent(Task task) {
         Date date = new Date(Calendar.getInstance().getTime().getTime());
@@ -120,9 +123,17 @@ public class TaskService implements ITaskService {
                 Date date = new Date(Calendar.getInstance().getTime().getTime());
                 event.setTime_created(date);
                 event.setTitle("Thông báo");
+                event.setSupervisor(task.getSupervisor());
                 event.setDescription(task.getOjt_enrollment().getStudent().getName() +
                         " đã thay đổi trạng thái nhiệm vụ " + task.getTitle() + " thành hoàn thành");
                 iEventService.createEvent(event);
+
+                Student_Event student_event=new Student_Event();
+                student_event.setStudent(task.getOjt_enrollment().getStudent());
+                student_event.setEvent(event);
+                student_event.setStudent(true);
+                iStudent_eventService.saveStudentEvent(student_event);
+
                 task.setStatus(Status.DONE);
             } else if (typeStatusTask == 4) {
                 task.setComment(comment);

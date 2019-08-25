@@ -52,7 +52,6 @@ class Create_Report extends Component {
             numTaskDificultFinish: 0,
 
             modalTask: false,
-            listStudentTask: null,
             months: null,
             isThisMonth: -1,
 
@@ -67,7 +66,7 @@ class Create_Report extends Component {
         let role = '';
         let actor = null;
         let businessName = '';
-        let listStudentTask = null;
+        let listStudentTask = [];
         let score_work = "";
         let numTaskEasy = 0;
         let numTaskNormal = 0;
@@ -259,7 +258,7 @@ class Create_Report extends Component {
         let emailStudent = this.state.emailStudent;
         const { name, value } = event.target;
         const { months } = this.state;
-        let listStudentTask = null;
+        let listStudentTask = [];
         // console.log(value);
         if (value <= 0) {
             listStudentTask = await ApiServices.Get(`/supervisor/allTasksByStudentEmail?emailStudent=${emailStudent}`);
@@ -322,7 +321,7 @@ class Create_Report extends Component {
                 loading: true,
             })
             let months = [];
-            let listStudentTask = null;
+            let listStudentTask = [];
 
             const ojtEnrollment = await ApiServices.Get(`/enrollment/getSelectedStuEnrollment?email=${emailStudent}`);
             var dateEnroll = ojtEnrollment.timeEnroll;
