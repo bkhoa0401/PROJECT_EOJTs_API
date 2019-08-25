@@ -79,7 +79,6 @@ public class StudentService implements IStudentService {
     IUsersService iUsersService;
 
 
-
     @Override
     public Student getStudentByEmail(String email) {
         Student student = IStudentRepository.findByEmail(email);
@@ -114,7 +113,7 @@ public class StudentService implements IStudentService {
     public boolean updateStudentPassOrFailRedis(Student student) {
         ValueOperations values = template.opsForValue();
         List<Student> studentList = (List<Student>) values.get("students");
-        int position=findPositionStudentInList(studentList,student);
+        int position = findPositionStudentInList(studentList, student);
         if (studentList != null) {
             studentList.remove(position);
             studentList.add(student);
@@ -124,10 +123,10 @@ public class StudentService implements IStudentService {
         return true;
     }
 
-    public int findPositionStudentInList(List<Student> list,Student student){
-        for (int i=0;i<list.size();i++){
-            Student studentIsExisted=list.get(i);
-            if(studentIsExisted.getEmail().equals(student.getEmail())){
+    public int findPositionStudentInList(List<Student> list, Student student) {
+        for (int i = 0; i < list.size(); i++) {
+            Student studentIsExisted = list.get(i);
+            if (studentIsExisted.getEmail().equals(student.getEmail())) {
                 return i;
             }
         }
@@ -147,12 +146,12 @@ public class StudentService implements IStudentService {
         ValueOperations values = template.opsForValue();
         List<Student> studentList = (List<Student>) values.get("students");
 
-        if (studentList == null || studentList.size()==0) {
+        if (studentList == null || studentList.size() == 0) {
             studentList = new ArrayList<>();
             Semester semester = semesterService.getSemesterCurrent();
             List<Ojt_Enrollment> ojt_enrollmentList =
                     ojt_enrollmentService.getOjt_EnrollmentsBySemesterIdAndStudentEmailNotNull(semester.getId());
-            if (ojt_enrollmentList != null && ojt_enrollmentList.size()!=0) {
+            if (ojt_enrollmentList != null && ojt_enrollmentList.size() != 0) {
                 for (int i = 0; i < ojt_enrollmentList.size(); i++) {
                     Student student = ojt_enrollmentList.get(i).getStudent();
                     studentList.add(student);
@@ -169,7 +168,7 @@ public class StudentService implements IStudentService {
     @Override
     public List<Student> getAllStudentsBySemesterIdAndNotYetInvitation(String businessEmail) {
         ValueOperations values = template.opsForValue();
-        List<Student> studentList = (List<Student>) values.get("studentsIsInvitation"+businessEmail);
+        List<Student> studentList = (List<Student>) values.get("studentsIsInvitation" + businessEmail);
 
         if (studentList == null) {
             studentList = new ArrayList<>();
@@ -181,7 +180,7 @@ public class StudentService implements IStudentService {
                 studentList.add(student);
             }
             if (studentList != null) {
-                values.set("studentsIsInvitation"+businessEmail, studentList);
+                values.set("studentsIsInvitation" + businessEmail, studentList);
                 return studentList;
             }
         }
@@ -217,11 +216,13 @@ public class StudentService implements IStudentService {
             student.setObjective(objective);
             student.setSkills(skillList);
 
-            int position=findPositionStudentInList(studentList,student);
-            studentList.remove(position);
-            studentList.add(student);
-            values.set("students",studentList);
-
+            if (studentList != null) {
+                int position = findPositionStudentInList(studentList, student);
+                studentList.remove(position);
+                studentList.add(student);
+                values.set("students", studentList);
+            }
+            
             IStudentRepository.save(student);
             return true;
         }
