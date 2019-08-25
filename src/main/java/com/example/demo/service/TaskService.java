@@ -217,7 +217,7 @@ public class TaskService implements ITaskService {
     }
 
     public boolean checkTaskListIsInSemester(Semester semester, Task task) {
-        Date dateStart = semester.getStart_date();
+        Date dateStart = semester.getStart_choose_option_time();
 
         Date dateEnd = semester.getEnd_date();
 

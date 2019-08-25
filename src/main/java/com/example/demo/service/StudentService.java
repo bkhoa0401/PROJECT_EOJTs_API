@@ -219,6 +219,7 @@ public class StudentService implements IStudentService {
 
             int position=findPositionStudentInList(studentList,student);
             studentList.remove(position);
+            studentList.add(student);
             values.set("students",studentList);
 
             IStudentRepository.save(student);
