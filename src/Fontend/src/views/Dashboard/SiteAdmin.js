@@ -151,8 +151,9 @@ class SiteAdmin extends Component {
 
     if (statisticalEvaluations !== null) {
       var datasets = [];
-      if (statisticalEvaluations > 0) {
+      if (statisticalEvaluations.length > 0) {
         if (statisticalEvaluations[0] !== null) {
+          console.log(statisticalEvaluations[0])
           let data1 = {
             label: 'Tháng 1',
             backgroundColor: 'rgba(179,181,198,0.2)',

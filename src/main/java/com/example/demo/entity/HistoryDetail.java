@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Table(name = "history_detail")
 public class HistoryDetail implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
     @Column(name = "tableName")
