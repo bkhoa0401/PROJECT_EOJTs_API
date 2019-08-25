@@ -33,11 +33,11 @@ class User_Business_Create extends Component {
         var year = new Date().getFullYear(); //Current Year.
         // console.log(month);
         let nameSemester = "";
-        if (parseInt(month) === 1 || parseInt(month) === 2 || parseInt(month) === 3 || parseInt(month) === 4) {
+        if (parseInt(month) === 11 || parseInt(month) === 12 || parseInt(month) === 1 || parseInt(month) === 2) {
             nameSemester = "SPRING" + year;
-        } else if (parseInt(month) === 5 || parseInt(month) === 6 || parseInt(month) === 7 || parseInt(month) === 8) {
+        } else if (parseInt(month) === 3 || parseInt(month) === 4 || parseInt(month) === 5 || parseInt(month) === 6) {
             nameSemester = "SUMMER" + year;
-        } else if (parseInt(month) === 9 || parseInt(month) === 10 || parseInt(month) === 11 || parseInt(month) === 12) {
+        } else if (parseInt(month) === 7 || parseInt(month) === 8 || parseInt(month) === 9 || parseInt(month) === 10) {
             nameSemester = "FALL" + year;
         }
         const isExisted = await ApiServices.Get(`/admin/checkSemester?semesterName=${nameSemester}`);

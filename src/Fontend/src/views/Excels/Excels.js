@@ -45,35 +45,35 @@ class Excels extends Component {
         this.toggleLarge = this.toggleLarge.bind(this);
     }
 
-    // async componentDidMount() {
+    async componentDidMount() {
 
-    //     const dateButtonStudent = localStorage.getItem("dateButtonStudent");
-    //     const dateButtonBusiness = localStorage.getItem("dateButtonBusiness");
+        const dateButtonStudent = localStorage.getItem("dateButtonStudent");
+        const dateButtonBusiness = localStorage.getItem("dateButtonBusiness");
 
-    //     if (dateButtonStudent.toString() === "true") {
-    //         document.getElementById("submitStudents").setAttribute("disabled", "disabled");
-    //     }
+        if (dateButtonStudent.toString() === "true") {
+            document.getElementById("submitStudents").setAttribute("disabled", "disabled");
+        }
 
-    //     if (dateButtonBusiness.toString() === "true") {
-    //         document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
-    //     }
+        if (dateButtonBusiness.toString() === "true") {
+            document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
+        }
 
-    //     const semesterNext = await ApiServices.Get('/admin/semester');
-    //     if (semesterNext.status != 417) {
-    //         var start_choose_option_time = new Date(semesterNext[0].start_choose_option_time);
-    //         var currentDate = new Date();
+        // const semesterNext = await ApiServices.Get('/admin/semester');
+        // if (semesterNext.status != 417) {
+        //     var start_choose_option_time = new Date(semesterNext[0].start_choose_option_time);
+        //     var currentDate = new Date();
 
-    //         var oneDay = 24 * 60 * 60 * 1000;
-    //         var diffDays = (Math.round(Math.abs((start_choose_option_time.getTime() - currentDate.getTime()) / (oneDay)))) + 1;
-    //         console.log(diffDays);
-    //         if (diffDays <= 7) {
-    //             localStorage.setItem("dateButtonStudent", false);
-    //             localStorage.setItem("dateButtonBusiness", false);
-    //             document.getElementById("submitStudents").removeAttribute("disabled", "disabled");
-    //             document.getElementById("submitBusinesses").removeAttribute("disabled", "disabled");
-    //         }
-    //     }
-    // }
+        //     var oneDay = 24 * 60 * 60 * 1000;
+        //     var diffDays = (Math.round(Math.abs((start_choose_option_time.getTime() - currentDate.getTime()) / (oneDay)))) + 1;
+        //     console.log(diffDays);
+        //     if (diffDays <= 7) {
+        //         localStorage.setItem("dateButtonStudent", false);
+        //         localStorage.setItem("dateButtonBusiness", false);
+        //         document.getElementById("submitStudents").removeAttribute("disabled", "disabled");
+        //         document.getElementById("submitBusinesses").removeAttribute("disabled", "disabled");
+        //     }
+        // }
+    }
 
     toggleLarge = (business) => {
         this.setState({
@@ -357,26 +357,26 @@ class Excels extends Component {
                         });
                     }
 
-                    // localStorage.setItem('dateButtonStudent', true);
-                    // document.getElementById("submitStudents").setAttribute("disabled", "disabled");
+                    localStorage.setItem('dateButtonStudent', true);
+                    document.getElementById("submitStudents").setAttribute("disabled", "disabled");
 
-                    // const dateButtonBusiness = localStorage.getItem("dateButtonBusiness");
-                    // if (dateButtonBusiness.toString() === "true") {
-                    //     document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
-                    // }
-                }else if(resultStudents.status === 417){
-                  this.setState({
-                    loading: false
-                  })
-                  confirmAlert({
-                    title: 'Xác nhận',
-                    message: `Có lỗi mail xảy ra. Vui lòng thử lại!`,
-                    buttons: [
-                      {
-                        label: 'Xác nhận'
-                      }
-                    ]
-                  });
+                    const dateButtonBusiness = localStorage.getItem("dateButtonBusiness");
+                    if (dateButtonBusiness.toString() === "true") {
+                        document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
+                    }
+                } else if (resultStudents.status === 417) {
+                    this.setState({
+                        loading: false
+                    })
+                    confirmAlert({
+                        title: 'Xác nhận',
+                        message: `Có lỗi mail xảy ra. Vui lòng thử lại!`,
+                        buttons: [
+                            {
+                                label: 'Xác nhận'
+                            }
+                        ]
+                    });
                 }
                 else {
                     this.setState({
@@ -497,28 +497,28 @@ class Excels extends Component {
                         })
                         Toastify.actionSuccess("Thêm tệp thành công!");
 
-                        // localStorage.setItem('dateButtonBusiness', true);
-                        // document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
+                        localStorage.setItem('dateButtonBusiness', true);
+                        document.getElementById("submitBusinesses").setAttribute("disabled", "disabled");
 
-                        // const dateButtonStudent = localStorage.getItem("dateButtonStudent");
-                        // if (dateButtonStudent.toString() === "true") {
-                        //     document.getElementById("submitStudents").setAttribute("disabled", "disabled");
-                        // }
+                        const dateButtonStudent = localStorage.getItem("dateButtonStudent");
+                        if (dateButtonStudent.toString() === "true") {
+                            document.getElementById("submitStudents").setAttribute("disabled", "disabled");
+                        }
 
-                    } else if(result.status === 417){
-                      this.setState({
-                        loading: false
-                      })
-                      confirmAlert({
-                        title: 'Xác nhận',
-                        message: `Có lỗi mail xảy ra. Vui lòng thử lại!`,
-                        buttons: [
-                          {
-                            label: 'Xác nhận'
-                          }
-                        ]
-                      });
-                    }else {
+                    } else if (result.status === 417) {
+                        this.setState({
+                            loading: false
+                        })
+                        confirmAlert({
+                            title: 'Xác nhận',
+                            message: `Có lỗi mail xảy ra. Vui lòng thử lại!`,
+                            buttons: [
+                                {
+                                    label: 'Xác nhận'
+                                }
+                            ]
+                        });
+                    } else {
                         this.setState({
                             loading: false
                         })
