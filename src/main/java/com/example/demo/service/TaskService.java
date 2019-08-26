@@ -122,7 +122,7 @@ public class TaskService implements ITaskService {
                 Event event = new Event();
                 Date date = new Date(Calendar.getInstance().getTime().getTime());
                 event.setTime_created(date);
-                event.setTitle("Thông báo");
+                event.setTitle("Thay đổi trạng thái task");
                 event.setSupervisor(task.getSupervisor());
                 event.setDescription(task.getOjt_enrollment().getStudent().getName() +
                         " đã thay đổi trạng thái nhiệm vụ " + task.getTitle() + " thành hoàn thành");

@@ -38,7 +38,7 @@ public class HistoryAction implements Comparable<HistoryAction>, Serializable {
     @Column(name = "function_name")
     private String function_name;
 
-    @Column(name = "targetEmail")
+    @Column(name = "targetEmail",columnDefinition = "NVARCHAR(MAX)")
     private String targetEmail;
 
     @Column(name = "actionTime")

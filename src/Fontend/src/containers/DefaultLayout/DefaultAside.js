@@ -104,12 +104,12 @@ class DefaultAside extends Component {
                             <div className="avatar float-right">
                               <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="usericon" style={{ width: '30px', height: '30px' }} />
                             </div>
-                            <div><strong>{student.name}</strong><br /> {this.handleShowString(inform.event.description)} </div></> :
+                            <div><strong>{student.name}</strong><br /> {this.handleShowString(inform.event.title)} </div></> :
                           <>
                             <div className="avatar float-right">
                               <img src={student.avatarLink} className="img-avatar" alt={student.avatarLink} style={{ width: '30px', height: '30px' }} />
                             </div>
-                            <div><strong>{student.name}</strong><br /> {this.handleShowString(inform.event.description)} </div>
+                            <div><strong>{student.name}</strong><br /> {this.handleShowString(inform.event.title)} </div>
                           </>
                       )
                     })}
@@ -122,12 +122,12 @@ class DefaultAside extends Component {
                             <div className="avatar float-right">
                               <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" alt="usericon" style={{ width: '30px', height: '30px' }} />
                             </div>
-                            <div><strong>{student.name}</strong><br /> {this.handleShowString(inform.event.description)} </div></> :
+                            <div><strong>{student.name}</strong><br /> {this.handleShowString(inform.event.title)} </div></> :
                           <>
                             <div className="avatar float-right">
                               <img src={student.avatarLink} className="img-avatar" alt={student.avatarLink} style={{ width: '30px', height: '30px' }} />
                             </div>
-                            <div><strong>{student.name}</strong><br /> {this.handleShowString(inform.event.description)} </div>
+                            <div><strong>{student.name}</strong><br /> {this.handleShowString(inform.event.title)} </div>
                           </>
                       )
                     })}

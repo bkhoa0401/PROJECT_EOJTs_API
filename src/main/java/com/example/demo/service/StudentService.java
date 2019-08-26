@@ -222,7 +222,7 @@ public class StudentService implements IStudentService {
                 studentList.add(student);
                 values.set("students", studentList);
             }
-            
+
             IStudentRepository.save(student);
             return true;
         }
@@ -296,10 +296,19 @@ public class StudentService implements IStudentService {
 
     @Override
     public boolean updateLinkFileResumeForStudent(String email, String resumeLink) {
+        ValueOperations values = template.opsForValue();
+        List<Student> studentList = (List<Student>) values.get("students");
+
         Student student = getStudentByEmail(email);
         if (student != null) {
             if (resumeLink != null) {
                 student.setResumeLink(resumeLink);
+                int position = findPositionStudentInList(studentList, student);
+                if (studentList != null) {
+                    studentList.remove(position);
+                    studentList.add(student);
+                    values.set("students", studentList);
+                }
                 IStudentRepository.save(student);
                 return true;
             }
