@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
 import { css } from '@emotion/core';
+import React from 'react';
 import { HashLoader } from 'react-spinners';
 
 const override = css`
