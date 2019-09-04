@@ -224,10 +224,14 @@ public class AdminController {
         List<Business> listBusiness = businessService.getAllBusinessBySemester();
         List<Business> listSuggestBusiness = adminService.getSuggestedBusinessListForFail(suggestStudent);
         List<Business> listOtherBusiness = new ArrayList<>();
+        List<String> listNameBusiness = new ArrayList<>();
+        for (int i = 0; i < listSuggestBusiness.size(); i++) {
+            listNameBusiness.add(listSuggestBusiness.get(i).getBusiness_eng_name());
+        }
         for (int i = 0; i < listBusiness.size(); i++) {
             if (!listBusiness.get(i).getBusiness_eng_name().equals(suggestStudent.getOption1()) &&
                     !listBusiness.get(i).getBusiness_eng_name().equals(suggestStudent.getOption2()) &&
-                    !listSuggestBusiness.contains(listBusiness.get(i))) {
+                    !listNameBusiness.contains(listBusiness.get(i).getBusiness_eng_name())) {
                 listOtherBusiness.add(listBusiness.get(i));
             }
         }

@@ -77,9 +77,9 @@ class student_list extends Component {
         newArray[tabPane] = tab;
         let students = null;
         let typeSelected;
-        if (tab === 1) {
+        if (tab == 1) {
             students = await ApiServices.Get('/student/getAllStudent');
-        } else if (tab === 2) {
+        } else if (tab == 2) {
             students = await ApiServices.Get('/student/getStudentsWithNoCompany');
             typeSelected = 1;
         }
@@ -89,7 +89,7 @@ class student_list extends Component {
             typeSelected: typeSelected,
         });
         // console.log(tabPane);
-        // console.log(tab);
+        console.log(tab);
         // console.log(this.state.activeTab);
     }
 
@@ -460,10 +460,10 @@ class student_list extends Component {
         let students = null;
         // console.log(name);
         // console.log(value);
-        if (value === 0) {
+        if (value == 0) {
             typeSelected = 0;
             students = await ApiServices.Get('/student/getAllStudent');
-        } else if (value === 1) {
+        } else if (value == 1) {
             typeSelected = 1;
             students = await ApiServices.Get('/student/getStudentsWithNoCompany');
         }
