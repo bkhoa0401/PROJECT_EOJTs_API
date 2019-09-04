@@ -51,6 +51,12 @@ public class StudentService implements IStudentService {
     @Autowired
     IStudent_AnswerService iStudent_answerService;
 
+    @Autowired
+    IStudent_EventService iStudent_eventService;
+
+    @Autowired
+    IEventService iEventService;
+
     @Override
     public Student getStudentByEmail(String email) {
         Student student = IStudentRepository.findByEmail(email);
@@ -443,7 +449,7 @@ public class StudentService implements IStudentService {
             studentAnswerDTO.setStudentEmail(student.getEmail());
             studentAnswerDTO.setBusinessEmail(business.getEmail());
 
-            List<Answer> answers=getListAnswerOfQuestion(student.getEmail(),question.getId(),student_answers);
+            List<Answer> answers = getListAnswerOfQuestion(student.getEmail(), question.getId(), student_answers);
             studentAnswerDTO.setAnswers(answers);
             studentAnswerDTO.setQuestion(question);
 
@@ -465,4 +471,23 @@ public class StudentService implements IStudentService {
         return answers;
     }
 
+    @Override
+    public void studentCreateInformMessage(String email, Event event) {
+        Semester semester = semesterService.getSemesterCurrent();
+        Date date = new Date(Calendar.getInstance().getTime().getTime());
+        Student student = getStudentByEmail(email);
+        Student_Event student_event = new Student_Event();
+
+        Ojt_Enrollment ojt_enrollment = ojt_enrollmentService.getOjtEnrollmentByStudentEmailAndSemesterId(email, semester.getId());
+        Business business = ojt_enrollment.getBusiness();
+
+        event.setBusiness(business);
+        event.setTime_created(date);
+        student_event.setStudent(student);
+        student_event.setEvent(event);
+        student_event.setStudent(true);
+
+        iEventService.createEvent(event);
+        iStudent_eventService.saveStudentEvent(student_event);
+    }
 }

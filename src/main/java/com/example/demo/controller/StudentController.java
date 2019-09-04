@@ -241,7 +241,8 @@ public class StudentController {
     public ResponseEntity<List<Student_OjtenrollmentDTO>> getStudentsWithNoCompany() throws Exception {
 //        LOG.info("Getting all student");
         Semester semester = semesterService.getSemesterCurrent();
-        List<Student> studentList = studentService.getAllStudentsBySemesterId();;
+        List<Student> studentList = studentService.getAllStudentsBySemesterId();
+        ;
         List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOList = new ArrayList<>();
         List<Student_OjtenrollmentDTO> student_ojtenrollmentDTOWithNoCompanyList = new ArrayList<>();
         try {
@@ -1039,8 +1040,8 @@ public class StudentController {
     public ResponseEntity<List<StudentAnswerDTO>> getAnswers() {
         String email = getEmailFromToken();
         List<StudentAnswerDTO> answerDTOS = studentService.findListStudentAnswer(email);
-        if(answerDTOS!=null){
-            return new ResponseEntity<List<StudentAnswerDTO>>(answerDTOS,HttpStatus.OK);
+        if (answerDTOS != null) {
+            return new ResponseEntity<List<StudentAnswerDTO>>(answerDTOS, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 
@@ -1052,13 +1053,13 @@ public class StudentController {
         List<StudentAnswerDTO> answerDTOS = studentService.findListStudentAnswer(studentEmail);
         boolean isAnswered = false;
         for (int i = 0; i < answerDTOS.size(); i++) {
-            if (answerDTOS.get(i).getAnswers()!= null) {
+            if (answerDTOS.get(i).getAnswers() != null) {
                 isAnswered = true;
                 break;
             }
         }
-        if(answerDTOS!=null && isAnswered == true){
-            return new ResponseEntity<List<StudentAnswerDTO>>(answerDTOS,HttpStatus.OK);
+        if (answerDTOS != null && isAnswered == true) {
+            return new ResponseEntity<List<StudentAnswerDTO>>(answerDTOS, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 
@@ -1099,6 +1100,12 @@ public class StudentController {
         return new ResponseEntity<Boolean>(result, HttpStatus.OK);
     }
 
+    @PostMapping("/event")
+    public ResponseEntity<Void> studentCreateInformMessage(@RequestBody Event event) {
+        String email = getEmailFromToken();
+        studentService.studentCreateInformMessage(email,event);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     //get email from token
     private String getEmailFromToken() {

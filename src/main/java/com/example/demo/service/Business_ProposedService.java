@@ -37,6 +37,9 @@ public class Business_ProposedService implements IBusiness_ProposedService {
     @Autowired
     IBusinessService iBusinessService;
 
+    @Autowired
+    IStudent_EventService iStudent_eventService;
+
     @Override
     public List<Business_Proposed> getAll() {
 
@@ -147,11 +150,21 @@ public class Business_ProposedService implements IBusiness_ProposedService {
             event.setTitle("Kết quả đề xuất thực tập tại doanh nghiệp mới");
             event.setDescription(descriptionEvent);
             event.setTime_created(date);
-            event.setStudents(studentList);
+            //event.setStudents(studentList);
             event.setRead(false);
             event.setHeading_email(emailHeading);
 
             boolean create = iEventService.createEvent(event);
+
+            for (int i = 0; i < studentList.size(); i++) {
+                Student student=studentList.get(i);
+                Student_Event student_event = new Student_Event();
+                student_event.setStudent(student);
+                student_event.setEvent(event);
+                student_event.setStudent(false);
+
+                iStudent_eventService.saveStudentEvent(student_event);
+            }
 
         } else if (status && !emailHeading.equals("headmaster@gmail.com")) {
             // gửi mail cho người kế tiếp

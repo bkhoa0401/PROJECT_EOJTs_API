@@ -46,6 +46,9 @@ public class AdminController {
     @Autowired
     IQuestionService iQuestionService;
 
+    @Autowired
+    IStudent_EventService iStudent_eventService;
+
     @GetMapping
     @ResponseBody
     public ResponseEntity<List<Student>> getAllStudentByTypeStatusOption(@RequestParam int typeOfStatus) {
@@ -159,8 +162,18 @@ public class AdminController {
         }
         Date date = new Date(Calendar.getInstance().getTime().getTime());
         event.setTime_created(date);
-        event.setStudents(studentList);
+        //event.setStudents(studentList);
         boolean create = eventService.createEvent(event);
+
+        for (int i = 0; i < studentList.size(); i++) {
+            Student student=studentList.get(i);
+            Student_Event student_event = new Student_Event();
+            student_event.setStudent(student);
+            student_event.setEvent(event);
+            student_event.setStudent(false);
+
+            iStudent_eventService.saveStudentEvent(student_event);
+        }
         if (create == true) {
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
