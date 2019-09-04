@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { Bar, Doughnut, Line, Pie, Polar, Radar } from 'react-chartjs-2';
-import { Card, CardBody, CardColumns, CardHeader, Input, Table, FormGroup, Col } from 'reactstrap';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
-import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import React, { Component } from 'react';
+import { Bar, Doughnut, Line, Polar, Radar } from 'react-chartjs-2';
+import { Card, CardBody, CardHeader, Col, FormGroup, Input, Table } from 'reactstrap';
 import ApiServices from '../../service/api-service';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 const options = {
   tooltips: {
@@ -38,7 +38,7 @@ class SiteAdmin extends Component {
     const statisticalEvaluations = await ApiServices.Get('/admin/statisticalEvaluations');
     const statisticalStudentIsAnswer = await ApiServices.Get('/admin/statisticalStudentIsAnswer');
 
-    if (semesters != null) {
+    if (semesters !== null) {
       this.setState({
         semesters: semesters,
         semesterItem: semesters[semesters.length - 1],
@@ -48,7 +48,7 @@ class SiteAdmin extends Component {
       var defaultSemeter = semesters[semesters.length - 1].name;
       const statisticalStudentInSemester = await ApiServices.Get(`/admin/statisticalStudentInSemester?semesterName=${defaultSemeter}`);
 
-      if (statisticalStudentInSemester != null) {
+      if (statisticalStudentInSemester !== null) {
         var polar = {
           datasets: [
             {
@@ -97,7 +97,7 @@ class SiteAdmin extends Component {
 
     }
 
-    if (studentOptionPerBusiness != null) {
+    if (studentOptionPerBusiness !== null) {
       var line = {
         labels: studentOptionPerBusiness.businessListEngName,
         datasets: [
@@ -129,7 +129,7 @@ class SiteAdmin extends Component {
       });
     }
 
-    if (studentInternPerBusiness != null) {
+    if (studentInternPerBusiness !== null) {
       var bar = {
         labels: studentInternPerBusiness.businessListEngName,
         datasets: [
@@ -149,10 +149,10 @@ class SiteAdmin extends Component {
       });
     }
 
-    if (statisticalEvaluations != null) {
+    if (statisticalEvaluations !== null) {
       var datasets = [];
 
-      if (statisticalEvaluations[0] != null) {
+      if (statisticalEvaluations[0] !== null) {
         let data1 = {
           label: 'Báo cáo 1',
           backgroundColor: 'rgba(179,181,198,0.2)',
@@ -165,7 +165,7 @@ class SiteAdmin extends Component {
         }
         datasets.push(data1);
       }
-      if (statisticalEvaluations[1] != null) {
+      if (statisticalEvaluations[1] !== null) {
         let data2 = {
           label: 'Báo cáo 2',
           backgroundColor: 'rgba(255,99,132,0.2)',
@@ -178,7 +178,7 @@ class SiteAdmin extends Component {
         }
         datasets.push(data2);
       }
-      if (statisticalEvaluations[2] != null) {
+      if (statisticalEvaluations[2] !== null) {
         let data3 = {
           label: 'Báo cáo 3',
           backgroundColor: '#CCFFFF',
@@ -191,7 +191,7 @@ class SiteAdmin extends Component {
         }
         datasets.push(data3);
       }
-      if (statisticalEvaluations[3] != null) {
+      if (statisticalEvaluations[3] !== null) {
         let data4 = {
           label: 'Báo cáo 4',
           backgroundColor: '#FFF68F',
@@ -213,7 +213,7 @@ class SiteAdmin extends Component {
       });
     }
 
-    if (statisticalStudentIsAnswer != null) {
+    if (statisticalStudentIsAnswer !== null) {
       var doughnut = {
         labels: [
           'Đã trả lời',
@@ -255,7 +255,7 @@ class SiteAdmin extends Component {
 
       const statisticalStudentInSemester = await ApiServices.Get(`/admin/statisticalStudentInSemester?semesterName=${semesterName}`);
 
-      if (statisticalStudentInSemester != null) {
+      if (statisticalStudentInSemester !== null) {
         var polar = {
           datasets: [
             {
@@ -290,7 +290,7 @@ class SiteAdmin extends Component {
 
       const statisticalStudentInSemester = await ApiServices.Get(`/admin/statisticalStudentInSemester?semesterName=${semesterName}`);
 
-      if (statisticalStudentInSemester != null) {
+      if (statisticalStudentInSemester !== null) {
         var pie = {
           labels: [
             'Pass',

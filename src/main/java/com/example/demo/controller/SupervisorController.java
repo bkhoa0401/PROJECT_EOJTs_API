@@ -245,6 +245,17 @@ public class SupervisorController {
         return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
+    @GetMapping("/allTasksByStudentEmail")
+    @ResponseBody
+    public ResponseEntity<List<Task>> getAllTasksOfStudent(@RequestParam String emailStudent) {
+
+        List<Task> taskList = taskService.findTaskByStudentEmail(emailStudent);
+        if (taskList != null) {
+            return new ResponseEntity<List<Task>>(taskList, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+    }
+
     //check semester //ok
     @GetMapping("/taskByStudentEmail")
     @ResponseBody

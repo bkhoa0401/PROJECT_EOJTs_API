@@ -1,19 +1,15 @@
-import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import { Label, Input, Button, Modal, ModalBody, ModalFooter, ModalHeader, FormGroup } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import SmsServices from '../../service/send-sms';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
 // import { askForPermissioToReceiveNotifications } from '../../service/push-notification';
 // import { initializeApp } from '../../service/push-notification';
 import firebase from 'firebase';
+import React, { Component } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Nav, NavItem, NavLink, Pagination, Row, TabContent, Table, TabPane } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../Toastify/Toastify';
 
 class Invitation_Create extends Component {
     constructor(props) {
@@ -42,7 +38,7 @@ class Invitation_Create extends Component {
         const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
 
         const business = await ApiServices.Get('/business/getBusiness');
-        if (students != null && suggestedStudents != null) {
+        if (students !== null && suggestedStudents !== null) {
             this.setState({
                 students,
                 suggestedStudents,
@@ -80,7 +76,7 @@ class Invitation_Create extends Component {
 
     showModal = () => {
         const { studentDetail } = this.state;
-        if (studentDetail != null && this.state.large) {
+        if (studentDetail !== null && this.state.large) {
             return (
                 <Modal isOpen={this.state.large} toggle={this.toggleLarge}
                     className={'modal-primary ' + this.props.className}>
@@ -171,7 +167,7 @@ class Invitation_Create extends Component {
 
         let filteredListStudents, filteredSuggestedListStudents;
 
-        if (students != null) {
+        if (students !== null) {
             filteredListStudents = students.filter(
                 (student) => {
                     if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
@@ -182,7 +178,7 @@ class Invitation_Create extends Component {
         }
 
 
-        if (suggestedStudents != null) {
+        if (suggestedStudents !== null) {
             filteredSuggestedListStudents = suggestedStudents.filter(
                 (suggestedStudent) => {
                     if (suggestedStudent.name.toLowerCase().indexOf(searchSuggestedValue.toLowerCase()) !== -1) {
@@ -417,7 +413,7 @@ class Invitation_Create extends Component {
 
         const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
 
-        if (result.status == 201) {
+        if (result.status === 201) {
             Toastify.actionSuccess('Gửi lời mời thành công');
             this.setState({
                 loading: false
@@ -433,7 +429,7 @@ class Invitation_Create extends Component {
         const students2nd = await ApiServices.Get('/student/getListStudentNotYetInvited');
         const suggestedStudents = await ApiServices.Get('/student/studentsSuggest');
         const business = await ApiServices.Get('/business/getBusiness');
-        if (students2nd != null && suggestedStudents != null) {
+        if (students2nd !== null && suggestedStudents !== null) {
             this.setState({
                 students: students2nd,
                 suggestedStudents: suggestedStudents,
@@ -455,7 +451,7 @@ class Invitation_Create extends Component {
 
                     var index = codes.indexOf(code);
 
-                    if (index != -1) {
+                    if (index !== -1) {
                         var codeFound = codes[index];
                         var dateFirebase = state[codeFound].userState.date;
                         var timeFirebase = state[codeFound].userState.time;

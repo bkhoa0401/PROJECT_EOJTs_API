@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
-import { Bar, Doughnut, Line, Pie, Polar, Radar } from 'react-chartjs-2';
-import { Card, CardBody, CardColumns, CardHeader, Input, Table, Col, FormGroup } from 'reactstrap';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
-import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import React, { Component } from 'react';
+import { Bar, Doughnut, Line, Radar } from 'react-chartjs-2';
+import { Card, CardBody, CardHeader, Col, FormGroup, Input, Table } from 'reactstrap';
 import ApiServices from '../../service/api-service';
-import { element } from 'prop-types';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 const pie = {
   labels: [
@@ -58,7 +57,7 @@ class SiteHr extends Component {
     const statisticalEvaluationsBusiness = await ApiServices.Get('/admin/statisticalEvaluationsBusiness');
     const numberStatusTaskStudent = await ApiServices.Get('/admin/numberStatusTaskStudent');
 
-    if (businessOptionsBySemester != null) {
+    if (businessOptionsBySemester !== null) {
       var line = {
         labels: businessOptionsBySemester.semester,
         datasets: [
@@ -90,10 +89,10 @@ class SiteHr extends Component {
       });
     }
 
-    if (statisticalEvaluationsBusiness != null) {
+    if (statisticalEvaluationsBusiness !== null) {
       var datasets = [];
 
-      if (statisticalEvaluationsBusiness[0] != null) {
+      if (statisticalEvaluationsBusiness[0] !== null) {
         let data1 = {
           label: 'Báo cáo 1',
           backgroundColor: 'rgba(179,181,198,0.2)',
@@ -106,7 +105,7 @@ class SiteHr extends Component {
         }
         datasets.push(data1);
       }
-      if (statisticalEvaluationsBusiness[1] != null) {
+      if (statisticalEvaluationsBusiness[1] !== null) {
         let data2 = {
           label: 'Báo cáo 2',
           backgroundColor: 'rgba(255,99,132,0.2)',
@@ -119,7 +118,7 @@ class SiteHr extends Component {
         }
         datasets.push(data2);
       }
-      if (statisticalEvaluationsBusiness[2] != null) {
+      if (statisticalEvaluationsBusiness[2] !== null) {
         let data3 = {
           label: 'Báo cáo 3',
           backgroundColor: '#CCFFFF',
@@ -132,7 +131,7 @@ class SiteHr extends Component {
         }
         datasets.push(data3);
       }
-      if (statisticalEvaluationsBusiness[3] != null) {
+      if (statisticalEvaluationsBusiness[3] !== null) {
         let data4 = {
           label: 'Báo cáo 4',
           backgroundColor: '#FFF68F',
@@ -154,7 +153,7 @@ class SiteHr extends Component {
       });
     }
 
-    if (studentInternAtBusiness != null) {
+    if (studentInternAtBusiness !== null) {
       var bar = {
         labels: studentInternAtBusiness.semester,
         datasets: [
@@ -174,13 +173,13 @@ class SiteHr extends Component {
       });
     }
 
-    if (numberStatusTaskStudent != null) {
+    if (numberStatusTaskStudent !== null) {
       var month = [];
       var countStatusTaskInMonth = [];
       var countStatusTaskInMonthItem = {};
       var doughnut = {};
       numberStatusTaskStudent && numberStatusTaskStudent.map((data, index) => {
-        if (index == 0) {
+        if (index === 0) {
           countStatusTaskInMonthItem = data.countStatusTaskInMonth;
         }
         month.push(data.month);
@@ -228,7 +227,7 @@ class SiteHr extends Component {
     console.log("countStatusTaskInMonth", countStatusTaskInMonth);
     console.log("countStatusTaskInMonth[value]", countStatusTaskInMonth[value]);
 
-    if (countStatusTaskInMonth != null) {
+    if (countStatusTaskInMonth !== null) {
       await this.setState({
         countStatusTaskInMonthItem: countStatusTaskInMonth[value]
       })

@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
-import { Button } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import moment from 'moment';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import Toastify from '../../views/Toastify/Toastify';
 
 
 class ManageAccount extends Component {
@@ -27,7 +25,7 @@ class ManageAccount extends Component {
     handleUpdateStatus = async (email, status) => {
         const result = await ApiServices.Put(`/business/updateStatus?email=${email}&isActive=${status}`);
         const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness');
-        if (supervisors != null) {
+        if (supervisors !== null) {
             this.setState({
                 supervisors,
             });
@@ -42,7 +40,7 @@ class ManageAccount extends Component {
 
     async componentDidMount() {
         const supervisors = await ApiServices.Get('/business/getAllSupervisorABusiness');
-        if (supervisors != null) {
+        if (supervisors !== null) {
             this.setState({
                 supervisors,
                 loading: false
@@ -116,14 +114,14 @@ class ManageAccount extends Component {
                                                                 <td style={{ textAlign: "center" }}>{supervisor.phone}</td>
                                                                 <td style={{ textAlign: "center" }}>{supervisor.address}</td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    {supervisor.active.toString() == 'true' ? (
+                                                                    {supervisor.active.toString() === 'true' ? (
                                                                         <Badge color="success">KÍCH HOẠT</Badge>
                                                                     ) : (
                                                                             <Badge color="danger">VÔ HIỆU HOÁ</Badge>
                                                                         )}
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    {supervisor.active.toString() == 'true' ? (
+                                                                    {supervisor.active.toString() === 'true' ? (
                                                                         <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(supervisor.email, false)} type="submit">Vô hiệu</Button>
                                                                     ) : (
                                                                             <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(supervisor.email, true)} type="submit">Kích hoạt</Button>

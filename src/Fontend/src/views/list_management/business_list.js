@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
-import Toastify from '../Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
+import { Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Label, Modal, ModalBody, ModalHeader, Pagination, Row, Table } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 class business_list extends Component {
@@ -24,7 +21,7 @@ class business_list extends Component {
 
     async componentDidMount() {
         const businesses = await ApiServices.Get('/business/getAllBusiness');
-        if (businesses != null) {
+        if (businesses !== null) {
             this.setState({
                 businesses: businesses,
                 loading: false
@@ -34,7 +31,7 @@ class business_list extends Component {
 
     toggleModalDetail = async (businessEmail) => {
         let business = null;
-        if (this.state.modalDetail == false) {
+        if (this.state.modalDetail === false) {
             business = await ApiServices.Get(`/business/business?email=${businessEmail}`);
             this.setState({
                 business: business,
@@ -61,7 +58,7 @@ class business_list extends Component {
     render() {
         const { businesses, business, searchValue, loading } = this.state;
         let filteredListBusinesses;
-        if (businesses != null) {
+        if (businesses !== null) {
             filteredListBusinesses = businesses.filter(
                 (business) => {
                     if (business.business_name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {

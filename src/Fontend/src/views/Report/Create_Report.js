@@ -1,16 +1,11 @@
-import React, { Component } from 'react';
-import Popup from "reactjs-popup";
-import { Label, FormGroup, Input, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
 import decode from 'jwt-decode';
-import Toastify from '../Toastify/Toastify';
-import SimpleReactValidator from '../../validator/simple-react-validator';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, Label, Pagination, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../Toastify/Toastify';
 
 class Create_Report extends Component {
 
@@ -55,14 +50,14 @@ class Create_Report extends Component {
         let role = '';
         let actor = null;
         let businessName = '';
-        if (token != null) {
+        if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
         }
-        if (role == 'ROLE_SUPERVISOR') {
+        if (role === 'ROLE_SUPERVISOR') {
             actor = await ApiServices.Get(`/supervisor`);
             businessName = actor.business.business_name;
-        } else if (role == 'ROLE_HR') {
+        } else if (role === 'ROLE_HR') {
             actor = await ApiServices.Get(`/business/getBusiness`);
             businessName = actor.business_name;
         }
@@ -91,9 +86,9 @@ class Create_Report extends Component {
         let yyyy = parseInt(splitDate[0]);
         let timeStartShow = "";
         if (mm + parseInt(needParam[0]) > 13) {
-            if ((mm + parseInt(needParam[0]) - 12 - 1) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+            if ((mm + parseInt(needParam[0]) - 12 - 1) === 2 && (yyyy + 1) % 4 === 0 && dd > 29) {
                 timeStartShow = 29 + "/" + (mm + parseInt(needParam[0]) - 12 - 1) + "/" + (yyyy + 1);
-            } else if ((mm + parseInt(needParam[0]) - 12 - 1) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+            } else if ((mm + parseInt(needParam[0]) - 12 - 1) === 2 && (yyyy + 1) % 4 !== 0 && dd > 28) {
                 timeStartShow = 28 + "/" + (mm + parseInt(needParam[0]) - 12 - 1) + "/" + (yyyy + 1);
             } else if (mm30.includes((mm + parseInt(needParam[0]) - 12 - 1)) && dd > 30) {
                 timeStartShow = 30 + "/" + (mm + parseInt(needParam[0]) - 12 - 1) + "/" + (yyyy + 1);
@@ -101,9 +96,9 @@ class Create_Report extends Component {
                 timeStartShow = dd + "/" + (mm + parseInt(needParam[0]) - 12 - 1) + "/" + (yyyy + 1);
             }
         } else {
-            if ((mm + parseInt(needParam[0]) - 1) == 2 && yyyy % 4 == 0 && dd > 29) {
+            if ((mm + parseInt(needParam[0]) - 1) === 2 && yyyy % 4 === 0 && dd > 29) {
                 timeStartShow = 29 + "/" + (mm + parseInt(needParam[0]) - 1) + "/" + yyyy;
-            } else if ((mm + parseInt(needParam[0]) - 1) == 2 && yyyy % 4 != 0 && dd > 28) {
+            } else if ((mm + parseInt(needParam[0]) - 1) === 2 && yyyy % 4 !== 0 && dd > 28) {
                 timeStartShow = 28 + "/" + (mm + parseInt(needParam[0]) - 1) + "/" + yyyy;
             } else if (mm30.includes((mm + parseInt(needParam[0]) - 1)) && dd > 30) {
                 timeStartShow = 30 + "/" + (mm + parseInt(needParam[0]) - 1) + "/" + yyyy;
@@ -123,9 +118,9 @@ class Create_Report extends Component {
         timeStartShow = formatTimeStartShow[0] + "/" + formatTimeStartShow[1] + "/" + formatTimeStartShow[2];
         let timeEndShow = "";
         if (mm + parseInt(needParam[0]) > 12) {
-            if ((mm + parseInt(needParam[0]) - 12) == 2 && (yyyy + 1) % 4 == 0 && dd > 29) {
+            if ((mm + parseInt(needParam[0]) - 12) === 2 && (yyyy + 1) % 4 === 0 && dd > 29) {
                 timeEndShow = 29 + "/" + (mm + parseInt(needParam[0]) - 12) + "/" + (yyyy + 1);
-            } else if ((mm + parseInt(needParam[0]) - 12) == 2 && (yyyy + 1) % 4 != 0 && dd > 28) {
+            } else if ((mm + parseInt(needParam[0]) - 12) === 2 && (yyyy + 1) % 4 !== 0 && dd > 28) {
                 timeEndShow = 28 + "/" + (mm + parseInt(needParam[0]) - 12) + "/" + (yyyy + 1);
             } else if (mm30.includes((mm + parseInt(needParam[0]) - 12)) && dd > 30) {
                 timeEndShow = 30 + "/" + (mm + parseInt(needParam[0]) - 12) + "/" + (yyyy + 1);
@@ -133,9 +128,9 @@ class Create_Report extends Component {
                 timeEndShow = dd + "/" + (mm + parseInt(needParam[0]) - 12) + "/" + (yyyy + 1);
             }
         } else {
-            if ((mm + parseInt(needParam[0])) == 2 && yyyy % 4 == 0 && dd > 29) {
+            if ((mm + parseInt(needParam[0])) === 2 && yyyy % 4 === 0 && dd > 29) {
                 timeEndShow = 29 + "/" + (mm + parseInt(needParam[0])) + "/" + yyyy;
-            } else if ((mm + parseInt(needParam[0])) == 2 && yyyy % 4 != 0 && dd > 28) {
+            } else if ((mm + parseInt(needParam[0])) === 2 && yyyy % 4 !== 0 && dd > 28) {
                 timeEndShow = 28 + "/" + (mm + parseInt(needParam[0])) + "/" + yyyy;
             } else if (mm30.includes((mm + parseInt(needParam[0]))) && dd > 30) {
                 timeEndShow = 30 + "/" + (mm + parseInt(needParam[0])) + "/" + yyyy;
@@ -156,8 +151,8 @@ class Create_Report extends Component {
             maxWorkDays = 30 - parseInt(formatTimeStartShow[0]) + parseInt(formatTimeEndShow[0]);
         } else if (mm31.includes(parseInt(formatTimeStartShow[1]))) {
             maxWorkDays = 31 - parseInt(formatTimeStartShow[0]) + parseInt(formatTimeEndShow[0]);
-        } else if (parseInt(formatTimeStartShow[1]) == 2) {
-            if (parseInt(formatTimeStartShow[2]) % 4 == 0) {
+        } else if (parseInt(formatTimeStartShow[1]) === 2) {
+            if (parseInt(formatTimeStartShow[2]) % 4 === 0) {
                 maxWorkDays = 29 - parseInt(formatTimeStartShow[0]) + parseInt(formatTimeEndShow[0]);
             } else {
                 maxWorkDays = 28 - parseInt(formatTimeStartShow[0]) + parseInt(formatTimeEndShow[0]);
@@ -207,22 +202,22 @@ class Create_Report extends Component {
         //         }
         // }
         let score_discipline = this.state.score_discipline;
-        if (event.target.name == "score_discipline") {
+        if (event.target.name === "score_discipline") {
             score_discipline = value;
         }
         // console.log("score_discipline " + score_discipline);
         let score_work = this.state.score_work;
-        if (event.target.name == "score_work") {
+        if (event.target.name === "score_work") {
             score_work = value;
         }
         // console.log("score_discipline " + score_work);
         let score_activity = this.state.score_activity;
-        if (event.target.name == "score_activity") {
+        if (event.target.name === "score_activity") {
             score_activity = value;
         }
         // console.log("score_discipline " + score_activity);
         let onScore = this.state.onScore;
-        if (score_discipline == "" || score_work == "" || score_activity == "") {
+        if (score_discipline === "" || score_work === "" || score_activity === "") {
             onScore = 5;
         } else {
             let tmpScore = parseFloat((parseFloat(score_discipline) * 0.4 + parseFloat(score_work) * 0.5 + parseFloat(score_activity) * 0.1));
@@ -322,7 +317,7 @@ class Create_Report extends Component {
                 console.log(result);
                 console.log(emailStudent);
                 console.log(evaluation);
-                if (result.status == 201) {
+                if (result.status === 201) {
                     Toastify.actionSuccess("Tạo đánh giá tháng thành công!");
                     this.props.history.push("/Report/Report");
                 } else {

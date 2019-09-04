@@ -1,20 +1,7 @@
 import React, { Component } from 'react';
-import {
-  Input, Button, Badge, Card, CardBody, CardHeader, Col, Form, CardFooter,
-  FormGroup, Pagination, Row, Table, ButtonDropdown, DropdownItem, DropdownMenu, DropdownToggle
-} from 'reactstrap';
-import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Pagination, Row } from 'reactstrap';
 import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import orderBy from "lodash/orderBy";
-import Toastify from '../../views/Toastify/Toastify';
-import {
-  getPaginationPageNumber,
-  getPaginationNextPageNumber,
-  getPaginationCurrentPageNumber
-} from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 const table = {
@@ -53,7 +40,7 @@ class Job_Post extends Component {
   async componentDidMount() {
     const updatedId = window.location.href.split("/").pop();
     const data = await ApiServices.Get(`/business/getJobPost?id=${updatedId}`);
-    if (data != null) {
+    if (data !== null) {
       this.setState({
         loading: false,
         updatedId,
@@ -83,25 +70,25 @@ class Job_Post extends Component {
     for (let i = 0; i < job_post_skills.length; i++) {
       let flag = true;
       let check = job_post_skills[i].skill.specialized.name;
-      if (arrayJobPost.length != 0) {
+      if (arrayJobPost.length !== 0) {
         for (let j = 0; j < job_post_skills.length; j++) {
-          if (arrayJobPost.indexOf(check, 0) == -1) {
+          if (arrayJobPost.indexOf(check, 0) === -1) {
             arrayJobPost.push(check);
-            if (tmpSkills.length != 0) {
+            if (tmpSkills.length !== 0) {
               arraySkill.push(tmpSkills);
               arrayQuantity.push(tmpNumber);
               tmpSkills = [];
               tmpNumber = [];
             }
-            if (tmpSkills.indexOf(job_post_skills[i].skill.name, 0) == -1) {
+            if (tmpSkills.indexOf(job_post_skills[i].skill.name, 0) === -1) {
               tmpSkills.push(job_post_skills[i].skill.name);
               tmpNumber.push(job_post_skills[i].number);
 
             }
           } else {
-            if (i == job_post_skills.length - 1) {
-              if (tmpSkills.length != 0) {
-                if (tmpSkills.indexOf(job_post_skills[i].skill.name, 0) == -1) {
+            if (i === job_post_skills.length - 1) {
+              if (tmpSkills.length !== 0) {
+                if (tmpSkills.indexOf(job_post_skills[i].skill.name, 0) === -1) {
                   tmpSkills.push(job_post_skills[i].skill.name);
                   tmpNumber.push(job_post_skills[i].number);
                 }
@@ -111,7 +98,7 @@ class Job_Post extends Component {
                 tmpNumber = [];
               }
             } else {
-              if (tmpSkills.indexOf(job_post_skills[i].skill.name, 0) == -1) {
+              if (tmpSkills.indexOf(job_post_skills[i].skill.name, 0) === -1) {
                 tmpSkills.push(job_post_skills[i].skill.name);
                 tmpNumber.push(job_post_skills[i].number);
                 break;

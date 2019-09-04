@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Label, Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, FormGroup, Row, Table, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
-import { Button } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../Toastify/Toastify';
-import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardHeader, Col, FormGroup, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
+import ApiServices from '../../service/api-service';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import Toastify from '../Toastify/Toastify';
 
 
 class Question extends Component {
@@ -23,7 +22,7 @@ class Question extends Component {
     }
 
     toggleModalDetail = async (question) => {
-        if (this.state.modalDetail == false) {
+        if (this.state.modalDetail === false) {
             this.setState({
                 questionDetail: question,
                 modalDetail: !this.state.modalDetail,
@@ -42,7 +41,7 @@ class Question extends Component {
     handleUpdateStatus = async (question, status) => {
         const result = await ApiServices.Put(`/admin/question?id=${question.id}&status=${status}`);
         const questions = await ApiServices.Get('/admin/questions');
-        if (questions != null) {
+        if (questions !== null) {
             this.setState({
                 questions,
             });
@@ -57,7 +56,7 @@ class Question extends Component {
 
     async componentDidMount() {
         const questions = await ApiServices.Get('/admin/questions');
-        if (questions != null) {
+        if (questions !== null) {
             this.setState({
                 questions: questions,
                 loading: false
@@ -134,7 +133,7 @@ class Question extends Component {
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {
-                                                                        question.active.toString() == 'true' ? (
+                                                                        question.active.toString() === 'true' ? (
                                                                             <Badge color="success" style={{ fontSize: '12px' }}>KÍCH HOẠT</Badge>
                                                                         ) : (
                                                                                 <Badge color="danger" style={{ fontSize: '12px' }}>VÔ HIỆU</Badge>
@@ -144,7 +143,7 @@ class Question extends Component {
                                                                 <td style={{ textAlign: "center" }}>
                                                                     <Button type="submit" style={{ marginRight: "1.5px" }} onClick={() => this.toggleModalDetail(question)} color="secondary">Chi tiết</Button>
                                                                     <Button type="submit" style={{ marginRight: "1.5px" }} color="primary" onClick={() => this.handleDirect(`/question/update/${question.id}`)}>Chỉnh sửa</Button>
-                                                                    {question.active.toString() == 'true' ? (
+                                                                    {question.active.toString() === 'true' ? (
                                                                         <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(question, false)} type="submit">Vô hiệu</Button>
                                                                     ) : (
                                                                             <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(question, true)} type="submit">Kích hoạt</Button>
@@ -157,7 +156,7 @@ class Question extends Component {
                                             </tbody>
                                         </Table>
                                         {
-                                            questionDetail != null ? (
+                                            questionDetail !== null ? (
                                                 <Modal isOpen={this.state.modalDetail} toggle={this.toggleModalDetail} className={'modal-primary ' + this.props.className}>
                                                     <ModalHeader toggle={this.toggleModalDetail}>Chi tiết câu hỏi</ModalHeader>
                                                     <ModalBody>
@@ -167,7 +166,7 @@ class Question extends Component {
                                                             </Col>
                                                             <Col xs="12" md="8">
                                                                 {
-                                                                    questionDetail.active.toString() == 'true' ? (
+                                                                    questionDetail.active.toString() === 'true' ? (
                                                                         <Badge color="success" style={{ fontSize: '12px' }}>KÍCH HOẠT</Badge>
                                                                     ) : (
                                                                             <Badge color="danger" style={{ fontSize: '12px' }}>VÔ HIỆU</Badge>
@@ -210,7 +209,7 @@ class Question extends Component {
                                                             </Col>
                                                             <Col xs="12" md="8">
                                                                 {
-                                                                    questionDetail.has_others.toString() == 'true' ? (
+                                                                    questionDetail.has_others.toString() === 'true' ? (
                                                                         <Badge color="success" style={{ fontSize: '12px' }}>ĐƯỢC PHÉP</Badge>
                                                                     ) : (
                                                                             <Badge color="danger" style={{ fontSize: '12px' }}>KHÔNG ĐƯỢC PHÉP</Badge>
@@ -224,7 +223,7 @@ class Question extends Component {
                                                             </Col>
                                                             <Col xs="12" md="8">
                                                                 {
-                                                                    questionDetail.manyOption.toString() == 'true' ? (
+                                                                    questionDetail.manyOption.toString() === 'true' ? (
                                                                         <Badge color="success" style={{ fontSize: '12px' }}>ĐƯỢC PHÉP</Badge>
                                                                     ) : (
                                                                             <Badge color="danger" style={{ fontSize: '12px' }}>KHÔNG ĐƯỢC PHÉP</Badge>

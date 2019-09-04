@@ -1,22 +1,9 @@
+import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-} from 'reactstrap';
+import { Bar, Doughnut } from 'react-chartjs-2';
+import { Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Row } from 'reactstrap';
 import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
-import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
-import { Bar, Doughnut } from 'react-chartjs-2';
 
 
 const options = {
@@ -40,7 +27,7 @@ class AnswerStatistics extends Component {
     async componentDidMount() {
         const result = await ApiServices.Get("/admin/statisticalQuestionAnswer");
         console.log(result);
-        if (result != null) {
+        if (result !== null) {
             this.setState({
                 loading: false,
                 result: result
@@ -123,7 +110,7 @@ class AnswerStatistics extends Component {
                                                         }
 
                                                         {
-                                                            others.length != 0 ? (
+                                                            others.length !== 0 ? (
                                                                 <div style={{ marginLeft: "2%" }}>
                                                                     <h6 style={{ textDecoration: "underline" }}>Những câu trả lời khác: </h6><br />
                                                                     {

@@ -1,21 +1,10 @@
-import React, { Component } from 'react';
-import Popup from "reactjs-popup";
-import { Label, FormGroup, Input, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
+import { ExcelExport, ExcelExportColumn, ExcelExportColumnGroup } from '@progress/kendo-react-excel-export';
 import decode from 'jwt-decode';
-import Toastify from '../Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Label, Pagination, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
-import moment from 'moment';
-import {
-    ExcelExport,
-    ExcelExportColumn,
-    ExcelExportColumnGroup,
-} from '@progress/kendo-react-excel-export';
 
 class Report_Detail extends Component {
 
@@ -57,17 +46,17 @@ class Report_Detail extends Component {
         let businessName = owner.business_name;
         let actor = await ApiServices.Get(`/supervisor/supervisor?email=${report.supervisor_email}`);
         let supervisorName = actor.name;
-        if (token != null) {
+        if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
         }
-        // if (role == 'ROLE_SUPERVISOR') {
+        // if (role === 'ROLE_SUPERVISOR') {
         //     owner = await ApiServices.Get(`/supervisor`);
         //     businessName = owner.business.business_name;
-        // } else if (role == 'ROLE_HR') {
+        // } else if (role === 'ROLE_HR') {
         //     owner = await ApiServices.Get(`/business/getBusiness`);
         //     businessName = owner.business_name;
-        // } else if (role == 'ROLE_ADMIN') {
+        // } else if (role === 'ROLE_ADMIN') {
         //     owner = await ApiServices.Get(`/student/business?email=${needId[1]}`);
         //     businessName = owner.business_name;
         // }
@@ -83,17 +72,17 @@ class Report_Detail extends Component {
         } else {
             onScreenRate = 4;
         }
-        if (report != null) {
-            if (report.title == "EVALUATION1") {
+        if (report !== null) {
+            if (report.title === "EVALUATION1") {
                 titleHeader = "Đánh giá tháng #1";
                 titleReport = "Bảng đánh giá thực tập tháng 1";
-            } else if (report.title == "EVALUATION2") {
+            } else if (report.title === "EVALUATION2") {
                 titleHeader = "Đánh giá tháng #2";
                 titleReport = "Bảng đánh giá thực tập tháng 2";
-            } else if (report.title == "EVALUATION3") {
+            } else if (report.title === "EVALUATION3") {
                 titleHeader = "Đánh giá tháng #3";
                 titleReport = "Bảng đánh giá thực tập tháng 3";
-            } else if (report.title == "EVALUATION4") {
+            } else if (report.title === "EVALUATION4") {
                 titleHeader = "Đánh giá tháng #4";
                 titleReport = "Bảng đánh giá thực tập tháng 4";
             }

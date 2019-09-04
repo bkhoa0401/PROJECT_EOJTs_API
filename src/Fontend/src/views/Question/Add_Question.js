@@ -1,30 +1,13 @@
-import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-    Pagination
-} from 'reactstrap';
-
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import { async } from 'q';
-import SimpleReactValidator from '../../validator/simple-react-validator';
-import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
-import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CKEditor from '@ckeditor/ckeditor5-react';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardFooter, Col, Form, FormGroup, Input, Pagination, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../../views/Toastify/Toastify';
+
 
 
 class Add_Question extends Component {
@@ -78,7 +61,7 @@ class Add_Question extends Component {
     deleteAnswer = async (deleteIndex) => {
         const { arrayAnswer } = this.state;
 
-        if (arrayAnswer.length != 1) {
+        if (arrayAnswer.length !== 1) {
             for (let index = 0; index < arrayAnswer.length; index++) {
                 if (index === deleteIndex) {
                     arrayAnswer.splice(index, 1);
@@ -90,7 +73,7 @@ class Add_Question extends Component {
             })
         }
 
-        if (arrayAnswer.length == 1) {
+        if (arrayAnswer.length === 1) {
             document.getElementById('btnDelete0').setAttribute("disabled", "disabled");
         }
     }
@@ -110,7 +93,7 @@ class Add_Question extends Component {
         const { name, value } = event.target;
         const { arrayAnswer } = this.state;
 
-        if (this.state.arrayAnswer.length == 1) {
+        if (this.state.arrayAnswer.length === 1) {
             document.getElementById('btnDelete0').setAttribute("disabled", "disabled");
         } else {
             document.getElementById('btnDelete0').removeAttribute("disabled", "disabled");
@@ -119,7 +102,7 @@ class Add_Question extends Component {
         let tmpAnswers = arrayAnswer[index];
 
         if (name.includes('answer')) {
-            if (tmpAnswers == null) {
+            if (tmpAnswers === null) {
                 arrayAnswer.push(value);
             } else {
                 arrayAnswer[index] = value;
@@ -159,7 +142,7 @@ class Add_Question extends Component {
             })
 
             const result = await ApiServices.Post('/admin/question', question);
-            if (result.status == 201) {
+            if (result.status === 201) {
                 Toastify.actionSuccess("Tạo câu hỏi thành công!");
                 this.setState({
                     loading: false

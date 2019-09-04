@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { CardHeader, FormGroup, Label, FormText, Button, Card, CardBody, CardFooter, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
 import decode from 'jwt-decode';
-import SimpleReactValidator from '../../validator/simple-react-validator';
-import ApiServices from '../../service/api-service';
+import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Container, Form, FormGroup, FormText, Input, InputGroup, InputGroupAddon, InputGroupText, Label, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../../views/Toastify/Toastify';
 
 class ChangePassword extends Component {
 
@@ -67,14 +67,14 @@ class ChangePassword extends Component {
         let validatorOldPassword = "";
         let validatorConfirmPassword = "";
         if (this.validator.allValid()) {
-            if (oldPassword != account.password ||
-                confirmPassword != newPassword) {
-                if (oldPassword != account.password) {
+            if (oldPassword !== account.password ||
+                confirmPassword !== newPassword) {
+                if (oldPassword !== account.password) {
                     validatorOldPassword = "Mật khẩu cũ không chính xác";
                 }
                 // console.log(account.password);
                 // console.log(oldPassword);
-                if (confirmPassword != newPassword) {
+                if (confirmPassword !== newPassword) {
                     validatorConfirmPassword = "Mật khẩu xác nhận không chính xác";
                 }
                 this.setState({
@@ -88,7 +88,7 @@ class ChangePassword extends Component {
                 });
     
                 const result = await ApiServices.Put(`/user/updatePassword?password=${newPassword}`);
-                if (result.status == 200) {
+                if (result.status === 200) {
                     Toastify.actionSuccess('Cập nhật mật khẩu thành công');
                     this.props.history.push('/');
                 } else {

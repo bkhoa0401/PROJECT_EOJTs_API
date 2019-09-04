@@ -1,30 +1,11 @@
-import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../Toastify/Toastify';
-import SimpleReactValidator from 'simple-react-validator';
 import firebase from 'firebase/app';
 import 'firebase/storage';
-import { async } from 'q';
-// import { initializeApp } from '../Invitation/push-notification';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import decode from 'jwt-decode';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Label, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 
 // // Your web app's Firebase configuration
@@ -59,7 +40,7 @@ class Account_Detail extends Component {
 
     async componentDidMount() {
         const token = localStorage.getItem('id_token');
-        if (token != null) {
+        if (token !== null) {
             const decoded = decode(token);
             const email = decoded.email;
             const role = decoded.role;
@@ -67,16 +48,16 @@ class Account_Detail extends Component {
             let username = '';
             let logo = null;
             let linkProfile = '';
-            if (role == "ROLE_ADMIN" || role == "ROLE_STARTUP" || role == "ROLE_HEADTRAINING" || role == "ROLE_HEADMASTER") {
+            if (role === "ROLE_ADMIN" || role === "ROLE_STARTUP" || role === "ROLE_HEADTRAINING" || role === "ROLE_HEADMASTER") {
                 actor = await ApiServices.Get(`/admin/getCurrentUser`);
-                if (actor != null) {
+                if (actor !== null) {
                     username = actor.name;
                     logo = actor.logo;
                 }
-            } else if (role == "ROLE_SUPERVISOR") {
+            } else if (role === "ROLE_SUPERVISOR") {
                 let tmpActor = await ApiServices.Get(`/supervisor`);
                 actor = tmpActor.supervisor;
-                if (actor != null) {
+                if (actor !== null) {
                     username = actor.name;
                     logo = actor.logo;
                 }
@@ -128,7 +109,7 @@ class Account_Detail extends Component {
                                                         <></> :
                                                         (actor.logo === null ?
                                                             <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "160px", height: "160px" }} alt={actor.name} /> :
-                                                            <img src={actor.logo} className="img-avatar" style={{ width: "160px", height: "160px" }} />
+                                                            <img src={actor.logo} className="img-avatar" style={{ width: "160px", height: "160px" }} alt={actor.name} />
                                                         )
                                                     }
                                                 </Col>

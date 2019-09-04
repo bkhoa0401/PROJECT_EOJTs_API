@@ -1,27 +1,9 @@
-import React, { Component } from 'react';
-import {
-  Badge,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Col,
-  Form,
-  FormGroup,
-  Input,
-  Label,
-  Row,
-  Pagination,
-  Table
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
 import firebase from 'firebase/app';
-import Toastify from '../../views/Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
 import 'firebase/storage';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, Pagination, Row, Table } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 
@@ -42,7 +24,7 @@ class Details_Task extends Component {
     const email = window.location.href.split("/").pop();
     const listStudentTask = await ApiServices.Get(`/supervisor/taskByStudentEmail?emailStudent=${email}`);
 
-    if (listStudentTask != null) {
+    if (listStudentTask !== null) {
       this.setState({
         listStudentTask: listStudentTask,
         loading: false
@@ -114,11 +96,11 @@ class Details_Task extends Component {
                           <th style={{ textAlign: "center" }}>STT</th>
                           <th style={{ textAlign: "center" }}>Nhiệm vụ</th>
                           <th style={{ textAlign: "center" }}>Trạng thái</th>
-                          <th style={{ textAlign: "center" }}>Giao bởi</th>
+                          <th style={{ textAlign: "center" }}>Người giao</th>
                           <th style={{ textAlign: "center" }}>Ngày tạo</th>
                           <th style={{ textAlign: "center" }}>Hạn cuối</th>
                           <th style={{ textAlign: "center" }}>Mức độ</th>
-                          <th style={{ textAlign: "center" }}>Độ ưu tiên</th>
+                          <th style={{ textAlign: "center" }}>Ưu tiên</th>
                         </tr>
                       </thead>
                       <tbody>

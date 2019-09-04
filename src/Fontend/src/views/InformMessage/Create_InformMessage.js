@@ -1,16 +1,14 @@
-import React, { Component } from 'react';
-import Popup from "reactjs-popup";
-import { FormGroup, Input, Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import decode from 'jwt-decode';
-import Toastify from '../Toastify/Toastify';
-import SimpleReactValidator from '../../validator/simple-react-validator';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CKEditor from '@ckeditor/ckeditor5-react';
+import decode from 'jwt-decode';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import Popup from "reactjs-popup";
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, FormGroup, Input, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Pagination, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../Toastify/Toastify';
 
 class Create_InformMessage extends Component {
 
@@ -43,12 +41,12 @@ class Create_InformMessage extends Component {
         let students = [];
         let isSelect = [];
         let preIsSelect = [];
-        if (token != null) {
+        if (token !== null) {
             const decoded = decode(token);
-            if (decoded.role == "ROLE_ADMIN") {
+            if (decoded.role === "ROLE_ADMIN") {
                 students = await ApiServices.Get(`/admin/students`);
             }
-            if (decoded.role == "ROLE_HR") {
+            if (decoded.role === "ROLE_HR") {
                 students = await ApiServices.Get(`/business/getStudentsByBusiness`);
             }
         }
@@ -58,7 +56,7 @@ class Create_InformMessage extends Component {
         let mm = today.getMonth() + 1;
         let yyyy = today.getFullYear();
         today = mm + '/' + dd + '/' + yyyy;
-        if (token != null) {
+        if (token !== null) {
             const decoded = decode(token);
             informFromEmail = decoded.email;
         }
@@ -151,12 +149,12 @@ class Create_InformMessage extends Component {
         let informTo = '';
         if (preListStudentEmail.includes(selectEmail)) {
             for (let index = 0; index < preListStudentEmail.length; index++) {
-                if (preListStudentEmail[index] == selectEmail) {
+                if (preListStudentEmail[index] === selectEmail) {
                     preListStudentEmail.splice(index, 1);
                 }
             }
             for (let index = 0; index < students.length; index++) {
-                if (students[index].email == selectEmail) {
+                if (students[index].email === selectEmail) {
                     preIsSelect[index] = 0;
                 }
             }
@@ -168,7 +166,7 @@ class Create_InformMessage extends Component {
                 //         preIsSelect[i] = 1;
                 //     }
                 // }
-                if (students[i].email == selectEmail) {
+                if (students[i].email === selectEmail) {
                     preIsSelect[i] = 1;
                 }
             }
@@ -199,11 +197,11 @@ class Create_InformMessage extends Component {
         for (let index = 0; index < students.length; index++) {
             preIsSelect[index] = 1;
             for (let index1 = 0; index1 < preListStudentEmail.length; index1++) {
-                if (preListStudentEmail[index1] == students[index].email) {
+                if (preListStudentEmail[index1] === students[index].email) {
                     isSelected = true;
                 }
             }
-            if (isSelected == false) {
+            if (isSelected === false) {
                 preListStudentEmail.push(students[index].email);
             }
             isSelected = false;
@@ -247,11 +245,11 @@ class Create_InformMessage extends Component {
         let descriptionNeedFix = this.state.description;
         descriptionNeedFix = descriptionNeedFix.replace('<p>', '');
         descriptionNeedFix = descriptionNeedFix.replace('</p>', '');
-        // if (descriptionNeedFix == "") {
+        // if (descriptionNeedFix === "") {
         //     descriptionNeedFix = "(No content)";
         // }
         let titleNeedFix = this.state.title;
-        // if (titleNeedFix == "") {
+        // if (titleNeedFix === "") {
         //     titleNeedFix = "(No Title)";
         // }
         const description = descriptionNeedFix;
@@ -269,7 +267,7 @@ class Create_InformMessage extends Component {
             // console.log(result);
             // console.log(listStudentEmail);
             // console.log(event);
-            if (result.status == 201) {
+            if (result.status === 201) {
                 Toastify.actionSuccess("Tạo thông báo thành công!");
                 this.props.history.push("/InformMessage/InformMessage");
             } else {

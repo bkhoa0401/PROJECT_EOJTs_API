@@ -1,12 +1,9 @@
-import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, CardFooter, Col, Pagination, Row, Table, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import decode from 'jwt-decode';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardHeader, Col, Pagination, Row, Table } from 'reactstrap';
+import ApiServices from '../../service/api-service';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 class BusinessProposed extends Component {
 
@@ -24,7 +21,7 @@ class BusinessProposed extends Component {
 
         const token = localStorage.getItem('id_token');
         let role = '';
-        if (token != null) {
+        if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
         }
@@ -35,7 +32,7 @@ class BusinessProposed extends Component {
 
         if (role === 'ROLE_STARTUP') {
             const businesses = await ApiServices.Get('/heading');
-            if (businesses != null) {
+            if (businesses !== null) {
                 this.setState({
                     businesses,
                     loading: false,
@@ -55,7 +52,7 @@ class BusinessProposed extends Component {
                 }
             })
 
-            if (listBusinesses != null) {
+            if (listBusinesses !== null) {
                 this.setState({
                     businesses: listBusinesses,
                     loading: false
@@ -75,7 +72,7 @@ class BusinessProposed extends Component {
                 }
             })
 
-            if (listBusinesses != null) {
+            if (listBusinesses !== null) {
                 this.setState({
                     businesses: listBusinesses,
                     loading: false
@@ -118,7 +115,7 @@ class BusinessProposed extends Component {
     render() {
         const { businesses, searchValue, loading, role } = this.state;
         let filteredListBusinesses;
-        if (businesses != null) {
+        if (businesses !== null) {
             filteredListBusinesses = businesses.filter(
                 (business) => {
                     if (business.business_name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {

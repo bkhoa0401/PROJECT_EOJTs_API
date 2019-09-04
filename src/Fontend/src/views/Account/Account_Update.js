@@ -1,30 +1,13 @@
-import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../Toastify/Toastify';
-import SimpleReactValidator from '../../validator/simple-react-validator';
 import firebase from 'firebase/app';
 import 'firebase/storage';
-import { async } from 'q';
-// import { initializeApp } from '../Invitation/push-notification';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import decode from 'jwt-decode';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../Toastify/Toastify';
 
 
 // // Your web app's Firebase configuration
@@ -63,7 +46,7 @@ class Account_Detail extends Component {
 
     async componentDidMount() {
         const token = localStorage.getItem('id_token');
-        if (token != null) {
+        if (token !== null) {
             const decoded = decode(token);
             const email = decoded.email;
             const role = decoded.role;
@@ -72,18 +55,18 @@ class Account_Detail extends Component {
             let logo = null;
             let phone = '';
             let address = '';
-            if (role == "ROLE_ADMIN" || role == "ROLE_STARTUP" || role == "ROLE_HEADTRAINING" || role == "ROLE_HEADMASTER") {
+            if (role === "ROLE_ADMIN" || role === "ROLE_STARTUP" || role === "ROLE_HEADTRAINING" || role === "ROLE_HEADMASTER") {
                 actor = await ApiServices.Get(`/admin/getCurrentUser`);
-                if (actor != null) {
+                if (actor !== null) {
                     name = actor.name;
                     logo = actor.logo;
                     phone = actor.phone;
                     address = actor.address;
                 }
-            } else if (role == "ROLE_SUPERVISOR") {
+            } else if (role === "ROLE_SUPERVISOR") {
                 let tmpActor = await ApiServices.Get(`/supervisor`);
                 actor = tmpActor.supervisor;
-                if (actor != null) {
+                if (actor !== null) {
                     name = actor.name;
                     logo = actor.logo;
                     phone = actor.phone;
@@ -133,7 +116,7 @@ class Account_Detail extends Component {
     uploadImageToFireBase = async () => {
         let { image } = this.state;
 
-        if (image != null) {
+        if (image !== null) {
             const uploadTask = await storage.ref(`images/${image.name}`).put(image);
             await storage.ref('images').child(image.name).getDownloadURL().then(url => {
                 this.setState({
@@ -157,10 +140,10 @@ class Account_Detail extends Component {
             var profile = {
                 logo, email, name, address, phone
             }
-            if (role == "ROLE_ADMIN" || role == "ROLE_STARTUP" || role == "ROLE_HEADTRAINING" || role == "ROLE_HEADMASTER") {
+            if (role === "ROLE_ADMIN" || role === "ROLE_STARTUP" || role === "ROLE_HEADTRAINING" || role === "ROLE_HEADMASTER") {
                 const result = await ApiServices.Put('/admin/updateAdmin', profile);
 
-                if (result.status == 200) {
+                if (result.status === 200) {
                     Toastify.actionSuccess('Cập nhật thông tin thành công');
                     this.props.history.push(`/Account_Detail`);
                 } else {
@@ -169,10 +152,10 @@ class Account_Detail extends Component {
                         loading: false
                     })
                 }
-            } else if (role == "ROLE_SUPERVISOR") {
+            } else if (role === "ROLE_SUPERVISOR") {
                 const result = await ApiServices.Put('/supervisor/updateSupervisor', profile);
 
-                if (result.status == 200) {
+                if (result.status === 200) {
                     Toastify.actionSuccess('Cập nhật thông tin thành công');
                     this.props.history.push(`/Account_Detail`);
                 } else {
@@ -221,7 +204,7 @@ class Account_Detail extends Component {
                                                     <h6>Logo</h6>
                                                 </Col>
                                                 <Col xs="12" md="10">
-                                                    <img src={logo} style={{ width: "160px", height: "160px" }} onChange={this.handleInput} type="file" id="img_logo" name="logo" />
+                                                    <img src={logo} style={{ width: "160px", height: "160px" }} onChange={this.handleInput} type="file" id="img_logo" name="logo" alt="logo" />
                                                     <br /><br />
                                                     <input onChange={this.handleChange} type="file" />
                                                     <br /><br />

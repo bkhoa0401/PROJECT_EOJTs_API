@@ -1,14 +1,9 @@
-import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Pagination, Row, Table } from 'reactstrap';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
 import orderBy from "lodash/orderBy";
-import Toastify from '../../views/Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardHeader, Col, FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Row, Table } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
-import { async } from '@firebase/util';
 
 const invertDirection = {
     asc: 'desc',
@@ -35,7 +30,7 @@ class Invitation extends Component {
     async componentDidMount() {
         const students = await ApiServices.Get('/student/getListStudentIsInvited');
         const business = await ApiServices.Get('/business/getBusiness');
-        if (students != null) {
+        if (students !== null) {
             this.setState({
                 students,
                 business_eng_name: business.business_eng_name,
@@ -60,7 +55,7 @@ class Invitation extends Component {
     toggleModalDetail = async (studentDetail) => {
         let invitationDetail = null;
         let invitation = null;
-        if (this.state.modal == false) {
+        if (this.state.modal === false) {
             invitation = await ApiServices.Get(`/business/getInvitationOfStudent?emailStudent=${studentDetail.email}`);
             invitationDetail = invitation.description;
             this.setState({
@@ -88,7 +83,7 @@ class Invitation extends Component {
         const { students, business_eng_name, searchValue, columnToSort, sortDirection, loading, studentDetail, invitationDetail } = this.state;
         let filteredListStudents = orderBy(students, columnToSort, sortDirection);
 
-        if (students != null) {
+        if (students !== null) {
             filteredListStudents = students.filter(
                 (studentList) => {
                     if (studentList.student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
@@ -153,11 +148,11 @@ class Invitation extends Component {
                                                         const skills = student.student.skills;
 
                                                         let tmp = 'N/A';
-                                                        if (invitationDetail != null && invitationDetail.state != 'false') {
-                                                            if (student.student.option1 == business_eng_name) {
+                                                        if (invitationDetail !== null && invitationDetail.state !== 'false') {
+                                                            if (student.student.option1 === business_eng_name) {
                                                                 tmp = 1;
                                                             }
-                                                            if (student.student.option2 == business_eng_name) {
+                                                            if (student.student.option2 === business_eng_name) {
                                                                 tmp = 2;
                                                             }
                                                         }
@@ -190,7 +185,7 @@ class Invitation extends Component {
                                                                 <td style={{ textAlign: "center" }}>
                                                                     {
                                                                         invitationDetail && (
-                                                                            invitationDetail.state.toString() == 'true' ? (
+                                                                            invitationDetail.state.toString() === 'true' ? (
                                                                                 <Badge color="success" style={{fontSize:'12px'}}>Đã chấp nhận</Badge>
                                                                             ) : (
                                                                                     <Badge color="danger" style={{fontSize:'12px'}}>Đang chờ</Badge>

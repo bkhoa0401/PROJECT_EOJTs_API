@@ -1,28 +1,11 @@
 import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-    Pagination,
-    Table
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Label, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import Toastify from '../../views/Toastify/Toastify';
 
 class Hr_Task_Detail extends Component {
 
@@ -48,7 +31,7 @@ class Hr_Task_Detail extends Component {
         const id = window.location.href.split("/").pop();
         const task = await ApiServices.Get(`/supervisor/task?id=${id}`);
 
-        if (task != null) {
+        if (task !== null) {
             this.setState({
                 loading: false,
                 id: task.task.id,
@@ -72,7 +55,7 @@ class Hr_Task_Detail extends Component {
     handleConfirm = (id, status) => {
 
         var messageStatus = '';
-        if (status == 3) {
+        if (status === 3) {
             messageStatus = 'hoàn thành';
         } else {
             messageStatus = 'chưa hoàn thành';
@@ -99,7 +82,7 @@ class Hr_Task_Detail extends Component {
         })
         const result = await ApiServices.Put(`/supervisor/stateTask?id=${id}&typeTask=${status}`);
 
-        if (result.status == 200) {
+        if (result.status === 200) {
             Toastify.actionSuccess("Cập nhật trạng thái thành công!");
 
             this.setState({
@@ -108,7 +91,7 @@ class Hr_Task_Detail extends Component {
 
             const task = await ApiServices.Get(`/supervisor/task?id=${id}`);
 
-            if (task != null) {
+            if (task !== null) {
                 this.setState({
                     id: task.task.id,
                     title: task.task.title,
@@ -183,7 +166,7 @@ class Hr_Task_Detail extends Component {
             )
         } else if (taskLevel === 'NORMAL') {
             return (
-                <Badge color="warning">Bình thường</Badge>
+                <Badge color="warning">Trung bình</Badge>
             )
         }
     }
@@ -280,7 +263,7 @@ class Hr_Task_Detail extends Component {
                                             </FormGroup>
                                             <FormGroup row>
                                                 <Col md="2">
-                                                    <h6>Độ ưu tiên</h6>
+                                                    <h6>Ưu tiên</h6>
                                                 </Col>
                                                 <Col xs="12" md="10">
                                                     <Label id="priority" name="priority">{priority}</Label>

@@ -1,20 +1,15 @@
-import React, { Component } from 'react';
-import ApiServices from '../../service/api-service';
-import {
-    Button, Card, CardBody, CardFooter,
-    CardHeader, Col, Form, FormGroup, Input, Label, Row, Pagination, Modal, ModalBody, ModalFooter, ModalHeader
-} from 'reactstrap';
-import { ExcelRenderer } from 'react-excel-renderer';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
-import { getPaginationPageNumber, getPaginationNextPageNumber, getPaginationCurrentPageNumber } from '../../service/common-service';
-import PaginationComponent from '../Paginations/pagination';
-import { async } from 'q';
 import firebase from 'firebase';
-import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import React, { Component } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import Popup from "reactjs-popup";
+import { ExcelRenderer } from 'react-excel-renderer';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
+import { getPaginationCurrentPageNumber, getPaginationNextPageNumber, getPaginationPageNumber } from '../../service/common-service';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import Toastify from '../../views/Toastify/Toastify';
+import PaginationComponent from '../Paginations/pagination';
 
 class Excels extends Component {
 
@@ -52,7 +47,7 @@ class Excels extends Component {
 
     showModal = () => {
         const { business } = this.state;
-        if (business != null) {
+        if (business !== null) {
             return (
                 <Modal isOpen={this.state.large} toggle={this.toggleLarge}
                     className={'modal-lg ' + this.props.className}>
@@ -191,7 +186,7 @@ class Excels extends Component {
 
     handlePageNumber = (currentPage) => {
         const { rows_Students } = this.state;
-        if (rows_Students != null) {
+        if (rows_Students !== null) {
             const studentsPagination = rows_Students.slice(getPaginationCurrentPageNumber(currentPage, 5), getPaginationNextPageNumber(currentPage, 5));
             this.setState({
                 studentsPagination,
@@ -202,7 +197,7 @@ class Excels extends Component {
 
     handlePagePrevious = (currentPage) => {
         const { rows_Students } = this.state;
-        if (rows_Students != null) {
+        if (rows_Students !== null) {
             const studentsPagination = rows_Students.slice(getPaginationCurrentPageNumber(currentPage, 5), getPaginationNextPageNumber(currentPage, 5));
             this.setState({
                 studentsPagination,
@@ -213,7 +208,7 @@ class Excels extends Component {
 
     handlePageNext = (currentPage) => {
         const { rows_Students } = this.state;
-        if (rows_Students != null) {
+        if (rows_Students !== null) {
             const studentsPagination = rows_Students.slice(getPaginationCurrentPageNumber(currentPage, 5), getPaginationNextPageNumber(currentPage, 5));
             this.setState({
                 studentsPagination,
@@ -224,7 +219,7 @@ class Excels extends Component {
 
     handlePageNumberBus = (currentPageBus) => {
         const { rows_Businesses } = this.state;
-        if (rows_Businesses != null) {
+        if (rows_Businesses !== null) {
             const businessesPagination = rows_Businesses.slice(getPaginationCurrentPageNumber(currentPageBus, 5), getPaginationNextPageNumber(currentPageBus, 5));
             this.setState({
                 businessesPagination,
@@ -235,7 +230,7 @@ class Excels extends Component {
 
     handlePagePreviousBus = (currentPageBus) => {
         const { rows_Businesses } = this.state;
-        if (rows_Businesses != null) {
+        if (rows_Businesses !== null) {
             const businessesPagination = rows_Businesses.slice(getPaginationCurrentPageNumber(currentPageBus, 5), getPaginationNextPageNumber(currentPageBus, 5));
             this.setState({
                 businessesPagination,
@@ -246,7 +241,7 @@ class Excels extends Component {
 
     handlePageNextBus = (currentPageBus) => {
         const { rows_Businesses } = this.state;
-        if (rows_Businesses != null) {
+        if (rows_Businesses !== null) {
             const businessesPagination = rows_Businesses.slice(getPaginationCurrentPageNumber(currentPageBus, 5), getPaginationNextPageNumber(currentPageBus, 5));
             this.setState({
                 businessesPagination,
@@ -263,7 +258,7 @@ class Excels extends Component {
         var skill = '';
 
         for (let i = 0; i < listIndexNotFound.length; i++) {
-            if (i + 1 != listIndexNotFound.length) {
+            if (i + 1 !== listIndexNotFound.length) {
                 skill = skill + ' ' + listIndexNotFound[i] + ', ';
             } else {
                 skill = skill + ' ' + listIndexNotFound[i];
@@ -306,7 +301,7 @@ class Excels extends Component {
         const listBusinesses = [];
         const listNameSkill = [], listIndexNotFound = [];
 
-        if (rows_Students.length != 0) {
+        if (rows_Students.length !== 0) {
             this.setState({
                 loading: true
             })
@@ -340,7 +335,7 @@ class Excels extends Component {
                 console.log("LIST STUDENTS", listStudents);
 
                 const resultStudents = await ApiServices.Post('/student', listStudents);
-                if (resultStudents.status == 201) {
+                if (resultStudents.status === 201) {
                     this.setState({
                         loading: false
                     })
@@ -376,7 +371,7 @@ class Excels extends Component {
             Toastify.actionFail("Không tệp nào được chọn!");
         }
 
-        if (rows_Businesses.length != 0) {
+        if (rows_Businesses.length !== 0) {
             if (buttonName === 'Businesses') {
                 rows_Businesses && rows_Businesses.map((business, index) => {
                     let data = business[8];
@@ -392,7 +387,7 @@ class Excels extends Component {
                             var name = skills_number[0].trim();
                             var number = skills_number[1].trim();
 
-                            if (listNameSkill.indexOf(name) == -1) {
+                            if (listNameSkill.indexOf(name) === -1) {
                                 listNameSkill.push(name);
                             }
                             obj = {
@@ -430,7 +425,7 @@ class Excels extends Component {
 
                 console.log('listNameSkill', listNameSkill);
                 const skillsNotExisted = await ApiServices.Post('/skill/isExisted', listNameSkill);
-                if (skillsNotExisted.status == 200) {
+                if (skillsNotExisted.status === 200) {
                     const data = await skillsNotExisted.json();
                     for (let k = 0; k < data.length; k++) {
                         if (data[k].name !== '') {
@@ -441,7 +436,7 @@ class Excels extends Component {
 
                 console.log("listIndexNotFound", listIndexNotFound);
 
-                if (listIndexNotFound.length != 0) {
+                if (listIndexNotFound.length !== 0) {
                     this.setState({
                         loading: false,
                         listBusinessesForSave: listBusinesses,
@@ -454,7 +449,7 @@ class Excels extends Component {
                     console.log("LIST BUSINESSES", listBusinesses);
 
                     const result = await ApiServices.Post('/business', listBusinesses);
-                    if (result.status == 201) {
+                    if (result.status === 201) {
                         this.setState({
                             loading: false
                         })
@@ -493,9 +488,9 @@ class Excels extends Component {
         })
         const resultAddListSkill = await ApiServices.Post('/skill/listSkill', listSkill);
 
-        if (resultAddListSkill.status == 200) {
+        if (resultAddListSkill.status === 200) {
             const result = await ApiServices.Post('/business', listBusinesses);
-            if (result.status == 201) {
+            if (result.status === 201) {
                 this.setState({
                     loading: false
                 })
@@ -534,14 +529,14 @@ class Excels extends Component {
 
     fileStudentHandler = (event) => {
         let fileObj = event.target.files[0];
-        if (fileObj != null) {
+        if (fileObj !== null) {
             var fileType = fileObj.type.toString();
         }
 
         let flag = true;
         var titles = ["STT", "MSSV", "Họ Tên", "Ngày sinh", "Giới tính", "SĐT", "Email", "Địa chỉ", "Ngành học", "GPA", "Kì"];
 
-        if (fileType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+        if (fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 
             ExcelRenderer(fileObj, (err, resp) => {
                 if (err) {
@@ -550,7 +545,7 @@ class Excels extends Component {
                 else {
                     let titlesExcel = resp.rows[0];
 
-                    if (titlesExcel.length != 11) {
+                    if (titlesExcel.length !== 11) {
                         flag = false;
                     } else {
                         for (let i = 0; i < titles.length; i++) {
@@ -589,7 +584,7 @@ class Excels extends Component {
 
     fileBusinessHandler = (event) => {
         let fileObj = event.target.files[0];
-        if (fileObj != null) {
+        if (fileObj !== null) {
             var fileType = fileObj.type.toString();
         }
 
@@ -597,7 +592,7 @@ class Excels extends Component {
         var titles = ["STT", "Doanh Nghiệp", "Tên Tiếng Anh", "Email", "SĐT", "Địa chỉ Công ty", "Website", "Địa chỉ nơi SV sẽ thực tập", "Vị trí - Số lượng",
             "Quy trình tuyển", "Liên hệ", "Mô tả", "Giới thiệu công ty", "Chính sách ưu đãi", "Logo", "Kì"];
 
-        if (fileType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+        if (fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
 
             ExcelRenderer(fileObj, (err, resp) => {
                 if (err) {
@@ -606,7 +601,7 @@ class Excels extends Component {
                 else {
                     let titlesExcel = resp.rows[0];
 
-                    if (titlesExcel.length != 16) {
+                    if (titlesExcel.length !== 16) {
                         flag = false;
                     } else {
                         for (let i = 0; i < titles.length; i++) {

@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { Badge, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
-import { Button } from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import moment from 'moment';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import SpinnerLoading from '../../spinnerLoading/SpinnerLoading'
+import { ToastContainer } from 'react-toastify';
+import { Badge, Button, Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
+import ApiServices from '../../service/api-service';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import Toastify from '../../views/Toastify/Toastify';
 
 class User_Business extends Component {
 
@@ -50,7 +48,7 @@ class User_Business extends Component {
     handleUpdateStatus = async (email, status) => {
         const result = await ApiServices.Put(`/user/updateStatus?email=${email}&isActive=${status}`);
         const businesses = await ApiServices.Get('/user/getUsersByType?type=3');
-        if (businesses != null) {
+        if (businesses !== null) {
             this.setState({
                 businesses,
             });
@@ -65,7 +63,7 @@ class User_Business extends Component {
 
     async componentDidMount() {
         const businesses = await ApiServices.Get('/user/getUsersByType?type=3');
-        if (businesses != null) {
+        if (businesses !== null) {
             this.setState({
                 businesses,
                 loading: false
@@ -115,14 +113,14 @@ class User_Business extends Component {
                                                                     }
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    {student.active.toString() == 'true' ? (
+                                                                    {student.active.toString() === 'true' ? (
                                                                         <Badge color="success">KÍCH HOẠT</Badge>
                                                                     ) : (
                                                                             <Badge color="danger">VÔ HIỆU HOÁ</Badge>
                                                                         )}
                                                                 </td>
                                                                 <td style={{ textAlign: "center" }}>
-                                                                    {student.active.toString() == 'true' ? (
+                                                                    {student.active.toString() === 'true' ? (
                                                                         <Button style={{ marginRight: "1.5px" }} color="danger" onClick={() => this.handleConfirm(student.email, false)} type="submit">Vô hiệu</Button>
                                                                     ) : (
                                                                             <Button style={{ marginRight: "1.5px" }} color="success" onClick={() => this.handleConfirm(student.email, true)} type="submit">Kích hoạt</Button>

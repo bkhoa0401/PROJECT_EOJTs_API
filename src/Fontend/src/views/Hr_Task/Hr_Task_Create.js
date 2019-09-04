@@ -1,36 +1,12 @@
-import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Collapse,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Fade,
-    Form,
-    FormGroup,
-    FormText,
-    FormFeedback,
-    Input,
-    InputGroup,
-    InputGroupAddon,
-    InputGroupButtonDropdown,
-    InputGroupText,
-    Label,
-    Row,
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
-import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import SimpleReactValidator from '../../validator/simple-react-validator';
+import CKEditor from '@ckeditor/ckeditor5-react';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../../views/Toastify/Toastify';
 
 class Hr_Task_Create extends Component {
 
@@ -52,7 +28,7 @@ class Hr_Task_Create extends Component {
 
     async componentDidMount() {
         const students = await ApiServices.Get('/supervisor/students');
-        if (students != null) {
+        if (students !== null) {
             this.setState({
                 students,
                 studentItem: students[0],
@@ -123,7 +99,7 @@ class Hr_Task_Create extends Component {
                 loading: true
             })
             const result = await ApiServices.Post(`/supervisor?emailStudent=${emailStudent}`, task);
-            if (result.status == 201) {
+            if (result.status === 201) {
                 Toastify.actionSuccess("Tạo nhiệm vụ mới thành công!");
                 this.setState({
                     loading: false
@@ -227,10 +203,10 @@ class Hr_Task_Create extends Component {
                                             </FormGroup>
                                             <FormGroup row>
                                                 <Col md="2">
-                                                    <Label htmlFor="priority">Độ ưu tiên</Label>
+                                                    <Label htmlFor="priority">Ưu tiên</Label>
                                                 </Col>
                                                 <Col xs="12" md="10">
-                                                    <Input value={priority} onChange={this.handleInput} type="number" id="priority" name="priority" placeholder="Độ ưu tiên" />
+                                                    <Input value={priority} onChange={this.handleInput} type="number" id="priority" name="priority" placeholder="Ưu tiên" />
                                                     <span className="form-error is-visible text-danger">
                                                         {/* <i class="fa fa-exclamation-circle" /> */}
                                                         {this.validator.message('Độ ưu tiên', priority, 'required|numberic')}

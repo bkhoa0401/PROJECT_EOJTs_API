@@ -51,7 +51,7 @@ class DefaultLayout extends Component {
 
   async componentWillMount() {
     const token = localStorage.getItem('id_token');
-    if (token != null) {
+    if (token !== null) {
       const decoded = decode(token);
       const role = decoded.role;
 

@@ -1,34 +1,10 @@
 import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Collapse,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Fade,
-    Form,
-    FormGroup,
-    FormText,
-    FormFeedback,
-    Input,
-    InputGroup,
-    InputGroupAddon,
-    InputGroupButtonDropdown,
-    InputGroupText,
-    Label,
-    Row,
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
 import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
-import SimpleReactValidator from '../../validator/simple-react-validator';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
 import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
+import SimpleReactValidator from '../../validator/simple-react-validator';
+import Toastify from '../../views/Toastify/Toastify';
 
 class Account_Create extends Component {
 
@@ -82,7 +58,7 @@ class Account_Create extends Component {
             })
 
             const result = await ApiServices.Post('/business/createSupervisor', supervisor);
-            if (result.status == 201) {
+            if (result.status === 201) {
                 Toastify.actionSuccess("Tạo tài khoản mới thành công!");
                 this.setState({
                     loading: false

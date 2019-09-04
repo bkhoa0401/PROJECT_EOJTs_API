@@ -1,30 +1,11 @@
-import React, { Component } from 'react';
-import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-} from 'reactstrap';
-import ApiServices from '../../service/api-service';
-import { ToastContainer } from 'react-toastify';
-import Toastify from '../../views/Toastify/Toastify';
-import SimpleReactValidator from 'simple-react-validator';
 import firebase from 'firebase/app';
 import 'firebase/storage';
-import { async } from 'q';
-// import { initializeApp } from '../Invitation/push-notification';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 import decode from 'jwt-decode';
+import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, FormGroup, Label, Row } from 'reactstrap';
+import ApiServices from '../../service/api-service';
+import SpinnerLoading from '../../spinnerLoading/SpinnerLoading';
 
 
 // // Your web app's Firebase configuration
@@ -59,15 +40,15 @@ class Company extends Component {
         let business = await ApiServices.Get(`/business/business?email=${businessEmail}`);
         const token = localStorage.getItem('id_token');
         let role = '';
-        if (token != null) {
+        if (token !== null) {
             const decoded = decode(token);
             role = decoded.role;
         }
-        if (role == "ROLE_HR") {
+        if (role === "ROLE_HR") {
             business = await ApiServices.Get("/business/getBusiness");
         }
         console.log(role);
-        if (business != null) {
+        if (business !== null) {
             this.setState({
                 business: business,
                 loading: false,
@@ -114,8 +95,8 @@ class Company extends Component {
                                                     {business === null ?
                                                         <></> :
                                                         (business.logo === null ?
-                                                            <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "160px", height: "160px" }} alt="usericon" /> :
-                                                            <img src={business.logo} className="img-avatar" style={{ width: "160px", height: "160px" }} />
+                                                            <img src={'../../assets/img/avatars/usericon.png'} className="img-avatar" style={{ width: "160px", height: "160px" }} alt={business.business_name}/> :
+                                                            <img src={business.logo} className="img-avatar" style={{ width: "160px", height: "160px" }}  alt={business.business_name}/>
                                                         )
                                                     }
                                                 </Col>

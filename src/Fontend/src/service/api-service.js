@@ -17,7 +17,7 @@ const Get = async function (api, query = '') {
     method: 'GET',
   }
   const response = await fetch(API + api, setting);
-  if (response.status == 204 || response.status == 401 || response.status == 417) {
+  if (response.status === 204 || response.status === 401 || response.status === 417) {
     return null;
   }
   const data = await response.json();
@@ -36,7 +36,7 @@ const GetWithoutToken = async function (api, query = '') {
     method: 'GET',
   }
   const response = await fetch(API + api, setting);
-  // if (response.status == 204 || response.status == 401) {
+  // if (response.status === 204 || response.status === 401) {
   //   return null;
   // }
   // const data = await response.json();
@@ -58,7 +58,7 @@ const Post = async function (api, query) {
     body: JSON.stringify(query),
   }
   const response = await fetch(API + api, setting);
-  if (response.status == 401 || response.status == 403) {
+  if (response.status === 401 || response.status === 403) {
     return null;
   }
   // const data = await response.json();
@@ -80,7 +80,7 @@ const PostNotifications = async function (api, query) {
     body: JSON.stringify(query),
   }
   const response = await fetch(api, setting);
-  if (response.status == 401 || response.status == 403) {
+  if (response.status === 401 || response.status === 403) {
     return null;
   }
   // const data = await response.json();
@@ -102,7 +102,7 @@ const Put = async function (api, query) {
   }
   const response = await fetch(API + api, setting);
   //const data = await response.json();
-  if (response.status == 401 || response.status == 403) {
+  if (response.status === 401 || response.status === 403) {
     return null;
   }
   return response;
@@ -120,7 +120,7 @@ const Delete = async function (api, query) {
     method: 'delete',
   }
   const response = await fetch(API + api, setting);
-  if (response.status == 401 || response.status == 403) {
+  if (response.status === 401 || response.status === 403) {
     return null;
   }
   return response;

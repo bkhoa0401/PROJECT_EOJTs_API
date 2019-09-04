@@ -41,7 +41,7 @@ class Feedback extends Component {
     render() {
         const { loading, searchValue } = this.state;
         // let filteredListStudents;
-        // if (students != null) {
+        // if (students !== null) {
         //     filteredListStudents = students.filter(
         //         (student) => {
         //             if (student.name.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1) {
