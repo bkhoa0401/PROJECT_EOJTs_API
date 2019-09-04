@@ -5,6 +5,10 @@ import com.example.demo.entity.*;
 import com.example.demo.repository.IBusinessRepository;
 import com.example.demo.repository.IEvaluationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -32,6 +36,9 @@ public class BusinessService implements IBusinessService {
     @Autowired
     ISupervisorService iSupervisorService;
 
+    @Autowired
+    private RedisTemplate<Object, Object> template;
+
     @Override
     public void saveBusiness(Business business) {
         IBusinessRepository.save(business);
@@ -46,29 +53,38 @@ public class BusinessService implements IBusinessService {
         return null;
     }
 
+
     @Override
     public List<Business> getAllBusinessBySemester() {
-        Semester semester = semesterService.getSemesterCurrent();
+        ValueOperations values = template.opsForValue();
+        List<Business> businesses = (List<Business>) values.get("business");
+        if (businesses != null) {
+            return businesses;
+        } else {
+            Semester semester = semesterService.getSemesterCurrent();
 
-        List<Ojt_Enrollment> ojt_enrollmentList =
-                ojt_enrollmentService.getOjt_EnrollmentsBySemesterIdAndBusinessEmailNotNull(semester.getId());
-        List<Business> businessList = new ArrayList<>();
+            List<Ojt_Enrollment> ojt_enrollmentList =
+                    ojt_enrollmentService.getOjt_EnrollmentsBySemesterIdAndBusinessEmailNotNull(semester.getId());
+            List<Business> businessList = new ArrayList<>();
 
-        for (int i = 0; i < ojt_enrollmentList.size(); i++) {
-            Business business = ojt_enrollmentList.get(i).getBusiness();
-            for (int j = 0; j < businessList.size(); j++) {
-                if (businessList.get(j).getEmail().equals(business.getEmail())) {
-                    businessList.remove(j);
+            for (int i = 0; i < ojt_enrollmentList.size(); i++) {
+                Business business = ojt_enrollmentList.get(i).getBusiness();
+                for (int j = 0; j < businessList.size(); j++) {
+                    if (businessList.get(j).getEmail().equals(business.getEmail())) {
+                        businessList.remove(j);
+                    }
                 }
+                businessList.add(business);
             }
-            businessList.add(business);
-        }
 
-        if (businessList != null) {
-            return businessList;
+            if (businessList != null) {
+                values.set("business",businessList);
+                return businessList;
+            }
         }
         return null;
     }
+
 
     @Override
     public Business getBusinessByEmail(String email) {
@@ -259,14 +275,14 @@ public class BusinessService implements IBusinessService {
     public List<Evaluation> getEvaluationsOfSupervisor(String email) {
         List<Evaluation> evaluationListResult = new ArrayList<>();
 
-        Supervisor supervisor=iSupervisorService.findByEmail(email);
+        Supervisor supervisor = iSupervisorService.findByEmail(email);
         List<Evaluation> evaluationList = supervisor.getEvaluations();
         Semester semester = semesterService.getSemesterByStartDateAndEndDate();
 
         for (int i = 0; i < evaluationList.size(); i++) {
             Evaluation evaluation = evaluationList.get(i);
             boolean result = checkEvaluationListIsInSemester(semester, evaluation);
-            if(result==true){
+            if (result == true) {
                 evaluationListResult.add(evaluation);
             }
         }

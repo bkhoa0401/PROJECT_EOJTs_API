@@ -162,16 +162,16 @@ class Update_Question extends Component {
             })
 
             const result = await ApiServices.Put('/admin/question-content', question);
-            if (result.status === 200) {
+            if (result.status === 200) {                
+                this.setState({
+                    loading: false
+                })
                 Toastify.actionSuccess("Chỉnh sửa câu hỏi thành công!");
+            } else {                
                 this.setState({
                     loading: false
                 })
-            } else {
                 Toastify.actionFail("Chỉnh sửa câu hỏi thất bại!");
-                this.setState({
-                    loading: false
-                })
             }
         } else {
             this.validator.showMessages();
@@ -187,6 +187,7 @@ class Update_Question extends Component {
                 SpinnerLoading.showHashLoader(loading)
             ) : (
                     <div className="animated fadeIn">
+                        <ToastContainer />
                         <Row>
                             <Col xs="12" lg="12">
                                 <Card>
@@ -243,30 +244,34 @@ class Update_Question extends Component {
 
                                             {
                                                 arrayAnswer && arrayAnswer.map((answer, index) =>
-                                                    <div>
-                                                        <tr>
-                                                            <td>{index + 1}.</td>
-                                                            <td style={{ width: "900px" }}>
-                                                                <Input value={answer.content} onChange={e => { this.handleInputAnswer(e, index) }} type="textarea" name="answer" style={{ width: "850px", marginLeft: "2%" }} rows="5"></Input>
-                                                            </td>
-                                                            <td>
-                                                                <Button id={'btnDelete' + index} color="danger" style={{ marginLeft: "2%" }} onClick={() => this.deleteAnswer(index)}>Xóa</Button>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td></td>
-                                                            <td style={{ width: "900px" }}>
-                                                                <span className="form-error is-visible text-danger" style={{ width: "850px", marginBottom: "5%", marginLeft: "2%" }}>
-                                                                    {this.validator.message('Nội dung đáp án', answer.content, 'required|max:255')}
-                                                                </span>
-                                                            </td>
-                                                            <td></td>
-                                                        </tr>
-                                                    </div>
+
+                                                    answer.other.toString() === 'false' ? (
+                                                        <div>
+                                                            <tr>
+                                                                <td>{index + 1}.</td>
+                                                                <td style={{ width: "900px" }}>
+                                                                    <Input value={answer.content} onChange={e => { this.handleInputAnswer(e, index) }} type="textarea" name="answer" style={{ width: "850px", marginLeft: "2%" }} rows="3" placeholder="Nhập đáp án cho hỏi ..."></Input>
+                                                                </td>
+                                                                <td>
+                                                                    <Button id={'btnDelete' + index} color="danger" style={{ marginLeft: "2%" }} onClick={() => this.deleteAnswer(index)}>Xóa</Button>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td style={{ width: "900px" }}>
+                                                                    <span className="form-error is-visible text-danger" style={{ width: "850px", marginBottom: "5%", marginLeft: "2%" }}>
+                                                                        {this.validator.message('Nội dung đáp án', answer.content, 'required|max:255')}
+                                                                    </span>
+                                                                </td>
+                                                                <td></td>
+                                                            </tr>
+                                                        </div>
+                                                    ) : (
+                                                            <></>
+                                                        )
                                                 )
                                             }
                                         </Form>
-                                        <ToastContainer />
                                         <Pagination>
                                             {/* <PaginationComponent pageNumber={pageNumber} handlePageNumber={this.handlePageNumber} handlePageNext={this.handlePageNext} handlePagePrevious={this.handlePagePrevious} currentPage={currentPage} /> */}
                                         </Pagination>

@@ -130,7 +130,7 @@ class ScheduleParameters extends Component {
                     <Col xs="12" sm="12">
                         <Card>
                             <CardHeader>
-                                <h4>Lập lịch cho quá trình OJT</h4>
+                                <h4>Lịch trình On Job Training</h4>
                             </CardHeader>
                             <CardBody>
                                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">

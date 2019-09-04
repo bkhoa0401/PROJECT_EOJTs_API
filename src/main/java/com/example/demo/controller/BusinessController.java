@@ -1,14 +1,17 @@
 package com.example.demo.controller;
 
-import com.example.demo.config.Sms;
+import com.example.demo.config.*;
 import com.example.demo.dto.*;
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
+
+
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,10 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.PersistenceException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
 
 @RestController
 @RequestMapping("/api/business")
@@ -106,7 +107,7 @@ public class BusinessController {
 
         Semester semester = semesterService.getSemesterByName(businessDTO.getNameSemester());
 
-        Business business=businessService.getBusinessByEmail(businessDTO.getEmail());
+        Business business = businessService.getBusinessByEmail(businessDTO.getEmail());
 
         ojt_enrollment.setBusiness(business);
         ojt_enrollment.setSemester(semester);
@@ -142,6 +143,13 @@ public class BusinessController {
         } else {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+    }
+
+
+    @GetMapping("singlekey/{key}")
+    public List<Business> getSingleValue(@PathVariable("key") String key) {
+        //List<Business> value = (List<Business>) template.opsForList();
+        return null;
     }
 
     @GetMapping("/getBusiness")
@@ -210,7 +218,7 @@ public class BusinessController {
         List<Invitation> invitationList = invitationService.getListInvitationByBusinessEmail(email);
         Invitation invitation = new Invitation();
         for (int i = 0; i < invitationList.size(); i++) {
-            if (invitationList.get(i).getStudent().getEmail().equals(emailStudent)){
+            if (invitationList.get(i).getStudent().getEmail().equals(emailStudent)) {
                 invitation = invitationList.get(i);
                 break;
             }

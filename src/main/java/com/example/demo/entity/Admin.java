@@ -16,7 +16,7 @@ public class Admin implements Serializable {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "name")
+    @Column(name = "name",columnDefinition = "NVARCHAR(255)")
     private String name;
 
     @Column(name = "phone")
