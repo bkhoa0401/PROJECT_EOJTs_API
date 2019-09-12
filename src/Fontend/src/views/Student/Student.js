@@ -14,7 +14,7 @@ const storage = firebase.storage();
 
 class CV extends Component {
 
-    constructor(props) {
+    constructor(prop) {
         super(props);
         this.state = {
             loading: true,

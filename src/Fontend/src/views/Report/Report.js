@@ -1412,14 +1412,14 @@ class Report extends Component {
                                                                         ) :
                                                                         (
                                                                             role && role === "ROLE_ADMIN" ?
-                                                                                <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/admin/Report/Report_Detail/${searchOverviewReports[index * 4 + 3].id}~${student.email}`)}>
+                                                                                <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/admin/Report/Report_Detail/${searchOverviewReports[index * 4 + 3].id}~${student.email}`)}>
                                                                                     {rate[searchOnScreenStatus[index * 4 + 3]]}
                                                                                 </Button> :
                                                                                 (role === "ROLE_SUPERVISOR" ?
-                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/supervisor/Report/Report_Detail/${searchOverviewReports[index * 4 + 3].id}~${student.email}`)}>
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/supervisor/Report/Report_Detail/${searchOverviewReports[index * 4 + 3].id}~${student.email}`)}>
                                                                                         {rate[searchOnScreenStatus[index * 4 + 3]]}
                                                                                     </Button> :
-                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[onScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/hr/Report/Report_Detail/${searchOverviewReports[index * 4 + 3].id}~${student.email}`)}>
+                                                                                    <Button style={{ fontWeight: 'bold' }} outline color={reportColor[searchOnScreenStatus[index * 4 + 3]]} onClick={() => this.handleDirect(`/hr/Report/Report_Detail/${searchOverviewReports[index * 4 + 3].id}~${student.email}`)}>
                                                                                         {rate[searchOnScreenStatus[index * 4 + 3]]}
                                                                                     </Button>
                                                                                 )

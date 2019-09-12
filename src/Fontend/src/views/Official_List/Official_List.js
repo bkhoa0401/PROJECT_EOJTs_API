@@ -1136,7 +1136,7 @@ class Official_List extends Component {
                       <Col xs="12" md="8">
                         {
                           studentDetail.resumeLink && studentDetail.resumeLink ? (
-                            <a href={studentDetail.resumeLink} download>Tải về</a>
+                            <a target="_blank" href={studentDetail.resumeLink} download>Tải về</a>
                           ) :
                             (<label>N/A</label>)
                         }
