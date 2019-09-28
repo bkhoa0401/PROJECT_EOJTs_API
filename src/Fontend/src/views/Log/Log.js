@@ -234,7 +234,7 @@ class Log extends Component {
                             </Col>
                         </Row>
                         <Modal isOpen={this.state.modalDetail} toggle={this.toggleModalDetail} className={'modal-primary ' + this.props.className}>
-                            <ModalHeader toggle={this.toggleModalDetail}>Chi tiết lịch sử log</ModalHeader>
+                            <ModalHeader toggle={this.toggleModalDetail}>Chi tiết hoạt động</ModalHeader>
                             <ModalBody>
                                 <div>
                                     <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -295,7 +295,7 @@ class Log extends Component {
                                         </FormGroup>
                                         <FormGroup row>
                                             <Col md="4">
-                                                <h6>Target email</h6>
+                                                <h6>Đối tượng tương tác</h6>
                                             </Col>
                                             <Col xs="12" md="8">
                                                 {log === null ?
@@ -333,7 +333,7 @@ class Log extends Component {
                                                                 </FormGroup>
                                                                 <FormGroup row>
                                                                     <Col md="4">
-                                                                        <h6>Tên cột</h6>
+                                                                        <h6>Thuộc tính thay đổi</h6>
                                                                     </Col>
                                                                     <Col xs="12" md="8">
                                                                         {
@@ -341,7 +341,7 @@ class Log extends Component {
                                                                         }
                                                                     </Col>
                                                                 </FormGroup>
-                                                                <FormGroup row>
+                                                                {/* <FormGroup row>
                                                                     <Col md="4">
                                                                         <h6>Target Id</h6>
                                                                     </Col>
@@ -350,7 +350,7 @@ class Log extends Component {
                                                                             <Label>{detail.targetId}</Label>
                                                                         }
                                                                     </Col>
-                                                                </FormGroup>
+                                                                </FormGroup> */}
                                                                 <FormGroup row>
                                                                     <Col md="4">
                                                                         <h6>Giá trị mới</h6>
