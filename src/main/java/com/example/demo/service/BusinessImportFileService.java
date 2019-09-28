@@ -33,6 +33,8 @@ public class BusinessImportFileService implements IBusinessImportFileService {
     @Autowired
     ISupervisorService iSupervisorService;
 
+    private List<String> listPass = new ArrayList<>();
+
     @Transactional
     @Override
     public boolean insertBusiness(List<BusinessDTO> businessDTOList) {
@@ -82,7 +84,7 @@ public class BusinessImportFileService implements IBusinessImportFileService {
 //        insert account to table user
                 if (businessIsExisted == null) {
                     String email = businessDTO.getEmail();
-                    String password = usersService.getAlphaNumericString();
+                    String password = listPass.get(i);
 
                     Users users = new Users(email, password);
                     users.setActive(true);
@@ -123,9 +125,10 @@ public class BusinessImportFileService implements IBusinessImportFileService {
                     String name = businessDTO.getBusiness_name();
                     String email = businessDTO.getEmail();
                     String password = usersService.getAlphaNumericString();
+                    listPass.add(password);
 
-                    boolean isSendMail=usersService.sendEmail(name, email, password);
-                    if(isSendMail==false){
+                    boolean isSendMail = usersService.sendEmail(name, email, password);
+                    if (isSendMail == false) {
                         return false;
                     }
                 } else {

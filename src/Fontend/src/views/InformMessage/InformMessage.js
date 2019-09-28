@@ -33,6 +33,7 @@ class InformMessage extends Component {
             role = decoded.role;
             if (role === "ROLE_ADMIN") {
                 informs = await ApiServices.Get('/admin/events');
+                console.log(informs);
             }
             if (role === "ROLE_HR") {
                 informs = await ApiServices.Get('/business/events');

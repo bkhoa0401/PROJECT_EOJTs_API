@@ -156,7 +156,7 @@ class Ojt_Registration extends Component {
             Toastify.actionSuccess(`${action} thành công!`);
             const isSend = await ApiServices.PostNotifications('https://fcm.googleapis.com/fcm/send', notificationDTO);
             this.setState({
-                loading: false
+                loading: false,
             })
         } else {
             Toastify.actionFail(`${action} thất bại!`);
@@ -169,7 +169,9 @@ class Ojt_Registration extends Component {
         const { currentPage, rowsPerPage } = this.state;
         const students = await ApiServices.Get(`/student/getListStudentByOptionAndStatusOption?specializedID=${this.state.selectedSpecialized}&currentPage=${currentPage}&rowsPerPage=${rowsPerPage}`);
         const business = await ApiServices.Get('/business/getBusiness');
-        const invitations = await ApiServices.Get('/student/getListStudentIsInvited');
+        const invitations = await ApiServices.Get('/student/getListStudentIsInvitedNotPaging');
+        console.log(students.listData);
+        console.log(invitations);
         let listInvitation = [];
         if (students !== null) {
             for (let index = 0; index < students.listData.length; index++) {
@@ -182,6 +184,7 @@ class Ojt_Registration extends Component {
                     }
                 }
             }
+            console.log(listInvitation);
             this.setState({
                 students: students.listData,
                 pageNumber: students.pageNumber,
