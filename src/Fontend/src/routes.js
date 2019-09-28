@@ -96,6 +96,7 @@ const SiteSupervisor = React.lazy(() => import('./views/Dashboard/SiteSupervisor
 const Question = React.lazy(() => import('./views/Question/Question.js'));
 const Add_Question = React.lazy(() => import('./views/Question/Add_Question.js'));
 const Update_Question = React.lazy(() => import('./views/Question/Update_Question.js'));
+const Log = React.lazy(() => import('./views/Log/Log.js'));
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -216,7 +217,8 @@ const routes = [
   { path: '/admin/answer-statistics', exact: true, name: 'Thống kê kết quả khảo sát', component: AnswerStatistics },
   { path: '/admin/question', exact: true, name: 'Quản lí câu hỏi', component: Question },
   { path: '/admin/question/new', exact: true, name: 'Tạo mới câu hỏi', component: Add_Question },
-  { path: '/admin/question/update/:id', exact: true, name: 'Chỉnh sửa câu hỏi', component: Update_Question }
+  { path: '/admin/question/update/:id', exact: true, name: 'Chỉnh sửa câu hỏi', component: Update_Question },
+  { path: '/admin/log', exact: true, name: 'Lịch sử log của hệ thống', component: Log }
 ];
 
 export default routes;
